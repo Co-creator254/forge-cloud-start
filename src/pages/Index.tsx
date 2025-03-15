@@ -15,6 +15,18 @@ const Index = () => {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     }
+    
+    // Pre-fetch the awarded tenders data when the page loads
+    const preFetchAwardedTenders = async () => {
+      try {
+        const module = await import('@/services/api');
+        await module.fetchAwardedTenders();
+      } catch (error) {
+        console.error('Error pre-fetching awarded tenders:', error);
+      }
+    };
+    
+    preFetchAwardedTenders();
   }, []);
 
   return (

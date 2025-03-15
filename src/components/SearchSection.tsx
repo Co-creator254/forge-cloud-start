@@ -76,18 +76,19 @@ const SearchSection: React.FC = () => {
         </div>
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Find What You Need</h2>
         <p className="text-lg text-foreground/80 max-w-3xl mx-auto">
-          Search across agricultural issues, tender opportunities, and supply chain jobs throughout Kenya.
+          Search across agricultural issues, tender opportunities, supply chain jobs, and awarded tenders throughout Kenya.
         </p>
       </div>
       
       <Card className="p-6 rounded-xl shadow-sm bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-border">
         <div className="mb-6">
           <Tabs defaultValue="all" value={activeTab} onValueChange={(value) => setActiveTab(value as Category | 'all')}>
-            <TabsList className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
-              <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">All Categories</TabsTrigger>
+            <TabsList className="w-full grid grid-cols-2 md:grid-cols-5 gap-2">
+              <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">All</TabsTrigger>
               <TabsTrigger value="agriculture" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Agricultural Issues</TabsTrigger>
               <TabsTrigger value="tender" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Tender Opportunities</TabsTrigger>
               <TabsTrigger value="supply-chain" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Supply Chain Jobs</TabsTrigger>
+              <TabsTrigger value="awarded-tender" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Awarded Tenders</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>

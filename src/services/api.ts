@@ -1,5 +1,5 @@
 
-import { DataItem, SearchFilters, Category } from '@/types';
+import { DataItem, SearchFilters, Category, AwardedTender } from '@/types';
 
 // Sample data since we're not connecting to a real API yet
 const SAMPLE_DATA: DataItem[] = [
@@ -88,6 +88,67 @@ export const fetchData = async (filters?: SearchFilters): Promise<DataItem[]> =>
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 800));
   
+  // If the category is 'awarded-tender', fetch from Huggingface
+  if (filters?.category === 'awarded-tender') {
+    try {
+      const tenders = await fetchAwardedTenders();
+      let filteredTenders = tenders;
+      
+      // Apply query filter if it exists
+      if (filters.query) {
+        const query = filters.query.toLowerCase();
+        filteredTenders = filteredTenders.filter(tender => 
+          tender.tendersubject.toLowerCase().includes(query) || 
+          tender.supplier.toLowerCase().includes(query) ||
+          (tender.procuringentity && tender.procuringentity.toLowerCase().includes(query))
+        );
+      }
+      
+      // Apply location filter if it exists
+      if (filters.location) {
+        const location = filters.location.toLowerCase();
+        filteredTenders = filteredTenders.filter(tender => 
+          (tender.procuringentitycounty && tender.procuringentitycounty.toLowerCase().includes(location))
+        );
+      }
+      
+      // Map awarded tenders to DataItem format
+      return filteredTenders.map(tender => ({
+        id: tender.tenderno || Math.random().toString(36).substring(2, 9),
+        title: tender.tendersubject,
+        description: `Tender awarded to ${tender.supplier}`,
+        category: 'awarded-tender',
+        date: tender.awarddate || tender.finyrq || new Date().toISOString().split('T')[0],
+        source: tender.procuringentity || 'Kenya Public Procurement',
+        content: `
+          Tender Number: ${tender.tenderno || 'N/A'}
+          Subject: ${tender.tendersubject || 'N/A'}
+          Supplier: ${tender.supplier || 'N/A'}
+          Awarded Amount: ${tender.awardedamount || 'N/A'} ${tender.currency || 'KES'}
+          Award Date: ${tender.awarddate || 'N/A'}
+          Financial Year Quarter: ${tender.finyrq || 'N/A'}
+          Procurement Method: ${tender.procurementmethod || 'N/A'}
+          Procuring Entity: ${tender.procuringentity || 'N/A'}
+          County: ${tender.procuringentitycounty || 'N/A'}
+          Contact: ${tender.contactname || 'N/A'}
+          Contact Email: ${tender.contactemail || 'N/A'}
+          Contact Tel: ${tender.contacttel || 'N/A'}
+          Contact Address: ${tender.contactaddress || 'N/A'}
+        `,
+        tags: [
+          'awarded', 
+          tender.procurementmethod || 'procurement', 
+          tender.procuringentitycounty || 'kenya'
+        ],
+        location: tender.procuringentitycounty,
+        contact: tender.contactemail || tender.contacttel
+      }));
+    } catch (error) {
+      console.error("Error fetching awarded tenders:", error);
+      return [];
+    }
+  }
+  
   if (!filters) return SAMPLE_DATA;
   
   let filteredData = [...SAMPLE_DATA];
@@ -146,7 +207,53 @@ export const getCategoryName = (category: Category): string => {
       return 'Tender Opportunities';
     case 'supply-chain':
       return 'Supply Chain Jobs';
+    case 'awarded-tender':
+      return 'Awarded Tenders';
     default:
       return 'Unknown Category';
+  }
+};
+
+// Function to fetch awarded tenders from Huggingface
+export const fetchAwardedTenders = async (): Promise<AwardedTender[]> => {
+  try {
+    const response = await fetch(
+      "https://datasets-server.huggingface.co/first-rows?dataset=Olive254%2FAwardedPublicProcurementTendersKenya&config=default&split=train"
+    );
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    // Extract rows from the response
+    const rows = data.rows || [];
+    
+    // Map the rows to our AwardedTender interface
+    return rows.map((row: any) => {
+      const tender: AwardedTender = {
+        tenderno: row.row.tenderno || '',
+        tendersubject: row.row.tendersubject || '',
+        finyrq: row.row.finyrq || '',
+        supplier: row.row.supplier || '',
+        supplierscore: row.row.supplierscore,
+        supplierbid: row.row.supplierbid,
+        contactaddress: row.row.contactaddress,
+        contactname: row.row.contactname,
+        contacttel: row.row.contacttel,
+        contactemail: row.row.contactemail,
+        awarddate: row.row.awarddate,
+        awardedamount: row.row.awardedamount,
+        currency: row.row.currency,
+        procuringentity: row.row.procuringentity,
+        procuringentitycounty: row.row.procuringentitycounty,
+        procurementmethod: row.row.procurementmethod
+      };
+      return tender;
+    });
+  } catch (error) {
+    console.error("Error fetching awarded tenders:", error);
+    return [];
   }
 };
