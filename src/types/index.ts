@@ -42,3 +42,84 @@ export interface SearchFilters {
   dateFrom?: Date;
   dateTo?: Date;
 }
+
+// New types for Kilimo API
+export interface KilimoStats {
+  id: number;
+  name: string;
+  value: number;
+  year: number;
+  county?: string;
+  category?: string;
+  unit?: string;
+}
+
+// Supply Chain API types
+export interface Farmer {
+  id: string;
+  name: string;
+  county: string;
+  contacts: string;
+  products: string[];
+  farmSize: string;
+  certifications?: string[];
+}
+
+export interface Produce {
+  id: string;
+  name: string;
+  category: string;
+  county: string;
+  quantity: number;
+  unit: string;
+  qualityGrade: string;
+  availableFrom: string;
+  farmer: string;
+  farmerId: string;
+}
+
+export interface Market {
+  id: string;
+  name: string;
+  county: string;
+  location: string;
+  producePrices: {
+    produceId: string;
+    produceName: string;
+    price: number;
+    unit: string;
+    date: string;
+  }[];
+  demand: string;
+  operatingHours: string;
+}
+
+export interface LogisticsProvider {
+  id: string;
+  name: string;
+  serviceType: 'transport' | 'storage' | 'both';
+  counties: string[];
+  contactInfo: string;
+  capacity: string;
+  rates: string;
+  hasRefrigeration: boolean;
+}
+
+export interface Forecast {
+  id: string;
+  produceId: string;
+  produceName: string;
+  county: string;
+  expectedProduction: number;
+  expectedDemand: number;
+  unit: string;
+  period: string;
+  confidenceLevel: 'low' | 'medium' | 'high';
+}
+
+export interface ChatMessage {
+  id: string;
+  text: string;
+  sender: 'user' | 'bot';
+  timestamp: string;
+}

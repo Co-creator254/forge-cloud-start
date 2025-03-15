@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import SearchSection from '@/components/SearchSection';
 import Contact from '@/components/Contact';
+import ChatBot from '@/components/ChatBot';
 
 const Index = () => {
   useEffect(() => {
@@ -42,6 +43,9 @@ const Index = () => {
           <p>© {new Date().getFullYear()} AgriTender Connect. All rights reserved.</p>
         </div>
       </footer>
+      
+      {/* Add ChatBot component */}
+      <ChatBot />
     </div>
   );
 };
