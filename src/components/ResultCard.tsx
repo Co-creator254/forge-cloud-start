@@ -16,7 +16,8 @@ const ResultCard: React.FC<ResultCardProps> = ({ item, onClick }) => {
   const categoryColors = {
     'agriculture': 'bg-sage-100 text-sage-800 hover:bg-sage-200',
     'tender': 'bg-soil-100 text-soil-800 hover:bg-soil-200',
-    'supply-chain': 'bg-blue-100 text-blue-800 hover:bg-blue-200',
+    'solutions': 'bg-blue-100 text-blue-800 hover:bg-blue-200',
+    'awarded-tender': 'bg-amber-100 text-amber-800 hover:bg-amber-200',
   };
 
   const truncate = (text: string, maxLength: number) => {
@@ -28,7 +29,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ item, onClick }) => {
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-md border border-border group animate-fade-in">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-3">
-          <Badge className={categoryColors[item.category]}>
+          <Badge className={categoryColors[item.category] || 'bg-secondary'}>
             {getCategoryName(item.category)}
           </Badge>
           <div className="flex items-center text-sm text-muted-foreground">

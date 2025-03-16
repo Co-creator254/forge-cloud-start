@@ -1,5 +1,4 @@
-
-export type Category = 'agriculture' | 'tender' | 'supply-chain' | 'awarded-tender';
+export type Category = 'agriculture' | 'tender' | 'solutions' | 'awarded-tender';
 
 export interface DataItem {
   id: string;
@@ -123,3 +122,21 @@ export interface ChatMessage {
   sender: 'user' | 'bot';
   timestamp: string;
 }
+
+export interface Solution {
+  id: string;
+  title: string;
+  description: string;
+  category: 'market-access' | 'logistics' | 'payment' | 'quality' | 'information';
+  approach: string;
+  challenges: string;
+  status: 'implemented' | 'not-implemented';
+}
+
+export const SOLUTION_CATEGORIES = {
+  'market-access': 'Market Access Solutions',
+  'logistics': 'Logistical Innovations',
+  'payment': 'Payment & Financing Solutions',
+  'quality': 'Quality & Traceability Innovations',
+  'information': 'Information Asymmetry Solutions'
+};

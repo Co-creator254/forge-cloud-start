@@ -36,10 +36,10 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({ activeTab, setActiveTab }) 
             Tender Opportunities
           </TabsTrigger>
           <TabsTrigger 
-            value="supply-chain" 
+            value="solutions" 
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
-            Supply Chain Jobs
+            Agricultural Solutions
           </TabsTrigger>
           <TabsTrigger 
             value="awarded-tender" 
