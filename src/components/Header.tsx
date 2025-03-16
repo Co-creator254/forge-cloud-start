@@ -46,9 +46,15 @@ const Header: React.FC = () => {
           <NavLink to="/" active={location.pathname === "/"}>Home</NavLink>
           <NavLink to="/#agricultural-issues" active={location.hash === "#agricultural-issues"}>Agricultural Issues</NavLink>
           <NavLink to="/#tender-opportunities" active={location.hash === "#tender-opportunities"}>Tender Opportunities</NavLink>
-          <NavLink to="/#supply-chain-jobs" active={location.hash === "#supply-chain-jobs"}>Supply Chain Jobs</NavLink>
+          <NavLink to="/supply-chain-api" active={location.pathname === "/supply-chain-api"}>API</NavLink>
+          <NavLink to="/commodity-trading" active={location.pathname === "/commodity-trading"}>Trading</NavLink>
           <NavLink to="/#contact" active={location.hash === "#contact"}>Contact</NavLink>
-          <Button variant="outline" size="icon" className="ml-2">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="ml-2"
+            onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })}
+          >
             <Search className="h-5 w-5" />
           </Button>
         </nav>
@@ -69,10 +75,18 @@ const Header: React.FC = () => {
           <MobileNavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</MobileNavLink>
           <MobileNavLink to="/#agricultural-issues" onClick={() => setIsMobileMenuOpen(false)}>Agricultural Issues</MobileNavLink>
           <MobileNavLink to="/#tender-opportunities" onClick={() => setIsMobileMenuOpen(false)}>Tender Opportunities</MobileNavLink>
-          <MobileNavLink to="/#supply-chain-jobs" onClick={() => setIsMobileMenuOpen(false)}>Supply Chain Jobs</MobileNavLink>
+          <MobileNavLink to="/supply-chain-api" onClick={() => setIsMobileMenuOpen(false)}>API</MobileNavLink>
+          <MobileNavLink to="/commodity-trading" onClick={() => setIsMobileMenuOpen(false)}>Trading</MobileNavLink>
           <MobileNavLink to="/#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</MobileNavLink>
           <div className="pt-2">
-            <Button className="w-full justify-start" variant="outline">
+            <Button 
+              className="w-full justify-start" 
+              variant="outline"
+              onClick={() => {
+                document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' });
+                setIsMobileMenuOpen(false);
+              }}
+            >
               <Search className="h-5 w-5 mr-2" />
               Search
             </Button>

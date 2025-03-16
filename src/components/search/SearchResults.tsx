@@ -1,7 +1,7 @@
 
 import React from 'react';
 import ResultCard from '@/components/ResultCard';
-import { DataItem, Category } from '@/types';
+import { DataItem, Category, SOLUTION_CATEGORIES } from '@/types';
 import { getCategoryName } from '@/services/apiUtils';
 
 interface SolutionCategoryProps {

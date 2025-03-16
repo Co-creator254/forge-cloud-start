@@ -9,7 +9,8 @@ import SearchBar from './search/SearchBar';
 import SearchResults from './search/SearchResults';
 
 const SearchSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Category | 'all'>('all');
+  // Set default activeTab to 'solutions' to show solutions right away
+  const [activeTab, setActiveTab] = useState<Category | 'all'>('solutions');
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
   const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
@@ -64,7 +65,7 @@ const SearchSection: React.FC = () => {
         </div>
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Find What You Need</h2>
         <p className="text-lg text-foreground/80 max-w-3xl mx-auto">
-          Search across agricultural issues, tender opportunities, supply chain jobs, and awarded tenders throughout Kenya.
+          Search across agricultural issues, tender opportunities, innovative solutions, and awarded tenders throughout Kenya.
         </p>
       </div>
       
