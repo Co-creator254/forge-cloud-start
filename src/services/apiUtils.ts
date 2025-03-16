@@ -1,6 +1,4 @@
 
-// We only need to update the getCategoryName function
-
 import { Category, SOLUTION_CATEGORIES } from '@/types';
 
 /**

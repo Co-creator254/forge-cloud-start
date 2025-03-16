@@ -2,7 +2,42 @@
 import React from 'react';
 import ResultCard from '@/components/ResultCard';
 import { DataItem, Category } from '@/types';
-import { getCategoryName } from '@/services/api';
+import { getCategoryName } from '@/services/apiUtils';
+
+interface SolutionCategoryProps {
+  title: string;
+  solutions: {
+    title: string;
+    approach: string;
+    challenge: string;
+  }[];
+}
+
+// Define the SolutionCategory component before using it
+const SolutionCategory: React.FC<SolutionCategoryProps> = ({ title, solutions }) => {
+  return (
+    <div>
+      <h4 className="text-lg font-semibold mb-3 text-primary">{title}</h4>
+      <div className="space-y-4">
+        {solutions.map((solution, index) => (
+          <div key={index} className="border border-border rounded-lg p-4 bg-card">
+            <h5 className="font-medium text-base mb-2">{solution.title}</h5>
+            <div className="space-y-2">
+              <div>
+                <span className="text-sm font-medium text-primary">Novel Approach: </span>
+                <span className="text-sm">{solution.approach}</span>
+              </div>
+              <div>
+                <span className="text-sm font-medium text-primary">Challenges: </span>
+                <span className="text-sm">{solution.challenge}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 interface SearchResultsProps {
   results: DataItem[];
@@ -86,7 +121,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                 },
                 {
                   title: "Visual Quality Passport",
-                  approach: "Generate a visual "passport" for produce with time-stamped photos at each supply chain stage, verifiable via QR code",
+                  approach: "Generate a visual \"passport\" for produce with time-stamped photos at each supply chain stage, verifiable via QR code",
                   challenge: "High data storage requirements and technical complexity in creating visual fingerprinting that works across different devices and lighting conditions."
                 }
               ]} 
@@ -126,40 +161,6 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {results.map((item) => (
           <ResultCard key={item.id} item={item} onClick={() => onItemClick(item)} />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-interface SolutionCategoryProps {
-  title: string;
-  solutions: {
-    title: string;
-    approach: string;
-    challenge: string;
-  }[];
-}
-
-const SolutionCategory: React.FC<SolutionCategoryProps> = ({ title, solutions }) => {
-  return (
-    <div>
-      <h4 className="text-lg font-semibold mb-3 text-primary">{title}</h4>
-      <div className="space-y-4">
-        {solutions.map((solution, index) => (
-          <div key={index} className="border border-border rounded-lg p-4 bg-card">
-            <h5 className="font-medium text-base mb-2">{solution.title}</h5>
-            <div className="space-y-2">
-              <div>
-                <span className="text-sm font-medium text-primary">Novel Approach: </span>
-                <span className="text-sm">{solution.approach}</span>
-              </div>
-              <div>
-                <span className="text-sm font-medium text-primary">Challenges: </span>
-                <span className="text-sm">{solution.challenge}</span>
-              </div>
-            </div>
-          </div>
         ))}
       </div>
     </div>
