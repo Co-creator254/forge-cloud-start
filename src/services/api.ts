@@ -2,7 +2,21 @@
 // Re-export everything from the individual API modules
 
 // Utils and common functionality
-export { getCategoryName, simulateDelay } from './apiUtils';
+export { 
+  getCategoryName, 
+  simulateDelay, 
+  formatApiUrl,
+  validateApiKey 
+} from './apiUtils';
+
+// API Documentation
+export {
+  API_BASE_URL,
+  API_ENDPOINTS,
+  apiAccessInformation,
+  apiRegistrationSteps,
+  apiExampleCode
+} from './apiDocs';
 
 // Search API
 export { fetchData, fetchItemById } from './searchAPI';
@@ -21,3 +35,4 @@ export {
   fetchLogistics,
   fetchForecasts
 } from './supplyChainAPI';
+
