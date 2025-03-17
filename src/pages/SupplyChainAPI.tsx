@@ -7,12 +7,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Package, Truck, MapPin, Tag, Globe, User } from 'lucide-react';
+import { Package, Truck, MapPin, Globe, User } from 'lucide-react';
 import { fetchFarmers, fetchProduce, fetchMarkets, fetchLogistics, fetchForecasts } from '@/services/api';
 import { Farmer, Produce, Market, LogisticsProvider, Forecast } from '@/types';
+import { useToast } from '@/hooks/use-toast';
 
 const SupplyChainAPI: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('farmers');
   const [county, setCounty] = useState('');
   const [farmers, setFarmers] = useState<Farmer[]>([]);
@@ -29,26 +31,51 @@ const SupplyChainAPI: React.FC = () => {
         case 'farmers':
           const farmersData = await fetchFarmers(county || undefined);
           setFarmers(farmersData);
+          toast({
+            title: "Data Loaded",
+            description: `Found ${farmersData.length} farmers in the database`,
+          });
           break;
         case 'produce':
           const produceData = await fetchProduce(county || undefined);
           setProduce(produceData);
+          toast({
+            title: "Data Loaded",
+            description: `Found ${produceData.length} produce items in the database`,
+          });
           break;
         case 'markets':
           const marketsData = await fetchMarkets(county || undefined);
           setMarkets(marketsData);
+          toast({
+            title: "Data Loaded",
+            description: `Found ${marketsData.length} markets in the database`,
+          });
           break;
         case 'logistics':
           const logisticsData = await fetchLogistics(county || undefined);
           setLogistics(logisticsData);
+          toast({
+            title: "Data Loaded",
+            description: `Found ${logisticsData.length} logistics providers in the database`,
+          });
           break;
         case 'forecasts':
           const forecastsData = await fetchForecasts(county || undefined);
           setForecasts(forecastsData);
+          toast({
+            title: "Data Loaded",
+            description: `Found ${forecastsData.length} forecasts in the database`,
+          });
           break;
       }
     } catch (error) {
       console.error(`Error fetching ${activeTab}:`, error);
+      toast({
+        title: "Error",
+        description: `Failed to load ${activeTab} data. Please try again.`,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -69,6 +96,25 @@ const SupplyChainAPI: React.FC = () => {
     fetchData();
   };
 
+  const handleTryAPI = (endpoint: string) => {
+    // Copy the API call example to clipboard
+    const apiCall = `
+// Example API call for ${endpoint}
+import { fetch${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)} } from 'agritender-api';
+
+// Get all ${endpoint}
+const all${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)} = await fetch${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)}();
+
+// Filter by county
+const filtered${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)} = await fetch${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)}('Nakuru');
+`;
+    navigator.clipboard.writeText(apiCall);
+    toast({
+      title: "API Example Copied",
+      description: `Example code for the ${endpoint} endpoint has been copied to your clipboard`,
+    });
+  };
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -84,7 +130,7 @@ const SupplyChainAPI: React.FC = () => {
           <CardHeader>
             <CardTitle>API Explorer</CardTitle>
             <CardDescription>
-              Browse through our supply chain endpoints to see available data
+              Browse through our supply chain endpoints to see available data and test API functionality
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -126,6 +172,13 @@ const SupplyChainAPI: React.FC = () => {
                   <Button type="submit" disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Search'}
                   </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline"
+                    onClick={() => handleTryAPI(activeTab)}
+                  >
+                    Copy API Example
+                  </Button>
                 </form>
               </div>
 
@@ -153,6 +206,11 @@ const SupplyChainAPI: React.FC = () => {
                             <div>
                               <span className="font-medium">Contact:</span> {farmer.contacts}
                             </div>
+                            {farmer.certifications && (
+                              <div>
+                                <span className="font-medium">Certifications:</span> {farmer.certifications.join(', ')}
+                              </div>
+                            )}
                           </div>
                         </CardContent>
                       </Card>
@@ -160,7 +218,7 @@ const SupplyChainAPI: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p>No farmers found. Try a different search.</p>
+                    <p>No farmers found. Try a different search or click Search to view all farmers.</p>
                   </div>
                 )}
               </TabsContent>
@@ -199,7 +257,7 @@ const SupplyChainAPI: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p>No produce found. Try a different search.</p>
+                    <p>No produce found. Try a different search or click Search to view all produce.</p>
                   </div>
                 )}
               </TabsContent>
@@ -243,7 +301,7 @@ const SupplyChainAPI: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p>No markets found. Try a different search.</p>
+                    <p>No markets found. Try a different search or click Search to view all markets.</p>
                   </div>
                 )}
               </TabsContent>
@@ -288,7 +346,7 @@ const SupplyChainAPI: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p>No logistics providers found. Try a different search.</p>
+                    <p>No logistics providers found. Try a different search or click Search to view all providers.</p>
                   </div>
                 )}
               </TabsContent>
@@ -336,7 +394,7 @@ const SupplyChainAPI: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p>No forecasts found. Try a different search.</p>
+                    <p>No forecasts found. Try a different search or click Search to view all forecasts.</p>
                   </div>
                 )}
               </TabsContent>
@@ -346,8 +404,8 @@ const SupplyChainAPI: React.FC = () => {
             <Button variant="outline" onClick={() => navigate('/')}>
               Back to Home
             </Button>
-            <Button variant="default" onClick={() => window.location.hash = 'search-section'}>
-              Search All Data
+            <Button variant="default" onClick={() => navigate('/commodity-trading')}>
+              Go to Commodity Trading
             </Button>
           </CardFooter>
         </Card>
@@ -367,17 +425,52 @@ const SupplyChainAPI: React.FC = () => {
             </div>
             
             <div>
-              <h3 className="text-xl font-semibold mb-2">Common Parameters</h3>
-              <ul className="space-y-2 list-disc pl-5">
-                <li><code>county</code> - Filter results by county name</li>
-                <li><code>limit</code> - Limit the number of results returned</li>
-                <li><code>offset</code> - Skip a number of results for pagination</li>
-              </ul>
+              <h3 className="text-xl font-semibold mb-2">How to Use This API</h3>
+              <ol className="space-y-2 list-decimal pl-5">
+                <li>Register for an API key using the form below</li>
+                <li>Include your API key in the Authorization header</li>
+                <li>Make GET requests to the endpoints listed above</li>
+                <li>Filter results by adding query parameters (e.g., ?county=Nakuru)</li>
+                <li>Handle the JSON response in your application</li>
+              </ol>
             </div>
             
             <div>
               <h3 className="text-xl font-semibold mb-2">Authentication</h3>
-              <p>API access requires an API key. Contact us to get your API key.</p>
+              <p>API access requires an API key. Fill out the form below to request your API key:</p>
+              <div className="mt-4 p-4 border rounded-lg bg-background">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input id="name" placeholder="Your name" className="mt-1" />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input id="email" type="email" placeholder="your.email@example.com" className="mt-1" />
+                  </div>
+                  <div>
+                    <Label htmlFor="organization">Organization</Label>
+                    <Input id="organization" placeholder="Your company or organization" className="mt-1" />
+                  </div>
+                  <div>
+                    <Label htmlFor="purpose">Purpose</Label>
+                    <Input id="purpose" placeholder="How you plan to use the API" className="mt-1" />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <Button 
+                    className="w-full md:w-auto"
+                    onClick={() => {
+                      toast({
+                        title: "Request Submitted",
+                        description: "Your API key request has been submitted successfully. We'll email you with your API key shortly.",
+                      });
+                    }}
+                  >
+                    Request API Key
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

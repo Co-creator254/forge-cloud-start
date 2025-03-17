@@ -3,7 +3,6 @@
 
 // Utils and common functionality
 export { 
-  getCategoryName, 
   simulateDelay, 
   formatApiUrl,
   validateApiKey 
@@ -18,15 +17,6 @@ export {
   apiExampleCode
 } from './apiDocs';
 
-// Search API
-export { fetchData, fetchItemById } from './searchAPI';
-
-// Awarded Tenders API
-export { fetchAwardedTenders } from './awardedTendersAPI';
-
-// Kilimo Stats API
-export { fetchKilimoStats } from './kilimoAPI';
-
 // Supply Chain API
 export {
   fetchFarmers,
@@ -35,4 +25,3 @@ export {
   fetchLogistics,
   fetchForecasts
 } from './supplyChainAPI';
-
