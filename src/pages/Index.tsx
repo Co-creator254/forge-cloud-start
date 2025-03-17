@@ -17,17 +17,18 @@ const Index = () => {
       }
     }
     
-    // Pre-fetch the awarded tenders data when the page loads
-    const preFetchAwardedTenders = async () => {
+    // Pre-fetch data when the page loads
+    const preFetchData = async () => {
       try {
+        // We'll pre-fetch some data but not the tender-related data
         const module = await import('@/services/api');
-        await module.fetchAwardedTenders();
+        await module.fetchMarkets(); // Pre-fetch markets data instead
       } catch (error) {
-        console.error('Error pre-fetching awarded tenders:', error);
+        console.error('Error pre-fetching data:', error);
       }
     };
     
-    preFetchAwardedTenders();
+    preFetchData();
   }, []);
 
   return (
@@ -44,7 +45,6 @@ const Index = () => {
         </div>
       </footer>
       
-      {/* Add ChatBot component */}
       <ChatBot />
     </div>
   );

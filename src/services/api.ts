@@ -5,7 +5,8 @@
 export { 
   simulateDelay, 
   formatApiUrl,
-  validateApiKey 
+  validateApiKey,
+  getCategoryName // Added this export that was missing
 } from './apiUtils';
 
 // API Documentation
@@ -25,3 +26,9 @@ export {
   fetchLogistics,
   fetchForecasts
 } from './supplyChainAPI';
+
+// Search API functionality
+export { fetchData } from './searchAPI';
+
+// Re-export for pre-fetching on index page
+export { fetchAwardedTenders } from './awardedTendersAPI';

@@ -9,7 +9,7 @@ import SearchBar from './search/SearchBar';
 import SearchResults from './search/SearchResults';
 
 const SearchSection: React.FC = () => {
-  // Set default activeTab to 'solutions' to show solutions right away
+  // Only include agricultural solutions and issues, remove tenders
   const [activeTab, setActiveTab] = useState<Category | 'all'>('solutions');
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
@@ -36,7 +36,11 @@ const SearchSection: React.FC = () => {
     
     try {
       const data = await fetchData(filters);
-      setResults(data);
+      // Filter out tender-related items
+      const filteredData = data.filter(
+        item => item.category !== 'tender' && item.category !== 'awarded-tender'
+      );
+      setResults(filteredData);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -63,14 +67,18 @@ const SearchSection: React.FC = () => {
         <div className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-2">
           Search & Discover
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Find What You Need</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Find Agricultural Information</h2>
         <p className="text-lg text-foreground/80 max-w-3xl mx-auto">
-          Search across agricultural issues, tender opportunities, innovative solutions, and awarded tenders throughout Kenya.
+          Search across agricultural issues and innovative solutions throughout Kenya.
         </p>
       </div>
       
       <Card className="p-6 rounded-xl shadow-sm bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-border">
-        <CategoryTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        <CategoryTabs 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          hideTenderTabs={true} // Add this prop to hide tender-related tabs
+        />
         
         <SearchBar
           query={query}
