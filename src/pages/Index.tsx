@@ -20,9 +20,9 @@ const Index = () => {
     // Pre-fetch data when the page loads
     const preFetchData = async () => {
       try {
-        // We'll pre-fetch some data but not the tender-related data
+        // Pre-fetch markets data
         const module = await import('@/services/api');
-        await module.fetchMarkets(); // Pre-fetch markets data instead
+        await module.fetchMarkets();
       } catch (error) {
         console.error('Error pre-fetching data:', error);
       }
@@ -36,7 +36,7 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
-        <SearchSection />
+        <SearchSection id="agricultural-issues" />
         <Contact />
       </main>
       <footer className="bg-muted/30 py-8 px-6 text-center text-sm text-muted-foreground">

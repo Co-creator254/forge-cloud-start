@@ -8,7 +8,11 @@ import CategoryTabs from './search/CategoryTabs';
 import SearchBar from './search/SearchBar';
 import SearchResults from './search/SearchResults';
 
-const SearchSection: React.FC = () => {
+interface SearchSectionProps {
+  id?: string;
+}
+
+const SearchSection: React.FC<SearchSectionProps> = ({ id }) => {
   // Only include agricultural solutions and issues, remove tenders
   const [activeTab, setActiveTab] = useState<Category | 'all'>('solutions');
   const [query, setQuery] = useState('');
@@ -62,7 +66,7 @@ const SearchSection: React.FC = () => {
   };
 
   return (
-    <section id="search-section" className="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+    <section id={id || "search-section"} className="py-20 px-6 md:px-12 max-w-7xl mx-auto">
       <div className="text-center mb-12 animate-fade-up">
         <div className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-2">
           Search & Discover
@@ -77,7 +81,7 @@ const SearchSection: React.FC = () => {
         <CategoryTabs 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
-          hideTenderTabs={true} // Add this prop to hide tender-related tabs
+          hideTenderTabs={true}
         />
         
         <SearchBar

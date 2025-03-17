@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -9,6 +9,7 @@ const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +23,26 @@ const Header: React.FC = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
+
+  const handleNavigation = (path: string) => {
+    if (path.startsWith('/#')) {
+      // Handle hash navigation
+      if (location.pathname === '/') {
+        // Already on home page, just scroll to the element
+        const id = path.substring(2); // Remove '/#'
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        // Navigate to home page with hash
+        navigate(path);
+      }
+    } else {
+      // Regular navigation
+      navigate(path);
+    }
+  };
 
   return (
     <header 
@@ -43,12 +64,11 @@ const Header: React.FC = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <NavLink to="/" active={location.pathname === "/"}>Home</NavLink>
-          <NavLink to="/#agricultural-issues" active={location.hash === "#agricultural-issues"}>Agricultural Issues</NavLink>
-          <NavLink to="/#tender-opportunities" active={location.hash === "#tender-opportunities"}>Tender Opportunities</NavLink>
-          <NavLink to="/supply-chain-api" active={location.pathname === "/supply-chain-api"}>API</NavLink>
-          <NavLink to="/commodity-trading" active={location.pathname === "/commodity-trading"}>Trading</NavLink>
-          <NavLink to="/#contact" active={location.hash === "#contact"}>Contact</NavLink>
+          <NavLink to="/" active={location.pathname === "/"} onClick={() => handleNavigation('/')}>Home</NavLink>
+          <NavLink to="/#agricultural-issues" active={location.hash === "#agricultural-issues"} onClick={() => handleNavigation('/#agricultural-issues')}>Agricultural Issues</NavLink>
+          <NavLink to="/supply-chain-api" active={location.pathname === "/supply-chain-api"} onClick={() => handleNavigation('/supply-chain-api')}>API</NavLink>
+          <NavLink to="/commodity-trading" active={location.pathname === "/commodity-trading"} onClick={() => handleNavigation('/commodity-trading')}>Trading</NavLink>
+          <NavLink to="/#contact" active={location.hash === "#contact"} onClick={() => handleNavigation('/#contact')}>Contact</NavLink>
           <Button 
             variant="outline" 
             size="icon" 
@@ -72,12 +92,11 @@ const Header: React.FC = () => {
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
         <nav className="md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg py-4 px-6 space-y-4 animate-fade-in">
-          <MobileNavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</MobileNavLink>
-          <MobileNavLink to="/#agricultural-issues" onClick={() => setIsMobileMenuOpen(false)}>Agricultural Issues</MobileNavLink>
-          <MobileNavLink to="/#tender-opportunities" onClick={() => setIsMobileMenuOpen(false)}>Tender Opportunities</MobileNavLink>
-          <MobileNavLink to="/supply-chain-api" onClick={() => setIsMobileMenuOpen(false)}>API</MobileNavLink>
-          <MobileNavLink to="/commodity-trading" onClick={() => setIsMobileMenuOpen(false)}>Trading</MobileNavLink>
-          <MobileNavLink to="/#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</MobileNavLink>
+          <MobileNavLink to="/" onClick={() => handleNavigation('/')}>Home</MobileNavLink>
+          <MobileNavLink to="/#agricultural-issues" onClick={() => handleNavigation('/#agricultural-issues')}>Agricultural Issues</MobileNavLink>
+          <MobileNavLink to="/supply-chain-api" onClick={() => handleNavigation('/supply-chain-api')}>API</MobileNavLink>
+          <MobileNavLink to="/commodity-trading" onClick={() => handleNavigation('/commodity-trading')}>Trading</MobileNavLink>
+          <MobileNavLink to="/#contact" onClick={() => handleNavigation('/#contact')}>Contact</MobileNavLink>
           <div className="pt-2">
             <Button 
               className="w-full justify-start" 
@@ -101,11 +120,12 @@ interface NavLinkProps {
   to: string;
   active?: boolean;
   children: React.ReactNode;
+  onClick?: () => void;
 }
 
-const NavLink: React.FC<NavLinkProps> = ({ to, active = false, children }) => (
-  <Link
-    to={to}
+const NavLink: React.FC<NavLinkProps> = ({ to, active = false, children, onClick }) => (
+  <button
+    onClick={onClick}
     className={cn(
       "text-base font-medium hover:text-primary relative py-1",
       active 
@@ -114,7 +134,7 @@ const NavLink: React.FC<NavLinkProps> = ({ to, active = false, children }) => (
     )}
   >
     {children}
-  </Link>
+  </button>
 );
 
 interface MobileNavLinkProps {
@@ -124,13 +144,12 @@ interface MobileNavLinkProps {
 }
 
 const MobileNavLink: React.FC<MobileNavLinkProps> = ({ to, onClick, children }) => (
-  <Link
-    to={to}
+  <button
     onClick={onClick}
-    className="block text-lg font-medium text-foreground/80 hover:text-primary"
+    className="block text-lg font-medium text-foreground/80 hover:text-primary w-full text-left"
   >
     {children}
-  </Link>
+  </button>
 );
 
 export default Header;

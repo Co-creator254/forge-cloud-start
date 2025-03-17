@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import SupplyChainAPI from "./pages/SupplyChainAPI";
 import CommodityTrading from "./pages/CommodityTrading";
 import NotFound from "./pages/NotFound";
+import TenderAPI from "./pages/TenderAPI";
+import JobsAPI from "./pages/JobsAPI";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +23,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
           <Route path="/commodity-trading" element={<CommodityTrading />} />
+          <Route path="/tender-api" element={<TenderAPI />} />
+          <Route path="/jobs-api" element={<JobsAPI />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

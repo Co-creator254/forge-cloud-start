@@ -6,7 +6,7 @@ export {
   simulateDelay, 
   formatApiUrl,
   validateApiKey,
-  getCategoryName // Added this export that was missing
+  getCategoryName
 } from './apiUtils';
 
 // API Documentation
@@ -28,7 +28,14 @@ export {
 } from './supplyChainAPI';
 
 // Search API functionality
-export { fetchData } from './searchAPI';
+export { fetchData, fetchItemById } from './searchAPI';
 
-// Re-export for pre-fetching on index page
+// Re-export for Tender API
 export { fetchAwardedTenders } from './awardedTendersAPI';
+
+// Jobs API (to be implemented with real data in the future)
+export const fetchJobs = async (filters?: any) => {
+  // This is a placeholder that would be replaced with a real API implementation
+  await simulateDelay(800);
+  return [];
+};
