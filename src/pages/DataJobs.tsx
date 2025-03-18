@@ -84,6 +84,30 @@ const DataJobs: React.FC = () => {
     );
   };
 
+  // Get latest price headlines from the data
+  const getLatestPriceHeadlines = (type: 'daily' | 'weekly' | 'monthly' | 'all' | 'test') => {
+    const result = results[type];
+    if (!result || !result.data) return null;
+    
+    let headlines: React.ReactNode[] = [];
+    
+    if (type === 'daily' && Array.isArray(result.data)) {
+      headlines = result.data.slice(0, 3).map((item, index) => (
+        <div key={index} className="flex justify-between items-center py-2 border-b">
+          <span className="font-medium">{item.commodity}</span>
+          <span className="text-right">KES {item.price} per {item.unit}</span>
+        </div>
+      ));
+    }
+    
+    return headlines.length > 0 ? (
+      <div className="mt-4 border rounded-md p-3 bg-muted/30">
+        <h4 className="font-medium mb-2">Latest Prices:</h4>
+        {headlines}
+      </div>
+    ) : null;
+  };
+
   return (
     <div className="container py-10">
       <div className="mb-6">
@@ -105,6 +129,7 @@ const DataJobs: React.FC = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Run this job to fetch the most recent commodity prices from AMIS Kenya markets.
             </p>
+            {getLatestPriceHeadlines('daily')}
           </CardContent>
           <CardFooter>
             <Button 
@@ -230,7 +255,7 @@ const DataJobs: React.FC = () => {
               {results.daily ? (
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <Badge variant={results.daily.success !== false ? "success" : "destructive"}>
+                    <Badge variant={results.daily.success !== false ? "default" : "destructive"}>
                       {results.daily.success !== false ? "Success" : "Failed"}
                     </Badge>
                     <span className="text-sm text-muted-foreground">
@@ -248,7 +273,7 @@ const DataJobs: React.FC = () => {
               {results.weekly ? (
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <Badge variant={results.weekly.success !== false ? "success" : "destructive"}>
+                    <Badge variant={results.weekly.success !== false ? "default" : "destructive"}>
                       {results.weekly.success !== false ? "Success" : "Failed"}
                     </Badge>
                     <span className="text-sm text-muted-foreground">
@@ -266,7 +291,7 @@ const DataJobs: React.FC = () => {
               {results.monthly ? (
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <Badge variant={results.monthly.success !== false ? "success" : "destructive"}>
+                    <Badge variant={results.monthly.success !== false ? "default" : "destructive"}>
                       {results.monthly.success !== false ? "Success" : "Failed"}
                     </Badge>
                     <span className="text-sm text-muted-foreground">
@@ -302,7 +327,7 @@ const DataJobs: React.FC = () => {
               {results.test ? (
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <Badge variant={results.test.success !== false ? "success" : "destructive"}>
+                    <Badge variant={results.test.success !== false ? "default" : "destructive"}>
                       {results.test.success !== false ? "Success" : "Failed"}
                     </Badge>
                     <span className="text-sm text-muted-foreground">

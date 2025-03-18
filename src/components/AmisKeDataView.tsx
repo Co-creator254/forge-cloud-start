@@ -20,7 +20,7 @@ import {
   Legend, 
   ResponsiveContainer 
 } from 'recharts';
-import { fetchAmisKePrices, fetchAmisKeMarkets, getAmisKePriceHistory } from '@/services/amisKeIntegration';
+import { fetchAmisKePrices, fetchAmisKeMarkets, getAmisKePriceHistory } from '@/services/api';
 
 interface AmisKePriceData {
   id: string;
@@ -50,6 +50,7 @@ const AmisKeDataView: React.FC = () => {
   const [selectedCommodity, setSelectedCommodity] = useState<string>('');
   const [priceHistory, setPriceHistory] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [currentPricesHeadline, setCurrentPricesHeadline] = useState<string>('');
 
   useEffect(() => {
     const loadData = async () => {
@@ -62,6 +63,13 @@ const AmisKeDataView: React.FC = () => {
         
         setPrices(pricesData);
         setMarkets(marketsData);
+        
+        // Generate headline for current prices
+        if (pricesData.length > 0) {
+          const randomIndex = Math.floor(Math.random() * pricesData.length);
+          const headline = `Today's ${pricesData[randomIndex].commodity} prices at ${pricesData[randomIndex].market}: KES ${pricesData[randomIndex].price} per ${pricesData[randomIndex].unit}`;
+          setCurrentPricesHeadline(headline);
+        }
         
         // Set default commodity selection
         if (pricesData.length > 0) {
@@ -108,6 +116,11 @@ const AmisKeDataView: React.FC = () => {
         <CardDescription>
           Agricultural commodity prices from amis.co.ke
         </CardDescription>
+        {currentPricesHeadline && (
+          <div className="mt-2 bg-muted p-2 rounded-md font-medium text-sm animate-pulse">
+            {currentPricesHeadline}
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         {loading ? (

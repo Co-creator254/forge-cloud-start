@@ -73,8 +73,8 @@ const KilimoStatsView: React.FC = () => {
 
   // Filter data based on selections
   const filteredData = stats.filter(stat => {
-    const matchesCategory = !selectedCategory || stat.category === selectedCategory;
-    const matchesCounty = !selectedCounty || stat.county === selectedCounty;
+    const matchesCategory = selectedCategory === 'all-categories' || stat.category === selectedCategory;
+    const matchesCounty = selectedCounty === 'all-counties' || stat.county === selectedCounty;
     const matchesYear = !selectedYear || stat.year.toString() === selectedYear;
     
     return matchesCategory && matchesCounty && matchesYear;
@@ -125,7 +125,8 @@ const KilimoStatsView: React.FC = () => {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    {/* Fixed: don't use empty string as value */}
+                    <SelectItem value="all-categories">All Categories</SelectItem>
                     {categories.map(category => (
                       <SelectItem key={category} value={category}>{category}</SelectItem>
                     ))}
@@ -140,7 +141,8 @@ const KilimoStatsView: React.FC = () => {
                     <SelectValue placeholder="Select county" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Counties</SelectItem>
+                    {/* Fixed: don't use empty string as value */}
+                    <SelectItem value="all-counties">All Counties</SelectItem>
                     {counties.map(county => (
                       <SelectItem key={county} value={county}>{county}</SelectItem>
                     ))}
