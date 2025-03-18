@@ -43,6 +43,16 @@ export {
   getAmisKePriceHistory
 } from './amisKeIntegration';
 
+// Cron Jobs for data automation
+export {
+  fetchDailyAmisPrices,
+  updateWeeklyKilimoStats,
+  archiveMonthlyHistoricalData,
+  runAllCronJobs,
+  getArchivedData,
+  testDataExtraction
+} from './cronJobs';
+
 // Jobs API (to be implemented with real data in the future)
 export const fetchJobs = async (filters?: any) => {
   // This is a placeholder that would be replaced with a real API implementation

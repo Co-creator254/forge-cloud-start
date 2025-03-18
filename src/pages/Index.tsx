@@ -1,5 +1,6 @@
 
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import SearchSection from '@/components/SearchSection';
@@ -7,6 +8,8 @@ import Contact from '@/components/Contact';
 import ChatBot from '@/components/ChatBot';
 import KilimoStatsView from '@/components/KilimoStatsView';
 import AmisKeDataView from '@/components/AmisKeDataView';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 const Index = () => {
   useEffect(() => {
@@ -48,9 +51,17 @@ const Index = () => {
                 Data Integrations
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Agricultural Data Insights</h2>
-              <p className="text-lg text-foreground/80 max-w-3xl mx-auto">
+              <p className="text-lg text-foreground/80 max-w-3xl mx-auto mb-6">
                 Explore valuable agricultural data from Kenya's most reliable sources
               </p>
+              <div className="flex justify-center mb-8">
+                <Link to="/data-jobs">
+                  <Button variant="outline" className="group">
+                    Manage Data Jobs
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 gap-10">
