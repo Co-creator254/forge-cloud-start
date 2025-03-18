@@ -22,64 +22,138 @@ interface AmisKeMarket {
   };
 }
 
+// All 47 Kenyan counties
+const kenyaCounties = [
+  "Mombasa", "Kwale", "Kilifi", "Tana River", "Lamu", "Taita-Taveta", "Garissa", 
+  "Wajir", "Mandera", "Marsabit", "Isiolo", "Meru", "Tharaka-Nithi", "Embu", 
+  "Kitui", "Machakos", "Makueni", "Nyandarua", "Nyeri", "Kirinyaga", "Murang'a", 
+  "Kiambu", "Turkana", "West Pokot", "Samburu", "Trans Nzoia", "Uasin Gishu", 
+  "Elgeyo-Marakwet", "Nandi", "Baringo", "Laikipia", "Nakuru", "Narok", "Kajiado", 
+  "Kericho", "Bomet", "Kakamega", "Vihiga", "Bungoma", "Busia", "Siaya", "Kisumu", 
+  "Homa Bay", "Migori", "Kisii", "Nyamira", "Nairobi"
+];
+
+// Common agricultural commodities in Kenya
+const commodities = [
+  "Maize", "Beans", "Rice", "Potatoes", "Tomatoes", "Onions", "Cabbage", 
+  "Kale (Sukuma Wiki)", "Green Grams", "Cassava", "Sweet Potatoes", "Bananas", 
+  "Avocados", "Mangoes", "Oranges", "Coffee", "Tea", "Sugar Cane", "Cotton", 
+  "Wheat", "Sorghum", "Millet", "Cowpeas", "Groundnuts", "Soybeans"
+];
+
+// Major markets across Kenya
+const markets = [
+  "Wakulima Market", "Kongowea Market", "Nakuru Main Market", "Kibuye Market", 
+  "Eldoret Main Market", "Garissa Livestock Market", "Karatina Market",
+  "Kisumu Fish Market", "Nyeri Open Air Market", "Kakamega Municipal Market",
+  "Machakos Central Market", "Meru Municipal Market", "Kitale Municipal Market",
+  "Wajir Livestock Market", "Embu Municipal Market", "Kericho Market",
+  "Bungoma Municipal Market", "Malindi Market", "Kitui Market", "Nyahururu Market"
+];
+
 /**
  * Fetch market prices from AMIS Kenya
  * Since direct API access might be limited, we would need to scrape and parse the data
- * from the website. For now, we're logging the fact that this would require
- * server-side scraping in a production environment.
+ * from the website. For now, we're generating more comprehensive data for all counties.
  */
 export const fetchAmisKePrices = async (): Promise<AmisKePriceData[]> => {
   try {
     console.log("AMIS Kenya requires web scraping as they don't provide a public API");
     console.log("In a production system, this would be implemented with a server-side scraper");
     
-    // For now, we'll continue with simulated data but with more realistic Kenyan counties
-    const kenyanCounties = [
-      "Nairobi", "Mombasa", "Nakuru", "Kisumu", "Eldoret", "Kiambu", "Machakos",
-      "Kajiado", "Nyeri", "Meru", "Kakamega", "Kisii", "Bungoma", "Embu", "Murang'a"
-    ];
-    
-    const commodities = ["Maize", "Beans", "Rice", "Potatoes", "Tomatoes", "Onions", "Cabbage"];
-    const markets = ["Wakulima Market", "Kongowea Market", "Nakuru Main Market", "Kibuye Market", "Eldoret Main Market"];
-    
-    // Generate more realistic data for multiple counties
+    // Generate realistic data for all 47 counties
     const prices: AmisKePriceData[] = [];
     
-    // Generate 30 price entries across different markets and commodities
-    for (let i = 0; i < 30; i++) {
-      const countyIndex = Math.floor(Math.random() * kenyanCounties.length);
-      const commodityIndex = Math.floor(Math.random() * commodities.length);
-      const marketIndex = Math.floor(Math.random() * markets.length);
-      
-      // More realistic base prices based on commodity
-      const basePriceMap: Record<string, number> = {
-        "Maize": 50,
-        "Beans": 120,
-        "Rice": 130,
-        "Potatoes": 40,
-        "Tomatoes": 80,
-        "Onions": 100,
-        "Cabbage": 60
-      };
-      
-      const commodity = commodities[commodityIndex];
-      const basePrice = basePriceMap[commodity] || 50;
-      
-      // Add some variation to prices
-      const priceVariation = 0.8 + (Math.random() * 0.4); // 80% to 120% of base price
-      
-      prices.push({
-        id: `price-${i+1}`,
-        commodity,
-        market: markets[marketIndex],
-        price: Math.round(basePrice * priceVariation),
-        unit: "Kg",
-        date: new Date().toISOString().split('T')[0],
-        county: kenyanCounties[countyIndex]
-      });
-    }
+    // More realistic base prices based on commodity
+    const basePriceMap: Record<string, number> = {
+      "Maize": 50,
+      "Beans": 120,
+      "Rice": 130,
+      "Potatoes": 40,
+      "Tomatoes": 80,
+      "Onions": 100,
+      "Cabbage": 60,
+      "Kale (Sukuma Wiki)": 30,
+      "Green Grams": 150,
+      "Cassava": 35,
+      "Sweet Potatoes": 45,
+      "Bananas": 20,
+      "Avocados": 25,
+      "Mangoes": 15,
+      "Oranges": 12,
+      "Coffee": 500,
+      "Tea": 300,
+      "Sugar Cane": 20,
+      "Cotton": 80,
+      "Wheat": 65,
+      "Sorghum": 55,
+      "Millet": 70,
+      "Cowpeas": 90,
+      "Groundnuts": 150,
+      "Soybeans": 120
+    };
     
-    console.log("Generated AMIS Kenya prices (simulated):", prices);
+    const measureUnitMap: Record<string, string> = {
+      "Maize": "Kg",
+      "Beans": "Kg",
+      "Rice": "Kg",
+      "Potatoes": "Kg",
+      "Tomatoes": "Kg",
+      "Onions": "Kg",
+      "Cabbage": "Head",
+      "Kale (Sukuma Wiki)": "Bundle",
+      "Bananas": "Bunch",
+      "Avocados": "Piece",
+      "Mangoes": "Piece",
+      "Oranges": "Piece",
+      "Coffee": "Kg",
+      "Tea": "Kg"
+    };
+    
+    // Generate at least one entry for each county and multiple commodities
+    kenyaCounties.forEach(county => {
+      // Select 5-10 random commodities for each county
+      const countyItemCount = 5 + Math.floor(Math.random() * 6);
+      const countyMarket = markets[Math.floor(Math.random() * markets.length)];
+      
+      const shuffledCommodities = [...commodities].sort(() => 0.5 - Math.random());
+      const selectedCommodities = shuffledCommodities.slice(0, countyItemCount);
+      
+      selectedCommodities.forEach(commodity => {
+        const basePrice = basePriceMap[commodity] || 50;
+        // Add regional price variations (coastal areas might have different prices than inland)
+        let regionalFactor = 1.0;
+        
+        if (["Mombasa", "Kwale", "Kilifi", "Tana River", "Lamu"].includes(county)) {
+          // Coastal regions
+          regionalFactor = 1.1; // 10% higher prices
+        } else if (["Nairobi", "Kiambu", "Machakos", "Kajiado"].includes(county)) {
+          // Urban regions
+          regionalFactor = 1.2; // 20% higher prices
+        } else if (["Turkana", "Marsabit", "Wajir", "Mandera"].includes(county)) {
+          // Northern arid regions
+          regionalFactor = 1.3; // 30% higher prices due to scarcity
+        }
+        
+        // Add some random variation to prices
+        const priceVariation = 0.8 + (Math.random() * 0.4); // 80% to 120% of base price
+        const finalPrice = Math.round(basePrice * regionalFactor * priceVariation);
+        
+        const unit = measureUnitMap[commodity] || "Kg";
+        
+        prices.push({
+          id: `${county}-${commodity}`.toLowerCase().replace(/\s+/g, '-'),
+          commodity,
+          market: countyMarket,
+          price: finalPrice,
+          unit,
+          date: new Date().toISOString().split('T')[0],
+          county
+        });
+      });
+    });
+    
+    console.log(`Generated AMIS Kenya prices for all 47 counties with ${prices.length} entries`);
     return prices;
   } catch (error) {
     console.error("Error fetching AMIS Kenya prices:", error);

@@ -33,7 +33,7 @@ export { fetchData, fetchItemById } from './searchAPI';
 // Re-export for Tender API
 export { fetchAwardedTenders } from './awardedTendersAPI';
 
-// Kilimo Stats API
+// Kilimo Stats API - using the updated real data API
 export { fetchKilimoStats } from './kilimoAPI';
 
 // AmisKe Data API
@@ -50,7 +50,8 @@ export {
   archiveMonthlyHistoricalData,
   runAllCronJobs,
   getArchivedData,
-  testDataExtraction
+  testDataExtraction,
+  getAllCommodityPrices
 } from './cronJobs';
 
 // Jobs API (to be implemented with real data in the future)

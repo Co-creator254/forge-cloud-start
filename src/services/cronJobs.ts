@@ -1,7 +1,6 @@
-
 import { simulateDelay } from './apiUtils';
 import { fetchAmisKePrices } from './amisKeIntegration';
-import { fetchKilimoStats } from './kilimoIntegration';
+import { fetchKilimoStats } from './kilimoAPI';
 
 // Simulated database for storing data
 let archiveDatabase = {
@@ -11,15 +10,18 @@ let archiveDatabase = {
     amisPrices: '',
     kilimoStats: '',
     archive: ''
-  }
+  },
+  countyPriceSnapshots: {} as Record<string, any[]>,
+  commodityPricesByCounty: {} as Record<string, Record<string, any[]>>,
+  headlines: [] as string[]
 };
 
 /**
- * Daily job to fetch latest AMIS Kenya prices
+ * Daily job to fetch latest AMIS Kenya prices for all 47 counties
  */
 export const fetchDailyAmisPrices = async () => {
   try {
-    console.log('Running daily job to fetch AMIS Kenya prices...');
+    console.log('Running daily job to fetch AMIS Kenya prices for all 47 counties...');
     const startTime = Date.now();
     
     // Fetch latest prices from AMIS Kenya
@@ -32,25 +34,67 @@ export const fetchDailyAmisPrices = async () => {
       processingTime: Date.now() - startTime
     }));
     
+    // Organize prices by county and commodity for easy access
+    const countyPrices = {} as Record<string, any[]>;
+    const commodityPrices = {} as Record<string, Record<string, any[]>>;
+    
+    prices.forEach(price => {
+      // Group by county
+      if (!countyPrices[price.county]) {
+        countyPrices[price.county] = [];
+      }
+      countyPrices[price.county].push(price);
+      
+      // Group by commodity and then by county
+      if (!commodityPrices[price.commodity]) {
+        commodityPrices[price.commodity] = {};
+      }
+      if (!commodityPrices[price.commodity][price.county]) {
+        commodityPrices[price.commodity][price.county] = [];
+      }
+      commodityPrices[price.commodity][price.county].push(price);
+    });
+    
     // Store in our simulated database
-    // In a real implementation, this would be saved to a persistent database
     archiveDatabase.amisPriceHistory.push(...processedPrices);
+    archiveDatabase.countyPriceSnapshots = countyPrices;
+    archiveDatabase.commodityPricesByCounty = commodityPrices;
     archiveDatabase.lastUpdates.amisPrices = new Date().toISOString();
     
-    // Generate a headline from the data
-    const randomIndex = Math.floor(Math.random() * prices.length);
-    const headline = prices.length > 0 
-      ? `Today's ${prices[randomIndex].commodity} prices at ${prices[randomIndex].market} (${prices[randomIndex].county}): KES ${prices[randomIndex].price} per ${prices[randomIndex].unit}`
-      : 'No price data available today';
+    // Generate multiple headlines from the data for different counties
+    const headlines: string[] = [];
     
-    console.log(`AMIS Kenya data fetch completed. Processed ${prices.length} price records.`);
-    console.log(`HEADLINE: ${headline}`);
+    // Get 5 random counties for headlines
+    const counties = Object.keys(countyPrices);
+    const shuffledCounties = [...counties].sort(() => 0.5 - Math.random());
+    const selectedCounties = shuffledCounties.slice(0, Math.min(5, shuffledCounties.length));
+    
+    selectedCounties.forEach(county => {
+      const countyData = countyPrices[county];
+      if (countyData && countyData.length > 0) {
+        const randomIndex = Math.floor(Math.random() * countyData.length);
+        const priceData = countyData[randomIndex];
+        headlines.push(`${county}: ${priceData.commodity} selling at KES ${priceData.price} per ${priceData.unit} at ${priceData.market}`);
+      }
+    });
+    
+    // Generate overall stat headline
+    const totalCounties = Object.keys(countyPrices).length;
+    const totalCommodities = Object.keys(commodityPrices).length;
+    headlines.push(`Today's update: Prices for ${totalCommodities} commodities across ${totalCounties} counties of Kenya`);
+    
+    archiveDatabase.headlines = headlines;
+    
+    console.log(`AMIS Kenya data fetch completed. Processed ${prices.length} price records across ${totalCounties} counties.`);
+    console.log(`Generated ${headlines.length} headlines`);
     
     return {
       success: true,
       recordsProcessed: prices.length,
+      countiesCovered: totalCounties,
+      commoditiesCovered: totalCommodities,
       executionTime: Date.now() - startTime,
-      headline,
+      headlines,
       lastUpdate: archiveDatabase.lastUpdates.amisPrices
     };
   } catch (error) {
@@ -178,6 +222,18 @@ export const getArchivedData = () => {
     amisPriceHistory: archiveDatabase.amisPriceHistory,
     kilimoStatsHistory: archiveDatabase.kilimoStatsHistory,
     lastUpdates: archiveDatabase.lastUpdates
+  };
+};
+
+/**
+ * Get all current commodity prices by county
+ */
+export const getAllCommodityPrices = () => {
+  return {
+    countyPrices: archiveDatabase.countyPriceSnapshots,
+    commodityPrices: archiveDatabase.commodityPricesByCounty,
+    headlines: archiveDatabase.headlines,
+    lastUpdate: archiveDatabase.lastUpdates.amisPrices
   };
 };
 
