@@ -5,6 +5,8 @@ import Hero from '@/components/Hero';
 import SearchSection from '@/components/SearchSection';
 import Contact from '@/components/Contact';
 import ChatBot from '@/components/ChatBot';
+import KilimoStatsView from '@/components/KilimoStatsView';
+import AmisKeDataView from '@/components/AmisKeDataView';
 
 const Index = () => {
   useEffect(() => {
@@ -37,6 +39,27 @@ const Index = () => {
       <main>
         <Hero />
         <SearchSection id="agricultural-issues" />
+        
+        {/* Data Integration Section */}
+        <section className="py-20 px-6 bg-muted/30">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-block px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-2">
+                Data Integrations
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Agricultural Data Insights</h2>
+              <p className="text-lg text-foreground/80 max-w-3xl mx-auto">
+                Explore valuable agricultural data from Kenya's most reliable sources
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-10">
+              <KilimoStatsView />
+              <AmisKeDataView />
+            </div>
+          </div>
+        </section>
+        
         <Contact />
       </main>
       <footer className="bg-muted/30 py-8 px-6 text-center text-sm text-muted-foreground">
