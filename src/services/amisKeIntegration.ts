@@ -24,44 +24,63 @@ interface AmisKeMarket {
 
 /**
  * Fetch market prices from AMIS Kenya
- * Since direct API access might be limited, we'll scrape and parse the data
+ * Since direct API access might be limited, we would need to scrape and parse the data
+ * from the website. For now, we're logging the fact that this would require
+ * server-side scraping in a production environment.
  */
 export const fetchAmisKePrices = async (): Promise<AmisKePriceData[]> => {
   try {
-    // In a real implementation, you would parse the HTML from amis.co.ke
-    // For now, we'll simulate the data
-    await simulateDelay(1000);
+    console.log("AMIS Kenya requires web scraping as they don't provide a public API");
+    console.log("In a production system, this would be implemented with a server-side scraper");
     
-    // This is simulated data based on AMIS Kenya structure
-    return [
-      {
-        id: "1",
-        commodity: "Maize",
-        market: "Wakulima Market",
-        price: 50,
-        unit: "Kg",
-        date: new Date().toISOString().split('T')[0],
-        county: "Nairobi",
-      },
-      {
-        id: "2",
-        commodity: "Beans",
-        market: "Wakulima Market",
-        price: 120,
-        unit: "Kg",
-        date: new Date().toISOString().split('T')[0],
-        county: "Nairobi",
-      },
-      {
-        id: "3",
-        commodity: "Potatoes",
-        market: "Nakuru Market",
-        price: 35,
-        unit: "Kg",
-        date: new Date().toISOString().split('T')[0],
-        county: "Nakuru",
-      },
+    // For now, we'll continue with simulated data but with more realistic Kenyan counties
+    const kenyanCounties = [
+      "Nairobi", "Mombasa", "Nakuru", "Kisumu", "Eldoret", "Kiambu", "Machakos",
+      "Kajiado", "Nyeri", "Meru", "Kakamega", "Kisii", "Bungoma", "Embu", "Murang'a"
     ];
+    
+    const commodities = ["Maize", "Beans", "Rice", "Potatoes", "Tomatoes", "Onions", "Cabbage"];
+    const markets = ["Wakulima Market", "Kongowea Market", "Nakuru Main Market", "Kibuye Market", "Eldoret Main Market"];
+    
+    // Generate more realistic data for multiple counties
+    const prices: AmisKePriceData[] = [];
+    
+    // Generate 30 price entries across different markets and commodities
+    for (let i = 0; i < 30; i++) {
+      const countyIndex = Math.floor(Math.random() * kenyanCounties.length);
+      const commodityIndex = Math.floor(Math.random() * commodities.length);
+      const marketIndex = Math.floor(Math.random() * markets.length);
+      
+      // More realistic base prices based on commodity
+      const basePriceMap: Record<string, number> = {
+        "Maize": 50,
+        "Beans": 120,
+        "Rice": 130,
+        "Potatoes": 40,
+        "Tomatoes": 80,
+        "Onions": 100,
+        "Cabbage": 60
+      };
+      
+      const commodity = commodities[commodityIndex];
+      const basePrice = basePriceMap[commodity] || 50;
+      
+      // Add some variation to prices
+      const priceVariation = 0.8 + (Math.random() * 0.4); // 80% to 120% of base price
+      
+      prices.push({
+        id: `price-${i+1}`,
+        commodity,
+        market: markets[marketIndex],
+        price: Math.round(basePrice * priceVariation),
+        unit: "Kg",
+        date: new Date().toISOString().split('T')[0],
+        county: kenyanCounties[countyIndex]
+      });
+    }
+    
+    console.log("Generated AMIS Kenya prices (simulated):", prices);
+    return prices;
   } catch (error) {
     console.error("Error fetching AMIS Kenya prices:", error);
     return [];
@@ -73,41 +92,70 @@ export const fetchAmisKePrices = async (): Promise<AmisKePriceData[]> => {
  */
 export const fetchAmisKeMarkets = async (): Promise<AmisKeMarket[]> => {
   try {
-    // In a real implementation, you would extract this from the AMIS Kenya website
-    await simulateDelay(800);
+    console.log("AMIS Kenya markets would require web scraping in a production environment");
     
-    return [
+    // More comprehensive list of Kenyan markets
+    const markets = [
       {
         id: "1",
         name: "Wakulima Market",
         county: "Nairobi",
         type: "Urban",
-        coordinates: {
-          lat: -1.2864,
-          lng: 36.8172,
-        },
+        coordinates: { lat: -1.2864, lng: 36.8172 }
       },
       {
         id: "2",
-        name: "Nakuru Market",
-        county: "Nakuru",
-        type: "Urban",
-        coordinates: {
-          lat: -0.3031,
-          lng: 36.0800,
-        },
+        name: "Kongowea Market",
+        county: "Mombasa",
+        type: "Coastal",
+        coordinates: { lat: -4.0435, lng: 39.6682 }
       },
       {
         id: "3",
-        name: "Mombasa Market",
-        county: "Mombasa",
-        type: "Coastal",
-        coordinates: {
-          lat: -4.0435,
-          lng: 39.6682,
-        },
+        name: "Nakuru Main Market",
+        county: "Nakuru",
+        type: "Urban",
+        coordinates: { lat: -0.3031, lng: 36.0800 }
       },
+      {
+        id: "4",
+        name: "Kibuye Market",
+        county: "Kisumu",
+        type: "Urban",
+        coordinates: { lat: -0.1022, lng: 34.7617 }
+      },
+      {
+        id: "5",
+        name: "Eldoret Main Market",
+        county: "Uasin Gishu",
+        type: "Urban",
+        coordinates: { lat: 0.5143, lng: 35.2698 }
+      },
+      {
+        id: "6",
+        name: "Karatina Market",
+        county: "Nyeri",
+        type: "Rural",
+        coordinates: { lat: -0.4756, lng: 37.1229 }
+      },
+      {
+        id: "7",
+        name: "Garissa Livestock Market",
+        county: "Garissa",
+        type: "Livestock",
+        coordinates: { lat: -0.4569, lng: 39.6404 }
+      },
+      {
+        id: "8",
+        name: "Kitale Municipal Market",
+        county: "Trans Nzoia",
+        type: "Urban",
+        coordinates: { lat: 1.0157, lng: 35.0023 }
+      }
     ];
+    
+    console.log("Generated AMIS Kenya markets (simulated):", markets);
+    return markets;
   } catch (error) {
     console.error("Error fetching AMIS Kenya markets:", error);
     return [];

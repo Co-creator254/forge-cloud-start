@@ -1,214 +1,229 @@
 
 import { simulateDelay } from './apiUtils';
-import { fetchAmisKePrices, fetchAmisKeMarkets } from './amisKeIntegration';
+import { fetchAmisKePrices } from './amisKeIntegration';
 import { fetchKilimoStats } from './kilimoIntegration';
 
-// Interfaces for archived data
-interface ArchivedData {
-  timestamp: string;
-  source: 'amisKe' | 'kilimo';
-  data: any[];
-}
-
-// In-memory storage for archived data (in a real app, this would use a database)
-const dataArchive: ArchivedData[] = [];
+// Simulated database for storing data
+let archiveDatabase = {
+  amisPriceHistory: [] as any[],
+  kilimoStatsHistory: [] as any[],
+  lastUpdates: {
+    amisPrices: '',
+    kilimoStats: '',
+    archive: ''
+  }
+};
 
 /**
- * Daily cron job to fetch the latest AMIS Kenya prices
- * In a real implementation, this would be called by a scheduler
+ * Daily job to fetch latest AMIS Kenya prices
  */
 export const fetchDailyAmisPrices = async () => {
-  console.log('Running daily AMIS Kenya price update...');
   try {
-    // Fetch the latest prices
-    const latestPrices = await fetchAmisKePrices();
-    console.log(`Successfully fetched ${latestPrices.length} price records`);
+    console.log('Running daily job to fetch AMIS Kenya prices...');
+    const startTime = Date.now();
     
-    // In a real implementation, this would save to a database
-    // For now, we'll just return the data
+    // Fetch latest prices from AMIS Kenya
+    const prices = await fetchAmisKePrices();
+    
+    // Process and store the prices
+    const processedPrices = prices.map(price => ({
+      ...price,
+      fetchDate: new Date().toISOString(),
+      processingTime: Date.now() - startTime
+    }));
+    
+    // Store in our simulated database
+    // In a real implementation, this would be saved to a persistent database
+    archiveDatabase.amisPriceHistory.push(...processedPrices);
+    archiveDatabase.lastUpdates.amisPrices = new Date().toISOString();
+    
+    // Generate a headline from the data
+    const randomIndex = Math.floor(Math.random() * prices.length);
+    const headline = prices.length > 0 
+      ? `Today's ${prices[randomIndex].commodity} prices at ${prices[randomIndex].market} (${prices[randomIndex].county}): KES ${prices[randomIndex].price} per ${prices[randomIndex].unit}`
+      : 'No price data available today';
+    
+    console.log(`AMIS Kenya data fetch completed. Processed ${prices.length} price records.`);
+    console.log(`HEADLINE: ${headline}`);
+    
     return {
       success: true,
-      timestamp: new Date().toISOString(),
-      data: latestPrices,
-      message: `Successfully updated ${latestPrices.length} price records`
+      recordsProcessed: prices.length,
+      executionTime: Date.now() - startTime,
+      headline,
+      lastUpdate: archiveDatabase.lastUpdates.amisPrices
     };
   } catch (error) {
-    console.error('Error in daily AMIS Kenya price update:', error);
+    console.error('Error in daily AMIS Kenya job:', error);
     return {
       success: false,
-      timestamp: new Date().toISOString(),
-      message: `Failed to update AMIS Kenya prices: ${error}`
+      error: error instanceof Error ? error.message : 'Unknown error',
+      lastUpdate: archiveDatabase.lastUpdates.amisPrices
     };
   }
 };
 
 /**
- * Weekly cron job to update Kilimo statistics
- * In a real implementation, this would be called by a scheduler
+ * Weekly job to update Kilimo statistics
  */
 export const updateWeeklyKilimoStats = async () => {
-  console.log('Running weekly Kilimo statistics update...');
   try {
-    // Fetch the latest statistics
-    const latestStats = await fetchKilimoStats();
-    console.log(`Successfully fetched ${latestStats.length} statistics records`);
+    console.log('Running weekly job to update Kilimo statistics...');
+    const startTime = Date.now();
     
-    // In a real implementation, this would save to a database
-    // For now, we'll just return the data
+    // Fetch latest statistics from Kilimo
+    const stats = await fetchKilimoStats();
+    
+    // Process and store the statistics
+    const processedStats = stats.map(stat => ({
+      ...stat,
+      fetchDate: new Date().toISOString(),
+      processingTime: Date.now() - startTime
+    }));
+    
+    // Store in our simulated database
+    archiveDatabase.kilimoStatsHistory.push(...processedStats);
+    archiveDatabase.lastUpdates.kilimoStats = new Date().toISOString();
+    
+    // Generate a headline from the data
+    const categories = [...new Set(stats.map(s => s.category).filter(Boolean))];
+    const headline = categories.length > 0 
+      ? `Updated ${categories.length} agricultural categories covering ${[...new Set(stats.map(s => s.county))].length} counties`
+      : 'No new Kilimo statistics available this week';
+    
+    console.log(`Kilimo stats update completed. Processed ${stats.length} statistical records.`);
+    console.log(`HEADLINE: ${headline}`);
+    
     return {
       success: true,
-      timestamp: new Date().toISOString(),
-      data: latestStats,
-      message: `Successfully updated ${latestStats.length} statistics records`
+      recordsProcessed: stats.length,
+      categoriesUpdated: categories.length,
+      executionTime: Date.now() - startTime,
+      headline,
+      lastUpdate: archiveDatabase.lastUpdates.kilimoStats
     };
   } catch (error) {
-    console.error('Error in weekly Kilimo statistics update:', error);
+    console.error('Error in weekly Kilimo stats job:', error);
     return {
       success: false,
-      timestamp: new Date().toISOString(),
-      message: `Failed to update Kilimo statistics: ${error}`
+      error: error instanceof Error ? error.message : 'Unknown error',
+      lastUpdate: archiveDatabase.lastUpdates.kilimoStats
     };
   }
 };
 
 /**
- * Monthly cron job to archive historical data for trend analysis
- * In a real implementation, this would be called by a scheduler
+ * Monthly job to archive historical data for long-term trend analysis
  */
 export const archiveMonthlyHistoricalData = async () => {
-  console.log('Running monthly historical data archiving...');
   try {
-    // Fetch data from both sources
-    const [amisPrices, kilimoStats] = await Promise.all([
-      fetchAmisKePrices(),
-      fetchKilimoStats()
-    ]);
+    console.log('Running monthly archiving job for historical data...');
+    const startTime = Date.now();
     
-    // Archive the data (in a real implementation, this would use a database)
-    const amisArchive: ArchivedData = {
-      timestamp: new Date().toISOString(),
-      source: 'amisKe',
-      data: amisPrices
-    };
+    // In a real implementation, this would:
+    // 1. Aggregate daily/weekly data
+    // 2. Compress and optimize for long-term storage
+    // 3. Generate trend analysis
+    // 4. Store in a data warehouse or analytics database
     
-    const kilimoArchive: ArchivedData = {
-      timestamp: new Date().toISOString(),
-      source: 'kilimo',
-      data: kilimoStats
-    };
+    // Simulate the archiving process
+    await simulateDelay(2000);
     
-    dataArchive.push(amisArchive, kilimoArchive);
+    const amisRecords = archiveDatabase.amisPriceHistory.length;
+    const kilimoRecords = archiveDatabase.kilimoStatsHistory.length;
     
-    console.log('Successfully archived data from both sources');
+    // Update archive timestamp
+    archiveDatabase.lastUpdates.archive = new Date().toISOString();
+    
+    const headline = `Monthly archive complete: Processed ${amisRecords} AMIS Kenya records and ${kilimoRecords} Kilimo statistics for long-term trend analysis`;
+    console.log(headline);
+    
     return {
       success: true,
-      timestamp: new Date().toISOString(),
-      amisRecords: amisPrices.length,
-      kilimoRecords: kilimoStats.length,
-      message: `Successfully archived ${amisPrices.length} AMIS records and ${kilimoStats.length} Kilimo records`
+      amisRecordsArchived: amisRecords,
+      kilimoRecordsArchived: kilimoRecords,
+      executionTime: Date.now() - startTime,
+      headline,
+      lastUpdate: archiveDatabase.lastUpdates.archive
     };
   } catch (error) {
-    console.error('Error in monthly data archiving:', error);
+    console.error('Error in monthly archiving job:', error);
     return {
       success: false,
-      timestamp: new Date().toISOString(),
-      message: `Failed to archive historical data: ${error}`
+      error: error instanceof Error ? error.message : 'Unknown error',
+      lastUpdate: archiveDatabase.lastUpdates.archive
     };
   }
 };
 
 /**
- * Manual trigger to run all cron jobs immediately
- * This is useful for testing and development
+ * Run all cron jobs in sequence
  */
 export const runAllCronJobs = async () => {
-  console.log('Manually triggering all cron jobs...');
+  const results = {
+    amisJob: await fetchDailyAmisPrices(),
+    kilimoJob: await updateWeeklyKilimoStats(),
+    archiveJob: await archiveMonthlyHistoricalData()
+  };
   
-  const results = await Promise.all([
-    fetchDailyAmisPrices(),
-    updateWeeklyKilimoStats(),
-    archiveMonthlyHistoricalData()
-  ]);
-  
+  console.log('All cron jobs completed:', results);
+  return results;
+};
+
+/**
+ * Get archived data for analysis
+ */
+export const getArchivedData = () => {
   return {
-    dailyAmisPrices: results[0],
-    weeklyKilimoStats: results[1],
-    monthlyArchive: results[2],
-    timestamp: new Date().toISOString(),
+    amisPriceHistory: archiveDatabase.amisPriceHistory,
+    kilimoStatsHistory: archiveDatabase.kilimoStatsHistory,
+    lastUpdates: archiveDatabase.lastUpdates
   };
 };
 
 /**
- * Get the latest archived data
- * @param source The data source to retrieve archived data for
- * @param limit The maximum number of records to return
- */
-export const getArchivedData = (source?: 'amisKe' | 'kilimo', limit: number = 10): ArchivedData[] => {
-  if (source) {
-    return dataArchive
-      .filter(archive => archive.source === source)
-      .slice(-limit);
-  }
-  
-  return dataArchive.slice(-limit);
-};
-
-/**
- * Test function to simulate extracting real data from APIs
- * This is a utility function to demonstrate data extraction capabilities
+ * Test data extraction from both services
  */
 export const testDataExtraction = async () => {
-  console.log('Testing data extraction from APIs...');
+  console.log('Testing data extraction from Kilimo API and AMIS Kenya...');
   
   try {
-    // Test AMIS Kenya data extraction
-    console.log('Testing AMIS Kenya data extraction...');
-    const amisPrices = await fetchAmisKePrices();
-    const amisMarkets = await fetchAmisKeMarkets();
+    // Test Kilimo Stats API
+    console.log('Fetching data from Kilimo API...');
+    const kilimoStart = Date.now();
+    const kilimoData = await fetchKilimoStats();
+    const kilimoTime = Date.now() - kilimoStart;
     
-    // Test Kilimo statistics extraction
-    console.log('Testing Kilimo statistics extraction...');
-    const kilimoStats = await fetchKilimoStats();
+    console.log(`Kilimo API returned ${kilimoData.length} records in ${kilimoTime}ms`);
+    console.log('Sample Kilimo data:', kilimoData.slice(0, 2));
     
-    // Create a summary of the extracted data
-    const summary = {
-      amisKe: {
-        prices: {
-          count: amisPrices.length,
-          commodities: [...new Set(amisPrices.map(p => p.commodity))],
-          markets: [...new Set(amisPrices.map(p => p.market))],
-          sampleData: amisPrices.slice(0, 2)
-        },
-        markets: {
-          count: amisMarkets.length,
-          counties: [...new Set(amisMarkets.map(m => m.county))],
-          sampleData: amisMarkets.slice(0, 2)
-        }
-      },
-      kilimo: {
-        stats: {
-          count: kilimoStats.length,
-          categories: [...new Set(kilimoStats.map(s => s.category))].filter(Boolean),
-          counties: [...new Set(kilimoStats.map(s => s.county))].filter(Boolean),
-          years: [...new Set(kilimoStats.map(s => s.year))].filter(Boolean),
-          sampleData: kilimoStats.slice(0, 2)
-        }
-      }
-    };
+    // Test AMIS Kenya (which would be a scraper in production)
+    console.log('Fetching data from AMIS Kenya...');
+    const amisStart = Date.now();
+    const amisData = await fetchAmisKePrices();
+    const amisTime = Date.now() - amisStart;
     
-    console.log('Data extraction test completed successfully');
+    console.log(`AMIS Kenya returned ${amisData.length} records in ${amisTime}ms`);
+    console.log('Sample AMIS Kenya data:', amisData.slice(0, 2));
+    
     return {
       success: true,
-      timestamp: new Date().toISOString(),
-      summary,
-      message: 'Successfully extracted and analyzed data from all sources'
+      kilimo: {
+        recordCount: kilimoData.length,
+        executionTime: kilimoTime,
+        sample: kilimoData.slice(0, 3)
+      },
+      amis: {
+        recordCount: amisData.length,
+        executionTime: amisTime,
+        sample: amisData.slice(0, 3)
+      }
     };
   } catch (error) {
-    console.error('Error in data extraction test:', error);
+    console.error('Error during data extraction test:', error);
     return {
       success: false,
-      timestamp: new Date().toISOString(),
-      message: `Failed to extract data: ${error}`
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 };
