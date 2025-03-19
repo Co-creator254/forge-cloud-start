@@ -29,7 +29,9 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
       processedStats.push({
         id: `county-${county.id}`,
         name: county.name,
+        // Convert string to number with parseInt or default to 0
         value: parseInt(county.code) || 0,
+        // Ensure year is a number
         year: new Date().getFullYear(),
         county: county.name,
         category: 'County',
@@ -43,7 +45,9 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
       processedStats.push({
         id: `subsector-${subsector.id}`,
         name: subsector.name,
-        value: 0, // No specific value in this data
+        // Ensure value is a number
+        value: 0, 
+        // Ensure year is a number
         year: new Date().getFullYear(),
         county: 'National',
         category: 'Agricultural Subsector',
@@ -61,7 +65,9 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
       processedStats.push({
         id: `element-${element.id}`,
         name: element.display_name,
-        value: 0, // Placeholder until we have real values
+        // Ensure value is a number
+        value: 0,
+        // Ensure year is a number
         year: new Date().getFullYear(),
         county: 'National', // Most statistics are national
         category: domainCategory,
