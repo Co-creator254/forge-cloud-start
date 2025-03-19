@@ -30,7 +30,7 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
         id: `county-${county.id}`,
         name: county.name,
         // Ensure value is a number - convert string to number or use 0 as default
-        value: parseInt(county.code || '0', 10) || 0,
+        value: typeof county.code === 'string' ? parseInt(county.code, 10) || 0 : 0,
         // Ensure year is a number
         year: new Date().getFullYear(),
         county: county.name,
