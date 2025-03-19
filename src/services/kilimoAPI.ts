@@ -29,8 +29,8 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
       processedStats.push({
         id: `county-${county.id}`,
         name: county.name,
-        // Convert string to number with parseInt or default to 0
-        value: parseInt(county.code) || 0,
+        // Ensure value is a number - convert string to number or use 0 as default
+        value: parseInt(county.code || '0'),
         // Ensure year is a number
         year: new Date().getFullYear(),
         county: county.name,
@@ -45,8 +45,8 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
       processedStats.push({
         id: `subsector-${subsector.id}`,
         name: subsector.name,
-        // Ensure value is a number
-        value: 0, 
+        // Ensure value is a number - default to 0
+        value: 0,
         // Ensure year is a number
         year: new Date().getFullYear(),
         county: 'National',
@@ -65,7 +65,7 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
       processedStats.push({
         id: `element-${element.id}`,
         name: element.display_name,
-        // Ensure value is a number
+        // Ensure value is a number - default to 0
         value: 0,
         // Ensure year is a number
         year: new Date().getFullYear(),
