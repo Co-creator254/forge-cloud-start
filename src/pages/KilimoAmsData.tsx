@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { DataVisualization } from 'lucide-react';
 import KilimoStatsView from '@/components/KilimoStatsView';
 import AmisKeDataView from '@/components/AmisKeDataView';
 import { fetchKilimoStats } from '@/services/api';
@@ -180,7 +179,6 @@ const KilimoAmsData: React.FC = () => {
                         <th className="text-left p-2">County</th>
                         <th className="text-right p-2">Value</th>
                         <th className="text-left p-2">Unit</th>
-                        <th className="text-left p-2">Date</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -195,7 +193,6 @@ const KilimoAmsData: React.FC = () => {
                           <td className="p-2">{item.county}</td>
                           <td className="p-2 text-right font-medium">{item.value}</td>
                           <td className="p-2">{item.unit}</td>
-                          <td className="p-2 text-muted-foreground">{item.date}</td>
                         </tr>
                       ))}
                     </tbody>

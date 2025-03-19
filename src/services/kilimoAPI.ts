@@ -30,13 +30,12 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
         id: `county-${county.id}`,
         name: county.name,
         // Ensure value is a number - convert string to number or use 0 as default
-        value: parseInt(county.code || '0'),
+        value: parseInt(county.code || '0', 10) || 0,
         // Ensure year is a number
         year: new Date().getFullYear(),
         county: county.name,
         category: 'County',
         unit: 'code',
-        date: new Date().toISOString().split('T')[0],
       });
     });
     
@@ -52,7 +51,6 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
         county: 'National',
         category: 'Agricultural Subsector',
         unit: subsector.codingsystem || '',
-        date: new Date().toISOString().split('T')[0],
       });
     });
     
@@ -72,7 +70,6 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
         county: 'National', // Most statistics are national
         category: domainCategory,
         unit: element.codingsystem || '',
-        date: new Date().toISOString().split('T')[0],
       });
     });
     
