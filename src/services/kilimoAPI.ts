@@ -12,20 +12,66 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
     }
     
     const data = await response.json();
-    console.log("Fetched Kilimo data:", data); // Log the structure to understand the API
+    console.log("Fetched Kilimo data:", data);
     
-    // Transform the data into our application format
-    // This mapping might need adjustment based on the actual API response structure
-    return Array.isArray(data) ? data.map((item: any) => ({
-      id: item.id || Math.random().toString(36).substring(2, 9),
-      name: item.name || item.crop_name || item.commodity || '',
-      value: parseFloat(item.value || item.price || item.amount || 0),
-      year: parseInt(item.year || item.date_year || new Date().getFullYear()),
-      county: item.county || item.location || '',
-      category: item.category || item.crop_type || item.commodity_type || '',
-      unit: item.unit || item.measure || '',
-      date: item.date || new Date().toISOString().split('T')[0],
-    })) : [];
+    // Extract counties from the data
+    const counties = data.county || [];
+    const subsectors = data.subsector || [];
+    const domains = data.domain || [];
+    const domainElements = data.domainelement || [];
+
+    // Process the Kilimo API structure to extract useful data
+    // This will be county information, subsectors, domains, and domain elements
+    const processedStats: KilimoStats[] = [];
+    
+    // Process counties
+    counties.forEach((county: any) => {
+      processedStats.push({
+        id: `county-${county.id}`,
+        name: county.name,
+        value: parseInt(county.code) || 0,
+        year: new Date().getFullYear(),
+        county: county.name,
+        category: 'County',
+        unit: 'code',
+        date: new Date().toISOString().split('T')[0],
+      });
+    });
+    
+    // Process subsectors and domains for more data points
+    subsectors.forEach((subsector: any) => {
+      processedStats.push({
+        id: `subsector-${subsector.id}`,
+        name: subsector.name,
+        value: 0, // No specific value in this data
+        year: new Date().getFullYear(),
+        county: 'National',
+        category: 'Agricultural Subsector',
+        unit: subsector.codingsystem || '',
+        date: new Date().toISOString().split('T')[0],
+      });
+    });
+    
+    // Add domain elements which represent specific agricultural statistics
+    domainElements.forEach((element: any) => {
+      // Find the parent domain
+      const parentDomain = domains.find((d: any) => d.id === element.domain);
+      const domainCategory = parentDomain ? parentDomain.display_name : 'Unknown';
+      
+      processedStats.push({
+        id: `element-${element.id}`,
+        name: element.display_name,
+        value: 0, // Placeholder until we have real values
+        year: new Date().getFullYear(),
+        county: 'National', // Most statistics are national
+        category: domainCategory,
+        unit: element.codingsystem || '',
+        date: new Date().toISOString().split('T')[0],
+      });
+    });
+    
+    console.log(`Processed ${processedStats.length} Kilimo statistics`);
+    return processedStats;
   } catch (error) {
     console.error("Error fetching Kilimo stats:", error);
     return [];

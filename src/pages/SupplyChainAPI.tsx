@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -7,10 +6,11 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Package, Truck, MapPin, Globe, User } from 'lucide-react';
+import { Package, Truck, MapPin, Globe, User, BarChart } from 'lucide-react';
 import { fetchFarmers, fetchProduce, fetchMarkets, fetchLogistics, fetchForecasts } from '@/services/api';
 import { Farmer, Produce, Market, LogisticsProvider, Forecast } from '@/types';
 import { useToast } from '@/hooks/use-toast';
+import AllCountiesMarketView from '@/components/AllCountiesMarketView';
 
 const SupplyChainAPI: React.FC = () => {
   const navigate = useNavigate();
@@ -97,7 +97,6 @@ const SupplyChainAPI: React.FC = () => {
   };
 
   const handleTryAPI = (endpoint: string) => {
-    // Copy the API call example to clipboard
     const apiCall = `
 // Example API call for ${endpoint}
 import { fetch${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)} } from 'agritender-api';
@@ -135,7 +134,7 @@ const filtered${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)} = await fe
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-              <TabsList className="w-full grid grid-cols-2 md:grid-cols-5 gap-2">
+              <TabsList className="w-full grid grid-cols-2 md:grid-cols-6 gap-2">
                 <TabsTrigger value="farmers" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   <span>Farmers</span>
@@ -148,6 +147,10 @@ const filtered${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)} = await fe
                   <MapPin className="h-4 w-4" />
                   <span>Markets</span>
                 </TabsTrigger>
+                <TabsTrigger value="all-markets" className="flex items-center gap-2">
+                  <BarChart className="h-4 w-4" />
+                  <span>All Markets</span>
+                </TabsTrigger>
                 <TabsTrigger value="logistics" className="flex items-center gap-2">
                   <Truck className="h-4 w-4" />
                   <span>Logistics</span>
@@ -158,29 +161,31 @@ const filtered${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)} = await fe
                 </TabsTrigger>
               </TabsList>
 
-              <div className="mt-6 mb-4">
-                <form onSubmit={handleSearch} className="flex items-end gap-4">
-                  <div className="flex-grow">
-                    <Label htmlFor="county" className="mb-2 block">Filter by County</Label>
-                    <Input
-                      id="county"
-                      placeholder="e.g. Nakuru"
-                      value={county}
-                      onChange={(e) => setCounty(e.target.value)}
-                    />
-                  </div>
-                  <Button type="submit" disabled={isLoading}>
-                    {isLoading ? 'Loading...' : 'Search'}
-                  </Button>
-                  <Button 
-                    type="button" 
-                    variant="outline"
-                    onClick={() => handleTryAPI(activeTab)}
-                  >
-                    Copy API Example
-                  </Button>
-                </form>
-              </div>
+              {activeTab !== 'all-markets' && (
+                <div className="mt-6 mb-4">
+                  <form onSubmit={handleSearch} className="flex items-end gap-4">
+                    <div className="flex-grow">
+                      <Label htmlFor="county" className="mb-2 block">Filter by County</Label>
+                      <Input
+                        id="county"
+                        placeholder="e.g. Nakuru"
+                        value={county}
+                        onChange={(e) => setCounty(e.target.value)}
+                      />
+                    </div>
+                    <Button type="submit" disabled={isLoading}>
+                      {isLoading ? 'Loading...' : 'Search'}
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline"
+                      onClick={() => handleTryAPI(activeTab)}
+                    >
+                      Copy API Example
+                    </Button>
+                  </form>
+                </div>
+              )}
 
               <TabsContent value="farmers" className="mt-6">
                 {isLoading ? (
@@ -304,6 +309,10 @@ const filtered${endpoint.charAt(0).toUpperCase() + endpoint.slice(1)} = await fe
                     <p>No markets found. Try a different search or click Search to view all markets.</p>
                   </div>
                 )}
+              </TabsContent>
+
+              <TabsContent value="all-markets" className="mt-6">
+                <AllCountiesMarketView />
               </TabsContent>
 
               <TabsContent value="logistics" className="mt-6">
