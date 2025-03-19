@@ -109,6 +109,26 @@ const config: Config = {
             transform: "translateY(0)"
           }
         },
+        "fade-left": {
+          "0%": {
+            opacity: "0",
+            transform: "translateX(10px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateX(0)"
+          }
+        },
+        "fade-right": {
+          "0%": {
+            opacity: "0",
+            transform: "translateX(-10px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateX(0)"
+          }
+        },
         "slide-right": {
           "0%": {
             transform: "translateX(-10px)"
@@ -138,15 +158,37 @@ const config: Config = {
             transform: "translateY(0)",
           },
         },
+        "scale-in": {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.95)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1)"
+          }
+        },
+        "float": {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-10px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "fade-up 0.5s ease-out",
+        "fade-left": "fade-left 0.5s ease-out",
+        "fade-right": "fade-right 0.5s ease-out",
         "slide-right": "slide-right 2s ease-in-out infinite alternate",
         "pulse-slow": "pulse-slow 3s ease-in-out infinite",
         "spin-slow": "spin-slow 10s linear infinite",
         "bounce-slow": "bounce-slow 3s ease-in-out infinite",
+        "scale-in": "scale-in 0.3s ease-out",
+        "float": "float 6s ease-in-out infinite",
       },
     },
   },

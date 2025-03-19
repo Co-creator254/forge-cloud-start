@@ -2,19 +2,18 @@
 import React, { useState } from 'react';
 import BarterExchangeTab from '@/features/commodityTrading/tabs/BarterExchangeTab';
 
-// This component serves as a proxy to provide the necessary props
 const BarterExchangeView: React.FC = () => {
-  const [isLoading] = useState(false);
-  const [searchTerm] = useState('');
-  const [selectedCategory] = useState('');
-  const [selectedLocation] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
 
   return (
-    <BarterExchangeTab
-      isLoading={isLoading}
+    <BarterExchangeTab 
       searchTerm={searchTerm}
       selectedCategory={selectedCategory}
       selectedLocation={selectedLocation}
+      isLoading={isLoading}
     />
   );
 };

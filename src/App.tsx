@@ -17,17 +17,22 @@ import TenderAPI from "./pages/TenderAPI";
 import JobsAPI from "./pages/JobsAPI";
 import ApiDocs from "./pages/ApiDocs";
 
-// Create proxy components for commodity trading sub-pages
-import BarterExchange from "./features/commodityTrading/tabs/BarterExchangeTab";
-import MarketplaceTab from "./features/commodityTrading/tabs/MarketplaceTab";
-import MyTradesTab from "./features/commodityTrading/tabs/MyTradesTab";
-import PriceTrendsTab from "./features/commodityTrading/tabs/PriceTrendsTab";
-
-import NotFound from "./pages/NotFound";
-import DataJobs from "./pages/DataJobs";
+// Commodity trading sub-pages - using new proxy components that provide props
+import MarketplaceView from "./pages/commodityTrading/MarketplaceView";
+import BarterExchangeView from "./pages/commodityTrading/BarterExchange";
+import MyTradesView from "./pages/commodityTrading/MyTrades";
+import PriceTrendsView from "./pages/commodityTrading/PriceTrends";
+import CommunityForums from "./pages/commodityTrading/CommunityForums";
 
 // Supply chain problem pages
 import PostHarvestLosses from "./pages/supplyChainProblems/PostHarvestLosses";
+import LogisticsIssues from "./pages/supplyChainProblems/LogisticsIssues";
+import MarketAccess from "./pages/supplyChainProblems/MarketAccess";
+import PriceVolatility from "./pages/supplyChainProblems/PriceVolatility";
+import QualityControl from "./pages/supplyChainProblems/QualityControl";
+
+import NotFound from "./pages/NotFound";
+import DataJobs from "./pages/DataJobs";
 
 const queryClient = new QueryClient();
 
@@ -43,14 +48,19 @@ const App = () => (
           
           {/* Commodity Trading Section */}
           <Route path="/commodity-trading" element={<CommodityTrading />} />
-          <Route path="/commodity-trading/marketplace" element={<MarketplaceTab />} />
-          <Route path="/commodity-trading/barter" element={<BarterExchange />} />
-          <Route path="/commodity-trading/my-trades" element={<MyTradesTab />} />
-          <Route path="/commodity-trading/price-trends" element={<PriceTrendsTab />} />
+          <Route path="/commodity-trading/marketplace" element={<MarketplaceView />} />
+          <Route path="/commodity-trading/barter" element={<BarterExchangeView />} />
+          <Route path="/commodity-trading/my-trades" element={<MyTradesView />} />
+          <Route path="/commodity-trading/price-trends" element={<PriceTrendsView />} />
+          <Route path="/commodity-trading/community" element={<CommunityForums />} />
           
           {/* Supply Chain Problems Section */}
           <Route path="/supply-chain-problems" element={<SupplyChainProblems />} />
           <Route path="/supply-chain-problems/post-harvest-losses" element={<PostHarvestLosses />} />
+          <Route path="/supply-chain-problems/logistics" element={<LogisticsIssues />} />
+          <Route path="/supply-chain-problems/market-access" element={<MarketAccess />} />
+          <Route path="/supply-chain-problems/price-volatility" element={<PriceVolatility />} />
+          <Route path="/supply-chain-problems/quality-control" element={<QualityControl />} />
           
           {/* Data Integration */}
           <Route path="/kilimo-ams-data" element={<KilimoAmsData />} />

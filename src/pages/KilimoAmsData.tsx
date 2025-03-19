@@ -4,12 +4,11 @@ import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import KilimoStatsView from '@/components/KilimoStatsView';
 import AmisKeDataView from '@/components/AmisKeDataView';
+import FarmerAIAssistant from '@/components/FarmerAIAssistant';
 import { fetchKilimoStats } from '@/services/api';
 import { KilimoStats } from '@/types';
 
@@ -58,155 +57,202 @@ const KilimoAmsData: React.FC = () => {
           </p>
         </div>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Data Sources</CardTitle>
-            <CardDescription>
-              Explore data from Kenya's leading agricultural data providers
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="w-full mb-6 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <TabsTrigger value="kilimo">Kilimo Statistics</TabsTrigger>
-                <TabsTrigger value="amis">AMIS Kenya</TabsTrigger>
-              </TabsList>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          <div className="lg:col-span-2">
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Data Sources</CardTitle>
+                <CardDescription>
+                  Explore data from Kenya's leading agricultural data providers
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="w-full mb-6 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <TabsTrigger value="kilimo">Kilimo Statistics</TabsTrigger>
+                    <TabsTrigger value="amis">AMIS Kenya</TabsTrigger>
+                  </TabsList>
 
-              <div className="mb-6">
-                <form className="flex flex-col md:flex-row items-end gap-4">
-                  {activeTab === 'kilimo' && (
-                    <>
-                      <div className="w-full md:w-64">
-                        <Label htmlFor="category" className="mb-2 block">Category</Label>
-                        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                          <SelectTrigger id="category">
-                            <SelectValue placeholder="All Categories" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="All Categories">All Categories</SelectItem>
-                            {categories.map((category) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  <div className="mb-6">
+                    <form className="flex flex-col md:flex-row items-end gap-4">
+                      {activeTab === 'kilimo' && (
+                        <>
+                          <div className="w-full md:w-64">
+                            <Label htmlFor="category" className="mb-2 block">Category</Label>
+                            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                              <SelectTrigger id="category">
+                                <SelectValue placeholder="All Categories" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="All Categories">All Categories</SelectItem>
+                                {categories.map((category) => (
+                                  <SelectItem key={category} value={category}>
+                                    {category}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
 
-                      <div className="w-full md:w-64">
-                        <Label htmlFor="county" className="mb-2 block">County</Label>
-                        <Select value={selectedCounty} onValueChange={setSelectedCounty}>
-                          <SelectTrigger id="county">
-                            <SelectValue placeholder="All Counties" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="All Counties">All Counties</SelectItem>
-                            {counties.map((county) => (
-                              <SelectItem key={county} value={county}>
-                                {county}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <Button type="submit" disabled={isLoading} className="mt-4 md:mt-0">
-                        {isLoading ? 'Loading...' : 'Filter'}
-                      </Button>
-                    </>
-                  )}
-                </form>
-              </div>
+                          <div className="w-full md:w-64">
+                            <Label htmlFor="county" className="mb-2 block">County</Label>
+                            <Select value={selectedCounty} onValueChange={setSelectedCounty}>
+                              <SelectTrigger id="county">
+                                <SelectValue placeholder="All Counties" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="All Counties">All Counties</SelectItem>
+                                {counties.map((county) => (
+                                  <SelectItem key={county} value={county}>
+                                    {county}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <Button type="submit" disabled={isLoading} className="mt-4 md:mt-0">
+                            {isLoading ? 'Loading...' : 'Filter'}
+                          </Button>
+                        </>
+                      )}
+                    </form>
+                  </div>
 
-              <TabsContent value="kilimo" className="mt-6">
-                {activeTab === 'kilimo' && <KilimoStatsView />}
-              </TabsContent>
+                  <TabsContent value="kilimo" className="mt-6">
+                    {activeTab === 'kilimo' && <KilimoStatsView />}
+                  </TabsContent>
 
-              <TabsContent value="amis" className="mt-6">
-                {activeTab === 'amis' && <AmisKeDataView />}
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+                  <TabsContent value="amis" className="mt-6">
+                    {activeTab === 'amis' && <AmisKeDataView />}
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Data Overview</CardTitle>
-            <CardDescription>
-              Key agricultural statistics and insights
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="flex justify-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-3xl font-bold">{kilimoData.length}</div>
-                      <div className="text-sm text-muted-foreground">Total Data Points</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-3xl font-bold">{counties.length}</div>
-                      <div className="text-sm text-muted-foreground">Counties Covered</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-3xl font-bold">{categories.length}</div>
-                      <div className="text-sm text-muted-foreground">Categories</div>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="text-3xl font-bold">Real-time</div>
-                      <div className="text-sm text-muted-foreground">Data Updates</div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-2">Name</th>
-                        <th className="text-left p-2">Category</th>
-                        <th className="text-left p-2">County</th>
-                        <th className="text-right p-2">Value</th>
-                        <th className="text-left p-2">Unit</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredData.slice(0, 10).map((item) => (
-                        <tr key={item.id} className="border-b hover:bg-muted/50">
-                          <td className="p-2">
-                            {item.name}
-                          </td>
-                          <td className="p-2">
-                            <Badge variant="outline">{item.category}</Badge>
-                          </td>
-                          <td className="p-2">{item.county}</td>
-                          <td className="p-2 text-right font-medium">{item.value}</td>
-                          <td className="p-2">{item.unit}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {filteredData.length > 10 && (
-                    <div className="text-center text-sm text-muted-foreground mt-4">
-                      Showing 10 of {filteredData.length} results
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Data Overview</CardTitle>
+                <CardDescription>
+                  Key agricultural statistics and insights
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="flex justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                      <Card>
+                        <CardContent className="pt-6">
+                          <div className="text-3xl font-bold">{kilimoData.length}</div>
+                          <div className="text-sm text-muted-foreground">Total Data Points</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="pt-6">
+                          <div className="text-3xl font-bold">{counties.length}</div>
+                          <div className="text-sm text-muted-foreground">Counties Covered</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="pt-6">
+                          <div className="text-3xl font-bold">{categories.length}</div>
+                          <div className="text-sm text-muted-foreground">Categories</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="pt-6">
+                          <div className="text-3xl font-bold">Real-time</div>
+                          <div className="text-sm text-muted-foreground">Data Updates</div>
+                        </CardContent>
+                      </Card>
                     </div>
-                  )}
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="text-left p-2">Name</th>
+                            <th className="text-left p-2">Category</th>
+                            <th className="text-left p-2">County</th>
+                            <th className="text-right p-2">Value</th>
+                            <th className="text-left p-2">Unit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredData.slice(0, 10).map((item) => (
+                            <tr key={item.id} className="border-b hover:bg-muted/50">
+                              <td className="p-2">
+                                {item.name}
+                              </td>
+                              <td className="p-2">
+                                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold">
+                                  {item.category}
+                                </span>
+                              </td>
+                              <td className="p-2">{item.county}</td>
+                              <td className="p-2 text-right font-medium">{item.value}</td>
+                              <td className="p-2">{item.unit}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {filteredData.length > 10 && (
+                        <div className="text-center text-sm text-muted-foreground mt-4">
+                          Showing 10 of {filteredData.length} results
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div>
+            <FarmerAIAssistant />
+            
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle>Market Demand Hotspots</CardTitle>
+                <CardDescription>Areas with high demand for agricultural produce</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    { region: 'Nairobi Metropolitan', crops: ['Tomatoes', 'Potatoes', 'Eggs'], demand: 'Very High' },
+                    { region: 'Mombasa County', crops: ['Mangoes', 'Coconuts', 'Fish'], demand: 'High' },
+                    { region: 'Nakuru County', crops: ['Wheat', 'Milk', 'Beef'], demand: 'Medium' },
+                    { region: 'Eldoret', crops: ['Maize', 'Wheat', 'Dairy'], demand: 'High' },
+                  ].map((item, i) => (
+                    <div key={i} className="border rounded-lg p-3">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium">{item.region}</h3>
+                        <span className={`text-xs font-bold px-2 py-1 rounded ${
+                          item.demand === 'Very High' ? 'bg-green-100 text-green-800' :
+                          item.demand === 'High' ? 'bg-blue-100 text-blue-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {item.demand} Demand
+                        </span>
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {item.crops.map((crop, i) => (
+                          <span key={i} className="text-xs bg-muted px-2 py-1 rounded">
+                            {crop}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         <div className="mt-16 bg-muted/30 p-6 rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Agricultural Data Integration</h2>
