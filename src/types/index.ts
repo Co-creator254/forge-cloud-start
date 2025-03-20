@@ -1,3 +1,4 @@
+
 export type Category = 'agriculture' | 'tender' | 'solutions' | 'awarded-tender';
 
 export interface DataItem {
@@ -62,6 +63,20 @@ export interface Farmer {
   products: string[];
   farmSize: string;
   certifications?: string[];
+  groups?: string[]; // New field for farmer groups
+}
+
+export interface FarmerGroup {
+  id: string;
+  name: string;
+  region: string;
+  cropFocus?: string[];
+  memberCount: number;
+  description?: string;
+  contactPerson?: string;
+  contactInfo?: string;
+  established?: string;
+  isCooperative: boolean;
 }
 
 export interface Produce {
@@ -102,6 +117,39 @@ export interface LogisticsProvider {
   capacity: string;
   rates: string;
   hasRefrigeration: boolean;
+  vehicleType?: string;
+  loadCapacity?: number;
+  availableRoutes?: TransportRoute[];
+  availableTimes?: string[];
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface TransportRoute {
+  id: string;
+  origin: string;
+  destination: string;
+  distance: number;
+  estimatedTime: string;
+  frequency: string;
+  cost: number;
+}
+
+export interface Warehouse {
+  id: string;
+  name: string;
+  location: string;
+  county: string;
+  capacity: number;
+  capacityUnit: string;
+  goodsTypes: string[];
+  hasRefrigeration: boolean;
+  hasCertifications: boolean;
+  certificationTypes?: string[];
+  contactInfo: string;
+  rates: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface Forecast {
