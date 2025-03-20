@@ -1,9 +1,16 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { SendIcon, Bot, User } from 'lucide-react';
+import { 
+  fetchKilimoMarkets, 
+  fetchDemandForecasts, 
+  fetchTransportProviders, 
+  fetchWarehouses 
+} from '@/services/api';
+import { Market, Forecast, LogisticsProvider, Warehouse } from '@/types';
 
 interface Message {
   id: string;
@@ -16,22 +23,199 @@ const FarmerAIAssistant: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hello! I can help you find markets for your produce, understand demand trends, and suggest the best time to sell. What crop are you growing?',
+      content: 'Hello! I can help you find markets for your produce, understand demand trends, forecast prices, and suggest the best time to sell. I can also recommend warehouses and transporters. What crop are you growing?',
       role: 'assistant',
       timestamp: new Date()
     }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Data states
+  const [markets, setMarkets] = useState<Market[]>([]);
+  const [forecasts, setForecasts] = useState<Forecast[]>([]);
+  const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
+  const [transporters, setTransporters] = useState<LogisticsProvider[]>([]);
 
-  // Sample response templates for demonstration
-  const sampleResponses = [
-    "Based on current market data, tomatoes are in high demand in Nairobi and Mombasa markets, with prices averaging KES 80-100 per kg.",
-    "Maize prices are expected to rise in the next 3 weeks as reserves decrease. Consider holding your harvest if possible.",
-    "For your potatoes, Nakuru and Eldoret markets are showing the highest prices currently at KES 2,500-3,000 per bag.",
-    "The best time to sell your onions would be in 4-6 weeks, as prices typically rise during that period based on historical data.",
-    "Your location in Meru County is ideal for supplying to Nairobi, Thika, and Embu markets. Transportation costs are lowest to Embu."
-  ];
+  // Fetch necessary data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const marketsData = await fetchKilimoMarkets();
+        const forecastsData = await fetchDemandForecasts();
+        const warehousesData = await fetchWarehouses();
+        const transportersData = await fetchTransportProviders();
+        
+        setMarkets(marketsData);
+        setForecasts(forecastsData);
+        setWarehouses(warehousesData);
+        setTransporters(transportersData);
+      } catch (error) {
+        console.error('Error fetching data for AI assistant:', error);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  const getCropForecast = (crop: string): string => {
+    const relevantForecasts = forecasts.filter(
+      f => f.produceName.toLowerCase().includes(crop.toLowerCase())
+    );
+    
+    if (relevantForecasts.length === 0) {
+      return `I don't have specific forecast data for ${crop} at the moment.`;
+    }
+    
+    // Find the best market based on expected demand
+    const bestForecast = relevantForecasts.sort((a, b) => b.expectedDemand - a.expectedDemand)[0];
+    
+    const forecastConfidence = bestForecast.confidenceLevel === 'high' ? '±5%' : 
+                              bestForecast.confidenceLevel === 'medium' ? '±10%' : '±20%';
+    
+    return `Based on our forecast with ${forecastConfidence} error margin, the demand for ${crop} is expected to be highest in ${bestForecast.county} during ${bestForecast.period}. Expected production is ${bestForecast.expectedProduction} ${bestForecast.unit} against an expected demand of ${bestForecast.expectedDemand} ${bestForecast.unit}.`;
+  };
+
+  const getBestMarkets = (crop: string): string => {
+    const relevantMarkets = markets.filter(market => 
+      market.producePrices.some(p => 
+        p.produceName.toLowerCase().includes(crop.toLowerCase())
+      )
+    );
+    
+    if (relevantMarkets.length === 0) {
+      return `I don't have specific market data for ${crop} at the moment.`;
+    }
+    
+    // Sort markets by price (highest first)
+    const sortedMarkets = [...relevantMarkets].sort((a, b) => {
+      const priceA = a.producePrices.find(p => p.produceName.toLowerCase().includes(crop.toLowerCase()))?.price || 0;
+      const priceB = b.producePrices.find(p => p.produceName.toLowerCase().includes(crop.toLowerCase()))?.price || 0;
+      return priceB - priceA;
+    });
+    
+    const topMarkets = sortedMarkets.slice(0, 3);
+    
+    const marketsList = topMarkets.map(market => {
+      const price = market.producePrices.find(p => 
+        p.produceName.toLowerCase().includes(crop.toLowerCase())
+      );
+      return `${market.name} (${market.county}): KES ${price?.price} per ${price?.unit}`;
+    }).join('\n- ');
+    
+    return `The best markets for ${crop} right now are:\n- ${marketsList}`;
+  };
+
+  const getWarehouseRecommendations = (crop: string): string => {
+    if (warehouses.length === 0) {
+      return `Currently, I don't have information on warehouses that can store ${crop}. As more warehouses join our network, I'll be able to provide recommendations.`;
+    }
+    
+    const relevantWarehouses = warehouses.filter(warehouse => 
+      warehouse.goodsTypes.some(type => type.toLowerCase().includes(crop.toLowerCase()))
+    );
+    
+    if (relevantWarehouses.length === 0) {
+      return `I don't have specific warehouse data for ${crop} at the moment.`;
+    }
+    
+    const warehousesList = relevantWarehouses.slice(0, 3).map(warehouse => 
+      `${warehouse.name} in ${warehouse.location} (${warehouse.county}): Capacity ${warehouse.capacity} ${warehouse.capacityUnit}, ${warehouse.hasRefrigeration ? 'has refrigeration' : 'no refrigeration'}`
+    ).join('\n- ');
+    
+    return `Here are some warehouses that can store ${crop}:\n- ${warehousesList}`;
+  };
+
+  const getTransporterRecommendations = (location: string): string => {
+    if (transporters.length === 0) {
+      return `Currently, I don't have information on transport providers serving ${location}. As more transporters join our network, I'll be able to provide recommendations.`;
+    }
+    
+    const relevantTransporters = transporters.filter(transporter => 
+      transporter.counties.some(county => county.toLowerCase().includes(location.toLowerCase()))
+    );
+    
+    if (relevantTransporters.length === 0) {
+      return `I don't have specific transporter data for ${location} at the moment.`;
+    }
+    
+    const transportersList = relevantTransporters.slice(0, 3).map(transporter => 
+      `${transporter.name}: ${transporter.contactInfo}, Capacity: ${transporter.loadCapacity}kg, ${transporter.hasRefrigeration ? 'has refrigeration' : 'no refrigeration'}`
+    ).join('\n- ');
+    
+    return `Here are some transporters serving ${location}:\n- ${transportersList}`;
+  };
+
+  const getQualityControlAdvice = (crop: string): string => {
+    const organicAdvice = `For organic ${crop} production:\n- Consider organic certification from KEBS or international bodies\n- Document all inputs and practices\n- Implement crop rotation and natural pest control\n- Maintain buffer zones from conventional farms`;
+    
+    const contractFarmingAdvice = `For contract farming of ${crop}:\n- Engage with exporters looking for consistent quality\n- Check for quality specifications in contracts\n- Request input support and technical assistance\n- Ensure fair price mechanisms are included`;
+    
+    return `${organicAdvice}\n\n${contractFarmingAdvice}`;
+  };
+
+  const generateResponse = (userMessage: string): string => {
+    const message = userMessage.toLowerCase();
+    
+    // Extract key information from the message
+    const cropMatches = message.match(/tomato|potato|maize|corn|mango|avocado|coffee|tea|beans|peas|wheat|rice|banana|onion|cabbage|carrot/g);
+    const crop = cropMatches ? cropMatches[0] : '';
+    
+    const locationMatches = message.match(/nairobi|mombasa|kisumu|nakuru|eldoret|kitale|meru|nyeri|thika|machakos|garissa|lamu|malindi|kakamega/g);
+    const location = locationMatches ? locationMatches[0] : '';
+    
+    // Check if the message is about price forecasts
+    if (message.includes('forecast') || message.includes('predict') || message.includes('future price') || message.includes('next week') || message.includes('next month') || message.includes('tomorrow')) {
+      if (crop) {
+        return getCropForecast(crop);
+      } else {
+        return "Which crop are you interested in getting a price forecast for?";
+      }
+    }
+    
+    // Check if the message is about current market prices
+    if (message.includes('price') || message.includes('market') || message.includes('sell') || message.includes('where')) {
+      if (crop) {
+        return getBestMarkets(crop);
+      } else {
+        return "Which crop are you interested in selling?";
+      }
+    }
+    
+    // Check if the message is about warehouses
+    if (message.includes('warehouse') || message.includes('storage') || message.includes('store')) {
+      if (crop) {
+        return getWarehouseRecommendations(crop);
+      } else {
+        return "Which crop are you looking to store?";
+      }
+    }
+    
+    // Check if the message is about transporters
+    if (message.includes('transport') || message.includes('logistics') || message.includes('deliver') || message.includes('pickup')) {
+      if (location) {
+        return getTransporterRecommendations(location);
+      } else {
+        return "Which location are you looking for transport services in?";
+      }
+    }
+    
+    // Check if the message is about quality control
+    if (message.includes('quality') || message.includes('organic') || message.includes('certification') || message.includes('contract farming')) {
+      if (crop) {
+        return getQualityControlAdvice(crop);
+      } else {
+        return "Which crop are you looking to improve quality for?";
+      }
+    }
+    
+    // Default response if no specific intent is detected
+    if (crop) {
+      return `I can help you with market prices, forecasts, storage, and transport for ${crop}. What specific information are you looking for?`;
+    }
+    
+    return "I'm your agricultural assistant. I can help with finding markets, forecasting prices, and connecting you with warehouses and transporters. What crop are you growing?";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,20 +233,20 @@ const FarmerAIAssistant: React.FC = () => {
     setInput('');
     setIsLoading(true);
 
-    // Simulate AI response (in a real app, this would call an API)
+    // Generate AI response
     setTimeout(() => {
-      // Pick a random sample response
-      const responseIndex = Math.floor(Math.random() * sampleResponses.length);
+      const responseContent = generateResponse(userMessage.content);
+      
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: sampleResponses[responseIndex],
+        content: responseContent,
         role: 'assistant',
         timestamp: new Date()
       };
       
       setMessages(prev => [...prev, aiResponse]);
       setIsLoading(false);
-    }, 1500);
+    }, 1000);
   };
 
   return (
@@ -89,7 +273,7 @@ const FarmerAIAssistant: React.FC = () => {
               >
                 {message.role === 'assistant' && <Bot className="h-5 w-5 mt-0.5" />}
                 <div>
-                  <p>{message.content}</p>
+                  <p className="whitespace-pre-line">{message.content}</p>
                   <p className="text-xs opacity-70 mt-1">
                     {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </p>
