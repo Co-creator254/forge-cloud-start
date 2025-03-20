@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingBag, Link as LinkIcon } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import MainNavigation from '@/components/MainNavigation';
 
@@ -21,7 +21,12 @@ const Header: React.FC = () => {
             <SheetContent side="left" className="pr-0">
               <div className="px-7">
                 <Link to="/" className="flex items-center">
-                  <span className="text-xl font-bold">AgriTender Connect</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center h-8 w-8 bg-sage-600 text-white rounded-md">
+                      <LinkIcon className="h-4 w-4" />
+                    </div>
+                    <span className="text-xl font-bold">Soko-Connect</span>
+                  </div>
                 </Link>
               </div>
               <div className="mt-6 px-2">
@@ -31,7 +36,12 @@ const Header: React.FC = () => {
           </Sheet>
           
           <Link to="/" className="flex items-center">
-            <span className="text-xl font-bold">AgriTender Connect</span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center h-8 w-8 bg-sage-600 text-white rounded-md">
+                <LinkIcon className="h-4 w-4" />
+              </div>
+              <span className="text-xl font-bold">Soko-Connect</span>
+            </div>
           </Link>
           
           <nav className="hidden md:flex md:gap-2">

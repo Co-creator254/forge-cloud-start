@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowDownCircle } from 'lucide-react';
+import { ArrowDownCircle, ShoppingBag, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Hero: React.FC = () => {
@@ -21,6 +21,16 @@ const Hero: React.FC = () => {
       <div className="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full bg-soil-200/20 dark:bg-soil-800/10 blur-3xl -z-10 animate-pulse" style={{ animationDuration: '20s' }} />
       
       <div className="max-w-4xl mx-auto space-y-6 animate-fade-up">
+        {/* Logo */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center gap-3 p-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg">
+            <div className="flex items-center justify-center h-12 w-12 bg-sage-600 text-white rounded-md">
+              <LinkIcon className="h-6 w-6" />
+            </div>
+            <span className="text-3xl font-bold bg-gradient-to-r from-sage-700 to-soil-600 bg-clip-text text-transparent">Soko-Connect</span>
+          </div>
+        </div>
+        
         <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
           All-In-One Platform
         </div>
