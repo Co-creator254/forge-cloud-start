@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar as CalendarIcon, TruckIcon, Warehouse as WarehouseIcon, Check, Search, Filter } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';

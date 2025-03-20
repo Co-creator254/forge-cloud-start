@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { MapPin, Plus, Warehouse, Thermometer, FileCheck, Clock } from 'lucide-react';
+import { MapPin, Plus, Warehouse as WarehouseIcon, Thermometer, FileCheck, Clock } from 'lucide-react';
 import { fetchWarehouses } from '@/services/kilimoAPI';
-import { Warehouse } from '@/types';
+import { Warehouse as WarehouseType } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 
 // In a real app, this would use a mapping library like Mapbox or Google Maps
@@ -17,9 +17,9 @@ import { useToast } from '@/hooks/use-toast';
 
 const WarehouseMap: React.FC = () => {
   const { toast } = useToast();
-  const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
+  const [warehouses, setWarehouses] = useState<WarehouseType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedWarehouse, setSelectedWarehouse] = useState<Warehouse | null>(null);
+  const [selectedWarehouse, setSelectedWarehouse] = useState<WarehouseType | null>(null);
   const [isAddingWarehouse, setIsAddingWarehouse] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: -1.2921, lng: 36.8219 }); // Nairobi as default
   const [mapZoom, setMapZoom] = useState(6);
@@ -54,7 +54,7 @@ const WarehouseMap: React.FC = () => {
     setIsAddingWarehouse(false);
   };
 
-  const handleWarehouseClick = (warehouse: Warehouse) => {
+  const handleWarehouseClick = (warehouse: WarehouseType) => {
     setSelectedWarehouse(warehouse);
   };
 
@@ -84,7 +84,7 @@ const WarehouseMap: React.FC = () => {
   };
 
   // Get pin color based on warehouse type
-  const getPinColor = (warehouse: Warehouse) => {
+  const getPinColor = (warehouse: WarehouseType) => {
     if (warehouse.hasRefrigeration) return 'bg-blue-500';
     if (warehouse.hasCertifications) return 'bg-green-500';
     return 'bg-red-500';
