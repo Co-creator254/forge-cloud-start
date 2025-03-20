@@ -108,6 +108,22 @@ export interface Market {
   operatingHours: string;
 }
 
+export interface TransportProvider {
+  id: string;
+  name: string;
+  serviceType: 'transport';
+  counties: string[];
+  contactInfo: string;
+  capacity: string;
+  loadCapacity: number;
+  rates: string;
+  hasRefrigeration: boolean;
+  vehicleType: string;
+  availableTimes?: string[];
+  latitude?: number;
+  longitude?: number;
+}
+
 export interface LogisticsProvider {
   id: string;
   name: string;
@@ -188,3 +204,78 @@ export const SOLUTION_CATEGORIES = {
   'quality': 'Quality & Traceability Innovations',
   'information': 'Information Asymmetry Solutions'
 };
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: 'farmer' | 'trader' | 'transporter' | 'warehouse' | 'cooperative' | 'admin';
+  county?: string;
+  phone?: string;
+  created: string;
+  profileComplete: boolean;
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  read: boolean;
+  createdAt: string;
+  action?: {
+    type: string;
+    target: string;
+    label: string;
+  };
+}
+
+export interface TransportRequest {
+  id: string;
+  farmerId: string;
+  farmerName: string;
+  origin: string;
+  destination: string;
+  produceType: string;
+  quantity: number;
+  unit: string;
+  requiredDate: string;
+  hasSpecialRequirements: boolean;
+  specialRequirements?: string;
+  status: 'pending' | 'accepted' | 'in-progress' | 'completed' | 'cancelled';
+  created: string;
+  transporterId?: string;
+  transporterName?: string;
+}
+
+export interface WarehouseBooking {
+  id: string;
+  userId: string;
+  userName: string;
+  warehouseId: string;
+  warehouseName: string;
+  produceType: string;
+  quantity: number;
+  unit: string;
+  startDate: string;
+  endDate: string;
+  requiresRefrigeration: boolean;
+  status: 'pending' | 'confirmed' | 'in-use' | 'completed' | 'cancelled';
+  created: string;
+}
+
+export interface CommunityPost {
+  id: string;
+  userId: string;
+  userName: string;
+  title: string;
+  content: string;
+  category: 'question' | 'discussion' | 'news' | 'market' | 'event';
+  tags: string[];
+  created: string;
+  likes: number;
+  comments: number;
+  location?: string;
+}
+

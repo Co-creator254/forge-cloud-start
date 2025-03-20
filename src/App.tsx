@@ -31,6 +31,9 @@ import MarketAccess from "./pages/supplyChainProblems/MarketAccess";
 import PriceVolatility from "./pages/supplyChainProblems/PriceVolatility";
 import QualityControl from "./pages/supplyChainProblems/QualityControl";
 
+// New logistics and service provider pages
+import TransporterSignUp from "./pages/TransporterSignUp";
+
 import NotFound from "./pages/NotFound";
 import DataJobs from "./pages/DataJobs";
 
@@ -71,6 +74,9 @@ const App = () => (
           <Route path="/tender-api" element={<TenderAPI />} />
           <Route path="/jobs-api" element={<JobsAPI />} />
           <Route path="/api-docs" element={<ApiDocs />} />
+
+          {/* Service Provider Routes */}
+          <Route path="/transporter-signup" element={<TransporterSignUp />} />
           
           {/* Catch all */}
           <Route path="*" element={<NotFound />} />

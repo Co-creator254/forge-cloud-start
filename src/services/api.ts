@@ -18,23 +18,24 @@ export {
   apiExampleCode
 } from './apiDocs';
 
-// Supply Chain API
+// Supply Chain API - now using enhanced kilimoAPI
 export {
-  fetchFarmers,
-  fetchProduce,
-  fetchMarkets,
-  fetchLogistics,
-  fetchForecasts
-} from './supplyChainAPI';
+  fetchKilimoStats,
+  fetchKilimoMarkets as fetchMarkets,
+  fetchKilimoFarmers as fetchFarmers,
+  fetchKilimoProduce as fetchProduce,
+  fetchTransportProviders as fetchLogistics,
+  fetchDemandForecasts as fetchForecasts,
+  fetchWarehouses,
+  fetchFarmerGroups,
+  calculateBestMarkets
+} from './kilimoAPI';
 
 // Search API functionality
 export { fetchData, fetchItemById } from './searchAPI';
 
 // Re-export for Tender API
 export { fetchAwardedTenders } from './awardedTendersAPI';
-
-// Kilimo Stats API - using the updated real data API
-export { fetchKilimoStats } from './kilimoAPI';
 
 // AmisKe Data API
 export { 
