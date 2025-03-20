@@ -1,9 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import BarterExchangeTab from '@/features/commodityTrading/tabs/BarterExchangeTab';
+import PrivacyLegalNotice from '@/features/commodityTrading/components/PrivacyLegalNotice';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { FarmerGroup } from '@/types';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const BarterExchangeView: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,8 +16,18 @@ const BarterExchangeView: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
   const { toast } = useToast();
   const [farmerGroups, setFarmerGroups] = useState<FarmerGroup[]>([]);
+  const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
+  const [privacyAcknowledged, setPrivacyAcknowledged] = useState(false);
 
   useEffect(() => {
+    // Check if user has acknowledged privacy notice
+    const hasAcknowledged = localStorage.getItem('barterPrivacyAcknowledged');
+    if (!hasAcknowledged) {
+      setShowPrivacyDialog(true);
+    } else {
+      setPrivacyAcknowledged(true);
+    }
+
     // Simulate fetching farmer groups
     const fetchGroups = async () => {
       setIsLoading(true);
@@ -71,6 +85,16 @@ const BarterExchangeView: React.FC = () => {
     });
   };
 
+  const handlePrivacyAcknowledge = () => {
+    localStorage.setItem('barterPrivacyAcknowledged', 'true');
+    setPrivacyAcknowledged(true);
+    setShowPrivacyDialog(false);
+    toast({
+      title: 'Privacy Policy Acknowledged',
+      description: 'Thank you for reviewing our privacy and legal information.'
+    });
+  };
+
   return (
     <>
       <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
@@ -86,12 +110,50 @@ const BarterExchangeView: React.FC = () => {
         </Button>
       </div>
       
+      {/* Display compact notice at the top for all users */}
+      <PrivacyLegalNotice variant="compact" />
+      
       <BarterExchangeTab 
         searchTerm={searchTerm}
         selectedCategory={selectedCategory}
         selectedLocation={selectedLocation}
         isLoading={isLoading}
       />
+
+      {/* Display full notice for first-time users */}
+      <Dialog open={showPrivacyDialog} onOpenChange={setShowPrivacyDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Important Legal Information</DialogTitle>
+            <DialogDescription>
+              Please review the following information regarding data privacy, taxation, and consumer protection.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <PrivacyLegalNotice />
+          
+          <div className="flex items-start space-x-2 mb-4">
+            <Checkbox 
+              id="privacy-acknowledge" 
+              checked={privacyAcknowledged} 
+              onCheckedChange={(checked) => setPrivacyAcknowledged(checked === true)}
+            />
+            <Label htmlFor="privacy-acknowledge" className="text-sm font-normal leading-tight">
+              I acknowledge that I have read and understood the information regarding data privacy, taxation implications,
+              and consumer protection measures for using the Barter Exchange platform.
+            </Label>
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              onClick={handlePrivacyAcknowledge} 
+              disabled={!privacyAcknowledged}
+            >
+              Acknowledge and Continue
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {farmerGroups.length > 0 && (
         <div className="mt-8 border rounded-lg p-4">
