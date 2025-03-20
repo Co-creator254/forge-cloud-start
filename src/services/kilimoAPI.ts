@@ -1,4 +1,3 @@
-
 import { KilimoStats, Farmer, Produce, Market, TransportProvider, FarmerGroup, Warehouse, Forecast } from '@/types';
 import { simulateDelay } from './apiUtils';
 
@@ -505,7 +504,7 @@ export const calculateBestMarkets = async (produce: string, county: string): Pro
   }
   
   // Calculate best markets based on price and a simulated distance factor
-  return relevantMarkets
+  const marketData = relevantMarkets
     .map(market => {
       const producePrice = market.producePrices.find(p => 
         p.produceName.toLowerCase() === produce.toLowerCase()
@@ -525,13 +524,15 @@ export const calculateBestMarkets = async (produce: string, county: string): Pro
         distance: Math.round(distance)
       };
     })
-    .filter(m => m !== null) as { marketId: string, marketName: string, price: number, distance: number }[]
+    .filter((m): m is { marketId: string, marketName: string, price: number, distance: number } => m !== null);
+  
+  // Sort and return top 5 markets
+  return marketData
     .sort((a, b) => {
       // Score based on 70% price and 30% inverse distance
       const scoreA = (a.price * 0.7) + ((200 - a.distance) * 0.3);
       const scoreB = (b.price * 0.7) + ((200 - b.distance) * 0.3);
       return scoreB - scoreA;
     })
-    .slice(0, 5); // Return top 5 markets
+    .slice(0, 5);
 };
-
