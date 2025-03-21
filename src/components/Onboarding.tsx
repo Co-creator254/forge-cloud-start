@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Package, Truck, BarChart } from 'lucide-react';
 
@@ -12,7 +12,7 @@ interface OnboardingProps {
 
 const onboardingSteps = [
   {
-    title: "Welcome to AgriTender Connect",
+    title: "Welcome to Soko Connect",
     description: "The complete platform for agricultural information and supply chain solutions in Kenya.",
     icon: (
       <div className="w-24 h-24 mx-auto mb-6 relative">
@@ -83,6 +83,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+        <DialogTitle className="sr-only">Onboarding - {onboardingSteps[currentStep].title}</DialogTitle>
         <div className="p-6 animate-fade-up">
           {onboardingSteps[currentStep].icon}
           
