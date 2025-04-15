@@ -1,9 +1,9 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 // Main pages
 import Index from "./pages/Index";
@@ -42,51 +42,53 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Main pages */}
-          <Route path="/" element={<Index />} />
-          
-          {/* Commodity Trading Section */}
-          <Route path="/commodity-trading" element={<CommodityTrading />} />
-          <Route path="/commodity-trading/marketplace" element={<MarketplaceView />} />
-          <Route path="/commodity-trading/barter" element={<BarterExchangeView />} />
-          <Route path="/commodity-trading/my-trades" element={<MyTradesView />} />
-          <Route path="/commodity-trading/price-trends" element={<PriceTrendsView />} />
-          <Route path="/commodity-trading/community" element={<CommunityForums />} />
-          
-          {/* Supply Chain Problems Section */}
-          <Route path="/supply-chain-problems" element={<SupplyChainProblems />} />
-          <Route path="/supply-chain-problems/post-harvest-losses" element={<PostHarvestLosses />} />
-          <Route path="/supply-chain-problems/logistics" element={<LogisticsIssues />} />
-          <Route path="/supply-chain-problems/market-access" element={<MarketAccess />} />
-          <Route path="/supply-chain-problems/price-volatility" element={<PriceVolatility />} />
-          <Route path="/supply-chain-problems/quality-control" element={<QualityControl />} />
-          
-          {/* Data Integration */}
-          <Route path="/kilimo-ams-data" element={<KilimoAmsData />} />
-          <Route path="/data-jobs" element={<DataJobs />} />
-          
-          {/* API Sections */}
-          <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
-          <Route path="/tender-api" element={<TenderAPI />} />
-          <Route path="/jobs-api" element={<JobsAPI />} />
-          <Route path="/api-docs" element={<ApiDocs />} />
+    <ThemeProvider defaultTheme="light">
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Main pages */}
+            <Route path="/" element={<Index />} />
+            
+            {/* Commodity Trading Section */}
+            <Route path="/commodity-trading" element={<CommodityTrading />} />
+            <Route path="/commodity-trading/marketplace" element={<MarketplaceView />} />
+            <Route path="/commodity-trading/barter" element={<BarterExchangeView />} />
+            <Route path="/commodity-trading/my-trades" element={<MyTradesView />} />
+            <Route path="/commodity-trading/price-trends" element={<PriceTrendsView />} />
+            <Route path="/commodity-trading/community" element={<CommunityForums />} />
+            
+            {/* Supply Chain Problems Section */}
+            <Route path="/supply-chain-problems" element={<SupplyChainProblems />} />
+            <Route path="/supply-chain-problems/post-harvest-losses" element={<PostHarvestLosses />} />
+            <Route path="/supply-chain-problems/logistics" element={<LogisticsIssues />} />
+            <Route path="/supply-chain-problems/market-access" element={<MarketAccess />} />
+            <Route path="/supply-chain-problems/price-volatility" element={<PriceVolatility />} />
+            <Route path="/supply-chain-problems/quality-control" element={<QualityControl />} />
+            
+            {/* Data Integration */}
+            <Route path="/kilimo-ams-data" element={<KilimoAmsData />} />
+            <Route path="/data-jobs" element={<DataJobs />} />
+            
+            {/* API Sections */}
+            <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
+            <Route path="/tender-api" element={<TenderAPI />} />
+            <Route path="/jobs-api" element={<JobsAPI />} />
+            <Route path="/api-docs" element={<ApiDocs />} />
 
-          {/* Service Provider Routes */}
-          <Route path="/transporter-signup" element={<TransporterSignUp />} />
-          
-          {/* Authentication */}
-          <Route path="/auth" element={<Auth />} />
-          
-          {/* Catch all */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+            {/* Service Provider Routes */}
+            <Route path="/transporter-signup" element={<TransporterSignUp />} />
+            
+            {/* Authentication */}
+            <Route path="/auth" element={<Auth />} />
+            
+            {/* Catch all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
