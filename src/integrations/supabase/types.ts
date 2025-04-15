@@ -9,7 +9,90 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          contact_number: string | null
+          county: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          contact_number?: string | null
+          county?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          contact_number?: string | null
+          county?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      transporters: {
+        Row: {
+          capacity: string
+          contact_info: string
+          counties: string[]
+          created_at: string
+          has_refrigeration: boolean
+          id: string
+          load_capacity: number
+          name: string
+          rates: string
+          service_type: string
+          updated_at: string
+          user_id: string
+          vehicle_type: string
+        }
+        Insert: {
+          capacity: string
+          contact_info: string
+          counties: string[]
+          created_at?: string
+          has_refrigeration?: boolean
+          id?: string
+          load_capacity: number
+          name: string
+          rates: string
+          service_type: string
+          updated_at?: string
+          user_id: string
+          vehicle_type: string
+        }
+        Update: {
+          capacity?: string
+          contact_info?: string
+          counties?: string[]
+          created_at?: string
+          has_refrigeration?: boolean
+          id?: string
+          load_capacity?: number
+          name?: string
+          rates?: string
+          service_type?: string
+          updated_at?: string
+          user_id?: string
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

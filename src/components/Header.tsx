@@ -1,61 +1,22 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Menu, X, ShoppingBag, Link as LinkIcon } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import MainNavigation from '@/components/MainNavigation';
+import { ModeToggle } from '@/components/ModeToggle';
+import { MainNav } from '@/components/MainNav';
+import { MobileNav } from '@/components/MobileNav';
+import UserAvatar from './UserAvatar';
 
 const Header: React.FC = () => {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2 md:gap-6">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="pr-0">
-              <div className="px-7">
-                <Link to="/" className="flex items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center justify-center h-8 w-8 bg-sage-600 text-white rounded-md">
-                      <LinkIcon className="h-4 w-4" />
-                    </div>
-                    <span className="text-xl font-bold">Soko-Connect</span>
-                  </div>
-                </Link>
-              </div>
-              <div className="mt-6 px-2">
-                <MainNavigation />
-              </div>
-            </SheetContent>
-          </Sheet>
-          
-          <Link to="/" className="flex items-center">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center h-8 w-8 bg-sage-600 text-white rounded-md">
-                <LinkIcon className="h-4 w-4" />
-              </div>
-              <span className="text-xl font-bold">Soko-Connect</span>
-            </div>
-          </Link>
-          
-          <nav className="hidden md:flex md:gap-2">
-            <MainNavigation />
-          </nav>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <Link to="/api-docs">API Docs</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link to="/commodity-trading">Trade Now</Link>
-          </Button>
+    <header className="bg-background sticky top-0 z-50 w-full border-b">
+      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
+        <MobileNav />
+        <Link to="/" className="hidden sm:flex items-center font-semibold">
+          <span className="mr-2">AgriConnect</span>
+        </Link>
+        <MainNav className="mx-6 hidden space-x-4 sm:block" />
+        <div className="flex items-center space-x-2">
+          <UserAvatar />
+          <ModeToggle />
         </div>
       </div>
     </header>

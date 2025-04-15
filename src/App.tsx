@@ -33,6 +33,7 @@ import QualityControl from "./pages/supplyChainProblems/QualityControl";
 
 // New logistics and service provider pages
 import TransporterSignUp from "./pages/TransporterSignUp";
+import Auth from "./pages/Auth";
 
 import NotFound from "./pages/NotFound";
 import DataJobs from "./pages/DataJobs";
@@ -77,6 +78,9 @@ const App = () => (
 
           {/* Service Provider Routes */}
           <Route path="/transporter-signup" element={<TransporterSignUp />} />
+          
+          {/* Authentication */}
+          <Route path="/auth" element={<Auth />} />
           
           {/* Catch all */}
           <Route path="*" element={<NotFound />} />
