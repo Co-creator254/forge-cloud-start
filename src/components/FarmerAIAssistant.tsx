@@ -1,9 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { SendIcon, AlertTriangle, Loader2 } from 'lucide-react';
+import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   fetchMarkets, 
@@ -14,11 +12,16 @@ import { Market, Forecast, Warehouse } from '@/types';
 import { Message } from '@/features/ai-assistant/types';
 import { mockTransporters } from '@/features/ai-assistant/mockData';
 import { generateResponse } from '@/features/ai-assistant/aiResponseGenerator';
-import ChatInterface from '@/features/ai-assistant/ChatInterface';
 import { useToast } from '@/hooks/use-toast';
+import { usePerformance } from '@/hooks/use-performance';
+
+const ChatInterface = lazy(() => import('@/features/ai-assistant/ChatInterface'));
+const MessageInput = lazy(() => import('@/components/ai-assistant/MessageInput'));
 
 const FarmerAIAssistant: React.FC = () => {
   const { toast } = useToast();
+  const { measureInteraction } = usePerformance('FarmerAIAssistant');
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -27,7 +30,6 @@ const FarmerAIAssistant: React.FC = () => {
       timestamp: new Date()
     }
   ]);
-  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,43 +40,43 @@ const FarmerAIAssistant: React.FC = () => {
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [transporters, setTransporters] = useState<any[]>(mockTransporters);
 
+  // Memoized fetch function to prevent unnecessary re-renders
+  const fetchData = useCallback(async () => {
+    const endMeasure = measureInteraction('dataFetch');
+    setDataLoading(true);
+    setError(null);
+    try {
+      const [marketsData, forecastsData, warehousesData] = await Promise.all([
+        fetchMarkets(),
+        fetchForecasts(),
+        fetchWarehouses()
+      ]);
+      
+      setMarkets(marketsData);
+      setForecasts(forecastsData);
+      setWarehouses(warehousesData);
+      // Transport providers will be implemented in the future
+      // For now using mock data
+    } catch (error) {
+      console.error('Error fetching data for AI assistant:', error);
+      setError('Could not load agricultural data. Please try refreshing the page.');
+      toast({
+        title: "Data Loading Error",
+        description: "Could not load market data. Some features may be limited.",
+        variant: "destructive"
+      });
+    } finally {
+      setDataLoading(false);
+      endMeasure();
+    }
+  }, [toast, measureInteraction]);
+  
   // Fetch necessary data on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      setDataLoading(true);
-      setError(null);
-      try {
-        const [marketsData, forecastsData, warehousesData] = await Promise.all([
-          fetchMarkets(),
-          fetchForecasts(),
-          fetchWarehouses()
-        ]);
-        
-        setMarkets(marketsData);
-        setForecasts(forecastsData);
-        setWarehouses(warehousesData);
-        // Transport providers will be implemented in the future
-        // For now using mock data
-      } catch (error) {
-        console.error('Error fetching data for AI assistant:', error);
-        setError('Could not load agricultural data. Please try refreshing the page.');
-        toast({
-          title: "Data Loading Error",
-          description: "Could not load market data. Some features may be limited.",
-          variant: "destructive"
-        });
-      } finally {
-        setDataLoading(false);
-      }
-    };
-    
     fetchData();
-  }, [toast]);
+  }, [fetchData]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
+  const handleSendMessage = async (input: string) => {
     // Check if data is available before proceeding
     if (error && (markets.length === 0 || forecasts.length === 0 || warehouses.length === 0)) {
       toast({
@@ -84,6 +86,8 @@ const FarmerAIAssistant: React.FC = () => {
       });
     }
 
+    const endMeasure = measureInteraction('messageResponse');
+    
     // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -93,7 +97,6 @@ const FarmerAIAssistant: React.FC = () => {
     };
     
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
     setIsLoading(true);
 
     // Generate AI response
@@ -116,6 +119,7 @@ const FarmerAIAssistant: React.FC = () => {
         
         setMessages(prev => [...prev, aiResponse]);
         setIsLoading(false);
+        endMeasure();
       }, 800); // Slightly reduced from 1000ms for better UX
     } catch (error) {
       console.error('Error generating AI response:', error);
@@ -127,20 +131,13 @@ const FarmerAIAssistant: React.FC = () => {
       };
       setMessages(prev => [...prev, errorResponse]);
       setIsLoading(false);
+      endMeasure();
       
       toast({
         title: "Response Error",
         description: "There was a problem generating a response.",
         variant: "destructive"
       });
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Submit on Enter (without Shift key for newlines)
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e as unknown as React.FormEvent);
     }
   };
 
@@ -165,27 +162,21 @@ const FarmerAIAssistant: React.FC = () => {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
-        <ChatInterface messages={messages} isLoading={isLoading} />
+        <Suspense fallback={
+          <div className="h-[300px] flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        }>
+          <ChatInterface messages={messages} isLoading={isLoading} />
+        </Suspense>
       </CardContent>
       <CardFooter>
-        <form onSubmit={handleSubmit} className="flex w-full gap-2">
-          <Textarea 
-            placeholder="Ask about market prices, demand, or where to sell tomorrow..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="flex-1 resize-none text-sm md:text-base"
-            rows={2}
-            disabled={isLoading}
+        <Suspense fallback={<div className="w-full h-20 animate-pulse bg-muted rounded-md"></div>}>
+          <MessageInput 
+            onSendMessage={handleSendMessage}
+            isLoading={isLoading}
           />
-          <Button type="submit" size="icon" disabled={isLoading}>
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <SendIcon className="h-4 w-4" />
-            )}
-          </Button>
-        </form>
+        </Suspense>
       </CardFooter>
     </Card>
   );
