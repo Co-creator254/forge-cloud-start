@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { camera, image } from 'lucide-react';
+import { Camera, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -93,7 +93,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ onMediaUpload }) => {
         onClick={() => fileInputRef.current?.click()}
         disabled={isUploading}
       >
-        <image className="h-4 w-4" />
+        <Image className="h-4 w-4" />
       </Button>
       <Button
         type="button"
@@ -102,7 +102,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({ onMediaUpload }) => {
         onClick={handleCapture}
         disabled={isUploading}
       >
-        <camera className="h-4 w-4" />
+        <Camera className="h-4 w-4" />
       </Button>
       <input
         type="file"
