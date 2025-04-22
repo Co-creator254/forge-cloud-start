@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -79,11 +80,38 @@ const PriceChart: React.FC<{ data: any[]; type: ChartType; height?: number }> = 
     area: AreaChart
   }[type];
 
-  const DataComponent = {
-    line: Line,
-    bar: Bar,
-    area: Area
-  }[type];
+  // Correct implementation to render the data component based on chart type
+  const renderDataComponent = () => {
+    switch (type) {
+      case 'line':
+        return (
+          <Line
+            type="monotone"
+            dataKey="price"
+            stroke="#8884d8"
+            activeDot={{ r: 8 }}
+          />
+        );
+      case 'bar':
+        return (
+          <Bar
+            dataKey="price"
+            fill="#8884d8"
+          />
+        );
+      case 'area':
+        return (
+          <Area
+            type="monotone"
+            dataKey="price"
+            stroke="#8884d8"
+            fill="#8884d8"
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -109,13 +137,7 @@ const PriceChart: React.FC<{ data: any[]; type: ChartType; height?: number }> = 
           labelFormatter={(label) => `Date: ${label}`}
         />
         <Legend />
-        <DataComponent
-          type="monotone"
-          dataKey="price"
-          stroke="#8884d8"
-          fill="#8884d8"
-          activeDot={{ r: 8 }}
-        />
+        {renderDataComponent()}
       </ChartComponent>
     </ResponsiveContainer>
   );
