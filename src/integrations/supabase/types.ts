@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      messages: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          is_encrypted: boolean | null
+          media_type: string | null
+          media_url: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_encrypted?: boolean | null
+          media_type?: string | null
+          media_url?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_encrypted?: boolean | null
+          media_type?: string | null
+          media_url?: string | null
+          sender_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
