@@ -9,6 +9,13 @@ import {
   getSupplyChainSolutions,
   getQualityControlAdvice 
 } from './utils/businessSolutions';
+import {
+  detectCounterfeitAlert,
+  getDiseaseAlert,
+  getPolicyImplementationGap,
+  getTechnologyAdoptionSentiment,
+  generateSentimentBasedInsight
+} from './utils/sentimentAnalysis';
 
 export const generateResponse = (
   userMessage: string,
@@ -29,12 +36,97 @@ export const generateResponse = (
     
     // Check for greetings or general inquiries
     if (message.match(/^(hi|hello|hey|greetings|good morning|good afternoon|good evening)/i)) {
-      return "Hello! I'm your agricultural assistant. I can help with finding markets, forecasting prices with error margins, connecting you with warehouses and transporters, finding potential buyers, and suggesting ethical supply chain solutions. What crop are you growing or what agricultural information do you need today?";
+      return "Hello! I'm your ethical agricultural assistant. I can help with finding markets, forecasting prices with error margins, connecting you with warehouses and transporters, finding potential buyers, suggesting ethical supply chain solutions, and analyzing collective farmer intelligence on counterfeits, diseases, policies, and technologies. What agricultural information do you need today?";
     }
     
     // Check for thank you messages
     if (message.match(/thank you|thanks|appreciate|helpful/i)) {
-      return "You're welcome! I'm glad I could help. Is there anything else you'd like to know about agricultural markets, potential buyers, or ethical supply chain solutions?";
+      return "You're welcome! I'm glad I could help. Is there anything else you'd like to know about agricultural markets, potential buyers, ethical supply chain solutions, or collective farmer intelligence?";
+    }
+    
+    // Check for sentiment analysis and collective intelligence requests
+    
+    // Counterfeit alerts
+    if (message.includes('counterfeit') || message.includes('fake') || 
+        message.includes('fraud') || message.includes('adulterated') || 
+        message.includes('suspicious')) {
+      
+      // Extract product name if present
+      const productMatches = message.match(/fertilizer|seed|pesticide|herbicide|fungicide|insecticide|chemical|brand/g);
+      const product = productMatches ? productMatches[0] : '';
+      
+      if (product && location) {
+        return detectCounterfeitAlert(product, location);
+      } else if (product) {
+        return `I can check for counterfeit alerts regarding ${product}. Which location are you interested in?`;
+      } else if (location) {
+        return `I can check for counterfeit alerts in ${location}. What product are you concerned about?`;
+      } else {
+        return "I can check for counterfeit alerts based on collective farmer intelligence. Please specify which agricultural input (like fertilizer, seeds, pesticides) and location you're interested in.";
+      }
+    }
+    
+    // Disease alerts
+    if (message.includes('disease') || message.includes('pest') || 
+        message.includes('infection') || message.includes('symptoms') || 
+        message.includes('spots') || message.includes('wilt')) {
+      
+      if (crop && location) {
+        return getDiseaseAlert(crop, location);
+      } else if (crop) {
+        return `I can check for disease alerts for ${crop}. Which location are you interested in?`;
+      } else if (location) {
+        return `I can check for disease alerts in ${location}. Which crop are you concerned about?`;
+      } else {
+        return "I can provide disease alerts based on collective farmer intelligence. Please specify which crop and location you're interested in.";
+      }
+    }
+    
+    // Policy implementation gaps
+    if (message.includes('policy') || message.includes('subsidy') || 
+        message.includes('program') || message.includes('government') ||
+        message.includes('implementation')) {
+      
+      // Extract policy name if present
+      const policyMatches = message.match(/subsidy|loan|insurance|certification|price control|support program|credit|financing/g);
+      const policy = policyMatches ? policyMatches[0] : '';
+      
+      if (policy && location) {
+        return getPolicyImplementationGap(policy, location);
+      } else if (policy) {
+        return `I can check farmer feedback on the implementation of ${policy} policies. Which location are you interested in?`;
+      } else if (location) {
+        return `I can provide insights on policy implementation gaps in ${location}. Which agricultural policy are you interested in?`;
+      } else {
+        return "I can analyze policy implementation gaps based on collective farmer intelligence. Please specify which agricultural policy (like subsidies, loans, insurance) and location you're interested in.";
+      }
+    }
+    
+    // Technology sentiment
+    if (message.includes('technology') || message.includes('app') || 
+        message.includes('tool') || message.includes('innovation') ||
+        message.includes('digital') || message.includes('system')) {
+      
+      // Extract technology name if present
+      const techMatches = message.match(/irrigation|sensor|drone|mobile app|solar|mechanization|automation|platform/g);
+      const technology = techMatches ? techMatches[0] : '';
+      
+      if (technology) {
+        return getTechnologyAdoptionSentiment(technology);
+      } else {
+        return "I can provide insights on farmer sentiment toward agricultural technologies. Which specific technology (like irrigation systems, sensors, drones, mobile apps) are you interested in?";
+      }
+    }
+    
+    // General collective intelligence insights
+    if (message.includes('insights') || message.includes('collective intelligence') || 
+        message.includes('farmer experience') || message.includes('community knowledge')) {
+      
+      if (crop) {
+        return generateSentimentBasedInsight('', crop);
+      } else {
+        return "I can provide collective intelligence insights based on aggregated farmer experiences. Which specific crop or agricultural topic would you like insights about?";
+      }
     }
     
     // Check if the message is about price forecasts or tomorrow's markets
@@ -111,18 +203,17 @@ export const generateResponse = (
     // Check if asking about the AI itself
     if (message.includes('which ai') || message.includes('what ai') || message.includes('ai model') || 
         message.includes('what model') || message.includes('how do you work')) {
-      return "I'm a specialized agricultural assistant built on open-source AI technology. I analyze patterns in market data and provide recommendations based on historical trends and current conditions. I prioritize ethical considerations in all my recommendations, including fair pricing, sustainable practices, and transparent supply chains. Is there a specific agricultural question I can help you with?";
+      return "I'm a specialized agricultural assistant built on open-source AI technology. I analyze patterns in market data and provide recommendations based on historical trends, current conditions, and collective farmer intelligence. I prioritize ethical considerations in all my recommendations, including fair pricing, sustainable practices, and transparent supply chains. I can help with market insights, disease alerts, counterfeit warnings, and technology adoption guidance. How can I assist you today?";
     }
     
     // Default response if no specific intent is detected
     if (crop) {
-      return `I can help you with market prices, forecasts, storage, transport, finding buyers, and suggesting ethical supply chain solutions for ${crop}. What specific information are you looking for?`;
+      return `I can help you with market prices, forecasts, storage, transport, finding buyers, suggesting ethical supply chain solutions, and providing collective intelligence insights for ${crop}. What specific information are you looking for?`;
     }
     
-    return "I'm your agricultural assistant. I can help with finding markets, forecasting prices with error margins, connecting you with warehouses and transporters, finding potential buyers, and suggesting ethical supply chain solutions. What crop are you growing or what information do you need today?";
+    return "I'm your ethical agricultural assistant powered by open-source technology. I can help with finding markets, forecasting prices with error margins, connecting you with warehouses and transporters, finding potential buyers, suggesting ethical supply chain solutions, and providing collective intelligence on counterfeits, diseases, policies, and technologies. What agricultural information do you need today?";
   } catch (error) {
     console.error("Error in generateResponse:", error);
     return "I apologize, but I encountered an unexpected error. Could you please rephrase your question or try asking about a different topic?";
   }
 };
-

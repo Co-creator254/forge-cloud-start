@@ -11,7 +11,7 @@ import {
 import { Market, Forecast, Warehouse } from '@/types';
 import { Message } from '@/features/ai-assistant/types';
 import { mockTransporters } from '@/features/ai-assistant/mockData';
-import { generateResponse } from '@/features/ai-assistant/aiResponseGenerator';
+import { generateResponse } from '@/features/ai-assistant/responseGenerator';
 import { useToast } from '@/hooks/use-toast';
 import { usePerformance } from '@/hooks/use-performance';
 
