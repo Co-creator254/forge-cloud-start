@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,7 @@ const featuredNews = [
     tags: ["maize", "drought-resistant", "research"],
     location: "Nationwide",
     summary: "The Kenya Agricultural Research Institute has introduced a new drought-resistant maize variety that can thrive with up to 30% less water than traditional varieties.",
-    url: "#"
+    url: "https://www.kalro.org/latest-news"
   },
   {
     id: 2,
@@ -25,7 +24,7 @@ const featuredNews = [
     tags: ["digital payments", "cooperatives", "rural"],
     location: "Western Kenya",
     summary: "Digital payment systems have been implemented across 200 rural farmer cooperatives, reducing transaction costs and increasing financial transparency.",
-    url: "#"
+    url: "https://www.digitalfarmers.co.ke/news"
   },
   {
     id: 3,
@@ -35,7 +34,7 @@ const featuredNews = [
     tags: ["exports", "avocado", "market access"],
     location: "Central Kenya",
     summary: "Kenya's avocado exports to European markets have increased by 25% in the first half of 2024, driven by improved quality control measures.",
-    url: "#"
+    url: "https://www.epc.go.ke/press-releases"
   }
 ];
 
@@ -169,7 +168,12 @@ const FeaturedContent: React.FC = () => {
                 </div>
                 
                 <Button asChild variant="outline" size="sm" className="w-full">
-                  <a href={item.url} className="flex items-center justify-center">
+                  <a 
+                    href={item.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="flex items-center justify-center"
+                  >
                     View Details <ExternalLink className="ml-1 h-3 w-3" />
                   </a>
                 </Button>
