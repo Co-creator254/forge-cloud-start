@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -21,6 +21,7 @@ const MessageInput = lazy(() => import('@/components/ai-assistant/MessageInput')
 const FarmerAIAssistant: React.FC = () => {
   const { toast } = useToast();
   const { measureInteraction } = usePerformance('FarmerAIAssistant');
+  const componentMounted = useRef(true);
   
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -52,28 +53,38 @@ const FarmerAIAssistant: React.FC = () => {
         fetchWarehouses()
       ]);
       
-      setMarkets(marketsData);
-      setForecasts(forecastsData);
-      setWarehouses(warehousesData);
-      // Transport providers will be implemented in the future
-      // For now using mock data
+      // Ensure component is still mounted before updating state
+      if (componentMounted.current) {
+        setMarkets(marketsData);
+        setForecasts(forecastsData);
+        setWarehouses(warehousesData);
+      }
     } catch (error) {
       console.error('Error fetching data for AI assistant:', error);
-      setError('Could not load agricultural data. Please try refreshing the page.');
-      toast({
-        title: "Data Loading Error",
-        description: "Could not load market data. Some features may be limited.",
-        variant: "destructive"
-      });
+      if (componentMounted.current) {
+        setError('Could not load agricultural data. Please try refreshing the page.');
+        toast({
+          title: "Data Loading Error",
+          description: "Could not load market data. Some features may be limited.",
+          variant: "destructive"
+        });
+      }
     } finally {
-      setDataLoading(false);
-      endMeasure();
+      if (componentMounted.current) {
+        setDataLoading(false);
+        endMeasure();
+      }
     }
   }, [toast, measureInteraction]);
   
   // Fetch necessary data on component mount
   useEffect(() => {
+    componentMounted.current = true;
     fetchData();
+    
+    return () => {
+      componentMounted.current = false;
+    };
   }, [fetchData]);
 
   const handleSendMessage = async (input: string) => {
@@ -101,43 +112,50 @@ const FarmerAIAssistant: React.FC = () => {
 
     // Generate AI response
     try {
-      setTimeout(() => {
-        const responseContent = generateResponse(
-          userMessage.content,
-          markets,
-          forecasts,
-          warehouses,
-          transporters
-        );
-        
-        const aiResponse: Message = {
+      // Using a stable timeout to prevent flickering
+      const timer = setTimeout(() => {
+        if (componentMounted.current) {
+          const responseContent = generateResponse(
+            userMessage.content,
+            markets,
+            forecasts,
+            warehouses,
+            transporters
+          );
+          
+          const aiResponse: Message = {
+            id: (Date.now() + 1).toString(),
+            content: responseContent,
+            role: 'assistant',
+            timestamp: new Date()
+          };
+          
+          setMessages(prev => [...prev, aiResponse]);
+          setIsLoading(false);
+          endMeasure();
+        }
+      }, 800);
+      
+      return () => clearTimeout(timer);
+    } catch (error) {
+      console.error('Error generating AI response:', error);
+      if (componentMounted.current) {
+        const errorResponse: Message = {
           id: (Date.now() + 1).toString(),
-          content: responseContent,
+          content: "I apologize, but I encountered an error processing your request. Could you try asking in a different way?",
           role: 'assistant',
           timestamp: new Date()
         };
-        
-        setMessages(prev => [...prev, aiResponse]);
+        setMessages(prev => [...prev, errorResponse]);
         setIsLoading(false);
         endMeasure();
-      }, 800); // Slightly reduced from 1000ms for better UX
-    } catch (error) {
-      console.error('Error generating AI response:', error);
-      const errorResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "I apologize, but I encountered an error processing your request. Could you try asking in a different way?",
-        role: 'assistant',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorResponse]);
-      setIsLoading(false);
-      endMeasure();
-      
-      toast({
-        title: "Response Error",
-        description: "There was a problem generating a response.",
-        variant: "destructive"
-      });
+        
+        toast({
+          title: "Response Error",
+          description: "There was a problem generating a response.",
+          variant: "destructive"
+        });
+      }
     }
   };
 

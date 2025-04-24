@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,6 +35,11 @@ import QualityControl from "./pages/supplyChainProblems/QualityControl";
 // New logistics and service provider pages
 import TransporterSignUp from "./pages/TransporterSignUp";
 import Auth from "./pages/Auth";
+
+// New pages for sentiment analysis, market demand, and success stories
+import SentimentAnalysis from "./pages/SentimentAnalysis";
+import MarketDemandHotspot from "./pages/MarketDemandHotspot";
+import FarmerSuccessStories from "./pages/FarmerSuccessStories";
 
 import NotFound from "./pages/NotFound";
 import DataJobs from "./pages/DataJobs";
@@ -82,6 +88,11 @@ const App = () => (
             
             {/* Authentication */}
             <Route path="/auth" element={<Auth />} />
+            
+            {/* New pages for sentiment analysis, market demand, and success stories */}
+            <Route path="/sentiment-analysis" element={<SentimentAnalysis />} />
+            <Route path="/market-demand-hotspot" element={<MarketDemandHotspot />} />
+            <Route path="/farmer-success-stories" element={<FarmerSuccessStories />} />
             
             {/* Catch all */}
             <Route path="*" element={<NotFound />} />
