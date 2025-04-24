@@ -1,4 +1,3 @@
-
 export type Category = 'agriculture' | 'tender' | 'solutions' | 'awarded-tender';
 
 export interface DataItem {
@@ -279,3 +278,77 @@ export interface CommunityPost {
   location?: string;
 }
 
+// Service Provider Types
+export interface ServiceProvider {
+  id: string;
+  name: string;
+  businessType: ServiceProviderType;
+  description: string;
+  services: string[];
+  location: {
+    county: string;
+    specificLocation: string;
+    coordinates?: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+  contactInfo: string;
+  website?: string;
+  verified: boolean;
+  rating: number;
+  reviewCount: number;
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ServiceProviderType = 
+  | 'storage' 
+  | 'transport' 
+  | 'quality-control' 
+  | 'training' 
+  | 'input-supplier'
+  | 'inspector' 
+  | 'market-linkage';
+
+export interface TrainingEvent {
+  id: string;
+  title: string;
+  description: string;
+  providerId: string;
+  providerName: string;
+  date: string;
+  location: string;
+  topics: string[];
+  capacity: number;
+  registeredCount: number;
+  cost: string;
+}
+
+export interface QualityControlDiscussion {
+  id: string;
+  title: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  authorType: 'farmer' | 'expert' | 'provider' | 'other';
+  createdAt: string;
+  commentCount: number;
+  viewCount: number;
+  tags: string[];
+}
+
+export interface MarketLinkage {
+  id: string;
+  name: string;
+  type: 'vertical' | 'horizontal';
+  description: string;
+  providerId: string;
+  providerName: string;
+  markets: string[];
+  crops: string[];
+  requirements: string;
+  benefits: string;
+  contactInfo: string;
+}

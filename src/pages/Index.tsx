@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -94,7 +93,7 @@ const Index = () => {
               <Card className="flex flex-col hover:shadow-lg transition-all">
                 <CardHeader>
                   <div className="mb-2 bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center">
-                    <Package className="h-6 w-6 text-primary" />
+                    Package className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle>Commodity Trading</CardTitle>
                   <CardDescription>Connect directly with buyers and sellers across Kenya</CardDescription>
@@ -164,6 +163,44 @@ const Index = () => {
                     </Link>
                   </Button>
                 </div>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Service Providers</CardTitle>
+                  <CardDescription>
+                    Find and connect with agricultural service providers
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    <li>
+                      <Link to="/service-providers" className="text-blue-600 hover:underline">
+                        Service Provider Directory
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/service-provider-registration" className="text-blue-600 hover:underline">
+                        Register as a Service Provider
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/training-events" className="text-blue-600 hover:underline">
+                        Training Events
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/quality-control-discussions" className="text-blue-600 hover:underline">
+                        Quality Control Discussions
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/market-linkages" className="text-blue-600 hover:underline">
+                        Market Linkages
+                      </Link>
+                    </li>
+                  </ul>
+                </CardContent>
               </Card>
             </div>
           </div>

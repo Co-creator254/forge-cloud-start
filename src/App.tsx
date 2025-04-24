@@ -34,6 +34,11 @@ import QualityControl from "./pages/supplyChainProblems/QualityControl";
 
 // New logistics and service provider pages
 import TransporterSignUp from "./pages/TransporterSignUp";
+import ServiceProviders from "./pages/ServiceProviders";
+import ServiceProviderRegistration from "./pages/ServiceProviderRegistration";
+import QualityControlDiscussions from "./pages/QualityControlDiscussions";
+import TrainingEvents from "./pages/TrainingEvents";
+import MarketLinkages from "./pages/MarketLinkages";
 import Auth from "./pages/Auth";
 
 // New pages for sentiment analysis, market demand, and success stories
@@ -84,6 +89,11 @@ const App = () => (
             <Route path="/api-docs" element={<ApiDocs />} />
 
             {/* Service Provider Routes */}
+            <Route path="/service-providers" element={<ServiceProviders />} />
+            <Route path="/service-provider-registration" element={<ServiceProviderRegistration />} />
+            <Route path="/quality-control-discussions" element={<QualityControlDiscussions />} />
+            <Route path="/training-events" element={<TrainingEvents />} />
+            <Route path="/market-linkages" element={<MarketLinkages />} />
             <Route path="/transporter-signup" element={<TransporterSignUp />} />
             
             {/* Authentication */}
