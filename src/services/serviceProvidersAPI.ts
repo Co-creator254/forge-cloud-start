@@ -1,5 +1,5 @@
 
-import { ServiceProvider, TrainingEvent, QualityControlDiscussion, MarketLinkage } from '@/types';
+import { ServiceProvider, ServiceProviderType, TrainingEvent, QualityControlDiscussion, MarketLinkage } from '@/types';
 import { simulateDelay } from './apiUtils';
 
 // Mock service providers data
