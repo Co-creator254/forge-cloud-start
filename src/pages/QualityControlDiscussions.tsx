@@ -1,19 +1,18 @@
+
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { MessageSquare } from "lucide-react";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageSquare, Eye, Clock, PenSquare } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { QualityControlDiscussion } from "@/types";
 import { fetchQualityDiscussions } from "@/services/serviceProvidersAPI";
 import { useToast } from "@/hooks/use-toast";
+import { DiscussionHeader } from "@/components/discussions/DiscussionHeader";
+import { DiscussionFilters } from "@/components/discussions/DiscussionFilters";
+import { DiscussionCard } from "@/components/discussions/DiscussionCard";
 
 const QualityControlDiscussions = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [discussions, setDiscussions] = useState<QualityControlDiscussion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,43 +69,15 @@ const QualityControlDiscussions = () => {
       </header>
 
       <main className="flex-1 container py-6">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Quality Control Discussions</h1>
-            <p className="text-muted-foreground mt-2">
-              Join the conversation on agricultural quality standards and challenges
-            </p>
-          </div>
-          <div className="mt-4 md:mt-0">
-            <Button>
-              <PenSquare className="mr-2 h-4 w-4" /> Start New Discussion
-            </Button>
-          </div>
-        </div>
+        <DiscussionHeader />
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="md:col-span-3">
-            <Input
-              placeholder="Search discussions..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
-            />
-          </div>
-          <div>
-            <Select value={filterTag} onValueChange={setFilterTag}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by tag" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Tags</SelectItem>
-                {allTags.map(tag => (
-                  <SelectItem key={tag} value={tag}>{tag}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+        <DiscussionFilters 
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          filterTag={filterTag}
+          setFilterTag={setFilterTag}
+          allTags={allTags}
+        />
 
         {isLoading ? (
           <div className="space-y-4">
@@ -121,9 +92,6 @@ const QualityControlDiscussions = () => {
                   <div className="h-4 bg-muted rounded w-5/6 mb-2"></div>
                   <div className="h-4 bg-muted rounded w-4/6"></div>
                 </CardContent>
-                <CardFooter>
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                </CardFooter>
               </Card>
             ))}
           </div>
@@ -141,51 +109,12 @@ const QualityControlDiscussions = () => {
         ) : (
           <div className="space-y-4">
             {filteredDiscussions.map((discussion) => (
-              <Card key={discussion.id}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xl">{discussion.title}</CardTitle>
-                  <CardDescription className="flex items-center">
-                    Started by {discussion.authorName}
-                    <Badge variant="outline" className="ml-2 text-xs">
-                      {discussion.authorType}
-                    </Badge>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground line-clamp-2">{discussion.content}</p>
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {discussion.tags.map(tag => (
-                      <Badge 
-                        key={tag} 
-                        variant={filterTag === tag ? "default" : "outline"}
-                        className="cursor-pointer"
-                        onClick={() => setFilterTag(tag)}
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between text-sm text-muted-foreground">
-                  <div className="flex space-x-4">
-                    <span className="flex items-center">
-                      <MessageSquare className="mr-1 h-4 w-4" />
-                      {discussion.commentCount} comments
-                    </span>
-                    <span className="flex items-center">
-                      <Eye className="mr-1 h-4 w-4" />
-                      {discussion.viewCount} views
-                    </span>
-                    <span className="flex items-center">
-                      <Clock className="mr-1 h-4 w-4" />
-                      {new Date(discussion.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    View Discussion
-                  </Button>
-                </CardFooter>
-              </Card>
+              <DiscussionCard
+                key={discussion.id}
+                discussion={discussion}
+                filterTag={filterTag}
+                setFilterTag={setFilterTag}
+              />
             ))}
           </div>
         )}
