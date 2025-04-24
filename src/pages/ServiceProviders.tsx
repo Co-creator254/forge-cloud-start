@@ -1,4 +1,6 @@
+
 import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
@@ -10,9 +12,13 @@ import { ProviderFilters } from "@/components/service-providers/ProviderFilters"
 import { ProviderCard } from "@/components/service-providers/ProviderCard";
 import { ProviderTabs } from "@/components/service-providers/ProviderTabs";
 import { TrainingEventsSection } from "@/components/service-providers/TrainingEventsSection";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tag } from "lucide-react";
 
 const ServiceProviders = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [providers, setProviders] = useState<ServiceProvider[]>([]);
   const [filteredProviders, setFilteredProviders] = useState<ServiceProvider[]>([]);
@@ -24,7 +30,7 @@ const ServiceProviders = () => {
   const typeFilter = searchParams.get("type") as ServiceProviderType | null;
   const activeTab = (typeFilter || "all") as ServiceProviderType | "all";
 
-  const providerTypes = [
+  const providerTypes: Array<{ value: ServiceProviderType | "all"; label: string }> = [
     { value: "all", label: "All Providers" },
     { value: "storage", label: "Storage Facilities" },
     { value: "transport", label: "Transport Services" },
