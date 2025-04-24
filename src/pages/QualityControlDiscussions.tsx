@@ -1,5 +1,5 @@
-
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { fetchQualityDiscussions } from "@/services/serviceProvidersAPI";
 import { useToast } from "@/hooks/use-toast";
 
 const QualityControlDiscussions = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [discussions, setDiscussions] = useState<QualityControlDiscussion[]>([]);
   const [isLoading, setIsLoading] = useState(true);

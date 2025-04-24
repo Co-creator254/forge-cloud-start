@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
 import { Button } from "@/components/ui/button";
@@ -9,12 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MapPin, Phone, Star, ExternalLink, FileCheck, Calendar, Users, Tag } from "lucide-react";
+import { MapPin, Phone, Star, ExternalLink, Calendar, Users, Tag } from "lucide-react";
 import { ServiceProvider, ServiceProviderType } from "@/types";
 import { fetchServiceProviders } from "@/services/serviceProvidersAPI";
 import { useToast } from "@/hooks/use-toast";
 
 const ServiceProviders = () => {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
   const [providers, setProviders] = useState<ServiceProvider[]>([]);
@@ -22,7 +22,7 @@ const ServiceProviders = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState<ServiceProviderType | "all">("all");
-  const [selectedCounty, setSelectedCounty] = useState<string | "all">("all");
+  const [selectedCounty, setSelectedCounty] = useState<string>("all");
   
   const typeFilter = searchParams.get("type") as ServiceProviderType | null;
   const activeTab = (typeFilter || "all") as ServiceProviderType | "all";
@@ -39,8 +39,18 @@ const ServiceProviders = () => {
   ];
 
   const counties = [
-    "All Counties", "Nairobi", "Mombasa", "Kisumu", "Nakuru", "Kiambu", "Machakos", 
-    "Meru", "Kakamega", "Uasin Gishu", "Nyeri", "Kilifi"
+    { value: "all", label: "All Counties" },
+    { value: "nairobi", label: "Nairobi" },
+    { value: "mombasa", label: "Mombasa" },
+    { value: "kisumu", label: "Kisumu" },
+    { value: "nakuru", label: "Nakuru" },
+    { value: "kiambu", label: "Kiambu" },
+    { value: "machakos", label: "Machakos" },
+    { value: "meru", label: "Meru" },
+    { value: "kakamega", label: "Kakamega" },
+    { value: "uasin-gishu", label: "Uasin Gishu" },
+    { value: "nyeri", label: "Nyeri" },
+    { value: "kilifi", label: "Kilifi" }
   ];
 
   useEffect(() => {
@@ -74,8 +84,8 @@ const ServiceProviders = () => {
     }
     
     // Filter by county
-    if (selectedCounty !== "all" && selectedCounty !== "All Counties") {
-      filtered = filtered.filter(provider => provider.location.county === selectedCounty);
+    if (selectedCounty !== "all") {
+      filtered = filtered.filter(provider => provider.location.county.toLowerCase() === selectedCounty.toLowerCase());
     }
     
     // Filter by search term
@@ -125,7 +135,7 @@ const ServiceProviders = () => {
             </p>
           </div>
           <div className="mt-4 md:mt-0">
-            <Button>Register as a Provider</Button>
+            <Button onClick={() => navigate("/service-provider-registration")}>Register as a Provider</Button>
           </div>
         </div>
 
@@ -159,8 +169,8 @@ const ServiceProviders = () => {
               </SelectTrigger>
               <SelectContent>
                 {counties.map((county) => (
-                  <SelectItem key={county} value={county}>
-                    {county}
+                  <SelectItem key={county.value} value={county.value}>
+                    {county.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -197,7 +207,7 @@ const ServiceProviders = () => {
             <p className="text-muted-foreground mt-2 mb-4">
               Try adjusting your search or filters, or register as a new provider.
             </p>
-            <Button>Register as a Provider</Button>
+            <Button onClick={() => navigate("/service-provider-registration")}>Register as a Provider</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -290,13 +300,13 @@ const ServiceProviders = () => {
                 </CardContent>
                 <CardFooter className="flex justify-between">
                   <Badge>KSh 2,500</Badge>
-                  <Button size="sm">Register</Button>
+                  <Button size="sm" onClick={() => navigate("/training-events")}>Register</Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
           <div className="mt-6 text-center">
-            <Button variant="outline">View All Events</Button>
+            <Button variant="outline" onClick={() => navigate("/training-events")}>View All Events</Button>
           </div>
         </div>
       </main>
