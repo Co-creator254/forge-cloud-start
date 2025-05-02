@@ -126,7 +126,7 @@ const FarmerAIAssistant: React.FC = () => {
       toast({
         title: "Limited Functionality",
         description: "Some data couldn't be loaded. Responses may be incomplete.",
-        variant: "warning"
+        variant: "destructive" // Changed from "warning" to "destructive" to match allowed types
       });
     }
 
@@ -226,7 +226,7 @@ const FarmerAIAssistant: React.FC = () => {
           <MessageInput 
             onSendMessage={handleSendMessage}
             isLoading={isLoading}
-            placeholderText="Ask about crops, market prices, forecasts... (Swahili, Kikuyu, Luo & Kalenjin supported)"
+            placeholder="Ask about crops, market prices, forecasts... (Swahili, Kikuyu, Luo & Kalenjin supported)" // Changed from placeholderText to placeholder to match component props
           />
         </Suspense>
       </CardFooter>
