@@ -1,4 +1,3 @@
-
 import { Market, Forecast, Warehouse } from '@/types';
 import { Transporter } from './types';
 import { getCropForecast } from './utils/cropForecasts';
@@ -35,16 +34,22 @@ const languageResponses = {
   kikuyu: {
     greeting: "Niatia! Nĩ niĩ mũteithia waku wa ũrĩmi. No ngũteithi kũona thoko, gũthugumĩra thogora, gũkũnyitithania na makorigiriro na athuti, gũcaria agũri, gũtaarana mĩoroorere ya wĩra, na gũkũhe ũmenyo kuuma kũrĩ arĩmi angĩ.",
     cropRequest: "Nĩ mũgũnda ũrĩa ũrahanda?",
+    marketPrices: (crop: string) => `Thogora wa ${crop} ĩraugĩka kuringana na kũrĩa ũrĩ. Ningũkũhe ũhoro makĩria ũnanjĩĩre nĩkũ ũrĩ.`,
+    forecast: (crop: string) => `Ũthugumĩri wa thogora wa ${crop} kiumia kĩĩ kĩrooka wonanitie kwona kwongerereka kwa 5-10%. No ũgĩe na thogora mwega makĩria ũetereire.`,
     noUnderstanding: "Nĩndagũthima, no ndiracoka kwĩgua wendi waku. Tafadhali geria rĩngĩ na ciugo ingĩ kana ũnjĩĩre ũteithio ũrĩa ũbataire igũrũ rĩa ũrĩmi.",
   },
   luo: {
     greeting: "Ber ahinya! An jakony mari mar pur. Anyalo konyi yudo chiro, koro nengo, riwakonyo gi migepe mag kano kod jooting, yudo jongiewo, chiwo paro mar migepe mag kelo cham, gi miyoi puonj ma ogol kuom jolup pur mamoko.",
     cropRequest: "Itimo pur mar ang'o?",
+    marketPrices: (crop: string) => `Nengo mar ${crop} lokore kaluwore gi kama intie. Abiro miyi weche momedore ka inyisa kama intiere.`,
+    forecast: (crop: string) => `Nengo mar ${crop} mar juma mabiro nyiso ni biro medore kuom 5-10%. Inyalo yudo nengo maber moloyo ka irito.`,
     noUnderstanding: "Akwayo tweyo, ok awinj penjoni maber. Tem kendo gi weche mopogore kata nyisa kony mane idwaro kuom pur.",
   },
   kalenjin: {
     greeting: "Chamgei! Ani ne bo ngo ya kerichek. Amuche anyiny sukik, astap oret, anai temik ak kobet ab getik ak boisionik ab kolet, anai bolenjik, kalenjin oret ab koitab ketik, ak anyinjin imbarek chebo burenik.",
     cropRequest: "Imbarek ainon ne imine?",
+    marketPrices: (crop: string) => `Oretab ${crop} kowal koborunet nebo ole imine. Abwatin imanit anan inye ole imine.`,
+    forecast: (crop: string) => `Astap ab oretab ${crop} wikit ne inoni kolewen konyor 5-10%. Imoche iny oret ne karam ingonyei.`,
     noUnderstanding: "Sabarei, matanyu kasotik. Saayi kaite ak kasaek alak anan ilenji toretinik ne icham kobo kerichek.",
   }
 };
@@ -103,7 +108,7 @@ export const generateResponse = (
       
       // If asking about a crop but no specific question detected
       if (crop) {
-        if (responses.marketPrices && detectedLanguage === 'swahili') {
+        if (responses.marketPrices) {
           return responses.marketPrices(crop);
         }
         return responses.cropRequest;
