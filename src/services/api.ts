@@ -1,4 +1,3 @@
-
 // Re-export everything from the individual API modules
 
 // Utils and common functionality
@@ -42,7 +41,7 @@ export {
   fetchAmisKePrices,
   fetchAmisKeMarkets,
   getAmisKePriceHistory
-} from './amisKeIntegration';
+} from './amis-ke';
 
 // Cron Jobs for data automation
 export {

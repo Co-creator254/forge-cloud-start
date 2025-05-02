@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Card, 
@@ -20,7 +19,8 @@ import {
   Legend, 
   ResponsiveContainer 
 } from 'recharts';
-import { fetchAmisKePrices, fetchAmisKeMarkets, getAmisKePriceHistory } from '@/services/api';
+import { fetchAmisKePrices, fetchAmisKeMarkets, getAmisKePriceHistory } from '@/services/amis-ke';
+import { AmisKePriceData, AmisKeMarket } from '@/services/amis-ke/types';
 
 interface AmisKePriceData {
   id: string;
