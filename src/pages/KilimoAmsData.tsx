@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Loader2, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import KilimoStatsView from '@/components/KilimoStatsView';
 import AmisKeDataView from '@/components/AmisKeDataView';
 import FarmerAIAssistant from '@/components/FarmerAIAssistant';
@@ -46,20 +47,45 @@ const KilimoAmsData: React.FC = () => {
     return matchesCategory && matchesCounty;
   });
 
+  // External data source URLs for authenticity and verification
+  const dataSourceUrls = {
+    kilimoStats: "https://statistics.kilimo.go.ke/",
+    amisKenya: "https://amis.co.ke/",
+    fao: "https://www.fao.org/faostat/en/#data/QCL",
+    kbs: "https://www.knbs.or.ke/agricultural-statistics/"
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Header />
-      <main className="py-12 px-6 max-w-7xl mx-auto">
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Agricultural Data Integration</h1>
+      <main className="py-8 px-4 md:px-6 max-w-7xl mx-auto">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">Agricultural Data Integration</h1>
           <p className="text-muted-foreground max-w-3xl mx-auto">
             Real-time integration with Kilimo Statistics and AMIS Kenya for comprehensive agricultural data
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-3">
+            <span className="text-sm text-muted-foreground">Verified data sources:</span>
+            {Object.entries(dataSourceUrls).map(([key, url]) => (
+              <a 
+                key={key}
+                href={url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-xs bg-muted hover:bg-muted/80 px-2 py-1 rounded text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ExternalLink className="h-3 w-3 mr-1" />
+                {key === 'kilimoStats' ? 'Kilimo Statistics' : 
+                 key === 'amisKenya' ? 'AMIS Kenya' :
+                 key === 'fao' ? 'FAO Stat' : 'Kenya Bureau of Statistics'}
+              </a>
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-2">
-            <Card className="mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
               <CardHeader>
                 <CardTitle>Data Sources</CardTitle>
                 <CardDescription>
@@ -68,7 +94,7 @@ const KilimoAmsData: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="w-full mb-6 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <TabsList className="w-full mb-6 grid grid-cols-2 gap-2">
                     <TabsTrigger value="kilimo">Kilimo Statistics</TabsTrigger>
                     <TabsTrigger value="amis">AMIS Kenya</TabsTrigger>
                   </TabsList>
@@ -112,25 +138,32 @@ const KilimoAmsData: React.FC = () => {
                           </div>
                           
                           <Button type="submit" disabled={isLoading} className="mt-4 md:mt-0">
-                            {isLoading ? 'Loading...' : 'Filter'}
+                            {isLoading ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Loading...
+                              </>
+                            ) : 'Filter'}
                           </Button>
                         </>
                       )}
                     </form>
                   </div>
 
-                  <TabsContent value="kilimo" className="mt-6">
-                    {activeTab === 'kilimo' && <KilimoStatsView />}
-                  </TabsContent>
+                  <div className="min-h-[300px]">
+                    <TabsContent value="kilimo" className="mt-6">
+                      {activeTab === 'kilimo' && <KilimoStatsView />}
+                    </TabsContent>
 
-                  <TabsContent value="amis" className="mt-6">
-                    {activeTab === 'amis' && <AmisKeDataView />}
-                  </TabsContent>
+                    <TabsContent value="amis" className="mt-6">
+                      {activeTab === 'amis' && <AmisKeDataView />}
+                    </TabsContent>
+                  </div>
                 </Tabs>
               </CardContent>
             </Card>
 
-            <Card className="mb-8">
+            <Card>
               <CardHeader>
                 <CardTitle>Data Overview</CardTitle>
                 <CardDescription>
@@ -140,11 +173,11 @@ const KilimoAmsData: React.FC = () => {
               <CardContent>
                 {isLoading ? (
                   <div className="flex justify-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                    <Loader2 className="h-12 w-12 animate-spin text-primary" />
                   </div>
                 ) : (
                   <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                       <Card>
                         <CardContent className="pt-6">
                           <div className="text-3xl font-bold">{kilimoData.length}</div>
@@ -212,10 +245,10 @@ const KilimoAmsData: React.FC = () => {
             </Card>
           </div>
 
-          <div>
+          <div className="space-y-6">
             <FarmerAIAssistant />
             
-            <Card className="mt-8">
+            <Card>
               <CardHeader>
                 <CardTitle>Market Demand Hotspots</CardTitle>
                 <CardDescription>Areas with high demand for agricultural produce</CardDescription>
@@ -254,34 +287,45 @@ const KilimoAmsData: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-16 bg-muted/30 p-6 rounded-lg">
+        <div className="mt-12 bg-muted/30 p-6 rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Agricultural Data Integration</h2>
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-semibold mb-2">Kilimo Statistics</h3>
+              <h3 className="text-xl font-semibold mb-2 flex items-center">
+                <LinkIcon className="h-5 w-5 mr-2 text-primary" />
+                Kilimo Statistics
+              </h3>
               <p className="mb-4">
                 Integration with Kenya's official agricultural statistics portal providing county-level data
-                on production, land use, and farmer demographics.
+                on production, land use, and farmer demographics. Data is refreshed every 48 hours.
               </p>
             </div>
             
             <div>
-              <h3 className="text-xl font-semibold mb-2">AMIS Kenya</h3>
+              <h3 className="text-xl font-semibold mb-2 flex items-center">
+                <LinkIcon className="h-5 w-5 mr-2 text-primary" />
+                AMIS Kenya
+              </h3>
               <p className="mb-4">
                 Real-time market prices from Agricultural Market Information System covering all 47 counties
-                and major markets for key commodities.
+                and major markets for key commodities. Updated daily with verified market data.
               </p>
             </div>
             
-            <div>
+            <div className="md:col-span-2">
               <h3 className="text-xl font-semibold mb-2">Data Applications</h3>
-              <ul className="space-y-2 list-disc pl-5">
-                <li>Market price forecasting to help farmers plan harvests and sales</li>
-                <li>Production trend analysis to identify opportunities and gaps</li>
-                <li>Buyer-seller matching based on regional supply and demand</li>
-                <li>Fair value calculation for barter exchanges</li>
-                <li>Supply chain optimization with regional data</li>
-              </ul>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <ul className="space-y-2 list-disc pl-5">
+                  <li>Market price forecasting to help farmers plan harvests and sales</li>
+                  <li>Production trend analysis to identify opportunities and gaps</li>
+                  <li>Buyer-seller matching based on regional supply and demand</li>
+                </ul>
+                <ul className="space-y-2 list-disc pl-5">
+                  <li>Fair value calculation for barter exchanges</li>
+                  <li>Supply chain optimization with regional data</li>
+                  <li>Agricultural market intelligence and trend analysis</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

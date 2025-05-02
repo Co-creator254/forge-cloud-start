@@ -6,7 +6,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   fetchMarkets, 
   fetchForecasts, 
-  fetchWarehouses 
+  fetchWarehouses,
+  fetchAmisKePrices,
+  fetchAmisKeMarkets
 } from '@/services/api';
 import { Market, Forecast, Warehouse } from '@/types';
 import { Message } from '@/features/ai-assistant/types';
@@ -26,7 +28,7 @@ const FarmerAIAssistant: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hello! I can help you find markets for your produce, understand demand trends, forecast prices with error margins, and suggest the best time to sell. I can also recommend warehouses and transporters. What crop are you growing?',
+      content: 'Habari! Naweza kukusaidia kupata masoko kwa mazao yako, kuelewa mienendo ya mahitaji, kubashiri bei pamoja na viwango vya makosa, na kupendekeza wakati bora wa kuuza. Pia naweza kupendekeza maghala na wasafirishaji. Je, unakulima zao gani? (Hello! I can help you find markets for your produce, understand demand trends, forecast prices with error margins, and suggest the best time to sell. I can also recommend warehouses and transporters. What crop are you growing?)',
       role: 'assistant',
       timestamp: new Date()
     }
@@ -34,40 +36,68 @@ const FarmerAIAssistant: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dataLoadRetries, setDataLoadRetries] = useState(0);
   
   // Data states
   const [markets, setMarkets] = useState<Market[]>([]);
   const [forecasts, setForecasts] = useState<Forecast[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [transporters, setTransporters] = useState<any[]>(mockTransporters);
+  const [amisPrices, setAmisPrices] = useState<any[]>([]);
+  const [amisMarkets, setAmisMarkets] = useState<any[]>([]);
 
   // Memoized fetch function to prevent unnecessary re-renders
   const fetchData = useCallback(async () => {
     const endMeasure = measureInteraction('dataFetch');
     setDataLoading(true);
     setError(null);
+    
     try {
-      const [marketsData, forecastsData, warehousesData] = await Promise.all([
+      // First attempt to fetch direct API data
+      const [marketsData, forecastsData, warehousesData, amisPricesData, amisMarketsData] = await Promise.all([
         fetchMarkets(),
         fetchForecasts(),
-        fetchWarehouses()
+        fetchWarehouses(),
+        fetchAmisKePrices(),
+        fetchAmisKeMarkets()
       ]);
       
       // Ensure component is still mounted before updating state
       if (componentMounted.current) {
+        console.log("Data loaded successfully:", {
+          markets: marketsData.length,
+          forecasts: forecastsData.length,
+          warehouses: warehousesData.length,
+          amisPrices: amisPricesData.length,
+          amisMarkets: amisMarketsData.length
+        });
+        
         setMarkets(marketsData);
         setForecasts(forecastsData);
         setWarehouses(warehousesData);
+        setAmisPrices(amisPricesData);
+        setAmisMarkets(amisMarketsData);
+        setDataLoadRetries(0);
       }
     } catch (error) {
       console.error('Error fetching data for AI assistant:', error);
       if (componentMounted.current) {
-        setError('Could not load agricultural data. Please try refreshing the page.');
+        setError('Could not load agricultural market data. Please try refreshing the page.');
         toast({
           title: "Data Loading Error",
-          description: "Could not load market data. Some features may be limited.",
+          description: "Could not load market data. Using cached data if available.",
           variant: "destructive"
         });
+
+        // If we have less than 3 retries, try again after a delay
+        if (dataLoadRetries < 3) {
+          const retryTimeout = setTimeout(() => {
+            setDataLoadRetries(prev => prev + 1);
+            fetchData();
+          }, 3000); // 3 second delay before retry
+          
+          return () => clearTimeout(retryTimeout);
+        }
       }
     } finally {
       if (componentMounted.current) {
@@ -75,7 +105,7 @@ const FarmerAIAssistant: React.FC = () => {
         endMeasure();
       }
     }
-  }, [toast, measureInteraction]);
+  }, [toast, measureInteraction, dataLoadRetries]);
   
   // Fetch necessary data on component mount
   useEffect(() => {
@@ -88,12 +118,15 @@ const FarmerAIAssistant: React.FC = () => {
   }, [fetchData]);
 
   const handleSendMessage = async (input: string) => {
+    // Don't allow empty messages
+    if (!input.trim()) return;
+
     // Check if data is available before proceeding
     if (error && (markets.length === 0 || forecasts.length === 0 || warehouses.length === 0)) {
       toast({
         title: "Limited Functionality",
         description: "Some data couldn't be loaded. Responses may be incomplete.",
-        variant: "destructive"
+        variant: "warning"
       });
     }
 
@@ -160,22 +193,22 @@ const FarmerAIAssistant: React.FC = () => {
   };
 
   return (
-    <Card className="w-full h-full">
-      <CardHeader>
-        <CardTitle>Agriculture Market Assistant</CardTitle>
+    <Card className="w-full h-full shadow-md border-primary/20">
+      <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
+        <CardTitle>Agricultural Market Assistant</CardTitle>
         <CardDescription>
           Ask about market demand, prices, forecasts, and the best places to sell your produce
         </CardDescription>
         {dataLoading && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-3 w-3 animate-spin" />
-            Loading market data...
+            <span>Loading market data from AMIS Kenya and Kilimo Statistics...</span>
           </div>
         )}
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="p-0">
         {error && (
-          <Alert variant="destructive">
+          <Alert variant="destructive" className="m-4">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
@@ -188,11 +221,12 @@ const FarmerAIAssistant: React.FC = () => {
           <ChatInterface messages={messages} isLoading={isLoading} />
         </Suspense>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="border-t bg-muted/10">
         <Suspense fallback={<div className="w-full h-20 animate-pulse bg-muted rounded-md"></div>}>
           <MessageInput 
             onSendMessage={handleSendMessage}
             isLoading={isLoading}
+            placeholderText="Ask about crops, market prices, forecasts... (Swahili, Kikuyu, Luo & Kalenjin supported)"
           />
         </Suspense>
       </CardFooter>
