@@ -116,13 +116,22 @@ const Index = () => {
               <p className="text-muted-foreground">
                 Access trusted agricultural service providers including transporters, warehouse owners, and more.
               </p>
-              <Button
-                className="mt-4"
-                variant="outline"
-                onClick={() => navigate("/service-providers")}
-              >
-                Find Services
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button
+                  className="mt-4"
+                  variant="outline"
+                  onClick={() => navigate("/service-providers")}
+                >
+                  Provider Directory
+                </Button>
+                <Button
+                  className="mt-4"
+                  variant="ghost"
+                  onClick={() => navigate("/logistics-solutions-map")}
+                >
+                  Solutions Map
+                </Button>
+              </div>
             </div>
             <div className="col-span-1 flex flex-col space-y-3 rounded-lg border p-6">
               <div>

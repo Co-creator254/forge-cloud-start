@@ -10,19 +10,20 @@ interface ApiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: any;
   queryParams?: Record<string, string>;
+  fallbackReturnValue?: any;
 }
 
 export class AmisKeApiHandler {
-  static async get<T>(endpoint: string, queryParams?: Record<string, string>): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET', queryParams });
+  static async get<T>(endpoint: string, queryParams?: Record<string, string>, fallbackReturnValue?: any): Promise<T> {
+    return this.request<T>(endpoint, { method: 'GET', queryParams, fallbackReturnValue });
   }
 
-  static async post<T>(endpoint: string, body: any): Promise<T> {
-    return this.request<T>(endpoint, { method: 'POST', body });
+  static async post<T>(endpoint: string, body: any, fallbackReturnValue?: any): Promise<T> {
+    return this.request<T>(endpoint, { method: 'POST', body, fallbackReturnValue });
   }
 
   static async request<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
-    const { method = 'GET', body, queryParams } = options;
+    const { method = 'GET', body, queryParams, fallbackReturnValue = [] } = options;
 
     // Add query parameters if they exist
     let url = `${API_BASE_URL}/${endpoint}`;
@@ -39,9 +40,11 @@ export class AmisKeApiHandler {
       method,
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Origin': window.location.origin
       },
       mode: 'cors',
+      cache: 'no-cache',
     };
 
     // Add body for POST/PUT requests
@@ -50,17 +53,29 @@ export class AmisKeApiHandler {
     }
 
     console.log(`Making ${method} request to ${url}`);
-    const response = await fetch(url, requestOptions);
+    
+    try {
+      const response = await fetch(url, requestOptions);
 
-    // Handle error responses
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`API error (${response.status}): ${errorText}`);
-      throw new Error(`API request failed (${response.status}): ${response.statusText}`);
+      // Handle error responses
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`API error (${response.status}): ${errorText}`);
+        throw new Error(`API request failed (${response.status}): ${response.statusText}`);
+      }
+
+      // Parse and return JSON response
+      return response.json() as Promise<T>;
+    } catch (error) {
+      console.error(`Failed to connect to API (${endpoint}):`, error);
+      
+      if (typeof fallbackReturnValue !== 'undefined') {
+        console.log(`Using fallback data for ${endpoint}`);
+        return fallbackReturnValue as T;
+      }
+      
+      throw error;
     }
-
-    // Parse and return JSON response
-    return response.json() as Promise<T>;
   }
 }
 

@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,11 +8,12 @@ import { fetchKilimoStats } from '@/services/kilimoAPI';
 import { KilimoStats } from '@/types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Package, Truck, AlertTriangle } from 'lucide-react';
+import { Package, Truck, AlertTriangle, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import LogisticsOnboarding from '@/features/logistics/LogisticsOnboarding';
 
 const LogisticsIssues: React.FC = () => {
+  const navigate = useNavigate();
   const [kilimoData, setKilimoData] = useState<KilimoStats[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('issues');
@@ -92,6 +94,24 @@ const LogisticsIssues: React.FC = () => {
           <p className="text-muted-foreground max-w-3xl mx-auto">
             Understanding and addressing transportation and delivery challenges in agricultural supply chains
           </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6">
+            <Button 
+              onClick={() => navigate('/logistics-solutions-map')}
+              className="flex gap-2 items-center"
+              variant="outline"
+            >
+              <MapPin className="h-4 w-4" />
+              View Logistics Solutions Map
+            </Button>
+            
+            <Button
+              onClick={() => setActiveTab('register')}
+              variant="default"
+            >
+              Register as Provider
+            </Button>
+          </div>
         </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -151,12 +171,21 @@ const LogisticsIssues: React.FC = () => {
                   </ul>
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  onClick={() => navigate('/logistics-solutions-map')}
+                  className="flex gap-2 items-center w-full sm:w-auto"
+                  variant="outline"
+                >
+                  <MapPin className="h-4 w-4" />
+                  Find Logistics Providers Near You
+                </Button>
+                
                 <Button 
                   onClick={() => setActiveTab('register')}
-                  className="ml-auto"
+                  className="ml-auto w-full sm:w-auto"
                 >
-                  Be Part of the Solution - Register as Provider
+                  Be Part of the Solution - Register
                 </Button>
               </CardFooter>
             </Card>
@@ -256,6 +285,14 @@ const LogisticsIssues: React.FC = () => {
                   </>
                 )}
               </CardContent>
+              <CardFooter>
+                <Button 
+                  onClick={() => navigate('/logistics-solutions-map')}
+                  className="ml-auto"
+                >
+                  Find Solutions on Map
+                </Button>
+              </CardFooter>
             </Card>
           </TabsContent>
           

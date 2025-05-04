@@ -35,6 +35,7 @@ import QualityControl from "./pages/supplyChainProblems/QualityControl";
 // New logistics and service provider pages
 import TransporterSignUp from "./pages/TransporterSignUp";
 import ServiceProviders from "./pages/ServiceProviders";
+import LogisticsSolutionsMap from "./pages/LogisticsSolutionsMap"; // New page
 import ServiceProviderRegistration from "./pages/ServiceProviderRegistration";
 import QualityControlDiscussions from "./pages/QualityControlDiscussions";
 import TrainingEvents from "./pages/TrainingEvents";
@@ -90,6 +91,7 @@ const App = () => (
 
             {/* Service Provider Routes */}
             <Route path="/service-providers" element={<ServiceProviders />} />
+            <Route path="/logistics-solutions-map" element={<LogisticsSolutionsMap />} />
             <Route path="/service-provider-registration" element={<ServiceProviderRegistration />} />
             <Route path="/quality-control-discussions" element={<QualityControlDiscussions />} />
             <Route path="/training-events" element={<TrainingEvents />} />
