@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -66,9 +65,14 @@ const FeaturedContent: React.FC = () => {
         console.error('Error fetching featured content:', error);
         toast({
           title: "Error loading content",
-          description: "Could not load the featured content. Please try again later.",
+          description: "Could not load the featured content. Please check your connection and try again.",
           variant: "destructive",
         });
+        
+        // Keep previous data if available, otherwise show empty state
+        setNewsItems(prev => prev.length ? prev : []);
+        setServicesItems(prev => prev.length ? prev : []);
+        setProductsItems(prev => prev.length ? prev : []);
       } finally {
         setIsLoading(false);
       }
@@ -109,7 +113,7 @@ const FeaturedContent: React.FC = () => {
       console.error('Error refreshing featured content:', error);
       toast({
         title: "Error refreshing content",
-        description: "Could not refresh the content. Please try again later.",
+        description: "Could not refresh the content. Please check your connection and try again.",
         variant: "destructive",
       });
     } finally {
@@ -150,20 +154,10 @@ const FeaturedContent: React.FC = () => {
       });
 
       if (success) {
-        // Add to local list (in a real app, it would be pending approval)
-        const newItem: FeaturedItem = {
-          id: Date.now(),
-          title: newsSubmission.title,
-          source: newsSubmission.source,
-          date: new Date().toISOString().split('T')[0],
-          tags: newsSubmission.tags.split(',').map(tag => tag.trim()),
-          location: newsSubmission.location,
-          summary: newsSubmission.summary,
-          url: newsSubmission.url || '#'
-        };
-
-        setNewsItems(prev => [newItem, ...prev]);
-
+        // Refresh news data after successful submission
+        const newsData = await fetchFeaturedNews();
+        setNewsItems(newsData);
+        
         // Reset form and close dialog
         setNewsSubmission({
           title: '',
@@ -178,14 +172,14 @@ const FeaturedContent: React.FC = () => {
 
         toast({
           title: "News submitted",
-          description: "Your news has been submitted and is awaiting approval.",
+          description: "Your news has been submitted successfully.",
         });
       }
     } catch (error) {
       console.error('Error submitting news:', error);
       toast({
         title: "Submission error",
-        description: "Could not submit your news. Please try again later.",
+        description: "Could not submit your news. Please check your connection and try again.",
         variant: "destructive",
       });
     } finally {
@@ -205,7 +199,10 @@ const FeaturedContent: React.FC = () => {
     if (items.length === 0) {
       return (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No items found.</p>
+          <p className="text-muted-foreground">No items found. Please check your connection and try refreshing.</p>
+          <Button onClick={handleRefresh} variant="outline" className="mt-4">
+            <RefreshCw className="h-4 w-4 mr-2" /> Refresh
+          </Button>
         </div>
       );
     }

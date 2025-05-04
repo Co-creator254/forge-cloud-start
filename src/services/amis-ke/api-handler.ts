@@ -1,83 +1,67 @@
 
-import { useToast } from "@/hooks/use-toast";
-
 /**
- * Wrapper to handle API requests with consistent error handling and logging
- * for Ministry of Agriculture data
+ * API Handler for AMIS Kenya API
+ * This ensures consistent communication with the API with proper error handling
  */
-export async function fetchWithErrorHandling<T>(
-  url: string, 
-  options: RequestInit = {},
-  retryAttempts = 1
-): Promise<T> {
-  // Tracking for API performance
-  const requestStart = performance.now();
-  
-  try {
-    // Add common headers for the Ministry API
-    const headers = {
-      'Accept': 'application/json',
-      ...options.headers,
-    };
-    
-    // Make the API request
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
-    
-    // Log performance
-    const requestTime = performance.now() - requestStart;
-    console.log(`API Request to ${url} completed in ${requestTime.toFixed(2)}ms`);
-    
-    // Handle non-200 responses
-    if (!response.ok) {
-      console.error(`API Error: ${response.status} ${response.statusText} for ${url}`);
-      console.error(`Response details:`, await response.text());
-      
-      // Retry for 5xx errors (server errors) if attempts remain
-      if (response.status >= 500 && retryAttempts > 0) {
-        console.warn(`Retrying request to ${url}, ${retryAttempts} attempts remaining`);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay before retry
-        return fetchWithErrorHandling<T>(url, options, retryAttempts - 1);
-      }
-      
-      throw new Error(`API request failed with status: ${response.status}`);
+
+const API_BASE_URL = "https://amis.kilimo.go.ke/en/api";
+
+interface ApiOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  body?: any;
+  queryParams?: Record<string, string>;
+}
+
+export class AmisKeApiHandler {
+  static async get<T>(endpoint: string, queryParams?: Record<string, string>): Promise<T> {
+    return this.request<T>(endpoint, { method: 'GET', queryParams });
+  }
+
+  static async post<T>(endpoint: string, body: any): Promise<T> {
+    return this.request<T>(endpoint, { method: 'POST', body });
+  }
+
+  static async request<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
+    const { method = 'GET', body, queryParams } = options;
+
+    // Add query parameters if they exist
+    let url = `${API_BASE_URL}/${endpoint}`;
+    if (queryParams) {
+      const params = new URLSearchParams();
+      Object.entries(queryParams).forEach(([key, value]) => {
+        params.append(key, value);
+      });
+      url += `?${params.toString()}`;
     }
-    
-    // Parse and return the JSON response
-    const data = await response.json();
-    return data as T;
-  } catch (error) {
-    // Log detailed error information
-    console.error(`API Request Error for ${url}:`, error);
-    
-    // Rethrow to allow caller to handle
-    throw error;
+
+    // Set up request options
+    const requestOptions: RequestInit = {
+      method,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors',
+    };
+
+    // Add body for POST/PUT requests
+    if (body && (method === 'POST' || method === 'PUT')) {
+      requestOptions.body = JSON.stringify(body);
+    }
+
+    console.log(`Making ${method} request to ${url}`);
+    const response = await fetch(url, requestOptions);
+
+    // Handle error responses
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`API error (${response.status}): ${errorText}`);
+      throw new Error(`API request failed (${response.status}): ${response.statusText}`);
+    }
+
+    // Parse and return JSON response
+    return response.json() as Promise<T>;
   }
 }
 
-/**
- * Create a dedicated error toast notification for API errors
- */
-export function showApiError(errorMessage: string) {
-  const { toast } = useToast();
-  
-  toast({
-    title: "API Error",
-    description: errorMessage,
-    variant: "destructive",
-    duration: 5000,
-  });
-}
-
-/**
- * Monitor API performance and detect flickering issues
- */
-export function monitorApiPerformance(apiName: string, requestTime: number, threshold = 2000) {
-  if (requestTime > threshold) {
-    console.warn(`Performance warning: ${apiName} API request took ${requestTime.toFixed(2)}ms, which exceeds the ${threshold}ms threshold`);
-    return false;
-  }
-  return true;
-}
+export default AmisKeApiHandler;
