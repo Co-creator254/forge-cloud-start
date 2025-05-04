@@ -32,15 +32,14 @@ const Hero: React.FC = () => {
         </div>
         
         <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
-          All-In-One Platform
+          Agricultural Ecosystem Platform
         </div>
         <h1 className="text-4xl md:text-6xl font-bold leading-tight tracking-tighter mb-4">
-          Your Complete Resource for
-          <span className="block text-primary"> Agricultural Information in Kenya</span>
+          Connecting Kenya's
+          <span className="block text-primary"> Agricultural Value Chain</span>
         </h1>
         <p className="text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto mt-6">
-          Discover agricultural solutions, tender opportunities, and supply chain positions
-          — all in one seamless platform.
+          AgriConnect solves a fundamental pain point in the agricultural sector: the disconnected ecosystem that prevents efficient collaboration between farmers, suppliers, distributors, and consumers.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8 pt-4">
           <Button 

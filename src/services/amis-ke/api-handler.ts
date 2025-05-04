@@ -53,6 +53,7 @@ export class AmisKeApiHandler {
       },
       mode: 'cors',
       cache: 'no-cache',
+      credentials: 'same-origin',
     };
 
     // Add body for POST/PUT requests

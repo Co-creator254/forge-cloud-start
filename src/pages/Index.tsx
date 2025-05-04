@@ -7,6 +7,7 @@ import SearchSection from "@/components/SearchSection";
 import Hero from "@/components/Hero";
 import { Toaster } from "@/components/ui/toaster";
 import { useNavigate } from "react-router-dom";
+import { ArrowRight, MapPin } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -27,6 +28,14 @@ const Index = () => {
         <Hero />
         <SearchSection />
         <section className="container py-12">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-4">Solving Agricultural Challenges</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Our platform connects farmers with the resources, services and markets they need to thrive,
+              eliminating inefficiencies and creating value for everyone in the agricultural ecosystem.
+            </p>
+          </div>
+          
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="col-span-1 flex flex-col space-y-3 rounded-lg border p-6">
               <div>
@@ -48,16 +57,16 @@ const Index = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-lg font-medium">Commodity Trading Platform</h3>
+              <h3 className="text-lg font-medium">Direct Trading Platform</h3>
               <p className="text-muted-foreground">
-                Connect with buyers and sellers across Kenya and trade your agricultural produce directly.
+                Connect directly with buyers and sellers, eliminating middlemen and increasing farmer profits while ensuring better prices for consumers.
               </p>
               <Button
-                className="mt-4"
+                className="mt-4 gap-2"
                 variant="outline"
                 onClick={() => navigate("/commodity-trading")}
               >
-                Access Trading Platform
+                Access Trading Platform <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
             <div className="col-span-1 flex flex-col space-y-3 rounded-lg border p-6">
@@ -82,14 +91,14 @@ const Index = () => {
               </div>
               <h3 className="text-lg font-medium">Supply Chain Solutions</h3>
               <p className="text-muted-foreground">
-                Solve common agricultural supply chain problems with our innovative solutions and network.
+                Tackle common agricultural challenges like post-harvest losses, logistics, and market access with practical, proven solutions.
               </p>
               <Button
-                className="mt-4"
+                className="mt-4 gap-2"
                 variant="outline"
                 onClick={() => navigate("/supply-chain-problems")}
               >
-                Explore Solutions
+                Explore Solutions <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
             <div className="col-span-1 flex flex-col space-y-3 rounded-lg border p-6">
@@ -112,24 +121,24 @@ const Index = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-lg font-medium">Find Service Providers</h3>
+              <h3 className="text-lg font-medium">Service Provider Network</h3>
               <p className="text-muted-foreground">
-                Access trusted agricultural service providers including transporters, warehouse owners, and more.
+                Find nearby agricultural service providers including transporters, storage facilities, and quality control services on our interactive map.
               </p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button
-                  className="mt-4"
+                  className="mt-4 gap-2"
                   variant="outline"
                   onClick={() => navigate("/service-providers")}
                 >
-                  Provider Directory
+                  Provider Directory <ArrowRight className="h-4 w-4" />
                 </Button>
                 <Button
-                  className="mt-4"
+                  className="mt-4 gap-2"
                   variant="ghost"
                   onClick={() => navigate("/logistics-solutions-map")}
                 >
-                  Solutions Map
+                  <MapPin className="h-4 w-4" /> Solutions Map
                 </Button>
               </div>
             </div>
@@ -156,16 +165,16 @@ const Index = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-lg font-medium">Tender Opportunities</h3>
+              <h3 className="text-lg font-medium">Real-Time Market Data</h3>
               <p className="text-muted-foreground">
-                Access agricultural tenders from government institutions, NGOs, and private organizations.
+                Make informed decisions with up-to-date agricultural market information, price trends, and demand forecasts.
               </p>
               <Button
-                className="mt-4"
+                className="mt-4 gap-2"
                 variant="outline"
-                onClick={() => navigate("/tender-api")}
+                onClick={() => navigate("/kilimo-ams-data")}
               >
-                Browse Tenders
+                View Market Data <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
             <div className="col-span-1 flex flex-col space-y-3 rounded-lg border p-6">
@@ -188,16 +197,16 @@ const Index = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-lg font-medium">Market Data Integration</h3>
+              <h3 className="text-lg font-medium">Market Analysis</h3>
               <p className="text-muted-foreground">
-                Access real-time market data from Kilimo AMS and other agricultural market information systems.
+                Identify opportunities and trends with market demand analysis, helping you make better planting and selling decisions.
               </p>
               <Button
-                className="mt-4"
+                className="mt-4 gap-2"
                 variant="outline"
-                onClick={() => navigate("/kilimo-ams-data")}
+                onClick={() => navigate("/market-demand-hotspot")}
               >
-                View Market Data
+                View Market Analysis <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
             <div className="col-span-1 flex flex-col space-y-3 rounded-lg border p-6">
@@ -225,14 +234,14 @@ const Index = () => {
               </div>
               <h3 className="text-lg font-medium">Success Stories</h3>
               <p className="text-muted-foreground">
-                Read about other farmers who have successfully overcome agricultural challenges.
+                Learn from other farmers who have successfully overcome agricultural challenges with practical, replicable solutions.
               </p>
               <Button
-                className="mt-4"
+                className="mt-4 gap-2"
                 variant="outline"
                 onClick={() => navigate("/farmer-success-stories")}
               >
-                See Success Stories
+                See Success Stories <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
