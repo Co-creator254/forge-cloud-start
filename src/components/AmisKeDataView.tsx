@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Card, 
@@ -22,27 +23,6 @@ import {
 import { fetchAmisKePrices, fetchAmisKeMarkets, getAmisKePriceHistory } from '@/services/amis-ke';
 import { AmisKePriceData, AmisKeMarket } from '@/services/amis-ke/types';
 
-interface AmisKePriceData {
-  id: string;
-  commodity: string;
-  market: string;
-  price: number;
-  unit: string;
-  date: string;
-  county: string;
-}
-
-interface AmisKeMarket {
-  id: string;
-  name: string;
-  county: string;
-  type: string;
-  coordinates?: {
-    lat: number;
-    lng: number;
-  };
-}
-
 const AmisKeDataView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [prices, setPrices] = useState<AmisKePriceData[]>([]);
@@ -51,10 +31,12 @@ const AmisKeDataView: React.FC = () => {
   const [priceHistory, setPriceHistory] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [currentPricesHeadline, setCurrentPricesHeadline] = useState<string>('');
+  const [apiError, setApiError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
+      setApiError(null);
       try {
         const [pricesData, marketsData] = await Promise.all([
           fetchAmisKePrices(),
@@ -80,6 +62,7 @@ const AmisKeDataView: React.FC = () => {
         }
       } catch (error) {
         console.error("Error loading AMIS Kenya data:", error);
+        setApiError("Failed to load market data. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -93,11 +76,13 @@ const AmisKeDataView: React.FC = () => {
       if (!selectedCommodity) return;
       
       setHistoryLoading(true);
+      setApiError(null);
       try {
         const history = await getAmisKePriceHistory(selectedCommodity);
         setPriceHistory(history);
       } catch (error) {
         console.error(`Error loading price history for ${selectedCommodity}:`, error);
+        setApiError(`Failed to load price history for ${selectedCommodity}.`);
       } finally {
         setHistoryLoading(false);
       }
@@ -114,11 +99,16 @@ const AmisKeDataView: React.FC = () => {
       <CardHeader>
         <CardTitle>AMIS Kenya Price Data</CardTitle>
         <CardDescription>
-          Agricultural commodity prices from amis.co.ke
+          Agricultural commodity prices from the Ministry of Agriculture
         </CardDescription>
         {currentPricesHeadline && (
-          <div className="mt-2 bg-muted p-2 rounded-md font-medium text-sm animate-pulse">
+          <div className="mt-2 bg-muted p-2 rounded-md font-medium text-sm">
             {currentPricesHeadline}
+          </div>
+        )}
+        {apiError && (
+          <div className="mt-2 bg-destructive/10 text-destructive p-2 rounded-md text-sm">
+            {apiError}
           </div>
         )}
       </CardHeader>
@@ -149,18 +139,26 @@ const AmisKeDataView: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {prices.map((price) => (
-                        <tr key={price.id} className="border-b hover:bg-muted/50">
-                          <td className="p-2">
-                            <Badge variant="outline">{price.commodity}</Badge>
+                      {prices.length > 0 ? (
+                        prices.map((price) => (
+                          <tr key={price.id} className="border-b hover:bg-muted/50">
+                            <td className="p-2">
+                              <Badge variant="outline">{price.commodity}</Badge>
+                            </td>
+                            <td className="p-2">{price.market}</td>
+                            <td className="p-2">{price.county}</td>
+                            <td className="p-2 text-right font-medium">{price.price.toFixed(2)}</td>
+                            <td className="p-2">{price.unit}</td>
+                            <td className="p-2 text-muted-foreground">{price.date}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={6} className="text-center py-8 text-muted-foreground">
+                            {apiError ? 'Failed to load data' : 'No price data available'}
                           </td>
-                          <td className="p-2">{price.market}</td>
-                          <td className="p-2">{price.county}</td>
-                          <td className="p-2 text-right font-medium">{price.price.toFixed(2)}</td>
-                          <td className="p-2">{price.unit}</td>
-                          <td className="p-2 text-muted-foreground">{price.date}</td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -187,35 +185,43 @@ const AmisKeDataView: React.FC = () => {
                   </div>
                 ) : (
                   <div className="h-[400px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={priceHistory}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis 
-                          dataKey="date" 
-                          tick={{fontSize: 12}}
-                          tickFormatter={(tick) => {
-                            const date = new Date(tick);
-                            return `${date.getDate()}/${date.getMonth() + 1}`;
-                          }}
-                        />
-                        <YAxis 
-                          domain={['auto', 'auto']}
-                          label={{ value: 'KES', angle: -90, position: 'insideLeft' }}
-                        />
-                        <Tooltip 
-                          formatter={(value) => [`KES ${value}`, 'Price']}
-                          labelFormatter={(label) => `Date: ${label}`}
-                        />
-                        <Legend />
-                        <Line 
-                          type="monotone" 
-                          dataKey="price" 
-                          stroke="#2563eb" 
-                          activeDot={{ r: 8 }} 
-                          name={selectedCommodity}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+                    {priceHistory.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={priceHistory}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="date" 
+                            tick={{fontSize: 12}}
+                            tickFormatter={(tick) => {
+                              const date = new Date(tick);
+                              return `${date.getDate()}/${date.getMonth() + 1}`;
+                            }}
+                          />
+                          <YAxis 
+                            domain={['auto', 'auto']}
+                            label={{ value: 'KES', angle: -90, position: 'insideLeft' }}
+                          />
+                          <Tooltip 
+                            formatter={(value) => [`KES ${value}`, 'Price']}
+                            labelFormatter={(label) => `Date: ${label}`}
+                          />
+                          <Legend />
+                          <Line 
+                            type="monotone" 
+                            dataKey="price" 
+                            stroke="#2563eb" 
+                            activeDot={{ r: 8 }} 
+                            name={selectedCommodity}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-muted-foreground">
+                          {apiError ? 'Failed to load price history' : 'No price history available for this commodity'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
                 

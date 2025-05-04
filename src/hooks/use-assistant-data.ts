@@ -16,6 +16,7 @@ export function useAssistantData(componentName = 'FarmerAIAssistant') {
   const { toast } = useToast();
   const { measureInteraction } = usePerformance(componentName);
   const componentMounted = useRef(true);
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // Data states
   const [markets, setMarkets] = useState<Market[]>([]);
@@ -29,21 +30,101 @@ export function useAssistantData(componentName = 'FarmerAIAssistant') {
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dataLoadRetries, setDataLoadRetries] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  // Anti-flickering measure: Ensure loading state stays for at least 800ms
+  // This prevents the UI from rapidly toggling between loading and loaded states
+  const setLoadingWithMinDuration = useCallback((isLoading: boolean) => {
+    if (isLoading) {
+      setDataLoading(true);
+      // Clear any existing timeout
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
+    } else {
+      // Ensure loading state stays for at least 800ms to prevent flickering
+      const timeInLoadingState = lastUpdated ? Date.now() - lastUpdated.getTime() : 0;
+      const minLoadingTime = 800; // milliseconds
+      
+      if (timeInLoadingState >= minLoadingTime) {
+        setDataLoading(false);
+      } else {
+        loadingTimeoutRef.current = setTimeout(() => {
+          if (componentMounted.current) {
+            setDataLoading(false);
+          }
+        }, minLoadingTime - timeInLoadingState);
+      }
+    }
+  }, [lastUpdated]);
+
+  // Use cache to prevent unnecessary API calls and reduce flickering
+  const useDataCache = useCallback(<T>(key: string, data: T): T => {
+    // If we have data, store it in localStorage (for session persistence)
+    if (data && Array.isArray(data) && data.length > 0) {
+      try {
+        localStorage.setItem(`amis_cache_${key}`, JSON.stringify({
+          timestamp: Date.now(),
+          data
+        }));
+      } catch (e) {
+        console.warn(`Failed to cache ${key} data`, e);
+      }
+    }
+    
+    // Return the data as-is
+    return data;
+  }, []);
+
+  // Get data from cache if available and not expired
+  const getDataFromCache = useCallback(<T>(key: string, maxAge = 30 * 60 * 1000): T | null => {
+    try {
+      const cachedItem = localStorage.getItem(`amis_cache_${key}`);
+      if (cachedItem) {
+        const { timestamp, data } = JSON.parse(cachedItem);
+        
+        // Check if cache is still valid (default: 30 minutes)
+        if (Date.now() - timestamp < maxAge) {
+          console.log(`Using cached ${key} data from ${new Date(timestamp).toLocaleTimeString()}`);
+          return data as T;
+        }
+      }
+    } catch (e) {
+      console.warn(`Failed to retrieve ${key} data from cache`, e);
+    }
+    
+    return null;
+  }, []);
 
   // Memoized fetch function to prevent unnecessary re-renders
   const fetchData = useCallback(async () => {
     const endMeasure = measureInteraction('dataFetch');
-    setDataLoading(true);
+    setLoadingWithMinDuration(true);
+    setLastUpdated(new Date());
     setError(null);
     
     try {
-      // First attempt to fetch direct API data
-      const [marketsData, forecastsData, warehousesData, amisPricesData, amisMarketsData] = await Promise.all([
-        fetchMarkets(),
-        fetchForecasts(),
-        fetchWarehouses(),
-        fetchAmisKePrices(),
-        fetchAmisKeMarkets()
+      // Try to get data from cache first
+      const cachedMarkets = getDataFromCache<Market[]>('markets');
+      const cachedForecasts = getDataFromCache<Forecast[]>('forecasts');
+      const cachedWarehouses = getDataFromCache<Warehouse[]>('warehouses');
+      const cachedAmisPrices = getDataFromCache<any[]>('amisPrices');
+      const cachedAmisMarkets = getDataFromCache<any[]>('amisMarkets');
+      
+      // Fetch any data that isn't in cache
+      const [
+        marketsData, 
+        forecastsData, 
+        warehousesData, 
+        amisPricesData, 
+        amisMarketsData
+      ] = await Promise.all([
+        cachedMarkets || fetchMarkets(),
+        cachedForecasts || fetchForecasts(),
+        cachedWarehouses || fetchWarehouses(),
+        cachedAmisPrices || fetchAmisKePrices(),
+        cachedAmisMarkets || fetchAmisKeMarkets()
       ]);
       
       // Ensure component is still mounted before updating state
@@ -56,11 +137,12 @@ export function useAssistantData(componentName = 'FarmerAIAssistant') {
           amisMarkets: amisMarketsData.length
         });
         
-        setMarkets(marketsData);
-        setForecasts(forecastsData);
-        setWarehouses(warehousesData);
-        setAmisPrices(amisPricesData);
-        setAmisMarkets(amisMarketsData);
+        // Cache data for future use
+        setMarkets(useDataCache('markets', marketsData));
+        setForecasts(useDataCache('forecasts', forecastsData));
+        setWarehouses(useDataCache('warehouses', warehousesData));
+        setAmisPrices(useDataCache('amisPrices', amisPricesData));
+        setAmisMarkets(useDataCache('amisMarkets', amisMarketsData));
         setDataLoadRetries(0);
       }
     } catch (error) {
@@ -85,11 +167,18 @@ export function useAssistantData(componentName = 'FarmerAIAssistant') {
       }
     } finally {
       if (componentMounted.current) {
-        setDataLoading(false);
+        setLoadingWithMinDuration(false);
         endMeasure();
       }
     }
-  }, [toast, measureInteraction, dataLoadRetries]);
+  }, [
+    toast, 
+    measureInteraction, 
+    dataLoadRetries, 
+    setLoadingWithMinDuration, 
+    getDataFromCache, 
+    useDataCache
+  ]);
   
   // Fetch necessary data on component mount
   useEffect(() => {
@@ -98,6 +187,9 @@ export function useAssistantData(componentName = 'FarmerAIAssistant') {
     
     return () => {
       componentMounted.current = false;
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
     };
   }, [fetchData]);
 
@@ -111,6 +203,8 @@ export function useAssistantData(componentName = 'FarmerAIAssistant') {
       amisMarkets
     },
     dataLoading,
-    error
+    error,
+    refreshData: fetchData,
+    lastUpdated
   };
 }

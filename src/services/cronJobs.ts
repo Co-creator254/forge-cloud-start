@@ -1,5 +1,6 @@
+
 import { simulateDelay } from './apiUtils';
-import { fetchAmisKePrices } from './amisKeIntegration';
+import { fetchAmisKePrices } from './amis-ke';
 import { fetchKilimoStats } from './kilimoAPI';
 
 // Simulated database for storing data
