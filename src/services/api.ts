@@ -1,3 +1,4 @@
+
 // Re-export everything from the individual API modules
 
 // Utils and common functionality
@@ -42,6 +43,14 @@ export {
   fetchAmisKeMarkets,
   getAmisKePriceHistory
 } from './amis-ke';
+
+// Featured content API
+export {
+  fetchFeaturedNews,
+  fetchFeaturedServices,
+  fetchFeaturedProducts,
+  submitNewsItem
+} from './amis-ke/featured-content';
 
 // Cron Jobs for data automation
 export {

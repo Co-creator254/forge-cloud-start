@@ -9,109 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-
-// Real data sources for featured content (in a real app, this would come from an API)
-const initialFeaturedNews = [
-  {
-    id: 1,
-    title: "Kenya Introduces New Drought-Resistant Maize Variety",
-    source: "Kenya Agricultural Research Institute",
-    date: "2024-06-15",
-    tags: ["maize", "drought-resistant", "research"],
-    location: "Nationwide",
-    summary: "The Kenya Agricultural Research Institute has introduced a new drought-resistant maize variety that can thrive with up to 30% less water than traditional varieties.",
-    url: "https://www.kalro.org/latest-news"
-  },
-  {
-    id: 2,
-    title: "Digital Payments Transform Rural Farmer Cooperatives",
-    source: "Digital Farmers Kenya",
-    date: "2024-06-10",
-    tags: ["digital payments", "cooperatives", "rural"],
-    location: "Western Kenya",
-    summary: "Digital payment systems have been implemented across 200 rural farmer cooperatives, reducing transaction costs and increasing financial transparency.",
-    url: "https://www.digitalfarmers.co.ke/news"
-  },
-  {
-    id: 3,
-    title: "Avocado Exports to Europe Increase by 25%",
-    source: "Kenya Export Promotion Council",
-    date: "2024-06-08",
-    tags: ["exports", "avocado", "market access"],
-    location: "Central Kenya",
-    summary: "Kenya's avocado exports to European markets have increased by 25% in the first half of 2024, driven by improved quality control measures.",
-    url: "https://www.epc.go.ke/press-releases"
-  }
-];
-
-const featuredServices = [
-  {
-    id: 1,
-    title: "Mobile Cold Storage Units",
-    provider: "CoolChain Logistics",
-    date: "2024-06-12",
-    tags: ["cold storage", "post-harvest", "rental"],
-    location: "Nairobi, Nakuru, Mombasa",
-    summary: "Rent mobile cold storage units to preserve your fresh produce directly at farm sites. Available on daily, weekly, or monthly terms.",
-    url: "https://www.coolchainlogistics.co.ke/cold-storage"
-  },
-  {
-    id: 2,
-    title: "Bulk Transport for Agricultural Goods",
-    provider: "AgriMove Logistics",
-    date: "2024-06-14",
-    tags: ["transport", "logistics", "bulk"],
-    location: "Nationwide",
-    summary: "Specialized bulk transport services for agricultural goods with temperature-controlled options and real-time tracking.",
-    url: "https://www.agrimove.co.ke/services"
-  },
-  {
-    id: 3,
-    title: "Soil Testing and Advisory Services",
-    provider: "SoilSmart Kenya",
-    date: "2024-06-05",
-    tags: ["soil testing", "advisory", "farm management"],
-    location: "Eastern and Central Kenya",
-    summary: "Comprehensive soil testing with detailed reports and customized recommendations for optimal crop selection and fertilizer application.",
-    url: "https://www.soilsmart.co.ke/testing-services"
-  }
-];
-
-const featuredProducts = [
-  {
-    id: 1,
-    title: "Premium Grade Coffee Beans",
-    provider: "Mt. Kenya Coffee Cooperative",
-    date: "2024-06-18",
-    tags: ["coffee", "premium", "export quality"],
-    location: "Central Kenya",
-    summary: "Directly sourced AA grade arabica coffee beans from small-scale farmers. Available in bulk quantities with quality certification.",
-    price: "KES 1,200 per kg",
-    url: "https://www.mtkenycoffee.co.ke/products"
-  },
-  {
-    id: 2,
-    title: "Organic Avocados - Hass Variety",
-    provider: "Greenfarms Kenya",
-    date: "2024-06-16",
-    tags: ["avocado", "organic", "hass"],
-    location: "Muranga County",
-    summary: "Certified organic Hass avocados available in crates of 20kg. Perfect ripeness for export or local premium markets.",
-    price: "KES 2,500 per crate",
-    url: "https://www.greenfarms.co.ke/produce"
-  },
-  {
-    id: 3,
-    title: "Fortified Animal Feed - Dairy Blend",
-    provider: "NutriStock Feeds",
-    date: "2024-06-10",
-    tags: ["dairy", "animal feed", "fortified"],
-    location: "Nakuru County",
-    summary: "High-protein fortified feed specially formulated for dairy cattle. Increases milk production by up to 15%.",
-    price: "KES 2,200 per 70kg bag",
-    url: "https://www.nutristock.co.ke/dairy-feeds"
-  }
-];
+import { 
+  fetchFeaturedNews, 
+  fetchFeaturedServices, 
+  fetchFeaturedProducts, 
+  submitNewsItem,
+  FeaturedItem 
+} from '@/services/amis-ke/featured-content';
 
 // News submission form type
 type NewsSubmission = {
@@ -127,9 +31,9 @@ const FeaturedContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState("news");
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [newsItems, setNewsItems] = useState(initialFeaturedNews);
-  const [servicesItems, setServicesItems] = useState(featuredServices);
-  const [productsItems, setProductsItems] = useState(featuredProducts);
+  const [newsItems, setNewsItems] = useState<FeaturedItem[]>([]);
+  const [servicesItems, setServicesItems] = useState<FeaturedItem[]>([]);
+  const [productsItems, setProductsItems] = useState<FeaturedItem[]>([]);
   const [newsSubmission, setNewsSubmission] = useState<NewsSubmission>({
     title: '',
     source: '',
@@ -139,6 +43,7 @@ const FeaturedContent: React.FC = () => {
     url: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
 
   // Load data and check for updates
@@ -146,34 +51,34 @@ const FeaturedContent: React.FC = () => {
     const fetchFeaturedContent = async () => {
       setIsLoading(true);
       try {
-        // In a real app, fetch from an API
-        // const response = await fetch('https://api.yourbackend.com/featured-content');
-        // const data = await response.json();
-        // setNewsItems(data.news);
-        // setServicesItems(data.services);
-        // setProductsItems(data.products);
+        // Fetch real data from API endpoints
+        const [newsData, servicesData, productsData] = await Promise.all([
+          fetchFeaturedNews(),
+          fetchFeaturedServices(),
+          fetchFeaturedProducts()
+        ]);
         
-        // For demo, simulate API loading with a delay
-        setTimeout(() => {
-          setIsLoading(false);
-          setLastUpdated(new Date());
-        }, 1000);
+        setNewsItems(newsData);
+        setServicesItems(servicesData);
+        setProductsItems(productsData);
+        setLastUpdated(new Date());
       } catch (error) {
         console.error('Error fetching featured content:', error);
-        setIsLoading(false);
         toast({
           title: "Error loading content",
           description: "Could not load the featured content. Please try again later.",
           variant: "destructive",
         });
+      } finally {
+        setIsLoading(false);
       }
     };
 
     // Initial fetch
     fetchFeaturedContent();
 
-    // Set up refresh every 48 hours (in milliseconds)
-    const refreshInterval = 48 * 60 * 60 * 1000;
+    // Set up refresh every 4 hours (in milliseconds) - more frequent than before
+    const refreshInterval = 4 * 60 * 60 * 1000;
     const intervalId = setInterval(fetchFeaturedContent, refreshInterval);
 
     // Clean up interval on component unmount
@@ -181,17 +86,35 @@ const FeaturedContent: React.FC = () => {
   }, [toast]);
 
   // Handle refresh button click
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setIsLoading(true);
-    // Simulate refetch
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Fetch fresh data from API endpoints
+      const [newsData, servicesData, productsData] = await Promise.all([
+        fetchFeaturedNews(),
+        fetchFeaturedServices(),
+        fetchFeaturedProducts()
+      ]);
+      
+      setNewsItems(newsData);
+      setServicesItems(servicesData);
+      setProductsItems(productsData);
       setLastUpdated(new Date());
+      
       toast({
         title: "Content refreshed",
-        description: "Featured content has been updated.",
+        description: "Featured content has been updated with the latest data.",
       });
-    }, 1000);
+    } catch (error) {
+      console.error('Error refreshing featured content:', error);
+      toast({
+        title: "Error refreshing content",
+        description: "Could not refresh the content. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Handle news submission form change
@@ -215,19 +138,8 @@ const FeaturedContent: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // In a real app, send to an API
-      // await fetch('https://api.yourbackend.com/submit-news', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(newsSubmission)
-      // });
-
-      // For demo, simulate API call with a delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Add to local list (in a real app, it would be pending approval)
-      const newItem = {
-        id: Date.now(),
+      // Submit to the API
+      const success = await submitNewsItem({
         title: newsSubmission.title,
         source: newsSubmission.source,
         date: new Date().toISOString().split('T')[0],
@@ -235,24 +147,40 @@ const FeaturedContent: React.FC = () => {
         location: newsSubmission.location,
         summary: newsSubmission.summary,
         url: newsSubmission.url || '#'
-      };
-
-      setNewsItems(prev => [newItem, ...prev]);
-
-      // Reset form
-      setNewsSubmission({
-        title: '',
-        source: '',
-        tags: '',
-        location: '',
-        summary: '',
-        url: ''
       });
 
-      toast({
-        title: "News submitted",
-        description: "Your news has been submitted and is awaiting approval.",
-      });
+      if (success) {
+        // Add to local list (in a real app, it would be pending approval)
+        const newItem: FeaturedItem = {
+          id: Date.now(),
+          title: newsSubmission.title,
+          source: newsSubmission.source,
+          date: new Date().toISOString().split('T')[0],
+          tags: newsSubmission.tags.split(',').map(tag => tag.trim()),
+          location: newsSubmission.location,
+          summary: newsSubmission.summary,
+          url: newsSubmission.url || '#'
+        };
+
+        setNewsItems(prev => [newItem, ...prev]);
+
+        // Reset form and close dialog
+        setNewsSubmission({
+          title: '',
+          source: '',
+          tags: '',
+          location: '',
+          summary: '',
+          url: ''
+        });
+        
+        setIsDialogOpen(false);
+
+        toast({
+          title: "News submitted",
+          description: "Your news has been submitted and is awaiting approval.",
+        });
+      }
     } catch (error) {
       console.error('Error submitting news:', error);
       toast({
@@ -265,11 +193,19 @@ const FeaturedContent: React.FC = () => {
     }
   };
   
-  const renderContentItems = (items: any[]) => {
+  const renderContentItems = (items: FeaturedItem[]) => {
     if (isLoading) {
       return (
         <div className="flex justify-center items-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      );
+    }
+    
+    if (items.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">No items found.</p>
         </div>
       );
     }
@@ -304,7 +240,7 @@ const FeaturedContent: React.FC = () => {
                 )}
                 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {item.tags.map((tag: string) => (
+                  {item.tags.map((tag) => (
                     <div key={tag} className="bg-secondary/50 text-secondary-foreground text-xs px-2 py-1 rounded-full flex items-center">
                       <Tag className="h-3 w-3 mr-1" />
                       {tag}
@@ -341,7 +277,7 @@ const FeaturedContent: React.FC = () => {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm">
                 <Plus className="h-4 w-4 mr-1" /> Submit News
