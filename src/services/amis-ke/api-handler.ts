@@ -13,17 +13,25 @@ interface ApiOptions {
   fallbackReturnValue?: any;
 }
 
+// Define a generic type for API responses with results arrays
+export interface AmisKeApiResponse<T> {
+  results: T[];
+  count?: number;
+  next?: string | null;
+  previous?: string | null;
+}
+
 export class AmisKeApiHandler {
-  static async get<T>(endpoint: string, queryParams?: Record<string, string>, fallbackReturnValue?: any): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET', queryParams, fallbackReturnValue });
+  static async get<T>(endpoint: string, queryParams?: Record<string, string>, fallbackReturnValue?: any): Promise<AmisKeApiResponse<T>> {
+    return this.request<AmisKeApiResponse<T>>(endpoint, { method: 'GET', queryParams, fallbackReturnValue });
   }
 
-  static async post<T>(endpoint: string, body: any, fallbackReturnValue?: any): Promise<T> {
-    return this.request<T>(endpoint, { method: 'POST', body, fallbackReturnValue });
+  static async post<T>(endpoint: string, body: any, fallbackReturnValue?: any): Promise<AmisKeApiResponse<T>> {
+    return this.request<AmisKeApiResponse<T>>(endpoint, { method: 'POST', body, fallbackReturnValue });
   }
 
   static async request<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
-    const { method = 'GET', body, queryParams, fallbackReturnValue = [] } = options;
+    const { method = 'GET', body, queryParams, fallbackReturnValue = { results: [] } as unknown as T } = options;
 
     // Add query parameters if they exist
     let url = `${API_BASE_URL}/${endpoint}`;

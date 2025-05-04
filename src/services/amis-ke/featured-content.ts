@@ -1,5 +1,5 @@
 
-import { AmisKeApiHandler } from './api-handler';
+import { AmisKeApiHandler, AmisKeApiResponse } from './api-handler';
 
 export interface FeaturedItem {
   id: number | string;
@@ -20,7 +20,7 @@ export interface FeaturedItem {
 export const fetchFeaturedNews = async (): Promise<FeaturedItem[]> => {
   console.log("Fetching real featured news from Ministry API");
   
-  const data = await AmisKeApiHandler.get('news/', undefined, { results: [] });
+  const data = await AmisKeApiHandler.get<any>('news/', undefined, { results: [] });
   console.log("Received news data:", data);
   
   // Transform the API response to match our expected format
@@ -47,7 +47,7 @@ export const fetchFeaturedNews = async (): Promise<FeaturedItem[]> => {
 export const fetchFeaturedServices = async (): Promise<FeaturedItem[]> => {
   console.log("Fetching real services data from Ministry API");
   
-  const data = await AmisKeApiHandler.get('services/', undefined, { results: [] });
+  const data = await AmisKeApiHandler.get<any>('services/', undefined, { results: [] });
   console.log("Received services data:", data);
   
   // Transform the API response to match our expected format
@@ -75,7 +75,7 @@ export const fetchFeaturedServices = async (): Promise<FeaturedItem[]> => {
 export const fetchFeaturedProducts = async (): Promise<FeaturedItem[]> => {
   console.log("Fetching real products data from Ministry API");
   
-  const data = await AmisKeApiHandler.get('products/', undefined, { results: [] });
+  const data = await AmisKeApiHandler.get<any>('products/', undefined, { results: [] });
   console.log("Received products data:", data);
   
   // Transform the API response to match our expected format
@@ -116,7 +116,7 @@ export const submitNewsItem = async (newsItem: Omit<FeaturedItem, 'id'>): Promis
   };
   
   try {
-    await AmisKeApiHandler.post('news/submit/', formattedData);
+    await AmisKeApiHandler.post<any>('news/submit/', formattedData);
     console.log("News item submitted successfully");
     return true;
   } catch (error) {

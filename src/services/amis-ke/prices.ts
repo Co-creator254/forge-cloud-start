@@ -1,6 +1,6 @@
 
 import { AmisKePriceData, AmisKeMarket } from './types';
-import { AmisKeApiHandler } from './api-handler';
+import { AmisKeApiHandler, AmisKeApiResponse } from './api-handler';
 
 /**
  * Fetch market prices from AMIS Kenya
@@ -8,7 +8,7 @@ import { AmisKeApiHandler } from './api-handler';
 export const fetchAmisKePrices = async (): Promise<AmisKePriceData[]> => {
   console.log("Fetching real pricing data from Ministry of Agriculture API");
   
-  const data = await AmisKeApiHandler.get('commodity-prices/', undefined, { results: [] });
+  const data = await AmisKeApiHandler.get<any>('commodity-prices/', undefined, { results: [] });
   console.log("Received real commodity price data:", data);
   
   // Transform the API response to match our expected format
@@ -32,7 +32,7 @@ export const fetchAmisKePrices = async (): Promise<AmisKePriceData[]> => {
 export const fetchAmisKeMarkets = async (): Promise<AmisKeMarket[]> => {
   console.log("Fetching real market data from Ministry of Agriculture API");
   
-  const data = await AmisKeApiHandler.get('markets/', undefined, { results: [] });
+  const data = await AmisKeApiHandler.get<any>('markets/', undefined, { results: [] });
   console.log("Received real market data:", data);
   
   // Transform the API response to match our expected format
@@ -61,7 +61,7 @@ export const getAmisKePriceHistory = async (commodity: string): Promise<any[]> =
   // Encode the commodity name for URL use
   const encodedCommodity = encodeURIComponent(commodity);
   
-  const data = await AmisKeApiHandler.get(`price-history/`, { commodity: encodedCommodity }, { results: [] });
+  const data = await AmisKeApiHandler.get<any>(`price-history/`, { commodity: encodedCommodity }, { results: [] });
   console.log(`Received real price history data for ${commodity}:`, data);
   
   // Transform the API response to match our expected format
