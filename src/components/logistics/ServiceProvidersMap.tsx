@@ -95,7 +95,9 @@ const ServiceProvidersMap: React.FC<ServiceProvidersMapProps> = ({ providers, se
         </div>
       )}
 
-      <style jsx>{`
+      {/* Fix: Remove jsx attribute from style tag */}
+      <style>
+        {`
         .pulse-animation {
           box-shadow: 0 0 0 rgba(66, 153, 225, 0.6);
           animation: pulse 2s infinite;
@@ -112,7 +114,8 @@ const ServiceProvidersMap: React.FC<ServiceProvidersMapProps> = ({ providers, se
             box-shadow: 0 0 0 0 rgba(66, 153, 225, 0);
           }
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
