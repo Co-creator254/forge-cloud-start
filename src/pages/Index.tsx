@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
@@ -29,10 +28,9 @@ const Index = () => {
         <SearchSection />
         <section className="container py-12">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-4">Solving Agricultural Challenges</h2>
+            <h2 className="text-3xl font-bold mb-4">Connecting Agricultural Stakeholders</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Our platform connects farmers with the resources, services and markets they need to thrive,
-              eliminating inefficiencies and creating value for everyone in the agricultural ecosystem.
+              AgriConnect solves a fundamental pain point in the agricultural sector: the disconnected ecosystem that prevents efficient collaboration between farmers, suppliers, distributors, and consumers.
             </p>
           </div>
           
@@ -57,16 +55,16 @@ const Index = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-lg font-medium">Direct Trading Platform</h3>
+              <h3 className="text-lg font-medium">Market Access & Information</h3>
               <p className="text-muted-foreground">
-                Connect directly with buyers and sellers, eliminating middlemen and increasing farmer profits while ensuring better prices for consumers.
+                Access real-time market data and connect with buyers and sellers, improving price transparency and market access for farmers.
               </p>
               <Button
                 className="mt-4 gap-2"
                 variant="outline"
-                onClick={() => navigate("/commodity-trading")}
+                onClick={() => navigate("/kilimo-ams-data")}
               >
-                Access Trading Platform <ArrowRight className="h-4 w-4" />
+                View Market Data <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
             <div className="col-span-1 flex flex-col space-y-3 rounded-lg border p-6">
@@ -91,7 +89,7 @@ const Index = () => {
               </div>
               <h3 className="text-lg font-medium">Supply Chain Solutions</h3>
               <p className="text-muted-foreground">
-                Tackle common agricultural challenges like post-harvest losses, logistics, and market access with practical, proven solutions.
+                Find practical solutions to common challenges like post-harvest losses, logistics issues, and quality control problems.
               </p>
               <Button
                 className="mt-4 gap-2"
@@ -121,9 +119,9 @@ const Index = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-lg font-medium">Service Provider Network</h3>
+              <h3 className="text-lg font-medium">Logistics & Services Network</h3>
               <p className="text-muted-foreground">
-                Find nearby agricultural service providers including transporters, storage facilities, and quality control services on our interactive map.
+                Connect with nearby agricultural service providers including transporters, storage facilities, and training services on our interactive map.
               </p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Button
