@@ -58,17 +58,26 @@ class MarketDataProcessor {
       }>();
       
       marketsInLocation.forEach(market => {
-        if (!commoditiesMap.has(market.commodity)) {
-          // Calculate demand trend based on available data
-          const demandTrend = this.calculateDemandTrend(market.priceHistory || []);
-          
-          commoditiesMap.set(market.commodity, {
-            name: market.commodity,
-            currentPrice: market.currentPrice,
-            priceChange: market.priceChange || 0,
-            demandTrend,
-            supplyLevel: this.determineSupplyLevel(market.volume || 0),
-          });
+        for (const price of market.producePrices) {
+          const commodity = price.produceName;
+          if (!commoditiesMap.has(commodity)) {
+            // Calculate price change (mock calculation)
+            const priceChange = Math.random() > 0.5 ? (Math.random() * 10) : -(Math.random() * 10);
+            
+            // Determine demand trend based on price change
+            const demandTrend = this.calculateDemandTrend([price.price]);
+            
+            // Simulate volume for supply level calculation
+            const volume = Math.floor(Math.random() * 2000);
+            
+            commoditiesMap.set(commodity, {
+              name: commodity,
+              currentPrice: price.price,
+              priceChange: Number(priceChange.toFixed(2)),
+              demandTrend,
+              supplyLevel: this.determineSupplyLevel(volume),
+            });
+          }
         }
       });
       
@@ -89,13 +98,17 @@ class MarketDataProcessor {
       // Calculate confidence based on historical accuracy and data quality
       const confidence = this.calculateConfidenceLevel(forecast);
       
+      // Simulate current and forecast prices
+      const currentPrice = forecast.expectedDemand * 10;
+      const forecastPrice = forecast.expectedProduction * 8;
+      
       return {
-        commodity: forecast.commodity,
-        currentPrice: forecast.currentPrice,
-        forecastPrice: forecast.predictedPrice,
+        commodity: forecast.produceName,
+        currentPrice,
+        forecastPrice,
         confidence,
-        factors: forecast.factors || ['Market demand', 'Seasonal trends'],
-        timePeriod: forecast.horizon || 'next week',
+        factors: ['Market demand', 'Seasonal trends', 'Weather conditions'],
+        timePeriod: forecast.period || 'next week',
       };
     });
   }
@@ -131,15 +144,18 @@ class MarketDataProcessor {
     // Default medium confidence
     let confidence = 0.7;
     
-    // Adjust based on data quality and historical accuracy
-    if (forecast.accuracy && forecast.accuracy > 0.8) {
+    // Adjust based on historical accuracy (simulated)
+    const simulatedAccuracy = forecast.confidenceLevel === 'high' ? 0.9 : 
+                              forecast.confidenceLevel === 'medium' ? 0.7 : 0.5;
+    
+    if (simulatedAccuracy > 0.8) {
       confidence += 0.2;
-    } else if (forecast.accuracy && forecast.accuracy < 0.5) {
+    } else if (simulatedAccuracy < 0.5) {
       confidence -= 0.2;
     }
     
     // Adjust based on data completeness
-    if (!forecast.factors || forecast.factors.length === 0) {
+    if (!forecast.produceName) {
       confidence -= 0.1;
     }
     
@@ -150,11 +166,15 @@ class MarketDataProcessor {
   // Find best markets for a specific crop
   findBestMarketsForCrop(markets: Market[], crop: string): Market[] {
     const relevantMarkets = markets.filter(market => 
-      market.commodity.toLowerCase() === crop.toLowerCase()
+      market.producePrices.some(p => p.produceName.toLowerCase() === crop.toLowerCase())
     );
     
     // Sort by price (highest first for sellers)
-    return relevantMarkets.sort((a, b) => b.currentPrice - a.currentPrice);
+    return relevantMarkets.sort((a, b) => {
+      const priceA = a.producePrices.find(p => p.produceName.toLowerCase() === crop.toLowerCase())?.price || 0;
+      const priceB = b.producePrices.find(p => p.produceName.toLowerCase() === crop.toLowerCase())?.price || 0;
+      return priceB - priceA;
+    });
   }
   
   // Find most suitable warehouses for a crop
@@ -164,17 +184,15 @@ class MarketDataProcessor {
     // Find warehouses suitable for the crop
     const suitableWarehouses = warehouses.filter(warehouse => {
       // Check if explicitly supports this crop
-      if (warehouse.supportedCrops && 
-          warehouse.supportedCrops.some(c => c.toLowerCase().includes(cropLower))) {
-        return true;
-      }
+      const supports = warehouse.goodsTypes.some(type => type.toLowerCase().includes(cropLower));
+      if (supports) return true;
       
       // Check if has required storage type (cold storage for fruits/vegetables)
       const needsColdStorage = ['fruit', 'vegetable', 'tomato', 'mango', 'avocado'].some(
         type => cropLower.includes(type)
       );
       
-      if (needsColdStorage && warehouse.hasColdStorage) {
+      if (needsColdStorage && warehouse.hasRefrigeration) {
         return true;
       }
       
@@ -183,7 +201,7 @@ class MarketDataProcessor {
         type => cropLower.includes(type)
       );
       
-      if (isCereal && warehouse.type === 'dry storage') {
+      if (isCereal && warehouse.goodsTypes.includes('cereals')) {
         return true;
       }
       

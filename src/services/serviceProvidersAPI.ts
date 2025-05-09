@@ -4,11 +4,15 @@
  * Handles fetching and managing service provider data
  */
 
-import { ServiceProvider, ServiceProviderType } from '@/types';
+import { ServiceProvider, ServiceProviderType, QualityControlDiscussion, TrainingEvent, MarketLinkage } from '@/types';
 import { AmisKeApiHandler } from './amis-ke/api-handler';
+import { mockServiceProviders } from './mockData/serviceProviders';
+import { mockDiscussions } from './mockData/discussions'; 
+import { mockTrainingEvents } from './mockData/trainingEvents';
+import { mockMarketLinkages } from './mockData/marketLinkages';
 
 // Mock data for initial development/demo
-const mockServiceProviders: ServiceProvider[] = [
+const serviceProviders: ServiceProvider[] = [
   {
     id: "1",
     name: "Nairobi Cold Chain Solutions",
@@ -17,16 +21,21 @@ const mockServiceProviders: ServiceProvider[] = [
     services: ["Cold storage", "Inventory management", "Quality monitoring"],
     location: {
       county: "Nairobi",
-      latitude: -1.286389,
-      longitude: 36.817223
+      specificLocation: "Industrial Area",
+      coordinates: {
+        latitude: -1.286389,
+        longitude: 36.817223
+      }
     },
-    contactInfo: {
-      email: "info@nairobicoldchain.co.ke",
-      phone: "+254 712 345 678"
-    },
+    contactInfo: "info@nairobicoldchain.co.ke | +254 712 345 678",
     capacity: "5000 metric tons",
     rates: "KES 5 per kg per day",
-    tags: ["cold-storage", "vegetables", "fruits", "dairy"]
+    tags: ["cold-storage", "vegetables", "fruits", "dairy"],
+    verified: true,
+    rating: 4.5,
+    reviewCount: 27,
+    createdAt: "2023-01-15",
+    updatedAt: "2023-06-10"
   },
   {
     id: "2",
@@ -36,16 +45,21 @@ const mockServiceProviders: ServiceProvider[] = [
     services: ["Refrigerated transport", "Last mile delivery", "Cross-border logistics"],
     location: {
       county: "Mombasa",
-      latitude: -4.043477,
-      longitude: 39.668205
+      specificLocation: "Port Area",
+      coordinates: {
+        latitude: -4.043477,
+        longitude: 39.668205
+      }
     },
-    contactInfo: {
-      email: "operations@mombasalogistics.co.ke",
-      phone: "+254 723 456 789"
-    },
+    contactInfo: "operations@mombasalogistics.co.ke | +254 723 456 789",
     capacity: "Fleet of 25 vehicles",
     rates: "KES 25 per km per ton",
-    tags: ["refrigerated-transport", "export", "port-clearance"]
+    tags: ["refrigerated-transport", "export", "port-clearance"],
+    verified: true,
+    rating: 4.2,
+    reviewCount: 38,
+    createdAt: "2022-08-20",
+    updatedAt: "2023-05-18"
   },
   {
     id: "3",
@@ -55,16 +69,21 @@ const mockServiceProviders: ServiceProvider[] = [
     services: ["Product testing", "Certification", "Training", "Compliance support"],
     location: {
       county: "Nakuru",
-      latitude: -0.303099,
-      longitude: 36.080025
+      specificLocation: "Industrial Park",
+      coordinates: {
+        latitude: -0.303099,
+        longitude: 36.080025
+      }
     },
-    contactInfo: {
-      email: "quality@nakuruqcs.co.ke",
-      phone: "+254 734 567 890"
-    },
+    contactInfo: "quality@nakuruqcs.co.ke | +254 734 567 890",
     capacity: "Up to 200 tests per day",
     rates: "KES 5,000 per certification",
-    tags: ["testing", "certification", "training", "compliance"]
+    tags: ["testing", "certification", "training", "compliance"],
+    verified: true,
+    rating: 4.7,
+    reviewCount: 42,
+    createdAt: "2023-02-12",
+    updatedAt: "2023-07-22"
   },
   {
     id: "4",
@@ -74,16 +93,21 @@ const mockServiceProviders: ServiceProvider[] = [
     services: ["Dry storage", "Pest control", "Moisture monitoring"],
     location: {
       county: "Uasin Gishu",
-      latitude: 0.514277,
-      longitude: 35.269779
+      specificLocation: "Outskirts",
+      coordinates: {
+        latitude: 0.514277,
+        longitude: 35.269779
+      }
     },
-    contactInfo: {
-      email: "storage@eldoretgrain.co.ke",
-      phone: "+254 745 678 901"
-    },
+    contactInfo: "storage@eldoretgrain.co.ke | +254 745 678 901",
     capacity: "10,000 metric tons",
     rates: "KES 2 per kg per month",
-    tags: ["grain-storage", "cereals", "drying", "pest-control"]
+    tags: ["grain-storage", "cereals", "drying", "pest-control"],
+    verified: true,
+    rating: 4.3,
+    reviewCount: 31,
+    createdAt: "2022-11-05",
+    updatedAt: "2023-06-30"
   },
   {
     id: "5",
@@ -93,16 +117,21 @@ const mockServiceProviders: ServiceProvider[] = [
     services: ["Buyer-seller matching", "Contract negotiation", "Price intelligence"],
     location: {
       county: "Kisumu",
-      latitude: -0.091702,
-      longitude: 34.767956
+      specificLocation: "City Center",
+      coordinates: {
+        latitude: -0.091702,
+        longitude: 34.767956
+      }
     },
-    contactInfo: {
-      email: "connect@kisumumarketlink.co.ke",
-      phone: "+254 756 789 012"
-    },
+    contactInfo: "connect@kisumumarketlink.co.ke | +254 756 789 012",
     capacity: "Services 500+ farmers",
     rates: "5% commission on successful deals",
-    tags: ["market-access", "contracts", "price-negotiation"]
+    tags: ["market-access", "contracts", "price-negotiation"],
+    verified: true,
+    rating: 4.6,
+    reviewCount: 53,
+    createdAt: "2023-03-10",
+    updatedAt: "2023-07-15"
   }
 ];
 
@@ -110,7 +139,7 @@ const mockServiceProviders: ServiceProvider[] = [
 export const fetchServiceProviders = async (): Promise<ServiceProvider[]> => {
   try {
     // Try to get real service provider data from the API
-    const apiProviders = await AmisKeApiHandler.get<ServiceProvider>('service-providers', {}, mockServiceProviders);
+    const apiProviders = await AmisKeApiHandler.get<ServiceProvider>('service-providers', {}, serviceProviders);
     
     // Check if we received valid data
     if (apiProviders && apiProviders.results && apiProviders.results.length > 0) {
@@ -118,10 +147,10 @@ export const fetchServiceProviders = async (): Promise<ServiceProvider[]> => {
     }
     
     console.log('Falling back to mock service provider data');
-    return mockServiceProviders;
+    return serviceProviders;
   } catch (error) {
     console.error('Error fetching service providers:', error);
-    return mockServiceProviders;
+    return serviceProviders;
   }
 };
 
@@ -186,5 +215,62 @@ export const registerServiceProvider = async (provider: Omit<ServiceProvider, 'i
   } catch (error) {
     console.error('Error registering service provider:', error);
     throw error;
+  }
+};
+
+// Fetch quality control discussions
+export const fetchQualityDiscussions = async (): Promise<QualityControlDiscussion[]> => {
+  try {
+    // Try to get real discussions from the API
+    const apiDiscussions = await AmisKeApiHandler.get<QualityControlDiscussion>('quality-discussions', {}, mockDiscussions);
+    
+    // Check if we received valid data
+    if (apiDiscussions && apiDiscussions.results && apiDiscussions.results.length > 0) {
+      return apiDiscussions.results;
+    }
+    
+    console.log('Falling back to mock quality discussions data');
+    return mockDiscussions;
+  } catch (error) {
+    console.error('Error fetching quality discussions:', error);
+    return mockDiscussions;
+  }
+};
+
+// Fetch training events
+export const fetchTrainingEvents = async (): Promise<TrainingEvent[]> => {
+  try {
+    // Try to get real events from the API
+    const apiEvents = await AmisKeApiHandler.get<TrainingEvent>('training-events', {}, mockTrainingEvents);
+    
+    // Check if we received valid data
+    if (apiEvents && apiEvents.results && apiEvents.results.length > 0) {
+      return apiEvents.results;
+    }
+    
+    console.log('Falling back to mock training events data');
+    return mockTrainingEvents;
+  } catch (error) {
+    console.error('Error fetching training events:', error);
+    return mockTrainingEvents;
+  }
+};
+
+// Fetch market linkages
+export const fetchMarketLinkages = async (): Promise<MarketLinkage[]> => {
+  try {
+    // Try to get real linkages from the API
+    const apiLinkages = await AmisKeApiHandler.get<MarketLinkage>('market-linkages', {}, mockMarketLinkages);
+    
+    // Check if we received valid data
+    if (apiLinkages && apiLinkages.results && apiLinkages.results.length > 0) {
+      return apiLinkages.results;
+    }
+    
+    console.log('Falling back to mock market linkages data');
+    return mockMarketLinkages;
+  } catch (error) {
+    console.error('Error fetching market linkages:', error);
+    return mockMarketLinkages;
   }
 };

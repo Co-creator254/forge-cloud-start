@@ -1,23 +1,53 @@
 
+// Types for AI Assistant Feature
+
+export type MessageRole = 'system' | 'user' | 'assistant';
+
 export interface Message {
   id: string;
   content: string;
-  role: 'user' | 'assistant';
+  role: MessageRole;
   timestamp: Date;
+  media?: {
+    url: string;
+    type: string;
+  };
 }
 
 export interface Transporter {
   id: string;
   name: string;
-  serviceType: string;
   counties: string[];
   contactInfo: string;
-  capacity: string;
-  loadCapacity: number;
-  rates: string;
   hasRefrigeration: boolean;
   vehicleType: string;
-  availableTimes?: string[];
-  latitude?: number;
-  longitude?: number;
+  loadCapacity: number;
+  rates: string;
+}
+
+export interface ChatCompletionParams {
+  messages: Array<{
+    role: MessageRole;
+    content: string;
+  }>;
+  model: string;
+  temperature?: number;
+  max_tokens?: number;
+}
+
+export interface ChatCompletionResponse {
+  choices: Array<{
+    message: {
+      role: MessageRole;
+      content: string;
+    };
+  }>;
+}
+
+export interface AgricultureContext {
+  crop?: string;
+  location?: string;
+  marketPrices?: Record<string, number>;
+  demandTrends?: Record<string, string>;
+  seasonality?: Record<string, string>;
 }

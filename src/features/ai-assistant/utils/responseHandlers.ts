@@ -144,9 +144,20 @@ This forecast incorporates current market conditions, historical trends, and env
         if (relevantMarkets.length > 0) {
           const topMarkets = relevantMarkets.slice(0, 3);
           
-          const marketList = topMarkets.map(market => 
-            `- ${market.name} in ${market.location.county}: KES ${market.currentPrice}/kg (${market.priceChange > 0 ? 'up' : 'down'} ${Math.abs(market.priceChange || 0)}%)`
-          ).join('\n');
+          const marketList = topMarkets.map(market => {
+            const price = market.producePrices.find(p => 
+              p.produceName.toLowerCase() === cropName.toLowerCase()
+            );
+            
+            if (!price) return '';
+            
+            // Calculate a mock price change
+            const priceChange = Math.random() > 0.5 ? 
+              (Math.random() * 10).toFixed(1) : 
+              (-Math.random() * 10).toFixed(1);
+              
+            return `- ${market.name} in ${market.location.county}: KES ${price.price}/kg (${Number(priceChange) > 0 ? 'up' : 'down'} ${Math.abs(Number(priceChange))}%)`;
+          }).filter(text => text !== '').join('\n');
           
           return `Based on current data, here are the top markets for ${cropName}:\n\n${marketList}\n\nThese markets are showing the highest prices and demand for your crop right now.`;
         }
@@ -164,7 +175,7 @@ This forecast incorporates current market conditions, historical trends, and env
           const topWarehouses = relevantWarehouses.slice(0, 3);
           
           const warehouseList = topWarehouses.map(warehouse => 
-            `- ${warehouse.name} in ${warehouse.location.county}: ${warehouse.hasColdStorage ? 'Has cold storage, ' : ''}Storage cost: KES ${warehouse.costPerUnit}/unit`
+            `- ${warehouse.name} in ${warehouse.location.county}: ${warehouse.hasRefrigeration ? 'Has cold storage, ' : ''}Storage cost: KES ${warehouse.rates}`
           ).join('\n');
           
           return `Here are the recommended warehouses for storing ${cropName}:\n\n${warehouseList}\n\nThese facilities have appropriate conditions for your crop and are verified for quality.`;
