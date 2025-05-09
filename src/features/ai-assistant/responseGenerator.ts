@@ -36,12 +36,7 @@ export const generateResponse = (
     
     // If not English, use language-specific responses
     if (detectedLanguage !== 'english') {
-      const languageResponse = handleLanguageResponse(message, detectedLanguage, {
-        crop,
-        location,
-        relevantMarkets,
-        processedForecasts
-      });
+      const languageResponse = handleLanguageResponse(message, detectedLanguage);
       
       if (languageResponse) {
         return languageResponse;

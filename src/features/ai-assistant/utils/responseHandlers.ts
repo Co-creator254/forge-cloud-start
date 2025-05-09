@@ -155,7 +155,7 @@ This forecast incorporates current market conditions, historical trends, and env
               (Math.random() * 10).toFixed(1) : 
               (-Math.random() * 10).toFixed(1);
               
-            return `- ${market.name} in ${market.location.county}: KES ${price.price}/kg (${Number(priceChange) > 0 ? 'up' : 'down'} ${Math.abs(Number(priceChange))}%)`;
+            return `- ${market.name} in ${market.location?.county || market.county || 'Unknown'}: KES ${price.price}/kg (${Number(priceChange) > 0 ? 'up' : 'down'} ${Math.abs(Number(priceChange))}%)`;
           }).filter(text => text !== '').join('\n');
           
           return `Based on current data, here are the top markets for ${cropName}:\n\n${marketList}\n\nThese markets are showing the highest prices and demand for your crop right now.`;
@@ -174,7 +174,7 @@ This forecast incorporates current market conditions, historical trends, and env
           const topWarehouses = relevantWarehouses.slice(0, 3);
           
           const warehouseList = topWarehouses.map(warehouse => 
-            `- ${warehouse.name} in ${warehouse.location.county}: ${warehouse.hasRefrigeration ? 'Has cold storage, ' : ''}Storage cost: KES ${warehouse.rates}`
+            `- ${warehouse.name} in ${warehouse.location?.county || 'Unknown'}: ${warehouse.hasRefrigeration ? 'Has cold storage, ' : ''}Storage cost: KES ${warehouse.rates || 'varies'}`
           ).join('\n');
           
           return `Here are the recommended warehouses for storing ${cropName}:\n\n${warehouseList}\n\nThese facilities have appropriate conditions for your crop and are verified for quality.`;
