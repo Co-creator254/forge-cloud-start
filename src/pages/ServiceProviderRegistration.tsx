@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MainNav } from "@/components/MainNav";
@@ -82,7 +81,13 @@ const ServiceProviderRegistration = () => {
         },
         contactInfo: data.contactInfo,
         website: data.website || undefined,
-        tags
+        tags,
+        // Adding the missing required properties with default values
+        verified: false,
+        rating: 0,
+        reviewCount: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       });
       
       toast({

@@ -1,4 +1,3 @@
-
 /**
  * Service Providers API
  * Handles fetching and managing service provider data
@@ -28,7 +27,6 @@ const serviceProviders: ServiceProvider[] = [
       }
     },
     contactInfo: "info@nairobicoldchain.co.ke | +254 712 345 678",
-    capacity: "5000 metric tons",
     rates: "KES 5 per kg per day",
     tags: ["cold-storage", "vegetables", "fruits", "dairy"],
     verified: true,
@@ -52,7 +50,6 @@ const serviceProviders: ServiceProvider[] = [
       }
     },
     contactInfo: "operations@mombasalogistics.co.ke | +254 723 456 789",
-    capacity: "Fleet of 25 vehicles",
     rates: "KES 25 per km per ton",
     tags: ["refrigerated-transport", "export", "port-clearance"],
     verified: true,
@@ -76,7 +73,6 @@ const serviceProviders: ServiceProvider[] = [
       }
     },
     contactInfo: "quality@nakuruqcs.co.ke | +254 734 567 890",
-    capacity: "Up to 200 tests per day",
     rates: "KES 5,000 per certification",
     tags: ["testing", "certification", "training", "compliance"],
     verified: true,
@@ -100,7 +96,6 @@ const serviceProviders: ServiceProvider[] = [
       }
     },
     contactInfo: "storage@eldoretgrain.co.ke | +254 745 678 901",
-    capacity: "10,000 metric tons",
     rates: "KES 2 per kg per month",
     tags: ["grain-storage", "cereals", "drying", "pest-control"],
     verified: true,
@@ -124,7 +119,6 @@ const serviceProviders: ServiceProvider[] = [
       }
     },
     contactInfo: "connect@kisumumarketlink.co.ke | +254 756 789 012",
-    capacity: "Services 500+ farmers",
     rates: "5% commission on successful deals",
     tags: ["market-access", "contracts", "price-negotiation"],
     verified: true,

@@ -23,6 +23,11 @@ export interface Transporter {
   vehicleType: string;
   loadCapacity: number;
   rates: string;
+  serviceType?: string;
+  capacity?: string;
+  availableTimes?: string[];
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface ChatCompletionParams {

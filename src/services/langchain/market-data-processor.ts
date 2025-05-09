@@ -37,7 +37,8 @@ class MarketDataProcessor {
     // Group markets by location
     const marketsByLocation: Record<string, Market[]> = {};
     markets.forEach(market => {
-      const locationKey = `${market.location.county}-${market.name}`;
+      // Ensure we have access to the county property as a string
+      const locationKey = `${market.county}-${market.name}`;
       if (!marketsByLocation[locationKey]) {
         marketsByLocation[locationKey] = [];
       }
