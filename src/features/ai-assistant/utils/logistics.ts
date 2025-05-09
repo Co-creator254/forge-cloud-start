@@ -1,4 +1,3 @@
-
 import { Warehouse } from '@/types';
 import { Transporter } from '../types';
 
@@ -16,9 +15,10 @@ export const getWarehouseRecommendations = (crop: string, warehouses: Warehouse[
       return `I don't have specific warehouse data for ${crop} at the moment. Would you like me to help you find storage options for another crop?`;
     }
     
-    const warehousesList = relevantWarehouses.slice(0, 3).map(warehouse => 
-      `${warehouse.name} in ${warehouse.location} (${warehouse.county}): Capacity ${warehouse.capacity} ${warehouse.capacityUnit}, ${warehouse.hasRefrigeration ? 'has refrigeration' : 'no refrigeration'}`
-    ).join('\n- ');
+    const warehousesList = relevantWarehouses.slice(0, 3).map(warehouse => {
+      const county = warehouse.county || (warehouse.location && warehouse.location.county) || 'Unknown';
+      return `${warehouse.name} in ${warehouse.location} (${county}): Capacity ${warehouse.capacity} ${warehouse.capacityUnit}, ${warehouse.hasRefrigeration ? 'has refrigeration' : 'no refrigeration'}`;
+    }).join('\n- ');
     
     return `Here are some warehouses that can store ${crop}:\n- ${warehousesList}\n\nThese warehouses follow ethical storage practices, minimizing food waste through proper storage conditions. Would you like me to suggest a complete supply chain solution including transportation to these facilities and connecting with potential buyers?`;
   } catch (error) {
@@ -51,4 +51,3 @@ export const getTransporterRecommendations = (location: string, transporters: Tr
     return "I apologize, but I encountered an error while searching for transporters. Would you like information about a different service?";
   }
 };
-

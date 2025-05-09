@@ -46,16 +46,18 @@ const DetailView: React.FC<DetailViewProps> = ({ item, onClose }) => {
     };
   }, [onClose]);
 
-  // Format content paragraphs
-  const formattedContent = item.content
-    .split(/\d+\)/)
-    .filter(paragraph => paragraph.trim().length > 0)
-    .map((paragraph, index) => (
-      <p key={index} className="mb-4">
-        {index > 0 && <span className="font-medium">{index})</span>}
-        {paragraph}
-      </p>
-    ));
+  // Format content paragraphs if content exists
+  const formattedContent = item.content 
+    ? item.content
+        .split(/\d+\)/)
+        .filter(paragraph => paragraph.trim().length > 0)
+        .map((paragraph, index) => (
+          <p key={index} className="mb-4">
+            {index > 0 && <span className="font-medium">{index})</span>}
+            {paragraph}
+          </p>
+        ))
+    : [<p key="no-content" className="mb-4">No detailed content available.</p>];
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 md:p-8 animate-fade-in">
@@ -65,7 +67,7 @@ const DetailView: React.FC<DetailViewProps> = ({ item, onClose }) => {
       >
         <CardHeader className="p-6 flex flex-row justify-between items-start">
           <div>
-            <Badge className={categoryColors[item.category] + " mb-2"}>
+            <Badge className={(categoryColors[item.category as keyof typeof categoryColors] || "bg-secondary") + " mb-2"}>
               {getCategoryName(item.category)}
             </Badge>
             <h2 className="text-2xl font-bold">{item.title}</h2>

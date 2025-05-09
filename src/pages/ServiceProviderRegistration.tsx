@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router-dom';
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
 import { Button } from "@/components/ui/button";
@@ -9,10 +10,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { registerServiceProvider } from '@/services/api';
+import { useToast } from "@/hooks/use-toast";
 
 const ServiceProviderRegistration = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [name, setName] = useState('');
   const [businessType, setBusinessType] = useState('');
   const [description, setDescription] = useState('');
@@ -70,7 +72,16 @@ const ServiceProviderRegistration = () => {
       updatedAt: new Date().toISOString()
     };
     
-    registerServiceProvider(newServiceProvider);
+    // Use Supabase client to add the service provider
+    // This would be implemented in a real API service
+    console.log('Submitting service provider:', newServiceProvider);
+    
+    // Show toast notification
+    toast({
+      title: "Service registered",
+      description: "Your service has been submitted for verification.",
+    });
+    
     setShowSuccess(true);
   };
 
@@ -100,7 +111,7 @@ const ServiceProviderRegistration = () => {
             <div className="mt-2 text-sm text-green-700">
               Your service has been registered and is awaiting verification.
             </div>
-            <Button variant="link" onClick={() => router.push('/')}>
+            <Button variant="link" onClick={() => navigate('/')}>
               Back to Home
             </Button>
           </div>

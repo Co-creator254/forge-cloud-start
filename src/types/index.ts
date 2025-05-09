@@ -1,4 +1,3 @@
-
 // Define the Market type
 export interface Market {
   id: string;
@@ -115,6 +114,10 @@ export interface TrainingEvent {
   attendees: number;
   tags: string[];
   providerName?: string;
+  providerId?: string;
+  topics?: string[];
+  registeredCount?: number;
+  cost?: number;
 }
 
 // Define the MarketLinkage type
@@ -248,7 +251,7 @@ export interface TransportProvider {
   longitude?: number;
 }
 
-export type Category = 'all' | 'solutions' | 'issues' | 'reports';
+export type Category = 'all' | 'solutions' | 'issues' | 'reports' | 'tender' | 'awarded-tender';
 
 export interface DataItem {
   id: string;
@@ -261,6 +264,10 @@ export interface DataItem {
   tags: string[];
   imageUrl?: string;
   source?: string;
+  deadline?: string;
+  contact?: string;
+  content?: string;
+  url?: string;
 }
 
 export interface SearchFilters {
@@ -272,3 +279,58 @@ export interface SearchFilters {
 }
 
 export const SOLUTION_CATEGORIES = ['farming', 'marketing', 'processing', 'financing', 'technology'];
+
+// Define the AwardedTender type
+export interface AwardedTender {
+  tenderno: string;
+  tendersubject: string;
+  finyrq: string;
+  supplier: string;
+  supplierscore: number;
+  supplierbid: number;
+  contactaddress: string;
+  contactname: string;
+  contacttel: string;
+  contactemail: string;
+  awarddate: string;
+  awardedamount: number;
+  currency: string;
+  procuringentity: string;
+  procuringentitycounty: string;
+  procurementmethod: string;
+}
+
+// Add missing types needed by components
+export interface CommunityPost {
+  id: string;
+  title: string;
+  content: string;
+  author: string;
+  date: string;
+  likes: number;
+  comments: number;
+  category: string;
+  tags: string[];
+}
+
+export interface TransportRequest {
+  id: string;
+  status: 'pending' | 'accepted' | 'completed' | 'cancelled';
+  pickupLocation: string;
+  dropoffLocation: string;
+  date: string;
+  capacity: string;
+  transporterName?: string;
+  price?: number;
+}
+
+export interface WarehouseBooking {
+  id: string;
+  status: 'pending' | 'accepted' | 'completed' | 'cancelled';
+  warehouseName: string;
+  county: string;
+  startDate: string;
+  endDate: string;
+  space: string;
+  price: number;
+}

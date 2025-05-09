@@ -63,6 +63,14 @@ export {
   getAllCommodityPrices
 } from './cronJobs';
 
+// Service Provider Registration
+export const registerServiceProvider = async (serviceProvider: any) => {
+  // This would connect to Supabase in a real implementation
+  console.log('Registering service provider:', serviceProvider);
+  await simulateDelay(1000);
+  return { success: true, id: crypto.randomUUID() };
+};
+
 // Jobs API (to be implemented with real data in the future)
 export const fetchJobs = async (filters?: any) => {
   // This is a placeholder that would be replaced with a real API implementation

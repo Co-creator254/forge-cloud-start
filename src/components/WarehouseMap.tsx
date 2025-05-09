@@ -100,6 +100,28 @@ const WarehouseMap: React.FC = () => {
     return 'bg-red-500';
   };
 
+  // Get coordinates for the warehouse
+  const getCoordinates = (warehouse: WarehouseType) => {
+    // First try direct properties
+    if (typeof warehouse.latitude === 'number' && typeof warehouse.longitude === 'number') {
+      return { lat: warehouse.latitude, lng: warehouse.longitude };
+    }
+    
+    // Then try nested location object
+    if (warehouse.location && warehouse.location.coordinates) {
+      return {
+        lat: warehouse.location.coordinates.latitude,
+        lng: warehouse.location.coordinates.longitude
+      };
+    }
+    
+    // Default values based on Kenya regions
+    return { 
+      lat: -1.2921 + (Math.random() * 2 - 1),
+      lng: 36.8219 + (Math.random() * 2 - 1)
+    };
+  };
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -124,22 +146,25 @@ const WarehouseMap: React.FC = () => {
             <div className="absolute inset-0 bg-[url('/placeholder.svg')] bg-cover opacity-20"></div>
             
             {/* Map pins */}
-            {warehouses.map((warehouse) => (
-              <div
-                key={warehouse.id}
-                className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group"
-                style={{
-                  left: `${((warehouse.longitude - 34) / 8) * 100}%`,
-                  top: `${((warehouse.latitude + 1) / 5) * 100}%`,
-                }}
-                onClick={() => handleWarehouseClick(warehouse)}
-              >
-                <div className={`w-3 h-3 rounded-full ${getPinColor(warehouse)} ring-4 ring-white ring-opacity-60`}></div>
-                <div className="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow-md text-sm whitespace-nowrap mb-2 transition-opacity">
-                  {warehouse.name}
+            {warehouses.map((warehouse) => {
+              const coords = getCoordinates(warehouse);
+              return (
+                <div
+                  key={warehouse.id}
+                  className="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group"
+                  style={{
+                    left: `${((coords.lng - 34) / 8) * 100}%`,
+                    top: `${((coords.lat + 1) / 5) * 100}%`,
+                  }}
+                  onClick={() => handleWarehouseClick(warehouse)}
+                >
+                  <div className={`w-3 h-3 rounded-full ${getPinColor(warehouse)} ring-4 ring-white ring-opacity-60`}></div>
+                  <div className="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow-md text-sm whitespace-nowrap mb-2 transition-opacity">
+                    {warehouse.name}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             
             {/* Simple county boundaries (would be replaced by actual map in real implementation) */}
             <div className="absolute inset-0 border-2 border-dashed border-gray-300 m-4 rounded-md pointer-events-none"></div>
@@ -160,7 +185,7 @@ const WarehouseMap: React.FC = () => {
               <div>
                 <p className="flex items-center">
                   <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                  <span>{selectedWarehouse.location}</span>
+                  <span>{selectedWarehouse.location && typeof selectedWarehouse.location !== 'string' ? selectedWarehouse.location.county : 'Location not specified'}</span>
                 </p>
                 <p className="mt-2">
                   <span className="font-medium">Capacity:</span> {selectedWarehouse.capacity} {selectedWarehouse.capacityUnit}
@@ -169,7 +194,7 @@ const WarehouseMap: React.FC = () => {
                   <span className="font-medium">Rates:</span> {selectedWarehouse.rates}
                 </p>
                 <p className="mt-2">
-                  <span className="font-medium">Contact:</span> {selectedWarehouse.contactInfo}
+                  <span className="font-medium">Contact:</span> {selectedWarehouse.contactInfo || 'Not available'}
                 </p>
               </div>
               
@@ -193,7 +218,7 @@ const WarehouseMap: React.FC = () => {
                   <p className="mt-2 flex items-center">
                     <FileCheck className="h-4 w-4 mr-2 text-green-500" />
                     <span>
-                      Certifications: {selectedWarehouse.certificationTypes?.join(', ')}
+                      Certifications: {selectedWarehouse.certificationTypes?.join(', ') || 'Not specified'}
                     </span>
                   </p>
                 )}

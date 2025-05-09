@@ -29,7 +29,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ item, onClick }) => {
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-md border border-border group animate-fade-in">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-3">
-          <Badge className={categoryColors[item.category] || 'bg-secondary'}>
+          <Badge className={categoryColors[item.category as keyof typeof categoryColors] || 'bg-secondary'}>
             {getCategoryName(item.category)}
           </Badge>
           <div className="flex items-center text-sm text-muted-foreground">
@@ -78,7 +78,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ item, onClick }) => {
       
       <CardFooter className="px-6 py-4 bg-muted/30 flex justify-between items-center">
         <div className="text-sm text-muted-foreground">
-          Source: {truncate(item.source, 30)}
+          Source: {truncate(item.source || 'Unknown', 30)}
         </div>
         <Button size="sm" onClick={onClick}>
           View Details
