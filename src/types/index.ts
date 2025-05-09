@@ -1,3 +1,4 @@
+
 // Define the Market type
 export interface Market {
   id: string;
@@ -15,7 +16,10 @@ export interface Market {
     produceName: string;
     price: number;
     unit: string;
+    date?: string;
   }[];
+  demand?: string;
+  operatingHours?: string;
 }
 
 // Define the Forecast type
@@ -26,6 +30,8 @@ export interface Forecast {
   expectedProduction: number;
   expectedDemand: number;
   confidenceLevel: 'high' | 'medium' | 'low';
+  county?: string;
+  unit?: string;
 }
 
 // Define the Warehouse type
@@ -40,14 +46,18 @@ export interface Warehouse {
     };
   };
   capacity: number;
+  capacityUnit?: string;
   hasRefrigeration: boolean;
+  hasCertifications?: boolean;
+  certificationTypes?: string[];
   goodsTypes: string[];
   rates: string;
-  contact: string;
+  contact?: string;
+  contactInfo?: string;
 }
 
 // Define the ServiceProvider type
-export type ServiceProviderType = 'storage' | 'transport' | 'quality-control' | 'market-linkage';
+export type ServiceProviderType = 'storage' | 'transport' | 'quality-control' | 'market-linkage' | 'training' | 'input-supplier' | 'inspector';
 
 export interface ServiceProvider {
   id: string;
@@ -64,7 +74,7 @@ export interface ServiceProvider {
     };
   };
   contactInfo: string;
-  rates: string; // Added rates property
+  rates: string;
   tags: string[];
   verified: boolean;
   rating: number;
@@ -72,6 +82,7 @@ export interface ServiceProvider {
   createdAt: string;
   updatedAt: string;
   website?: string;
+  capacity?: string;
 }
 
 // Define the QualityControlDiscussion type
@@ -84,6 +95,12 @@ export interface QualityControlDiscussion {
   organizer: string;
   attendees: number;
   tags: string[];
+  content?: string;
+  authorName?: string;
+  authorType?: string;
+  commentCount?: number;
+  viewCount?: number;
+  createdAt?: string;
 }
 
 // Define the TrainingEvent type
@@ -97,6 +114,7 @@ export interface TrainingEvent {
   capacity: number;
   attendees: number;
   tags: string[];
+  providerName?: string;
 }
 
 // Define the MarketLinkage type
@@ -109,6 +127,14 @@ export interface MarketLinkage {
   organizer: string;
   participants: number;
   tags: string[];
+  name?: string;
+  providerName?: string;
+  crops?: string[];
+  markets?: string[];
+  type?: string;
+  requirements?: string[];
+  benefits?: string[];
+  contactInfo?: string;
 }
 
 export interface ChatMessage {
@@ -117,3 +143,132 @@ export interface ChatMessage {
   sender: 'user' | 'bot';
   timestamp: string;
 }
+
+// Database tables based on SQL migration
+export interface MarketPriceRecord {
+  id: string;
+  market_id: string;
+  market_name: string;
+  county: string;
+  commodity_name: string;
+  price: number;
+  unit: string;
+  date_recorded: string;
+  source: string;
+  confidence_score: number;
+  verified: boolean;
+}
+
+export interface MarketForecastRecord {
+  id: string;
+  commodity_name: string;
+  county: string;
+  current_price: number;
+  forecast_price: number;
+  confidence_level: number;
+  period: string;
+  factors?: any;
+  created_at: string;
+  valid_until: string;
+}
+
+export interface MarketSentimentRecord {
+  id: string;
+  commodity_name: string;
+  county: string;
+  sentiment_score: number;
+  report_count: number;
+  tags: string[];
+  issues: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+// Additional types needed by various components
+export interface KilimoStats {
+  id: number;
+  name: string;
+  value: number;
+  year?: number;
+  county?: string;
+  category?: string;
+  unit?: string;
+}
+
+export interface Farmer {
+  id: string;
+  name: string;
+  county: string;
+  contacts: string;
+  products: string[];
+  farmSize: string;
+  certifications?: string[];
+  groups?: string[];
+}
+
+export interface FarmerGroup {
+  id: string;
+  name: string;
+  region: string;
+  cropFocus: string[];
+  memberCount: number;
+  description: string;
+  contactPerson: string;
+  contactInfo: string;
+  established: string;
+  isCooperative: boolean;
+}
+
+export interface Produce {
+  id: string;
+  name: string;
+  category: string;
+  county: string;
+  quantity: number;
+  unit: string;
+  qualityGrade: string;
+  availableFrom: string;
+  farmer: string;
+  farmerId: string;
+}
+
+export interface TransportProvider {
+  id: string;
+  name: string;
+  serviceType: string;
+  counties: string[];
+  contactInfo: string;
+  capacity: string;
+  loadCapacity: number;
+  rates: string;
+  hasRefrigeration: boolean;
+  vehicleType: string;
+  availableTimes?: string[];
+  latitude?: number;
+  longitude?: number;
+}
+
+export type Category = 'all' | 'solutions' | 'issues' | 'reports';
+
+export interface DataItem {
+  id: string;
+  title: string;
+  description: string;
+  category: Category;
+  subcategory?: string;
+  date: string;
+  location?: string;
+  tags: string[];
+  imageUrl?: string;
+  source?: string;
+}
+
+export interface SearchFilters {
+  query?: string;
+  category?: Category;
+  location?: string;
+  dateFrom?: Date;
+  dateTo?: Date;
+}
+
+export const SOLUTION_CATEGORIES = ['farming', 'marketing', 'processing', 'financing', 'technology'];

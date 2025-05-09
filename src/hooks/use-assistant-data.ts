@@ -5,8 +5,15 @@ import { Market, Forecast, Warehouse } from '@/types';
 import { Transporter } from '@/features/ai-assistant/types';
 import { AmisKeApiHandler } from '@/services/amis-ke/api-handler';
 import { AssistantDataResult } from '@/types/assistant';
+import { 
+  fetchRealMarketPrices, 
+  fetchRealMarketForecasts, 
+  convertToMarketFormat, 
+  convertToForecastFormat,
+  syncAmisDataToDatabase
+} from '@/services/marketDataService';
 
-// Mock data for initial loading and fallbacks
+// Mock data for fallbacks
 import { mockMarkets, mockForecasts, mockWarehouses, mockTransporters } from '@/features/ai-assistant/mockData';
 
 export function useAssistantData(): AssistantDataResult {
@@ -21,6 +28,7 @@ export function useAssistantData(): AssistantDataResult {
   });
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [usedRealData, setUsedRealData] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -30,58 +38,109 @@ export function useAssistantData(): AssistantDataResult {
       setError(null);
       
       try {
-        // Try to fetch real data from API endpoints
-        const [amisPricesResponse, amisMarketsResponse] = await Promise.allSettled([
-          AmisKeApiHandler.get('prices', { limit: 50 }),
-          AmisKeApiHandler.get('markets', { limit: 20 })
+        // Try to fetch real data from our Supabase database first
+        const [marketPrices, marketForecasts] = await Promise.all([
+          fetchRealMarketPrices(),
+          fetchRealMarketForecasts()
         ]);
         
-        let amisPrices: any[] = [];
-        let amisMarkets: any[] = [];
+        let markets: Market[] = [];
+        let forecasts: Forecast[] = [];
+        let usedReal = false;
         
-        if (amisPricesResponse.status === 'fulfilled' && amisPricesResponse.value?.results) {
-          amisPrices = amisPricesResponse.value.results;
+        // If we have real market prices in the database
+        if (marketPrices.length > 0) {
+          markets = convertToMarketFormat(marketPrices);
+          usedReal = true;
         }
         
-        if (amisMarketsResponse.status === 'fulfilled' && amisMarketsResponse.value?.results) {
-          amisMarkets = amisMarketsResponse.value.results;
+        // If we have real forecasts in the database
+        if (marketForecasts.length > 0) {
+          forecasts = convertToForecastFormat(marketForecasts);
+          usedReal = true;
         }
         
-        // Map AMIS data to our Market model (simplified for illustration)
-        const marketsFromAmis: Market[] = amisMarkets.slice(0, 5).map(market => ({
-          id: market.id || `market-${Date.now()}-${Math.random()}`,
-          name: market.name || 'Unknown Market',
-          county: market.county || 'Unknown County',
-          location: {
+        // If we don't have data in Supabase yet, try AMIS Kenya API directly
+        if (markets.length === 0) {
+          const [amisPricesResponse, amisMarketsResponse] = await Promise.allSettled([
+            AmisKeApiHandler.get('prices', { limit: 50 }),
+            AmisKeApiHandler.get('markets', { limit: 20 })
+          ]);
+          
+          let amisPrices: any[] = [];
+          let amisMarkets: any[] = [];
+          
+          if (amisPricesResponse.status === 'fulfilled' && amisPricesResponse.value?.results) {
+            amisPrices = amisPricesResponse.value.results;
+          }
+          
+          if (amisMarketsResponse.status === 'fulfilled' && amisMarketsResponse.value?.results) {
+            amisMarkets = amisMarketsResponse.value.results;
+          }
+          
+          // Map AMIS data to our Market model
+          const marketsFromAmis: Market[] = amisMarkets.slice(0, 5).map(market => ({
+            id: String(market.id) || `market-${Date.now()}-${Math.random()}`,
+            name: market.name || 'Unknown Market',
             county: market.county || 'Unknown County',
-            coordinates: market.coordinates || { latitude: 0, longitude: 0 }
-          },
-          producePrices: amisPrices
-            .filter(price => price.market_id === market.id)
-            .map(price => ({
-              id: price.id || `price-${Date.now()}-${Math.random()}`,
-              produceName: price.commodity_name || 'Unknown Commodity',
-              price: price.price || 0,
-              unit: price.unit || 'kg'
-            }))
-        }));
+            location: {
+              county: market.county || 'Unknown County',
+              coordinates: market.coordinates || { latitude: 0, longitude: 0 }
+            },
+            producePrices: amisPrices
+              .filter(price => price.market_id === market.id)
+              .map(price => ({
+                id: String(price.id) || `price-${Date.now()}-${Math.random()}`,
+                produceName: price.commodity_name || 'Unknown Commodity',
+                price: price.price || 0,
+                unit: price.unit || 'kg'
+              }))
+          }));
+          
+          if (marketsFromAmis.length > 0) {
+            markets = marketsFromAmis;
+            usedReal = true;
+            
+            // Save AMIS data to our database for future use
+            syncAmisDataToDatabase().catch(err => {
+              console.error("Error syncing AMIS data to database:", err);
+            });
+          }
+        }
 
         if (isMounted) {
           setData({
             // Use real data if available, otherwise fallback to mock data
-            markets: marketsFromAmis.length > 0 ? marketsFromAmis : mockMarkets,
-            forecasts: mockForecasts, // Replace with real forecast API when available
+            markets: markets.length > 0 ? markets : mockMarkets,
+            forecasts: forecasts.length > 0 ? forecasts : mockForecasts,
             warehouses: mockWarehouses, // Replace with real warehouse API when available
             transporters: mockTransporters, // Replace with real transporter API when available
-            amisPrices,
-            amisMarkets
+            amisPrices: [],
+            amisMarkets: []
           });
+          
+          setUsedRealData(usedReal);
+          
+          // Show toast only if we used real data
+          if (usedReal) {
+            toast({
+              title: "Real Market Data",
+              description: "Using real market data for agricultural insights",
+              variant: "default"
+            });
+          } else {
+            toast({
+              title: "Using Backup Data",
+              description: "Could not connect to data sources. Using backup data.",
+              variant: "destructive"
+            });
+          }
         }
       } catch (err) {
         console.error('Error fetching assistant data:', err);
         
         if (isMounted) {
-          setError('Failed to load some market data. Using cached data for now.');
+          setError('Failed to load market data. Using cached data for now.');
           
           // Fallback to mock data
           setData({
@@ -95,7 +154,7 @@ export function useAssistantData(): AssistantDataResult {
           
           toast({
             title: "Connection Error",
-            description: "Unable to connect to AMIS Kenya API. Using cached data.",
+            description: "Unable to fetch agricultural data. Using fallback data.",
             variant: "destructive"
           });
         }
@@ -113,5 +172,10 @@ export function useAssistantData(): AssistantDataResult {
     };
   }, [toast]);
 
-  return { data, dataLoading, error };
+  return { 
+    data, 
+    dataLoading, 
+    error, 
+    isRealData: usedRealData 
+  };
 }

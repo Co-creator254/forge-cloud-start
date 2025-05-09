@@ -55,6 +55,7 @@ export const generateResponse = (
       processedForecasts
     };
     
+    // Fixed parameter order and count here
     return getResponseForIntent(intent, markets, forecasts, warehouses, transporters, contextData);
     
   } catch (error) {

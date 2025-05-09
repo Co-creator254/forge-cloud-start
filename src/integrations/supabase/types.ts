@@ -9,6 +9,123 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      market_forecasts: {
+        Row: {
+          commodity_name: string
+          confidence_level: number
+          county: string
+          created_at: string
+          current_price: number
+          factors: Json | null
+          forecast_price: number
+          id: string
+          period: string
+          valid_until: string
+        }
+        Insert: {
+          commodity_name: string
+          confidence_level?: number
+          county: string
+          created_at?: string
+          current_price: number
+          factors?: Json | null
+          forecast_price: number
+          id?: string
+          period?: string
+          valid_until?: string
+        }
+        Update: {
+          commodity_name?: string
+          confidence_level?: number
+          county?: string
+          created_at?: string
+          current_price?: number
+          factors?: Json | null
+          forecast_price?: number
+          id?: string
+          period?: string
+          valid_until?: string
+        }
+        Relationships: []
+      }
+      market_prices: {
+        Row: {
+          commodity_name: string
+          confidence_score: number | null
+          county: string
+          date_recorded: string
+          id: string
+          market_id: string
+          market_name: string
+          price: number
+          source: string
+          unit: string
+          verified: boolean | null
+        }
+        Insert: {
+          commodity_name: string
+          confidence_score?: number | null
+          county: string
+          date_recorded?: string
+          id?: string
+          market_id: string
+          market_name: string
+          price: number
+          source?: string
+          unit: string
+          verified?: boolean | null
+        }
+        Update: {
+          commodity_name?: string
+          confidence_score?: number | null
+          county?: string
+          date_recorded?: string
+          id?: string
+          market_id?: string
+          market_name?: string
+          price?: number
+          source?: string
+          unit?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
+      market_sentiment: {
+        Row: {
+          commodity_name: string
+          county: string
+          created_at: string
+          id: string
+          issues: string[]
+          report_count: number
+          sentiment_score: number
+          tags: string[]
+          updated_at: string
+        }
+        Insert: {
+          commodity_name: string
+          county: string
+          created_at?: string
+          id?: string
+          issues?: string[]
+          report_count?: number
+          sentiment_score: number
+          tags?: string[]
+          updated_at?: string
+        }
+        Update: {
+          commodity_name?: string
+          county?: string
+          created_at?: string
+          id?: string
+          issues?: string[]
+          report_count?: number
+          sentiment_score?: number
+          tags?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string | null
