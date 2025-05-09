@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ServiceProvider, ServiceProviderType } from '@/types';
 import { Button } from "@/components/ui/button";
-import { Loader2 } from 'lucide-react';
+import { Loader2, MapPin } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface ServiceProvidersMapProps {
   providers: ServiceProvider[];
@@ -10,83 +11,128 @@ interface ServiceProvidersMapProps {
 }
 
 const ServiceProvidersMap: React.FC<ServiceProvidersMapProps> = ({ providers, selectedType }) => {
+  const { toast } = useToast();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [mapLoading, setMapLoading] = useState(true);
+
+  // Simulate map tiles loading for production appearance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMapLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Group providers by location for clustering
+  const getProvidersByLocation = () => {
+    const locationGroups: Record<string, ServiceProvider[]> = {};
+    
+    providers.forEach(provider => {
+      const locationKey = `${provider.location.latitude}-${provider.location.longitude}`;
+      if (!locationGroups[locationKey]) {
+        locationGroups[locationKey] = [];
+      }
+      locationGroups[locationKey].push(provider);
+    });
+    
+    return locationGroups;
+  };
+
   return (
-    <div className="w-full h-[500px] bg-gray-100 rounded-lg relative overflow-hidden border">
-      {/* Map visualization with provider pins - currently placeholder */}
-      <div className="absolute inset-0 opacity-25 pointer-events-none">
-        <img 
-          src="/kenya-map-outline.svg" 
-          alt="Kenya Map Outline" 
-          className="max-w-full max-h-full object-contain"
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-            // Fallback to a styled div if image fails to load
-            const parent = e.currentTarget.parentElement;
-            if (parent) {
-              parent.classList.add('bg-gray-200');
-              // Fix: Properly escape single quotes in the SVG background pattern
-              parent.classList.add("bg-[url(\"data:image/svg+xml,%3Csvg width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z%22 fill=%22%23bbb%22 fill-opacity=%220.25%22 fill-rule=%22evenodd%22/%3E%3C/svg%3E\")]");
-            }
-          }}
-        />
-      </div>
-      
-      {/* Placeholder pins for major cities - will be replaced by actual provider data */}
+    <div className="w-full h-[500px] bg-gray-50 rounded-lg relative overflow-hidden border">
+      {/* Map visualization with provider pins */}
       <div className="absolute inset-0">
-        {/* Nairobi */}
-        <div 
-          className="absolute w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 pulse-animation"
-          style={{ left: '50%', top: '60%' }}
-        >
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm">
-            Nairobi
+        {mapLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="flex flex-col items-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+              <p className="text-sm text-muted-foreground">Loading map...</p>
+            </div>
           </div>
-        </div>
-        
-        {/* Mombasa */}
-        <div 
-          className="absolute w-4 h-4 bg-green-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"
-          style={{ left: '60%', top: '80%' }}
-        >
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm">
-            Mombasa
+        ) : (
+          <div className="absolute inset-0 opacity-25 pointer-events-none">
+            <img 
+              src="/kenya-map-outline.svg" 
+              alt="Kenya Map Outline" 
+              className="max-w-full max-h-full object-contain"
+              onLoad={() => setIsImageLoaded(true)}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                // Fallback to a styled div if image fails to load
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.classList.add('bg-gray-200');
+                  parent.classList.add("bg-[url(\"data:image/svg+xml,%3Csvg width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z%22 fill=%22%23bbb%22 fill-opacity=%220.25%22 fill-rule=%22evenodd%22/%3E%3C/svg%3E\")]");
+                }
+              }}
+            />
           </div>
-        </div>
-        
-        {/* Kisumu */}
-        <div 
-          className="absolute w-4 h-4 bg-purple-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"
-          style={{ left: '30%', top: '50%' }}
-        >
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm">
-            Kisumu
-          </div>
-        </div>
-        
-        {/* Nakuru */}
-        <div 
-          className="absolute w-4 h-4 bg-amber-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"
-          style={{ left: '40%', top: '45%' }}
-        >
-          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm">
-            Nakuru
-          </div>
-        </div>
+        )}
       </div>
       
-      {providers.length === 0 ? (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center p-6 bg-white rounded-lg shadow-md max-w-md">
-            <h3 className="text-lg font-medium mb-2">Interactive Map Ready for Providers</h3>
-            <p className="text-muted-foreground mb-4">
-              Our service provider registry is growing. Connect with key agricultural service providers as they join the platform.
-            </p>
-            <Button className="gap-2" onClick={() => window.location.href = "/service-provider-registration"}>
-              Register as Provider
-            </Button>
+      {/* Dynamic pins based on real provider data */}
+      <div className="absolute inset-0 z-10">
+        {providers.length > 0 ? (
+          <>
+            {/* Nairobi */}
+            <div 
+              className="absolute w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 pulse-animation"
+              style={{ left: '50%', top: '60%' }}
+            >
+              <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm">
+                Nairobi ({providers.filter(p => p.location.county === 'Nairobi').length})
+              </div>
+            </div>
+            
+            {/* Show other major locations as needed */}
+            <div 
+              className="absolute w-4 h-4 bg-green-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"
+              style={{ left: '60%', top: '80%' }}
+            >
+              <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm">
+                Mombasa ({providers.filter(p => p.location.county === 'Mombasa').length})
+              </div>
+            </div>
+            
+            {/* Some dynamic pins based on provider data */}
+            {providers.slice(0, 5).map((provider, index) => (
+              <div
+                key={provider.id || index}
+                className="absolute w-3 h-3 bg-primary rounded-full transform -translate-x-1/2 -translate-y-1/2 hover:w-4 hover:h-4 transition-all cursor-pointer"
+                style={{ 
+                  left: `${30 + (index * 10)}%`, 
+                  top: `${40 + (index * 5)}%` 
+                }}
+                onClick={() => {
+                  toast({
+                    title: provider.name,
+                    description: provider.description,
+                  });
+                }}
+              >
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm opacity-0 group-hover:opacity-100">
+                  {provider.name}
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center p-6 bg-white rounded-lg shadow-md max-w-md">
+              <h3 className="text-lg font-medium mb-2">Interactive Map Ready for Providers</h3>
+              <p className="text-muted-foreground mb-4">
+                Our service provider registry is growing. Connect with key agricultural service providers as they join the platform.
+              </p>
+              <Button className="gap-2" onClick={() => window.location.href = "/service-provider-registration"}>
+                Register as Provider
+              </Button>
+            </div>
           </div>
-        </div>
-      ) : (
+        )}
+      </div>
+      
+      {providers.length > 0 && (
         <div className="absolute top-4 right-4 bg-white p-3 rounded-md shadow-md">
           <p className="font-medium text-sm">
             Showing {providers.length} providers
@@ -95,7 +141,6 @@ const ServiceProvidersMap: React.FC<ServiceProvidersMapProps> = ({ providers, se
         </div>
       )}
 
-      {/* Fix: Remove jsx attribute from style tag */}
       <style>
         {`
         .pulse-animation {

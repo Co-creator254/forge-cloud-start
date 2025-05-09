@@ -1,15 +1,17 @@
 
 /**
- * API Handler for AMIS Kenya API
- * This ensures consistent communication with the API with proper error handling
+ * Enhanced API Handler for AMIS Kenya API
+ * This ensures consistent communication with the API with proper error handling and caching
  */
 
 const API_BASE_URL = "https://amis.kilimo.go.ke/en/api";
 
 // Maximum number of retry attempts for failed API calls
-const MAX_RETRIES = 2;
+const MAX_RETRIES = 3;
 // Base delay for exponential backoff in milliseconds
 const BASE_RETRY_DELAY = 1000;
+// Cache retention time (30 minutes)
+const CACHE_TTL = 30 * 60 * 1000;
 
 interface ApiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -17,6 +19,7 @@ interface ApiOptions {
   queryParams?: Record<string, string>;
   fallbackReturnValue?: any;
   retries?: number;
+  bypassCache?: boolean;
 }
 
 // Define a generic type for API responses with results arrays
@@ -27,9 +30,17 @@ export interface AmisKeApiResponse<T> {
   previous?: string | null;
 }
 
+// In-memory cache store
+const apiCache: Record<string, { timestamp: number, data: any }> = {};
+
 export class AmisKeApiHandler {
-  static async get<T>(endpoint: string, queryParams?: Record<string, string>, fallbackReturnValue?: any): Promise<AmisKeApiResponse<T>> {
-    return this.request<AmisKeApiResponse<T>>(endpoint, { method: 'GET', queryParams, fallbackReturnValue });
+  static async get<T>(endpoint: string, queryParams?: Record<string, string>, fallbackReturnValue?: any, bypassCache = false): Promise<AmisKeApiResponse<T>> {
+    return this.request<AmisKeApiResponse<T>>(endpoint, { 
+      method: 'GET', 
+      queryParams, 
+      fallbackReturnValue,
+      bypassCache 
+    });
   }
 
   static async post<T>(endpoint: string, body: any, fallbackReturnValue?: any): Promise<AmisKeApiResponse<T>> {
@@ -42,7 +53,8 @@ export class AmisKeApiHandler {
       body, 
       queryParams, 
       fallbackReturnValue = { results: [] } as unknown as T,
-      retries = 0 
+      retries = 0,
+      bypassCache = false 
     } = options;
 
     // Add query parameters if they exist
@@ -54,7 +66,25 @@ export class AmisKeApiHandler {
           params.append(key, value);
         }
       });
-      url += `?${params.toString()}`;
+      const queryString = params.toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
+    }
+
+    // Generate cache key
+    const cacheKey = `${method}:${url}`;
+    
+    // Check cache for GET requests when not bypassing cache
+    if (method === 'GET' && !bypassCache && apiCache[cacheKey]) {
+      const cachedData = apiCache[cacheKey];
+      if (Date.now() - cachedData.timestamp < CACHE_TTL) {
+        console.log(`Using cached data for ${url}`);
+        return cachedData.data;
+      } else {
+        // Cache expired
+        delete apiCache[cacheKey];
+      }
     }
 
     // Set up request options
@@ -105,11 +135,30 @@ export class AmisKeApiHandler {
         
         // For 4xx client errors, we shouldn't retry as the request is likely invalid
         console.warn(`Request failed with status ${response.status}. Using fallback data.`);
+        
+        // For GET requests, store fallback in cache to prevent hammering the API
+        if (method === 'GET') {
+          apiCache[cacheKey] = {
+            timestamp: Date.now(),
+            data: fallbackReturnValue
+          };
+        }
+        
         return fallbackReturnValue;
       }
 
-      // Parse and return JSON response
-      return response.json() as Promise<T>;
+      // Parse JSON response
+      const data = await response.json() as T;
+      
+      // Cache successful GET responses
+      if (method === 'GET') {
+        apiCache[cacheKey] = {
+          timestamp: Date.now(),
+          data
+        };
+      }
+      
+      return data;
     } catch (error) {
       // Network errors or JSON parsing errors
       console.error(`Failed to connect to API (${endpoint}):`, error);
@@ -129,6 +178,15 @@ export class AmisKeApiHandler {
       
       if (typeof fallbackReturnValue !== 'undefined') {
         console.log(`Maximum retries reached. Using fallback data for ${endpoint}`);
+        
+        // Cache fallback for GET requests to prevent hammering the API
+        if (method === 'GET') {
+          apiCache[cacheKey] = {
+            timestamp: Date.now(),
+            data: fallbackReturnValue
+          };
+        }
+        
         return fallbackReturnValue;
       }
       
@@ -136,7 +194,7 @@ export class AmisKeApiHandler {
     }
   }
   
-  // New helper method to check if API is reachable
+  // Helper method to check if API is reachable
   static async checkApiHealth(): Promise<boolean> {
     try {
       const response = await fetch(`${API_BASE_URL}/health-check`, {
@@ -145,13 +203,20 @@ export class AmisKeApiHandler {
         mode: 'cors',
         cache: 'no-cache',
         credentials: 'same-origin',
-      });
+        timeout: 5000,
+      } as RequestInit);
       
       return response.ok;
     } catch (error) {
       console.warn('API health check failed:', error);
       return false;
     }
+  }
+  
+  // Method to clear the cache
+  static clearCache(): void {
+    Object.keys(apiCache).forEach(key => delete apiCache[key]);
+    console.log('API cache cleared');
   }
 }
 
