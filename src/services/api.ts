@@ -1,4 +1,3 @@
-// Add the simulateDelay function at the top of the file
 
 // Helper function to simulate API delay
 const simulateDelay = (ms: number = 800) => new Promise(resolve => setTimeout(resolve, ms));
@@ -78,7 +77,6 @@ export const registerServiceProvider = async (serviceProvider: any) => {
 // Jobs API (to be implemented with real data in the future)
 export const fetchJobs = async (filters?: any) => {
   // This is a placeholder that would be replaced with a real API implementation
-  const { simulateDelay } = await import('./apiUtils');
   await simulateDelay(800);
   return [];
 };

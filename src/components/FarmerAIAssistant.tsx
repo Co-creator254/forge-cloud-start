@@ -4,9 +4,10 @@ import { useAssistantData } from '@/hooks/use-assistant-data';
 import { useAssistantMessages } from '@/hooks/use-assistant-messages';
 import AssistantCard from '@/components/ai-assistant/AssistantCard';
 import { Badge } from '@/components/ui/badge';
+import { Loader2 } from 'lucide-react';
 
 const FarmerAIAssistant: React.FC = () => {
-  // Fetch all agricultural data
+  // Fetch all agricultural data from Supabase
   const { data, dataLoading, error, isRealData } = useAssistantData();
   
   // Setup messaging functionality
@@ -19,15 +20,22 @@ const FarmerAIAssistant: React.FC = () => {
 
   return (
     <div className="relative">
-      {isRealData && (
+      {dataLoading ? (
+        <Badge 
+          className="absolute top-0 right-0 mr-4 mt-4 z-10"
+          variant="outline"
+        >
+          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          Loading live data...
+        </Badge>
+      ) : isRealData ? (
         <Badge 
           className="absolute top-0 right-0 mr-4 mt-4 z-10"
           variant="secondary"
         >
-          Using Real Market Data
+          Using Live Market Data
         </Badge>
-      )}
-      {!isRealData && !dataLoading && (
+      ) : (
         <Badge 
           className="absolute top-0 right-0 mr-4 mt-4 z-10"
           variant="outline"

@@ -1,4 +1,3 @@
-
 import { TrainingEvent } from '@/types';
 
 export const mockTrainingEvents: TrainingEvent[] = [
@@ -13,7 +12,10 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["tomato production", "disease management", "greenhouse farming"],
     capacity: 50,
     registeredCount: 35,
-    cost: "Free"
+    cost: 0,
+    attendees: 35,
+    tags: ["tomato", "greenhouse", "fertilizer"],
+    trainer: "Dr. John Kimani"
   },
   {
     id: "2",
@@ -26,7 +28,10 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["export standards", "quality control", "certification", "EU regulations"],
     capacity: 30,
     registeredCount: 28,
-    cost: "KES 5,000"
+    cost: 5000,
+    attendees: 28,
+    tags: ["export", "quality", "certification", "EU"],
+    trainer: "Ms. Jane Ochieng"
   },
   {
     id: "3",
@@ -39,7 +44,10 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["organic certification", "record keeping", "organic inputs"],
     capacity: 40,
     registeredCount: 22,
-    cost: "KES 2,500"
+    cost: 2500,
+    attendees: 22,
+    tags: ["organic", "record", "inputs"],
+    trainer: "Mr. David Mwangi"
   },
   {
     id: "4",
@@ -52,7 +60,10 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["pesticide safety", "application techniques", "equipment calibration"],
     capacity: 60,
     registeredCount: 45,
-    cost: "Free"
+    cost: 0,
+    attendees: 45,
+    tags: ["pesticide", "application", "calibration"],
+    trainer: "Dr. Emily Mwangi"
   },
   {
     id: "5",
@@ -65,7 +76,10 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["post-harvest management", "cold chain", "value addition"],
     capacity: 35,
     registeredCount: 18,
-    cost: "KES 1,000"
+    cost: 1000,
+    attendees: 18,
+    tags: ["post-harvest", "cold", "value"],
+    trainer: "Ms. Mary Wanjiru"
   },
   {
     id: "6",
@@ -78,7 +92,10 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["HACCP", "food safety", "critical control points"],
     capacity: 25,
     registeredCount: 25,
-    cost: "KES 8,000"
+    cost: 8000,
+    attendees: 25,
+    tags: ["HACCP", "food", "control"],
+    trainer: "Dr. John Kimani"
   },
   {
     id: "7",
@@ -91,7 +108,10 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["digital agriculture", "record keeping", "farm management"],
     capacity: 100,
     registeredCount: 67,
-    cost: "KES 500"
+    cost: 500,
+    attendees: 67,
+    tags: ["digital", "record", "management"],
+    trainer: "Ms. Jane Ochieng"
   },
   {
     id: "8",
@@ -104,7 +124,10 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["soil health", "soil testing", "fertility management"],
     capacity: 45,
     registeredCount: 32,
-    cost: "KES 1,500"
+    cost: 1500,
+    attendees: 32,
+    tags: ["soil", "testing", "fertility"],
+    trainer: "Mr. David Mwangi"
   },
   {
     id: "9",
@@ -117,6 +140,9 @@ export const mockTrainingEvents: TrainingEvent[] = [
     topics: ["dairy", "milk quality", "hygiene", "testing"],
     capacity: 50,
     registeredCount: 28,
-    cost: "KES 2,000"
+    cost: 2000,
+    attendees: 28,
+    tags: ["dairy", "quality", "hygiene", "testing"],
+    trainer: "Ms. Mary Wanjiru"
   }
 ];

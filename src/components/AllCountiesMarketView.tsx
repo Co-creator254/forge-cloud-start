@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
@@ -8,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { fetchKilimoStats, fetchMarkets } from '@/services/api';
 import { KilimoStats, Market } from '@/types';
 
-const AllCountiesMarketView: React.FC = () => {
+const AllCountiesMarketView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [markets, setMarkets] = useState<Market[]>([]);
   const [kilimoStats, setKilimoStats] = useState<KilimoStats[]>([]);
@@ -65,6 +66,10 @@ const AllCountiesMarketView: React.FC = () => {
       
     return matchesCounty && matchesSearch && matchesCommodity;
   });
+  
+  const renderLocation = (location: { county: string; coordinates?: { latitude: number; longitude: number; } }) => {
+    return <span>{location.county}</span>;
+  };
   
   return (
     <Card className="w-full">
@@ -152,10 +157,7 @@ const AllCountiesMarketView: React.FC = () => {
                       <TableCell className="font-medium">{market.name}</TableCell>
                       <TableCell>{market.county}</TableCell>
                       <TableCell>
-                        {/* Convert location object to string if needed */}
-                        {typeof market.location === 'string' 
-                          ? market.location 
-                          : (market.location?.county || 'Unknown location')}
+                        {renderLocation(market.location)}
                       </TableCell>
                       <TableCell>{price.produceName}</TableCell>
                       <TableCell>{price.price}</TableCell>

@@ -9,9 +9,8 @@ export const marketLinkages = [
     participants: 120,
     tags: ['export', 'international', 'certification'],
     providerName: 'Kenya Export Market Authority',
-    // Fix: convert strings to arrays
-    crops: ['Avocados', 'French Beans', 'Herbs'], // Was a string
-    markets: ['EU', 'Middle East', 'Asia'], // Was a string
+    crops: ['Avocados', 'French Beans', 'Herbs'],
+    markets: ['EU', 'Middle East', 'Asia'],
     type: 'Export Market',
     requirements: ['GLOBALG.A.P Certification', 'Minimum volume capacity', 'Consistent supply'],
     benefits: ['Premium prices', 'Long-term contracts', 'Technical support'],

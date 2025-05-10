@@ -1,3 +1,4 @@
+
 // Define the Market type
 export interface Market {
   id: string;
@@ -21,11 +22,10 @@ export interface Market {
   operatingHours?: string;
 }
 
-// Update the Forecast type to include produceId
+// Update the Forecast type
 export interface Forecast {
   id: string;
   produceName: string;
-  produceId?: string; // Adding this to fix error
   period: string;
   expectedProduction: number;
   expectedDemand: number;
@@ -136,8 +136,8 @@ export interface MarketLinkage {
   tags: string[];
   name?: string;
   providerName?: string;
-  crops?: string[];
-  markets?: string[];
+  crops: string[];
+  markets: string[];
   type?: string;
   requirements?: string[];
   benefits?: string[];
@@ -316,7 +316,7 @@ export interface CommunityPost {
   comments: number;
   category: string;
   tags: string[];
-  userId?: string; // Add fields used in CommunityForums.tsx
+  userId?: string;
   userName?: string;
   created?: string;
   location?: string;
@@ -324,14 +324,13 @@ export interface CommunityPost {
 
 export interface TransportRequest {
   id: string;
-  status: 'pending' | 'accepted' | 'completed' | 'cancelled' | 'confirmed'; // Added 'confirmed'
+  status: 'pending' | 'accepted' | 'completed' | 'cancelled' | 'confirmed';
   pickupLocation: string;
   dropoffLocation: string;
   date: string;
   capacity: string;
   transporterName?: string;
   price?: number;
-  // Additional fields used in MyTrades.tsx
   farmerId?: string;
   farmerName?: string;
   origin?: string;
@@ -341,27 +340,24 @@ export interface TransportRequest {
   unit?: string;
   requiredDate?: string;
   hasSpecialRequirements?: boolean;
-  specialRequirements?: string;
   created?: string;
-  transporterId?: string;
 }
 
 export interface WarehouseBooking {
   id: string;
-  status: 'pending' | 'accepted' | 'completed' | 'cancelled' | 'confirmed';
-  warehouseName: string;
   county: string;
-  startDate: string;
-  endDate: string;
   space: string;
   price: number;
-  // Additional fields used in MyTrades.tsx
+  status?: string;
   userId?: string;
   userName?: string;
   warehouseId?: string;
+  warehouseName?: string;
   produceType?: string;
   quantity?: number;
   unit?: string;
+  startDate?: string;
+  endDate?: string;
   requiresRefrigeration?: boolean;
   created?: string;
 }

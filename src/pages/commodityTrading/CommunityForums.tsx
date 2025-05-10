@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
@@ -18,47 +17,53 @@ const CommunityForums: React.FC = () => {
   const [activeTab, setActiveTab] = useState('discussions');
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [isPostingThread, setIsPostingThread] = useState(false);
-  const [posts, setPosts] = useState<CommunityPost[]>([
+  const posts: CommunityPost[] = [
     {
-      id: '1',
-      userId: 'user1',
-      userName: 'Jane Farmer',
-      title: 'Best practices for tomato cultivation during dry season',
-      content: 'I\'m struggling with my tomato crop during this dry season. Any suggestions for irrigation techniques that conserve water but still keep plants healthy?',
-      category: 'question',
-      tags: ['tomatoes', 'irrigation', 'dry-season'],
-      created: '2024-03-15T09:30:00Z',
-      likes: 12,
+      id: "post1",
+      title: "Best practices for maize storage",
+      content: "I've been struggling with post-harvest losses in my maize. What are the best practices for storage to minimize losses?",
+      author: "John Kimani",  // Use author instead of userName
+      date: "2023-05-15",    // Use date instead of created
+      likes: 24,
       comments: 8,
-      location: 'Nakuru County'
+      category: "storage",
+      tags: ["maize", "storage", "post-harvest"],
+      userId: "user123",  // Keep these additional properties
+      userName: "John Kimani", // For backward compatibility
+      created: "2023-05-15", // For backward compatibility
+      location: "Nakuru County"
     },
     {
-      id: '2',
-      userId: 'user2',
-      userName: 'John Trader',
-      title: 'Upcoming Agricultural Fair in Nairobi',
+      id: "post2",
+      title: "Upcoming Agricultural Fair in Nairobi",
       content: 'There\'s an agricultural fair happening next month in Nairobi. Great opportunity to network and learn about new farming technologies. Who\'s planning to attend?',
-      category: 'event',
-      tags: ['event', 'networking', 'technology'],
-      created: '2024-03-18T14:20:00Z',
+      author: "Jane Farmer",
+      date: "2024-03-18",
       likes: 24,
       comments: 15,
-      location: 'Nairobi County'
+      category: "event",
+      tags: ["event", "networking", "technology"],
+      userId: "user2",
+      userName: "Jane Farmer",
+      created: "2024-03-18",
+      location: "Nairobi County"
     },
     {
-      id: '3',
-      userId: 'user3',
-      userName: 'Sarah Cooperative',
-      title: 'Looking for maize suppliers in Western region',
+      id: "post3",
+      title: "Looking for maize suppliers in Western region",
       content: 'Our cooperative is looking to purchase large quantities of maize from farmers in Western Kenya. We offer competitive prices and can arrange transportation.',
-      category: 'market',
-      tags: ['maize', 'bulk-purchase', 'western-kenya'],
-      created: '2024-03-19T11:45:00Z',
+      author: "Sarah Cooperative",
+      date: "2024-03-19",
       likes: 5,
       comments: 3,
-      location: 'Kakamega County'
+      category: "market",
+      tags: ["maize", "bulk-purchase", "western-kenya"],
+      userId: "user3",
+      userName: "Sarah Cooperative",
+      created: "2024-03-19",
+      location: "Kakamega County"
     }
-  ]);
+  ];
   
   const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();

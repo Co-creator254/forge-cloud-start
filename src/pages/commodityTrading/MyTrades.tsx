@@ -1,5 +1,5 @@
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { TransportRequest, WarehouseBooking } from '@/types';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -16,11 +16,11 @@ import { Calendar as CalendarIcon, TruckIcon, Warehouse as WarehouseIcon, Check,
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { TransportRequest, WarehouseBooking, TransportProvider, Warehouse } from '@/types';
+import { TransportProvider, Warehouse } from '@/types';
 import { fetchWarehouses, fetchTransportProviders } from '@/services/kilimoAPI';
 import WarehouseMap from '@/components/WarehouseMap';
 
-const MyTradesView: React.FC = () => {
+const MyTrades: React.FC = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('purchases');
   const [isLoading, setIsLoading] = useState(false);
@@ -49,54 +49,63 @@ const MyTradesView: React.FC = () => {
         // Sample transport requests data
         setTransportRequests([
           {
-            id: 'TR001',
-            farmerId: 'F001',
-            farmerName: 'John Farmer',
-            origin: 'Nakuru County',
-            destination: 'Nairobi County',
-            produceType: 'Potatoes',
-            quantity: 2000,
-            unit: 'kg',
-            requiredDate: '2024-04-10',
+            id: "tr1",
+            status: "pending",
+            pickupLocation: "Meru County",
+            dropoffLocation: "Nairobi County",
+            date: "2023-06-20",
+            capacity: "3 tons",
+            farmerId: "farmer123", // Keep these additional properties
+            farmerName: "John Mwangi", // Keep these additional properties
+            origin: "Meru County", // For backward compatibility
+            destination: "Nairobi County", // For backward compatibility
+            produceType: "Potatoes",
+            quantity: 3000,
+            unit: "kg",
+            requiredDate: "2023-06-20",
             hasSpecialRequirements: false,
-            status: 'pending',
-            created: '2024-03-15T09:30:00Z',
+            created: "2023-06-15"
           },
           {
-            id: 'TR002',
-            farmerId: 'F001',
-            farmerName: 'John Farmer',
-            origin: 'Nakuru County',
-            destination: 'Eldoret County',
-            produceType: 'Maize',
+            id: "tr2",
+            status: "accepted",
+            pickupLocation: "Nakuru County",
+            dropoffLocation: "Eldoret County",
+            date: "2023-06-25",
+            capacity: "5 tons",
+            farmerId: "farmer456", // Keep these additional properties
+            farmerName: "Jane Doe", // Keep these additional properties
+            origin: "Nakuru County", // For backward compatibility
+            destination: "Eldoret County", // For backward compatibility
+            produceType: "Maize",
             quantity: 5000,
-            unit: 'kg',
-            requiredDate: '2024-04-15',
+            unit: "kg",
+            requiredDate: "2023-06-25",
             hasSpecialRequirements: true,
             specialRequirements: 'Need covered truck due to rainy season',
-            status: 'accepted',
-            created: '2024-03-18T14:20:00Z',
-            transporterId: 'TP003',
-            transporterName: 'Fast Movers Logistics'
+            created: "2023-06-20"
           }
         ]);
         
         // Sample warehouse bookings data
         setWarehouseBookings([
           {
-            id: 'WB001',
-            userId: 'F001',
-            userName: 'John Farmer',
-            warehouseId: 'WH002',
-            warehouseName: 'Nakuru Cold Storage',
-            produceType: 'Potatoes',
-            quantity: 2000,
-            unit: 'kg',
-            startDate: '2024-04-10',
-            endDate: '2024-05-10',
+            id: "wb1",
+            county: "Nakuru",
+            space: "50 sq m",
+            price: 15000,
+            status: "confirmed",
+            userId: "user456",
+            userName: "Alice Wanjiru",
+            warehouseId: "wh123",
+            warehouseName: "Nakuru Central Storage",
+            produceType: "Maize",
+            quantity: 10000,
+            unit: "kg",
+            startDate: "2023-07-01",
+            endDate: "2023-08-01",
             requiresRefrigeration: true,
-            status: 'confirmed',
-            created: '2024-03-20T10:15:00Z'
+            created: "2023-06-25"
           }
         ]);
       } catch (error) {
@@ -707,4 +716,4 @@ const MyTradesView: React.FC = () => {
   );
 };
 
-export default MyTradesView;
+export default MyTrades;

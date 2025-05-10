@@ -15,7 +15,7 @@ export const serviceProviders = [
       }
     },
     contactInfo: 'info@kenstore.co.ke | +254 712 345 678',
-    rates: 'KES 300-500 per ton/month', // Add missing rates
+    rates: 'KES 300-500 per ton/month',
     verified: true,
     rating: 4.7,
     reviewCount: 28,
@@ -38,7 +38,7 @@ export const serviceProviders = [
       }
     },
     contactInfo: 'logistics@agritransport.com | +254 722 000 111',
-    rates: 'KES 5000-8000 per trip', // Add missing rates
+    rates: 'KES 5000-8000 per trip',
     verified: true,
     rating: 4.5,
     reviewCount: 35,
@@ -61,7 +61,7 @@ export const serviceProviders = [
       }
     },
     contactInfo: 'quality@cropsure.co.ke | +254 733 999 888',
-    rates: 'KES 1000-2000 per test', // Add missing rates
+    rates: 'KES 1000-2000 per test',
     verified: true,
     rating: 4.8,
     reviewCount: 42,
@@ -84,7 +84,7 @@ export const serviceProviders = [
       }
     },
     contactInfo: 'markets@farmlink.org | +254 744 555 666',
-    rates: '5% commission on sales', // Add missing rates
+    rates: '5% commission on sales',
     verified: true,
     rating: 4.6,
     reviewCount: 30,
@@ -107,7 +107,7 @@ export const serviceProviders = [
       }
     },
     contactInfo: 'training@agritrain.co.ke | +254 755 777 888',
-    rates: 'KES 2000 per course', // Add missing rates
+    rates: 'KES 2000 per course',
     verified: true,
     rating: 4.9,
     reviewCount: 50,
@@ -130,7 +130,7 @@ export const serviceProviders = [
       }
     },
     contactInfo: 'supplies@seedco.com | +254 766 888 999',
-    rates: 'Market rates', // Add missing rates
+    rates: 'Market rates',
     verified: true,
     rating: 4.7,
     reviewCount: 38,
@@ -153,7 +153,7 @@ export const serviceProviders = [
       }
     },
     contactInfo: 'insurance@agrisure.co.ke | +254 777 999 000',
-    rates: 'Varies based on coverage', // Add missing rates
+    rates: 'Varies based on coverage',
     verified: true,
     rating: 4.5,
     reviewCount: 25,

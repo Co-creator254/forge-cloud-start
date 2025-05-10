@@ -1,22 +1,22 @@
 
 import { ServiceProvider, ServiceProviderType } from '@/types';
 import { simulateDelay } from '../apiUtils';
-import { mockServiceProviders } from '../mockData/serviceProviders';
+import { serviceProviders } from '../mockData/serviceProviders';
 
 export const fetchServiceProviders = async (type?: ServiceProviderType): Promise<ServiceProvider[]> => {
   await simulateDelay(800);
   
   if (type) {
-    return mockServiceProviders.filter(provider => provider.businessType === type);
+    return serviceProviders.filter(provider => provider.businessType === type);
   }
   
-  return mockServiceProviders;
+  return serviceProviders;
 };
 
 export const getServiceProviderById = async (id: string): Promise<ServiceProvider | null> => {
   await simulateDelay(500);
   
-  const provider = mockServiceProviders.find(p => p.id === id);
+  const provider = serviceProviders.find(p => p.id === id);
   
   return provider || null;
 };
@@ -26,7 +26,7 @@ export const registerServiceProvider = async (providerData: Omit<ServiceProvider
   
   const newProvider: ServiceProvider = {
     ...providerData,
-    id: `sp${mockServiceProviders.length + 1}`,
+    id: `sp${serviceProviders.length + 1}`,
     rating: 0,
     reviewCount: 0,
     verified: false,
