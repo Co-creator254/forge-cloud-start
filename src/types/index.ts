@@ -17,6 +17,7 @@ export interface Market {
     price: number;
     unit: string;
     date?: string;
+    produceId?: string; // Added to support legacy code
   }[];
   demand?: string;
   operatingHours?: string;
@@ -32,6 +33,7 @@ export interface Forecast {
   confidenceLevel: 'high' | 'medium' | 'low';
   county?: string;
   unit?: string;
+  produceId?: string; // Added to support legacy code
 }
 
 // Define the Warehouse type
@@ -104,6 +106,7 @@ export interface QualityControlDiscussion {
   commentCount?: number;
   viewCount?: number;
   createdAt?: string;
+  authorId?: string; // Added to support legacy code
 }
 
 // Define the TrainingEvent type
@@ -256,7 +259,19 @@ export interface TransportProvider {
   longitude?: number;
 }
 
-export type Category = 'all' | 'solutions' | 'issues' | 'reports' | 'tender' | 'awarded-tender';
+// Add LogisticsProvider to support legacy code
+export interface LogisticsProvider {
+  id: string;
+  name: string;
+  serviceType: string;
+  counties: string[];
+  contactInfo: string;
+  capacity: string;
+  rates: string;
+  hasRefrigeration: boolean;
+}
+
+export type Category = 'all' | 'solutions' | 'issues' | 'reports' | 'tender' | 'awarded-tender' | 'agriculture';
 
 export interface DataItem {
   id: string;
@@ -316,9 +331,6 @@ export interface CommunityPost {
   comments: number;
   category: string;
   tags: string[];
-  userId?: string;
-  userName?: string;
-  created?: string;
   location?: string;
 }
 
@@ -331,6 +343,7 @@ export interface TransportRequest {
   capacity: string;
   transporterName?: string;
   price?: number;
+  // Support additional fields for backward compatibility
   farmerId?: string;
   farmerName?: string;
   origin?: string;
@@ -349,6 +362,7 @@ export interface WarehouseBooking {
   space: string;
   price: number;
   status?: string;
+  // Support additional fields for backward compatibility
   userId?: string;
   userName?: string;
   warehouseId?: string;

@@ -1,5 +1,5 @@
 
-import { DataItem } from '@/types';
+import { DataItem, Category } from '@/types';
 
 // Sample data since we're not connecting to a real API yet
 export const SAMPLE_DATA: DataItem[] = [
@@ -7,7 +7,7 @@ export const SAMPLE_DATA: DataItem[] = [
     id: '1',
     title: 'Managing Tomato Blight in Wet Seasons',
     description: 'Effective strategies for managing tomato blight during rainy seasons in Kenya',
-    category: 'agriculture',
+    category: 'issues' as Category,
     date: '2023-11-15',
     source: 'Kenya Agricultural Research Institute',
     content: 'Tomato blight is a common disease that affects tomato crops during wet seasons. Symptoms include dark spots on leaves, stems, and fruits. To manage tomato blight: 1) Plant resistant varieties 2) Improve drainage in your field 3) Apply appropriate fungicides preventatively 4) Practice crop rotation 5) Remove and destroy infected plants to prevent spread.',
@@ -43,7 +43,7 @@ export const SAMPLE_DATA: DataItem[] = [
     id: '4',
     title: 'Drought-Resistant Maize Varieties for Eastern Kenya',
     description: 'Information on drought-resistant maize varieties suitable for Eastern Kenya',
-    category: 'agriculture',
+    category: 'solutions' as Category,
     date: '2023-10-20',
     source: 'Kenya Seed Company',
     content: 'Eastern Kenya often experiences drought conditions that affect maize production. Several drought-resistant varieties have been developed specifically for these conditions, including KDV-1, KDV-4, and Katumani. These varieties mature early (in about 90-120 days) and can produce reasonable yields even with limited rainfall. Proper spacing and timely planting are crucial for success with these varieties.',

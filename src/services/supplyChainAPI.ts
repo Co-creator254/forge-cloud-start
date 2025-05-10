@@ -1,5 +1,4 @@
-
-import { Farmer, Produce, Market, LogisticsProvider, Forecast } from '@/types';
+import { Farmer, Produce, Market, Forecast } from '@/types';
 import { simulateDelay } from './apiUtils';
 
 // Farmers endpoint
@@ -149,17 +148,23 @@ export const fetchMarkets = async (county?: string): Promise<Market[]> => {
       id: "m1",
       name: "Nakuru Central Market",
       county: "Nakuru",
-      location: "Central Business District",
+      location: {
+        county: "Nakuru",
+        coordinates: {
+          latitude: -0.3031,
+          longitude: 36.0800
+        }
+      },
       producePrices: [
         {
-          produceId: "p1",
+          id: "p1",
           produceName: "Maize",
           price: 50,
           unit: "kg",
           date: "2023-11-15"
         },
         {
-          produceId: "p2",
+          id: "p2",
           produceName: "Beans",
           price: 120,
           unit: "kg",
@@ -173,10 +178,16 @@ export const fetchMarkets = async (county?: string): Promise<Market[]> => {
       id: "m2",
       name: "Kiambu Farmers Market",
       county: "Kiambu",
-      location: "Kiambu Town",
+      location: {
+        county: "Kiambu",
+        coordinates: {
+          latitude: -1.1700,
+          longitude: 36.8300
+        }
+      },
       producePrices: [
         {
-          produceId: "p3",
+          id: "p3",
           produceName: "Coffee",
           price: 400,
           unit: "kg",
@@ -190,10 +201,16 @@ export const fetchMarkets = async (county?: string): Promise<Market[]> => {
       id: "m3",
       name: "Kisumu Fish Market",
       county: "Kisumu",
-      location: "Lakeside",
+      location: {
+        county: "Kisumu",
+        coordinates: {
+          latitude: -0.1022,
+          longitude: 34.7617
+        }
+      },
       producePrices: [
         {
-          produceId: "p4",
+          id: "p4",
           produceName: "Rice",
           price: 130,
           unit: "kg",
@@ -207,10 +224,16 @@ export const fetchMarkets = async (county?: string): Promise<Market[]> => {
       id: "m4",
       name: "Meru County Market",
       county: "Meru",
-      location: "Meru Town",
+      location: {
+        county: "Meru",
+        coordinates: {
+          latitude: 0.0500,
+          longitude: 37.6500
+        }
+      },
       producePrices: [
         {
-          produceId: "p5",
+          id: "p5",
           produceName: "Tea",
           price: 300,
           unit: "kg",
@@ -296,7 +319,6 @@ export const fetchForecasts = async (county?: string): Promise<Forecast[]> => {
   const forecasts: Forecast[] = [
     {
       id: "fc1",
-      produceId: "p1",
       produceName: "Maize",
       county: "Nakuru",
       expectedProduction: 2500,
@@ -307,7 +329,6 @@ export const fetchForecasts = async (county?: string): Promise<Forecast[]> => {
     },
     {
       id: "fc2",
-      produceId: "p3",
       produceName: "Coffee",
       county: "Kiambu",
       expectedProduction: 800,
@@ -318,7 +339,6 @@ export const fetchForecasts = async (county?: string): Promise<Forecast[]> => {
     },
     {
       id: "fc3",
-      produceId: "p4",
       produceName: "Rice",
       county: "Kisumu",
       expectedProduction: 1200,
@@ -329,7 +349,6 @@ export const fetchForecasts = async (county?: string): Promise<Forecast[]> => {
     },
     {
       id: "fc4",
-      produceId: "p5",
       produceName: "Tea",
       county: "Meru",
       expectedProduction: 1500,
@@ -340,7 +359,6 @@ export const fetchForecasts = async (county?: string): Promise<Forecast[]> => {
     },
     {
       id: "fc5",
-      produceId: "p2",
       produceName: "Beans",
       county: "Nakuru",
       expectedProduction: 900,
@@ -353,7 +371,7 @@ export const fetchForecasts = async (county?: string): Promise<Forecast[]> => {
   
   if (county) {
     return forecasts.filter(forecast => 
-      forecast.county.toLowerCase() === county.toLowerCase()
+      forecast.county?.toLowerCase() === county.toLowerCase()
     );
   }
   

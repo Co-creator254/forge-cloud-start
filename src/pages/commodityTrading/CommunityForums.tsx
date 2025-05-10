@@ -17,20 +17,17 @@ const CommunityForums: React.FC = () => {
   const [activeTab, setActiveTab] = useState('discussions');
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [isPostingThread, setIsPostingThread] = useState(false);
-  const posts: CommunityPost[] = [
+  const [posts, setPosts] = useState<CommunityPost[]>([
     {
       id: "post1",
       title: "Best practices for maize storage",
       content: "I've been struggling with post-harvest losses in my maize. What are the best practices for storage to minimize losses?",
-      author: "John Kimani",  // Use author instead of userName
-      date: "2023-05-15",    // Use date instead of created
+      author: "John Kimani",
+      date: "2023-05-15",
       likes: 24,
       comments: 8,
       category: "storage",
       tags: ["maize", "storage", "post-harvest"],
-      userId: "user123",  // Keep these additional properties
-      userName: "John Kimani", // For backward compatibility
-      created: "2023-05-15", // For backward compatibility
       location: "Nakuru County"
     },
     {
@@ -43,9 +40,6 @@ const CommunityForums: React.FC = () => {
       comments: 15,
       category: "event",
       tags: ["event", "networking", "technology"],
-      userId: "user2",
-      userName: "Jane Farmer",
-      created: "2024-03-18",
       location: "Nairobi County"
     },
     {
@@ -58,12 +52,9 @@ const CommunityForums: React.FC = () => {
       comments: 3,
       category: "market",
       tags: ["maize", "bulk-purchase", "western-kenya"],
-      userId: "user3",
-      userName: "Sarah Cooperative",
-      created: "2024-03-19",
       location: "Kakamega County"
     }
-  ];
+  ]);
   
   const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();

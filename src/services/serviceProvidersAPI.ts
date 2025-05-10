@@ -4,11 +4,14 @@
  */
 
 import { ServiceProvider, ServiceProviderType, QualityControlDiscussion, TrainingEvent, MarketLinkage } from '@/types';
+import { simulateDelay } from './apiUtils';
 import { AmisKeApiHandler } from './amis-ke/api-handler';
-import { mockServiceProviders } from './mockData/serviceProviders';
-import { mockDiscussions } from './mockData/discussions'; 
-import { mockTrainingEvents } from './mockData/trainingEvents';
-import { mockMarketLinkages } from './mockData/marketLinkages';
+
+// Import the correct exports from mock data files
+import { serviceProviders } from './mockData/serviceProviders';
+import { discussions } from './mockData/discussions';
+import { trainingEvents } from './mockData/trainingEvents';
+import { marketLinkages } from './mockData/marketLinkages';
 
 // Mock data for initial development/demo
 const serviceProviders: ServiceProvider[] = [
@@ -216,7 +219,7 @@ export const registerServiceProvider = async (provider: Omit<ServiceProvider, 'i
 export const fetchQualityDiscussions = async (): Promise<QualityControlDiscussion[]> => {
   try {
     // Try to get real discussions from the API
-    const apiDiscussions = await AmisKeApiHandler.get<QualityControlDiscussion>('quality-discussions', {}, mockDiscussions);
+    const apiDiscussions = await AmisKeApiHandler.get<QualityControlDiscussion>('quality-discussions', {}, discussions);
     
     // Check if we received valid data
     if (apiDiscussions && apiDiscussions.results && apiDiscussions.results.length > 0) {
@@ -224,10 +227,10 @@ export const fetchQualityDiscussions = async (): Promise<QualityControlDiscussio
     }
     
     console.log('Falling back to mock quality discussions data');
-    return mockDiscussions;
+    return discussions;
   } catch (error) {
     console.error('Error fetching quality discussions:', error);
-    return mockDiscussions;
+    return discussions;
   }
 };
 
@@ -235,7 +238,7 @@ export const fetchQualityDiscussions = async (): Promise<QualityControlDiscussio
 export const fetchTrainingEvents = async (): Promise<TrainingEvent[]> => {
   try {
     // Try to get real events from the API
-    const apiEvents = await AmisKeApiHandler.get<TrainingEvent>('training-events', {}, mockTrainingEvents);
+    const apiEvents = await AmisKeApiHandler.get<TrainingEvent>('training-events', {}, trainingEvents);
     
     // Check if we received valid data
     if (apiEvents && apiEvents.results && apiEvents.results.length > 0) {
@@ -243,10 +246,10 @@ export const fetchTrainingEvents = async (): Promise<TrainingEvent[]> => {
     }
     
     console.log('Falling back to mock training events data');
-    return mockTrainingEvents;
+    return trainingEvents;
   } catch (error) {
     console.error('Error fetching training events:', error);
-    return mockTrainingEvents;
+    return trainingEvents;
   }
 };
 
@@ -254,7 +257,7 @@ export const fetchTrainingEvents = async (): Promise<TrainingEvent[]> => {
 export const fetchMarketLinkages = async (): Promise<MarketLinkage[]> => {
   try {
     // Try to get real linkages from the API
-    const apiLinkages = await AmisKeApiHandler.get<MarketLinkage>('market-linkages', {}, mockMarketLinkages);
+    const apiLinkages = await AmisKeApiHandler.get<MarketLinkage>('market-linkages', {}, marketLinkages);
     
     // Check if we received valid data
     if (apiLinkages && apiLinkages.results && apiLinkages.results.length > 0) {
@@ -262,9 +265,9 @@ export const fetchMarketLinkages = async (): Promise<MarketLinkage[]> => {
     }
     
     console.log('Falling back to mock market linkages data');
-    return mockMarketLinkages;
+    return marketLinkages;
   } catch (error) {
     console.error('Error fetching market linkages:', error);
-    return mockMarketLinkages;
+    return marketLinkages;
   }
 };
