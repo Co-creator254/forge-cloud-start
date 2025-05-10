@@ -1,4 +1,3 @@
-
 import { Market, Forecast, Warehouse, TransportProvider, LogisticsProvider } from '@/types';
 import { simulateDelay } from './apiUtils';
 import { v4 as uuid } from 'uuid';
@@ -473,18 +472,22 @@ export const getAllLogisticsProviders = async (): Promise<(TransportProvider | W
     ...transportProviders.map(provider => ({
       ...provider,
       type: 'transport'
-    })),
+    })) as TransportProvider[],
     ...warehouses.map(warehouse => ({
       id: warehouse.id,
       name: warehouse.name,
       type: 'storage',
-      county: warehouse.location.county,
-      contactInfo: warehouse.contactInfo || `${warehouse.contact} | Contact info N/A`,
-      capacity: `${warehouse.capacity} ${warehouse.capacityUnit}`,
-      rates: warehouse.rates,
+      location: {
+        county: warehouse.location.county,
+        coordinates: warehouse.location.coordinates
+      },
+      capacity: warehouse.capacity,
+      capacityUnit: warehouse.capacityUnit,
       hasRefrigeration: warehouse.hasRefrigeration,
-      coordinates: warehouse.location.coordinates
-    }))
+      goodsTypes: warehouse.goodsTypes,
+      rates: warehouse.rates,
+      contactInfo: warehouse.contactInfo || `${warehouse.contact}`,
+    })) as unknown as Warehouse[]
   ];
   
   return providers;

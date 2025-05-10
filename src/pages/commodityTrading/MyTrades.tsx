@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { MainNav } from '@/components/MainNav';
-import { MobileNav } from '@/components/MobileNav';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { TransportRequest, WarehouseBooking } from '@/types';
-import { useMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar, Clock, Loader2, MapPin, Package, Truck, Warehouse } from 'lucide-react';
 
 const MyTrades: React.FC = () => {
   const { toast } = useToast();
-  const { isMobile } = useMobile();
+  const { isMobile } = useIsMobile();
   
   const [transportRequests, setTransportRequests] = useState<TransportRequest[]>([]);
   const [warehouseBookings, setWarehouseBookings] = useState<WarehouseBooking[]>([]);
