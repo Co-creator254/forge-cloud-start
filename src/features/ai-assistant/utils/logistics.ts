@@ -1,3 +1,4 @@
+
 import { Warehouse } from '@/types';
 import { Transporter } from '../types';
 
@@ -16,8 +17,14 @@ export const getWarehouseRecommendations = (crop: string, warehouses: Warehouse[
     }
     
     const warehousesList = relevantWarehouses.slice(0, 3).map(warehouse => {
-      const county = warehouse.county || (warehouse.location && warehouse.location.county) || 'Unknown';
-      return `${warehouse.name} in ${warehouse.location} (${county}): Capacity ${warehouse.capacity} ${warehouse.capacityUnit}, ${warehouse.hasRefrigeration ? 'has refrigeration' : 'no refrigeration'}`;
+      // Handle county field from either direct property or within location object
+      const county = warehouse.county || 
+        (warehouse.location && typeof warehouse.location !== 'string' ? warehouse.location.county : 'Unknown');
+      
+      const location = typeof warehouse.location === 'string' ? warehouse.location : 
+        (warehouse.location ? warehouse.location.county : 'Unknown');
+      
+      return `${warehouse.name} in ${location} (${county}): Capacity ${warehouse.capacity} ${warehouse.capacityUnit}, ${warehouse.hasRefrigeration ? 'has refrigeration' : 'no refrigeration'}`;
     }).join('\n- ');
     
     return `Here are some warehouses that can store ${crop}:\n- ${warehousesList}\n\nThese warehouses follow ethical storage practices, minimizing food waste through proper storage conditions. Would you like me to suggest a complete supply chain solution including transportation to these facilities and connecting with potential buyers?`;

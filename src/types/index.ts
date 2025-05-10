@@ -44,6 +44,9 @@ export interface Warehouse {
       longitude: number;
     };
   };
+  county?: string; // For backwards compatibility
+  latitude?: number; // For direct access
+  longitude?: number; // For direct access
   capacity: number;
   capacityUnit?: string;
   hasRefrigeration: boolean;
