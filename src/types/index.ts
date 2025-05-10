@@ -21,10 +21,11 @@ export interface Market {
   operatingHours?: string;
 }
 
-// Define the Forecast type
+// Update the Forecast type to include produceId
 export interface Forecast {
   id: string;
   produceName: string;
+  produceId?: string; // Adding this to fix error
   period: string;
   expectedProduction: number;
   expectedDemand: number;
@@ -238,6 +239,7 @@ export interface Produce {
   farmerId: string;
 }
 
+// Update TransportProvider to include latitude and longitude
 export interface TransportProvider {
   id: string;
   name: string;
@@ -314,26 +316,52 @@ export interface CommunityPost {
   comments: number;
   category: string;
   tags: string[];
+  userId?: string; // Add fields used in CommunityForums.tsx
+  userName?: string;
+  created?: string;
+  location?: string;
 }
 
 export interface TransportRequest {
   id: string;
-  status: 'pending' | 'accepted' | 'completed' | 'cancelled';
+  status: 'pending' | 'accepted' | 'completed' | 'cancelled' | 'confirmed'; // Added 'confirmed'
   pickupLocation: string;
   dropoffLocation: string;
   date: string;
   capacity: string;
   transporterName?: string;
   price?: number;
+  // Additional fields used in MyTrades.tsx
+  farmerId?: string;
+  farmerName?: string;
+  origin?: string;
+  destination?: string;
+  produceType?: string;
+  quantity?: number;
+  unit?: string;
+  requiredDate?: string;
+  hasSpecialRequirements?: boolean;
+  specialRequirements?: string;
+  created?: string;
+  transporterId?: string;
 }
 
 export interface WarehouseBooking {
   id: string;
-  status: 'pending' | 'accepted' | 'completed' | 'cancelled';
+  status: 'pending' | 'accepted' | 'completed' | 'cancelled' | 'confirmed';
   warehouseName: string;
   county: string;
   startDate: string;
   endDate: string;
   space: string;
   price: number;
+  // Additional fields used in MyTrades.tsx
+  userId?: string;
+  userName?: string;
+  warehouseId?: string;
+  produceType?: string;
+  quantity?: number;
+  unit?: string;
+  requiresRefrigeration?: boolean;
+  created?: string;
 }

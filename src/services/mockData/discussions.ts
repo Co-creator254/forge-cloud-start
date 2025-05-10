@@ -1,101 +1,109 @@
-
-import { QualityControlDiscussion } from '@/types';
-
-export const mockDiscussions: QualityControlDiscussion[] = [
+// Fix authorId property not existing in QualityControlDiscussion
+export const discussions = [
   {
-    id: "1",
-    title: "Detecting counterfeit pesticides in Nakuru region",
-    content: "I've encountered what I believe are counterfeit pesticides being sold in local agrovets. They have similar packaging to known brands but the prices are suspiciously low. After application, they seem to have little effect on pests. Has anyone else experienced this? How can we verify authentic products?",
-    authorId: "user1",
-    authorName: "John Kamau",
-    authorType: "farmer",
-    createdAt: "2023-05-15T08:30:00Z",
-    commentCount: 15,
-    viewCount: 324,
-    tags: ["counterfeit", "pesticides", "verification", "nakuru"]
+    id: 'd1',
+    title: 'Best Practices for Quality Control in Maize Storage',
+    description: 'A discussion on ensuring quality standards for maize in storage facilities across Kenya.',
+    date: '2023-09-15',
+    location: 'Nairobi County',
+    organizer: 'Kenya Bureau of Standards',
+    attendees: 45,
+    tags: ['maize', 'storage', 'quality-standards', 'pest-control'],
+    // Remove authorId since it's not in the interface
+    authorName: 'John Mwangi',
+    authorType: 'Quality Control Officer'
   },
   {
-    id: "2",
-    title: "EU export requirements for avocados",
-    content: "Our cooperative is looking to export avocados to the European Union. Could someone explain the current quality certification requirements and how to ensure our produce meets them? What documentation do we need and which laboratories are authorized to provide certification?",
-    authorId: "user2",
-    authorName: "Sarah Ochieng",
-    authorType: "farmer",
-    createdAt: "2023-06-02T14:20:00Z",
-    commentCount: 8,
-    viewCount: 189,
-    tags: ["export", "EU", "avocados", "certification"]
+    id: 'd2',
+    title: 'Organic Farming Techniques Workshop',
+    description: 'A workshop focusing on sustainable organic farming methods to improve crop yield and soil health.',
+    date: '2023-09-22',
+    location: 'Nakuru County',
+    organizer: 'Agricultural Society of Kenya',
+    attendees: 60,
+    tags: ['organic-farming', 'sustainable-agriculture', 'soil-health', 'crop-yield'],
+    // Remove authorId since it's not in the interface
+    authorName: 'Aisha Patel',
+    authorType: 'Agronomist'
   },
   {
-    id: "3",
-    title: "Interpreting pesticide residue test results",
-    content: "I received lab results for pesticide residue tests on my tomatoes, but I'm not sure how to interpret them. The report shows levels of certain compounds, but I don't know if these are within acceptable limits for local markets versus export. Can someone help me understand these figures?",
-    authorId: "user3",
-    authorName: "Dr. Peter Njoroge",
-    authorType: "expert",
-    createdAt: "2023-06-10T10:15:00Z",
-    commentCount: 12,
-    viewCount: 207,
-    tags: ["pesticides", "residue", "testing", "tomatoes"]
+    id: 'd3',
+    title: 'Post-Harvest Handling of Horticultural Crops',
+    description: 'Training on best practices for handling horticultural crops after harvest to minimize losses and maintain quality.',
+    date: '2023-10-01',
+    location: 'Kiambu County',
+    organizer: 'Horticultural Crops Directorate',
+    attendees: 30,
+    tags: ['post-harvest', 'horticulture', 'crop-handling', 'quality-control'],
+    // Remove authorId since it's not in the interface
+    authorName: 'Samuel Kimani',
+    authorType: 'Agricultural Extension Officer'
   },
   {
-    id: "4",
-    title: "New regulations on maize moisture content",
-    content: "I heard there are new regulations about the acceptable moisture content for maize storage and sale. Can anyone clarify what these new standards are and how they're being enforced? What equipment should we use to measure moisture content accurately?",
-    authorId: "user4",
-    authorName: "Grace Mutua",
-    authorType: "farmer",
-    createdAt: "2023-06-18T16:45:00Z",
-    commentCount: 5,
-    viewCount: 143,
-    tags: ["regulations", "maize", "moisture", "storage"]
+    id: 'd4',
+    title: 'Financial Literacy for Smallholder Farmers',
+    description: 'A seminar aimed at improving the financial management skills of smallholder farmers.',
+    date: '2023-10-10',
+    location: 'Muranga County',
+    organizer: 'Ministry of Agriculture',
+    attendees: 50,
+    tags: ['financial-literacy', 'smallholder-farmers', 'financial-management', 'agribusiness'],
+    // Remove authorId since it's not in the interface
+    authorName: 'Esther Njoroge',
+    authorType: 'Financial Advisor'
   },
   {
-    id: "5",
-    title: "Organic certification process for small-scale farmers",
-    content: "As a small-scale farmer (2 acres), I'm interested in getting organic certification for my vegetables. Is it worth the cost and effort? Has anyone gone through this process recently who could share their experience? Are there any group certification options for small farmers?",
-    authorId: "user5",
-    authorName: "David Kimani",
-    authorType: "farmer",
-    createdAt: "2023-07-05T09:30:00Z",
-    commentCount: 23,
-    viewCount: 286,
-    tags: ["organic", "certification", "small-scale", "vegetables"]
+    id: 'd5',
+    title: 'Climate-Smart Agriculture Practices',
+    description: 'A workshop on adopting climate-smart agricultural practices to build resilience to climate change.',
+    date: '2023-10-18',
+    location: 'Machakos County',
+    organizer: 'Food and Agriculture Organization',
+    attendees: 40,
+    tags: ['climate-smart-agriculture', 'climate-change', 'resilience', 'sustainable-farming'],
+    // Remove authorId since it's not in the interface
+    authorName: 'David Omondi',
+    authorType: 'Climate Change Expert'
   },
   {
-    id: "6",
-    title: "Quality standards for local vs. export markets",
-    content: "I'm noticing a big difference between what's accepted in local markets versus what exporters will take. How do others manage quality sorting efficiently to serve both markets? Are there affordable technologies or methods that can help small farmers grade produce more effectively?",
-    authorId: "user6",
-    authorName: "Janet Wambui",
-    authorType: "farmer",
-    createdAt: "2023-07-15T11:20:00Z",
-    commentCount: 7,
-    viewCount: 168,
-    tags: ["quality", "grading", "export", "local"]
+    id: 'd6',
+    title: 'Integrated Pest and Disease Management',
+    description: 'Training on effective and environmentally friendly methods for managing pests and diseases in crops.',
+    date: '2023-10-25',
+    location: 'Kisumu County',
+    organizer: 'Kenya Agricultural and Livestock Research Organization',
+    attendees: 35,
+    tags: ['pest-management', 'disease-control', 'integrated-farming', 'crop-protection'],
+    // Remove authorId since it's not in the interface
+    authorName: 'Grace Otieno',
+    authorType: 'Plant Pathologist'
   },
   {
-    id: "7",
-    title: "Aflatoxin testing for maize and groundnuts",
-    content: "After recent reports of aflatoxin contamination, I want to ensure my maize and groundnut harvests are safe. Where can farmers access affordable testing services? Are there any visual indicators we can use for initial screening before lab testing?",
-    authorId: "user7",
-    authorName: "Michael Otieno",
-    authorType: "farmer",
-    createdAt: "2023-07-28T13:10:00Z",
-    commentCount: 19,
-    viewCount: 412,
-    tags: ["aflatoxin", "testing", "maize", "groundnuts", "safety"]
+    id: 'd7',
+    title: 'Water Management and Irrigation Techniques',
+    description: 'A seminar on efficient water management and modern irrigation techniques for crop production.',
+    date: '2023-11-02',
+    location: 'Laikipia County',
+    organizer: 'Water Resources Management Authority',
+    attendees: 48,
+    tags: ['water-management', 'irrigation', 'water-conservation', 'crop-production'],
+    // Remove authorId since it's not in the interface
+    authorName: 'Peter Kamau',
+    authorType: 'Irrigation Engineer'
   },
   {
-    id: "8",
-    title: "Implementation of Kenya GAP standards",
-    content: "I've been hearing about Kenya GAP (Good Agricultural Practices) standards but haven't seen clear guidance on implementation. Has anyone received certification under this program? What are the key requirements and how different are they from GlobalGAP?",
-    authorId: "user8",
-    authorName: "Elizabeth Njeri",
-    authorType: "expert",
-    createdAt: "2023-08-05T15:40:00Z",
-    commentCount: 11,
-    viewCount: 231,
-    tags: ["KenyaGAP", "standards", "certification", "implementation"]
+    id: 'd8',
+    title: 'Value Addition and Agro-processing Opportunities',
+    description: 'A workshop exploring opportunities for value addition and agro-processing to increase farmer incomes.',
+    date: '2023-11-09',
+    location: 'Uasin Gishu County',
+    organizer: 'Kenya Industrial Research and Development Institute',
+    attendees: 55,
+    tags: ['value-addition', 'agro-processing', 'farmer-incomes', 'agri-business'],
+    // Remove authorId since it's not in the interface
+    authorName: 'Mercy Chebet',
+    authorType: 'Agro-processing Specialist'
   }
 ];
+
+export default discussions;

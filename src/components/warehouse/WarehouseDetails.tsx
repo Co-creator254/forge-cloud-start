@@ -10,10 +10,16 @@ interface WarehouseDetailsProps {
 }
 
 const WarehouseDetails: React.FC<WarehouseDetailsProps> = ({ warehouse, onClose }) => {
-  const county = warehouse.county || 
-    (warehouse.location && typeof warehouse.location !== 'string' 
-      ? warehouse.location.county 
-      : 'Location not specified');
+  // Safely get county from either direct property or nested location
+  const getCounty = () => {
+    if (warehouse.county) return warehouse.county;
+    if (typeof warehouse.location === 'object' && warehouse.location && warehouse.location.county) {
+      return warehouse.location.county;
+    }
+    return 'Location not specified';
+  };
+
+  const county = getCounty();
 
   return (
     <div className="mt-4 border rounded-md p-4">
@@ -37,7 +43,7 @@ const WarehouseDetails: React.FC<WarehouseDetailsProps> = ({ warehouse, onClose 
             <span className="font-medium">Rates:</span> {warehouse.rates}
           </p>
           <p className="mt-2">
-            <span className="font-medium">Contact:</span> {warehouse.contactInfo || 'Not available'}
+            <span className="font-medium">Contact:</span> {warehouse.contactInfo || warehouse.contact || 'Not available'}
           </p>
         </div>
         

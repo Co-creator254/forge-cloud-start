@@ -1,3 +1,7 @@
+// Add the simulateDelay function at the top of the file
+
+// Helper function to simulate API delay
+const simulateDelay = (ms: number = 800) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Re-export everything from the individual API modules
 

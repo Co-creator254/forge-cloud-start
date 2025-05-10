@@ -17,12 +17,15 @@ export const getWarehouseRecommendations = (crop: string, warehouses: Warehouse[
     }
     
     const warehousesList = relevantWarehouses.slice(0, 3).map(warehouse => {
-      // Handle county field from either direct property or within location object
-      const county = warehouse.county || 
-        (warehouse.location && typeof warehouse.location !== 'string' ? warehouse.location.county : 'Unknown');
+      // Handle county field safely, checking if it exists either directly or in location object
+      const countyFromWarehouse = warehouse.county || '';
+      const countyFromLocation = warehouse.location && typeof warehouse.location !== 'string' ? 
+        warehouse.location.county || '' : '';
+      const county = countyFromWarehouse || countyFromLocation || 'Unknown location';
       
+      // For displaying location, prioritize county from either source
       const location = typeof warehouse.location === 'string' ? warehouse.location : 
-        (warehouse.location ? warehouse.location.county : 'Unknown');
+        (warehouse.location ? warehouse.location.county : 'Unknown location');
       
       return `${warehouse.name} in ${location} (${county}): Capacity ${warehouse.capacity} ${warehouse.capacityUnit}, ${warehouse.hasRefrigeration ? 'has refrigeration' : 'no refrigeration'}`;
     }).join('\n- ');

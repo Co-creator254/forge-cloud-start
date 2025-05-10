@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -152,7 +151,12 @@ const AllCountiesMarketView: React.FC = () => {
                     <TableRow key={`${market.id}-${idx}`}>
                       <TableCell className="font-medium">{market.name}</TableCell>
                       <TableCell>{market.county}</TableCell>
-                      <TableCell>{market.location}</TableCell>
+                      <TableCell>
+                        {/* Convert location object to string if needed */}
+                        {typeof market.location === 'string' 
+                          ? market.location 
+                          : (market.location?.county || 'Unknown location')}
+                      </TableCell>
                       <TableCell>{price.produceName}</TableCell>
                       <TableCell>{price.price}</TableCell>
                       <TableCell>{price.unit}</TableCell>

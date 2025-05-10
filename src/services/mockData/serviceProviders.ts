@@ -1,105 +1,166 @@
-import { ServiceProvider } from '@/types';
-
-export const mockServiceProviders: ServiceProvider[] = [
+// Add missing rates property to ServiceProvider objects
+export const serviceProviders = [
   {
-    id: "sp1",
-    name: "KenStore Warehousing Solutions",
-    businessType: "storage",
-    description: "Professional warehousing with climate control facilities for agricultural produce",
-    services: ["Dry storage", "Cold storage", "Inventory management"],
+    id: 'sp1',
+    name: 'KenStore Warehousing',
+    businessType: 'storage' as const,
+    description: 'Modern storage solutions for agricultural produce with temperature control facilities.',
+    services: ['Dry Storage', 'Cold Storage', 'Fumigation', 'Quality Monitoring'],
     location: {
-      county: "Nakuru",
-      specificLocation: "Industrial Area, Nakuru Town",
+      county: 'Nairobi County',
+      specificLocation: 'Industrial Area',
       coordinates: {
-        latitude: -0.303099,
-        longitude: 36.080025
+        latitude: -1.3031934,
+        longitude: 36.8719419
       }
     },
-    contactInfo: "info@kenstore.co.ke | +254712345678",
-    website: "http://www.kenstore.co.ke",
+    contactInfo: 'info@kenstore.co.ke | +254 712 345 678',
+    rates: 'KES 300-500 per ton/month', // Add missing rates
+    verified: true,
+    rating: 4.7,
+    reviewCount: 28,
+    tags: ['warehouse', 'cold-chain', 'fumigation'],
+    createdAt: '2023-01-15T08:40:00Z',
+    updatedAt: '2023-08-20T14:30:00Z'
+  },
+  {
+    id: 'sp2',
+    name: 'AgriTransport Logistics',
+    businessType: 'transport' as const,
+    description: 'Reliable transportation services for agricultural goods across East Africa.',
+    services: ['Refrigerated Transport', 'Bulk Transport', 'Real-time Tracking'],
+    location: {
+      county: 'Mombasa County',
+      specificLocation: 'Port Area',
+      coordinates: {
+        latitude: -4.052052,
+        longitude: 39.6662227
+      }
+    },
+    contactInfo: 'logistics@agritransport.com | +254 722 000 111',
+    rates: 'KES 5000-8000 per trip', // Add missing rates
+    verified: true,
+    rating: 4.5,
+    reviewCount: 35,
+    tags: ['transport', 'logistics', 'refrigerated'],
+    createdAt: '2023-02-20T10:00:00Z',
+    updatedAt: '2023-09-10T16:00:00Z'
+  },
+  {
+    id: 'sp3',
+    name: 'CropSure Quality Control',
+    businessType: 'quality-control' as const,
+    description: 'Ensuring the quality of your produce with certified inspection and testing services.',
+    services: ['Soil Testing', 'Crop Inspection', 'Certification', 'Training'],
+    location: {
+      county: 'Nakuru County',
+      specificLocation: 'Agricultural Center',
+      coordinates: {
+        latitude: -0.274744,
+        longitude: 36.0759359
+      }
+    },
+    contactInfo: 'quality@cropsure.co.ke | +254 733 999 888',
+    rates: 'KES 1000-2000 per test', // Add missing rates
     verified: true,
     rating: 4.8,
     reviewCount: 42,
-    tags: ["certified", "climate-controlled", "secure"],
-    createdAt: "2024-01-15T08:30:00Z",
-    updatedAt: "2024-04-10T14:20:00Z"
+    tags: ['quality-control', 'testing', 'inspection'],
+    createdAt: '2023-03-10T12:30:00Z',
+    updatedAt: '2023-07-25T09:15:00Z'
   },
   {
-    id: "sp2",
-    name: "AgriLogistics Transport",
-    businessType: "transport",
-    description: "Specialized agricultural produce transport with refrigerated trucks",
-    services: ["Refrigerated transport", "Cross-county delivery", "Last-mile delivery"],
+    id: 'sp4',
+    name: 'FarmLink Market Access',
+    businessType: 'market-linkage' as const,
+    description: 'Connecting farmers with reliable markets for their produce.',
+    services: ['Market Information', 'Buyer Connections', 'Contract Negotiation'],
     location: {
-      county: "Nairobi",
-      specificLocation: "Karen",
-    },
-    contactInfo: "operations@agrilogistics.co.ke | +254723456789",
-    verified: true,
-    rating: 4.5,
-    reviewCount: 37,
-    tags: ["timely", "refrigerated", "nationwide"],
-    createdAt: "2024-02-05T10:15:00Z",
-    updatedAt: "2024-04-12T09:45:00Z"
-  },
-  {
-    id: "sp3",
-    name: "FarmQuality Inspectors",
-    businessType: "quality-control",
-    description: "Independent quality inspection services for agricultural produce and facilities",
-    services: ["Produce quality certification", "Farm audits", "Export standard verification"],
-    location: {
-      county: "Kiambu",
-      specificLocation: "Thika Road",
-    },
-    contactInfo: "inspections@farmquality.co.ke | +254734567890",
-    website: "http://www.farmquality.co.ke",
-    verified: true,
-    rating: 4.7,
-    reviewCount: 29,
-    tags: ["certified", "export-standards", "GlobalGAP"],
-    createdAt: "2023-11-20T11:00:00Z",
-    updatedAt: "2024-04-08T16:30:00Z"
-  },
-  {
-    id: "sp4",
-    name: "AgriTrain Kenya",
-    businessType: "training",
-    description: "Specialized agricultural training and capacity building for farmers",
-    services: ["Crop management training", "Post-harvest handling", "Certification preparation"],
-    location: {
-      county: "Meru",
-      specificLocation: "Meru Town",
-    },
-    contactInfo: "training@agritrain.co.ke | +254745678901",
-    verified: false,
-    rating: 4.3,
-    reviewCount: 18,
-    tags: ["hands-on", "certificate-courses", "field-demonstrations"],
-    createdAt: "2024-03-10T09:00:00Z",
-    updatedAt: "2024-04-15T11:20:00Z"
-  },
-  {
-    id: "sp5",
-    name: "FarmInputs Plus",
-    businessType: "input-supplier",
-    description: "Quality agricultural inputs including certified seeds, fertilizers and crop protection products",
-    services: ["Certified seeds", "Organic fertilizers", "Crop protection", "Soil testing"],
-    location: {
-      county: "Nakuru",
-      specificLocation: "Nakuru-Eldoret Highway",
+      county: 'Kisumu County',
+      specificLocation: 'Market Square',
       coordinates: {
-        latitude: -0.286654,
-        longitude: 36.063319
+        latitude: -0.0917325,
+        longitude: 34.7557352
       }
     },
-    contactInfo: "sales@farminputs.co.ke | +254756789012",
-    website: "http://www.farminputs.co.ke",
+    contactInfo: 'markets@farmlink.org | +254 744 555 666',
+    rates: '5% commission on sales', // Add missing rates
     verified: true,
     rating: 4.6,
-    reviewCount: 52,
-    tags: ["certified-products", "technical-support", "delivery"],
-    createdAt: "2023-09-15T14:30:00Z",
-    updatedAt: "2024-04-14T10:45:00Z"
+    reviewCount: 30,
+    tags: ['market-linkage', 'sales', 'farmers'],
+    createdAt: '2023-04-01T15:00:00Z',
+    updatedAt: '2023-08-15T11:45:00Z'
+  },
+  {
+    id: 'sp5',
+    name: 'AgriTrain Training Services',
+    businessType: 'training' as const,
+    description: 'Providing farmers with the knowledge and skills they need to improve their yields and incomes.',
+    services: ['Crop Management', 'Pest Control', 'Financial Literacy'],
+    location: {
+      county: 'Uasin Gishu County',
+      specificLocation: 'Eldoret Town',
+      coordinates: {
+        latitude: 0.516667,
+        longitude: 35.266667
+      }
+    },
+    contactInfo: 'training@agritrain.co.ke | +254 755 777 888',
+    rates: 'KES 2000 per course', // Add missing rates
+    verified: true,
+    rating: 4.9,
+    reviewCount: 50,
+    tags: ['training', 'skills', 'farmers'],
+    createdAt: '2023-05-10T09:00:00Z',
+    updatedAt: '2023-09-01T13:30:00Z'
+  },
+  {
+    id: 'sp6',
+    name: 'SeedCo Input Supplies',
+    businessType: 'input-supplier' as const,
+    description: 'Supplying farmers with high-quality seeds and fertilizers to maximize their yields.',
+    services: ['Seeds', 'Fertilizers', 'Pesticides', 'Equipment'],
+    location: {
+      county: 'Kiambu County',
+      specificLocation: 'Thika Town',
+      coordinates: {
+        latitude: -1.0374365,
+        longitude: 37.0937757
+      }
+    },
+    contactInfo: 'supplies@seedco.com | +254 766 888 999',
+    rates: 'Market rates', // Add missing rates
+    verified: true,
+    rating: 4.7,
+    reviewCount: 38,
+    tags: ['seeds', 'fertilizers', 'equipment'],
+    createdAt: '2023-06-01T11:00:00Z',
+    updatedAt: '2023-08-25T10:00:00Z'
+  },
+  {
+    id: 'sp7',
+    name: 'AgriSure Insurance Services',
+    businessType: 'inspector' as const,
+    description: 'Providing insurance services to farmers to protect them against crop losses.',
+    services: ['Crop Insurance', 'Livestock Insurance', 'Weather Index Insurance'],
+    location: {
+      county: 'Nyeri County',
+      specificLocation: 'Town Center',
+      coordinates: {
+        latitude: -0.420833,
+        longitude: 36.951111
+      }
+    },
+    contactInfo: 'insurance@agrisure.co.ke | +254 777 999 000',
+    rates: 'Varies based on coverage', // Add missing rates
+    verified: true,
+    rating: 4.5,
+    reviewCount: 25,
+    tags: ['insurance', 'protection', 'farmers'],
+    createdAt: '2023-07-01T14:00:00Z',
+    updatedAt: '2023-09-15T17:00:00Z'
   }
 ];
+
+export default serviceProviders;
