@@ -11,6 +11,8 @@ import { TransportRequest, WarehouseBooking } from '@/types';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar, Clock, Loader2, MapPin, Package, Truck, Warehouse } from 'lucide-react';
+import { MainNav } from '@/components/MainNav'; 
+import { MobileNav } from '@/components/MobileNav';
 
 const MyTrades: React.FC = () => {
   const { toast } = useToast();

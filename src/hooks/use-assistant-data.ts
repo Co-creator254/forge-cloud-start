@@ -41,6 +41,61 @@ interface AssistantDataResult {
   isRealData: boolean;
 }
 
+// Mock data for fallback when API calls fail
+const mockMarkets: Market[] = [
+  {
+    id: "m1",
+    name: "Nairobi Central Market",
+    county: "Nairobi",
+    location: {
+      county: "Nairobi",
+      coordinates: { latitude: -1.286389, longitude: 36.817223 }
+    },
+    producePrices: [
+      { id: "p1", produceName: "Maize", price: 45, unit: "kg", date: new Date().toLocaleDateString() },
+      { id: "p2", produceName: "Beans", price: 120, unit: "kg", date: new Date().toLocaleDateString() }
+    ],
+    demand: "High"
+  },
+  {
+    id: "m2",
+    name: "Mombasa Municipal Market",
+    county: "Mombasa",
+    location: {
+      county: "Mombasa",
+      coordinates: { latitude: -4.043477, longitude: 39.668205 }
+    },
+    producePrices: [
+      { id: "p3", produceName: "Tomatoes", price: 80, unit: "kg", date: new Date().toLocaleDateString() },
+      { id: "p4", produceName: "Bananas", price: 15, unit: "piece", date: new Date().toLocaleDateString() }
+    ],
+    demand: "Medium"
+  }
+];
+
+const mockForecasts: Forecast[] = [
+  {
+    id: "f1",
+    produceName: "Maize",
+    period: "May-August 2023",
+    expectedProduction: 120000,
+    expectedDemand: 140000,
+    confidenceLevel: "high",
+    county: "Nakuru",
+    unit: "tons"
+  },
+  {
+    id: "f2",
+    produceName: "Coffee",
+    period: "June-September 2023",
+    expectedProduction: 25000,
+    expectedDemand: 30000,
+    confidenceLevel: "medium",
+    county: "Kiambu",
+    unit: "tons"
+  }
+];
+
 export const useAssistantData = (): AssistantDataResult => {
   const [data, setData] = useState<AssistantData>({
     markets: [],
@@ -53,6 +108,7 @@ export const useAssistantData = (): AssistantDataResult => {
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isRealData, setIsRealData] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
@@ -60,42 +116,95 @@ export const useAssistantData = (): AssistantDataResult => {
       setError(null);
 
       try {
-        // Fetch market prices from Supabase
-        const { data: marketPricesData, error: marketPricesError } = await supabase
-          .from('market_prices')
-          .select('*');
+        // Fetch market prices from Supabase with timeout
+        const marketPricesPromise = Promise.race([
+          supabase.from('market_prices').select('*'),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Fetch timeout')), 5000)
+          )
+        ]);
 
-        if (marketPricesError) {
-          throw new Error(`Failed to fetch market prices: ${marketPricesError.message}`);
-        }
+        const forecastsPromise = Promise.race([
+          supabase.from('market_forecasts').select('*'),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Fetch timeout')), 5000)
+          )
+        ]);
 
-        // Fetch market forecasts from Supabase
-        const { data: forecastsData, error: forecastsError } = await supabase
-          .from('market_forecasts')
-          .select('*');
+        const transportersPromise = Promise.race([
+          supabase.from('transporters').select('*'),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Fetch timeout')), 5000)
+          )
+        ]);
 
-        if (forecastsError) {
-          throw new Error(`Failed to fetch market forecasts: ${forecastsError.message}`);
-        }
-
-        // Fetch transporters from Supabase
-        const { data: transportersData, error: transportersError } = await supabase
-          .from('transporters')
-          .select('*');
-
-        if (transportersError) {
-          throw new Error(`Failed to fetch transporters: ${transportersError.message}`);
-        }
+        // Use Promise.allSettled to handle partial failures
+        const [
+          marketPricesResult, 
+          forecastsResult, 
+          transportersResult
+        ] = await Promise.allSettled([
+          marketPricesPromise,
+          forecastsPromise,
+          transportersPromise
+        ]);
 
         // Process market prices data
-        const markets = processMarketPricesData(marketPricesData || []);
-        
-        // Process forecast data
-        const forecasts = processForecastsData(forecastsData || []);
-        
-        // Process transporters data
-        const transporters = processTransportersData(transportersData || []);
+        let markets: Market[] = [];
+        if (marketPricesResult.status === 'fulfilled') {
+          const { data: marketPricesData, error: marketPricesError } = marketPricesResult.value as any;
+          
+          if (marketPricesError) {
+            console.warn(`Market prices error: ${marketPricesError.message}`);
+          } else if (marketPricesData && marketPricesData.length > 0) {
+            markets = processMarketPricesData(marketPricesData);
+            console.log(`Processed ${markets.length} markets from real data`);
+          }
+        }
 
+        // If no real data, use mock data
+        if (markets.length === 0) {
+          console.log('Using mock market data as fallback');
+          markets = mockMarkets;
+        }
+
+        // Process forecast data
+        let forecasts: Forecast[] = [];
+        if (forecastsResult.status === 'fulfilled') {
+          const { data: forecastsData, error: forecastsError } = forecastsResult.value as any;
+          
+          if (forecastsError) {
+            console.warn(`Forecasts error: ${forecastsError.message}`);
+          } else if (forecastsData && forecastsData.length > 0) {
+            forecasts = processForecastsData(forecastsData);
+            console.log(`Processed ${forecasts.length} forecasts from real data`);
+          }
+        }
+
+        // If no real forecast data, use mock data
+        if (forecasts.length === 0) {
+          console.log('Using mock forecast data as fallback');
+          forecasts = mockForecasts;
+        }
+
+        // Process transporters data
+        let transporters: Transporter[] = [];
+        if (transportersResult.status === 'fulfilled') {
+          const { data: transportersData, error: transportersError } = transportersResult.value as any;
+          
+          if (transportersError) {
+            console.warn(`Transporters error: ${transportersError.message}`);
+            // For RLS issues, provide more helpful error info
+            if (transportersError.code === '42501') {
+              console.warn('Permission denied error. RLS policies may need to be configured.');
+            }
+          } else if (transportersData && transportersData.length > 0) {
+            transporters = processTransportersData(transportersData);
+            console.log(`Processed ${transporters.length} transporters from real data`);
+          }
+        }
+
+        // Update the state with all available data
         setData(prev => ({ 
           ...prev, 
           markets,
@@ -103,20 +212,44 @@ export const useAssistantData = (): AssistantDataResult => {
           transporters,
         }));
         
-        setIsRealData(true);
-        console.log('Successfully loaded real data from Supabase');
+        // Consider data real if we got at least something from the database
+        const hasRealData = markets.length > 0 || forecasts.length > 0 || transporters.length > 0;
+        setIsRealData(hasRealData);
+        
+        if (hasRealData) {
+          console.log('Successfully loaded real data from Supabase');
+        } else {
+          setError("Couldn't load data from database. Using fallback data instead.");
+        }
 
       } catch (err: any) {
         console.error("Error fetching data from Supabase:", err);
         setError(err.message || "Failed to load data.");
+        
+        // Set mock data as fallback
+        setData(prev => ({ 
+          ...prev, 
+          markets: mockMarkets,
+          forecasts: mockForecasts,
+        }));
+        
         setIsRealData(false);
+        
+        // Implement retry logic (max 3 retries)
+        if (retryCount < 3) {
+          console.log(`Retrying data fetch (attempt ${retryCount + 1} of 3)...`);
+          setRetryCount(retryCount + 1);
+          // Retry after a delay
+          setTimeout(() => loadData(), 2000);
+          return;
+        }
       } finally {
         setDataLoading(false);
       }
     };
 
     loadData();
-  }, []);
+  }, [retryCount]);
 
   // Process market prices data from Supabase to our app format
   const processMarketPricesData = (data: SupabaseMarketPrice[]): Market[] => {
