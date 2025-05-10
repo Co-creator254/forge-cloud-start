@@ -332,6 +332,10 @@ export interface CommunityPost {
   category: string;
   tags: string[];
   location?: string;
+  // Add fields to fix the errors
+  userName?: string;
+  created?: string;
+  userId?: string;
 }
 
 export interface TransportRequest {

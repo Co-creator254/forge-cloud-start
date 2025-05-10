@@ -3,18 +3,18 @@
  * Handles fetching and managing service provider data
  */
 
-import { ServiceProvider, ServiceProviderType, QualityControlDiscussion, TrainingEvent, MarketLinkage } from '@/types';
+import { ServiceProvider, ServiceProviderType, QualityControlDiscussion, TrainingEvent, MarketLinkage, LogisticsProvider } from '@/types';
 import { simulateDelay } from './apiUtils';
 import { AmisKeApiHandler } from './amis-ke/api-handler';
 
 // Import the correct exports from mock data files
-import { serviceProviders } from './mockData/serviceProviders';
+import { serviceProviders as importedServiceProviders } from './mockData/serviceProviders';
 import { discussions } from './mockData/discussions';
-import { trainingEvents } from './mockData/trainingEvents';
+import { mockTrainingEvents } from './mockData/trainingEvents';
 import { marketLinkages } from './mockData/marketLinkages';
 
 // Mock data for initial development/demo
-const serviceProviders: ServiceProvider[] = [
+const mockServiceProviders: ServiceProvider[] = [
   {
     id: "1",
     name: "Nairobi Cold Chain Solutions",
@@ -136,7 +136,7 @@ const serviceProviders: ServiceProvider[] = [
 export const fetchServiceProviders = async (): Promise<ServiceProvider[]> => {
   try {
     // Try to get real service provider data from the API
-    const apiProviders = await AmisKeApiHandler.get<ServiceProvider>('service-providers', {}, serviceProviders);
+    const apiProviders = await AmisKeApiHandler.get<ServiceProvider>('service-providers', {}, importedServiceProviders);
     
     // Check if we received valid data
     if (apiProviders && apiProviders.results && apiProviders.results.length > 0) {
@@ -144,10 +144,10 @@ export const fetchServiceProviders = async (): Promise<ServiceProvider[]> => {
     }
     
     console.log('Falling back to mock service provider data');
-    return serviceProviders;
+    return importedServiceProviders;
   } catch (error) {
     console.error('Error fetching service providers:', error);
-    return serviceProviders;
+    return importedServiceProviders;
   }
 };
 
@@ -238,7 +238,7 @@ export const fetchQualityDiscussions = async (): Promise<QualityControlDiscussio
 export const fetchTrainingEvents = async (): Promise<TrainingEvent[]> => {
   try {
     // Try to get real events from the API
-    const apiEvents = await AmisKeApiHandler.get<TrainingEvent>('training-events', {}, trainingEvents);
+    const apiEvents = await AmisKeApiHandler.get<TrainingEvent>('training-events', {}, mockTrainingEvents);
     
     // Check if we received valid data
     if (apiEvents && apiEvents.results && apiEvents.results.length > 0) {
@@ -246,10 +246,10 @@ export const fetchTrainingEvents = async (): Promise<TrainingEvent[]> => {
     }
     
     console.log('Falling back to mock training events data');
-    return trainingEvents;
+    return mockTrainingEvents;
   } catch (error) {
     console.error('Error fetching training events:', error);
-    return trainingEvents;
+    return mockTrainingEvents;
   }
 };
 

@@ -1,717 +1,668 @@
-import React from 'react';
-import { TransportRequest, WarehouseBooking } from '@/types';
-import Header from '@/components/Header';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import React, { useState, useEffect } from 'react';
+import { MainNav } from '@/components/MainNav';
+import { MobileNav } from '@/components/MobileNav';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Calendar as CalendarIcon, TruckIcon, Warehouse as WarehouseIcon, Check, Search, Filter } from 'lucide-react';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { TransportRequest, WarehouseBooking } from '@/types';
+import { useMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
-import { TransportProvider, Warehouse } from '@/types';
-import { fetchWarehouses, fetchTransportProviders } from '@/services/kilimoAPI';
-import WarehouseMap from '@/components/WarehouseMap';
+import { Calendar, Clock, Loader2, MapPin, Package, Truck, Warehouse } from 'lucide-react';
 
 const MyTrades: React.FC = () => {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('purchases');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRequestingTransport, setIsRequestingTransport] = useState(false);
-  const [isBookingWarehouse, setIsBookingWarehouse] = useState(false);
-  const [date, setDate] = useState<Date>();
+  const { isMobile } = useMobile();
+  
   const [transportRequests, setTransportRequests] = useState<TransportRequest[]>([]);
   const [warehouseBookings, setWarehouseBookings] = useState<WarehouseBooking[]>([]);
-  const [transportProviders, setTransportProviders] = useState<TransportProvider[]>([]);
-  const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
-  const [showWarehouseMap, setShowWarehouseMap] = useState(false);
+  const [selectedTransportRequest, setSelectedTransportRequest] = useState<TransportRequest | null>(null);
+  const [selectedWarehouseBooking, setSelectedWarehouseBooking] = useState<WarehouseBooking | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedTransporterDialog, setSelectedTransporterDialog] = useState(false);
+  const [selectedWarehouseDialog, setSelectedWarehouseDialog] = useState(false);
+  const [cancelDialog, setCancelDialog] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(false);
+  const [processingAction, setProcessingAction] = useState(false);
   
-  // Load data
   useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      try {
-        // Load transport providers
-        const providers = await fetchTransportProviders();
-        setTransportProviders(providers);
-        
-        // Load warehouses
-        const warehouseData = await fetchWarehouses();
-        setWarehouses(warehouseData);
-        
-        // Sample transport requests data
-        setTransportRequests([
-          {
-            id: "tr1",
-            status: "pending",
-            pickupLocation: "Meru County",
-            dropoffLocation: "Nairobi County",
-            date: "2023-06-20",
-            capacity: "3 tons",
-            farmerId: "farmer123", // Keep these additional properties
-            farmerName: "John Mwangi", // Keep these additional properties
-            origin: "Meru County", // For backward compatibility
-            destination: "Nairobi County", // For backward compatibility
-            produceType: "Potatoes",
-            quantity: 3000,
-            unit: "kg",
-            requiredDate: "2023-06-20",
-            hasSpecialRequirements: false,
-            created: "2023-06-15"
-          },
-          {
-            id: "tr2",
-            status: "accepted",
-            pickupLocation: "Nakuru County",
-            dropoffLocation: "Eldoret County",
-            date: "2023-06-25",
-            capacity: "5 tons",
-            farmerId: "farmer456", // Keep these additional properties
-            farmerName: "Jane Doe", // Keep these additional properties
-            origin: "Nakuru County", // For backward compatibility
-            destination: "Eldoret County", // For backward compatibility
-            produceType: "Maize",
-            quantity: 5000,
-            unit: "kg",
-            requiredDate: "2023-06-25",
-            hasSpecialRequirements: true,
-            specialRequirements: 'Need covered truck due to rainy season',
-            created: "2023-06-20"
-          }
-        ]);
-        
-        // Sample warehouse bookings data
-        setWarehouseBookings([
-          {
-            id: "wb1",
-            county: "Nakuru",
-            space: "50 sq m",
-            price: 15000,
-            status: "confirmed",
-            userId: "user456",
-            userName: "Alice Wanjiru",
-            warehouseId: "wh123",
-            warehouseName: "Nakuru Central Storage",
-            produceType: "Maize",
-            quantity: 10000,
-            unit: "kg",
-            startDate: "2023-07-01",
-            endDate: "2023-08-01",
-            requiresRefrigeration: true,
-            created: "2023-06-25"
-          }
-        ]);
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadData();
+    // Simulate fetching data
+    setTimeout(() => {
+      setTransportRequests([
+        {
+          id: "tr1",
+          pickupLocation: "Nakuru Farm Hub",
+          dropoffLocation: "Nairobi Market",
+          date: "2023-06-15",
+          capacity: "2 tons",
+          status: "pending",
+          // Backward compatibility fields
+          farmerId: "farmer123",
+          farmerName: "John Kimani",
+          origin: "Nakuru Farm Hub",
+          destination: "Nairobi Market",
+          produceType: "Potatoes",
+          quantity: 2000,
+          unit: "kg",
+          requiredDate: "2023-06-15",
+          hasSpecialRequirements: false,
+          created: "2023-06-01"
+        },
+        {
+          id: "tr2",
+          pickupLocation: "Meru Cooperative",
+          dropoffLocation: "Mombasa Port",
+          date: "2023-06-20",
+          capacity: "5 tons",
+          status: "accepted",
+          transporterName: "FastTrack Logistics",
+          price: 15000,
+          // Backward compatibility fields
+          farmerId: "farmer123",
+          farmerName: "John Kimani",
+          origin: "Meru Cooperative",
+          destination: "Mombasa Port",
+          produceType: "Coffee",
+          quantity: 5000,
+          unit: "kg",
+          requiredDate: "2023-06-20",
+          hasSpecialRequirements: false,
+          created: "2023-06-05"
+        },
+        {
+          id: "tr3",
+          pickupLocation: "Eldoret Grain Center",
+          dropoffLocation: "Nairobi Mill",
+          date: "2023-06-10",
+          capacity: "10 tons",
+          status: "confirmed",
+          transporterName: "Heavy Haulers Ltd",
+          price: 25000,
+          // For full backward compatibility
+          farmerId: "farmer123",
+          farmerName: "John Kimani",
+          origin: "Eldoret Grain Center",
+          destination: "Nairobi Mill",
+          produceType: "Maize",
+          quantity: 10000,
+          unit: "kg",
+          requiredDate: "2023-06-10",
+          hasSpecialRequirements: false,
+          created: "2023-05-20"
+        }
+      ]);
+      
+      setWarehouseBookings([
+        {
+          id: "wb1",
+          county: "Nairobi",
+          space: "50 sq.m",
+          price: 15000,
+          status: "pending",
+          // Backward compatibility fields
+          userId: "farmer123",
+          userName: "John Kimani",
+          warehouseId: "wh1",
+          warehouseName: "Metro Storage Solutions",
+          produceType: "Potatoes",
+          quantity: 5000,
+          unit: "kg",
+          startDate: "2023-06-15",
+          endDate: "2023-07-15",
+          requiresRefrigeration: false,
+          created: "2023-06-01"
+        },
+        {
+          id: "wb2",
+          county: "Mombasa",
+          space: "100 sq.m",
+          price: 28000,
+          status: "confirmed",
+          // Backward compatibility fields
+          userId: "farmer123",
+          userName: "John Kimani",
+          warehouseId: "wh2",
+          warehouseName: "Coast Cold Storage",
+          produceType: "French Beans",
+          quantity: 2000,
+          unit: "kg",
+          startDate: "2023-06-10",
+          endDate: "2023-06-25",
+          requiresRefrigeration: true,
+          created: "2023-05-28"
+        }
+      ]);
+      
+      setLoading(false);
+    }, 1500);
   }, []);
-  
-  const handleRequestTransport = (e: React.FormEvent) => {
-    e.preventDefault();
+
+  const handleCancelTransportRequest = async () => {
+    if (!selectedTransportRequest) return;
+    setProcessingAction(true);
     
-    const newRequest: TransportRequest = {
-      id: `TR${(transportRequests.length + 1).toString().padStart(3, '0')}`,
-      farmerId: 'F001',
-      farmerName: 'John Farmer',
-      origin: 'Nakuru County',
-      destination: 'Nairobi County',
-      produceType: 'Tomatoes',
-      quantity: 1500,
-      unit: 'kg',
-      requiredDate: date ? format(date, 'yyyy-MM-dd') : '2024-04-20',
-      hasSpecialRequirements: false,
-      status: 'pending',
-      created: new Date().toISOString()
-    };
-    
-    setTransportRequests([...transportRequests, newRequest]);
-    
-    toast({
-      title: 'Transport Requested',
-      description: 'Your transport request has been submitted and transporters will be notified.',
-    });
-    
-    setIsRequestingTransport(false);
+    // Simulate API call
+    setTimeout(() => {
+      setTransportRequests(prevRequests => 
+        prevRequests.map(req => 
+          req.id === selectedTransportRequest.id ? { ...req, status: 'cancelled' } : req
+        )
+      );
+      setCancelDialog(false);
+      setProcessingAction(false);
+      toast({
+        title: "Request cancelled",
+        description: "Your transport request has been cancelled successfully.",
+      });
+    }, 1000);
   };
   
-  const handleBookWarehouse = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleConfirmTransportRequest = async () => {
+    if (!selectedTransportRequest) return;
+    setProcessingAction(true);
     
-    const newBooking: WarehouseBooking = {
-      id: `WB${(warehouseBookings.length + 1).toString().padStart(3, '0')}`,
-      userId: 'F001',
-      userName: 'John Farmer',
-      warehouseId: 'WH001',
-      warehouseName: 'Nairobi Central Storage',
-      produceType: 'Maize',
-      quantity: 3000,
-      unit: 'kg',
-      startDate: date ? format(date, 'yyyy-MM-dd') : '2024-04-25',
-      endDate: '2024-05-25',
-      requiresRefrigeration: false,
-      status: 'pending',
-      created: new Date().toISOString()
-    };
-    
-    setWarehouseBookings([...warehouseBookings, newBooking]);
-    
-    toast({
-      title: 'Warehouse Booking',
-      description: 'Your warehouse booking request has been submitted.',
-    });
-    
-    setIsBookingWarehouse(false);
+    // Simulate API call
+    setTimeout(() => {
+      setTransportRequests(prevRequests => 
+        prevRequests.map(req => 
+          req.id === selectedTransportRequest.id ? { ...req, status: 'confirmed' } : req
+        )
+      );
+      setConfirmDialog(false);
+      setProcessingAction(false);
+      toast({
+        title: "Request confirmed",
+        description: "You have confirmed the transport request.",
+      });
+    }, 1000);
   };
   
-  // Find matching transporters for the first transport request
-  const findMatchingTransporters = () => {
-    if (transportRequests.length === 0 || transportProviders.length === 0) return [];
+  const handleCancelWarehouseBooking = async () => {
+    if (!selectedWarehouseBooking) return;
+    setProcessingAction(true);
     
-    const request = transportRequests[0];
-    
-    return transportProviders
-      .filter(provider => 
-        provider.counties.includes(request.origin.split(' ')[0]) || 
-        provider.counties.includes(request.destination.split(' ')[0])
-      )
-      .slice(0, 3); // Limit to 3 matches
+    // Simulate API call
+    setTimeout(() => {
+      setWarehouseBookings(prevBookings => 
+        prevBookings.map(booking => 
+          booking.id === selectedWarehouseBooking.id ? { ...booking, status: 'cancelled' } : booking
+        )
+      );
+      setCancelDialog(false);
+      setProcessingAction(false);
+      toast({
+        title: "Booking cancelled",
+        description: "Your warehouse booking has been cancelled successfully.",
+      });
+    }, 1000);
+  };
+
+  const transportStatusBadge = (status: string) => {
+    switch(status) {
+      case 'pending':
+        return <Badge variant="outline">Pending</Badge>;
+      case 'accepted':
+        return <Badge variant="secondary">Accepted</Badge>;
+      case 'completed':
+        return <Badge variant="default">Completed</Badge>;
+      case 'cancelled':
+        return <Badge variant="destructive">Cancelled</Badge>;
+      case 'confirmed':
+        return <Badge variant="secondary">Confirmed</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
   };
   
-  const matchingTransporters = findMatchingTransporters();
+  const warehouseStatusBadge = (status: string) => {
+    if (!status) return <Badge variant="outline">Pending</Badge>;
+    
+    switch(status.toLowerCase()) {
+      case 'pending':
+        return <Badge variant="outline">Pending</Badge>;
+      case 'confirmed':
+        return <Badge variant="secondary">Confirmed</Badge>;
+      case 'active':
+        return <Badge variant="default">Active</Badge>;
+      case 'completed':
+        return <Badge variant="default">Completed</Badge>;
+      case 'cancelled':
+        return <Badge variant="destructive">Cancelled</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="py-12 px-6 max-w-7xl mx-auto">
-        <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">My Trades & Logistics</h1>
-            <p className="text-muted-foreground">
-              Manage your purchases, sales, transport, and storage
-            </p>
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-40 w-full border-b bg-background">
+        <div className="container flex h-16 items-center">
+          <div className="hidden md:block">
+            <MainNav />
           </div>
-          <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
-            <Button onClick={() => setIsRequestingTransport(true)}>
-              <TruckIcon className="h-4 w-4 mr-2" />
-              Request Transport
-            </Button>
-            <Button variant="outline" onClick={() => setIsBookingWarehouse(true)}>
-              <WarehouseIcon className="h-4 w-4 mr-2" />
-              Book Warehouse
-            </Button>
-            <Button variant="secondary" onClick={() => setShowWarehouseMap(true)}>
-              Find Warehouses
-            </Button>
+          <div className="md:hidden">
+            <MobileNav />
           </div>
         </div>
-        
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-8">
-            <TabsTrigger value="purchases">Purchases</TabsTrigger>
-            <TabsTrigger value="sales">Sales</TabsTrigger>
-            <TabsTrigger value="transport">Transport</TabsTrigger>
-            <TabsTrigger value="storage">Storage</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="purchases">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>My Purchases</CardTitle>
-                  <CardDescription>
-                    Track and manage your agricultural commodity purchases
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {isLoading ? (
-                    <div className="flex justify-center py-12">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      <p className="text-muted-foreground">No purchase transactions yet</p>
-                      <Button className="mt-4">Browse Marketplace</Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+      </header>
+
+      <main className="flex-1">
+        <div className="container py-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight mb-1">My Trades</h1>
+              <p className="text-muted-foreground">Manage your transport requests and warehouse bookings</p>
             </div>
-          </TabsContent>
-          
-          <TabsContent value="sales">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>My Sales</CardTitle>
-                  <CardDescription>
-                    Track and manage your agricultural commodity sales
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {isLoading ? (
-                    <div className="flex justify-center py-12">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      <p className="text-muted-foreground">No sales transactions yet</p>
-                      <Button className="mt-4">List Produce for Sale</Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="transport">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Transport Requests</CardTitle>
-                  <CardDescription>
-                    Manage your transport requests and bookings
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {isLoading ? (
-                    <div className="flex justify-center py-12">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                    </div>
-                  ) : transportRequests.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="text-sm text-muted-foreground border-b">
-                            <th className="text-left p-2">ID</th>
-                            <th className="text-left p-2">From</th>
-                            <th className="text-left p-2">To</th>
-                            <th className="text-left p-2">Produce</th>
-                            <th className="text-left p-2">Quantity</th>
-                            <th className="text-left p-2">Date Needed</th>
-                            <th className="text-center p-2">Status</th>
-                            <th className="text-right p-2">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {transportRequests.map(request => (
-                            <tr key={request.id} className="border-b hover:bg-muted/50">
-                              <td className="p-2 font-medium">{request.id}</td>
-                              <td className="p-2">{request.origin}</td>
-                              <td className="p-2">{request.destination}</td>
-                              <td className="p-2">{request.produceType}</td>
-                              <td className="p-2">{request.quantity} {request.unit}</td>
-                              <td className="p-2">{request.requiredDate}</td>
-                              <td className="p-2 text-center">
-                                <Badge variant={request.status === 'pending' ? 'outline' : 'default'}>
-                                  {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                                </Badge>
-                              </td>
-                              <td className="p-2 text-right">
-                                <Button variant="ghost" size="sm">Details</Button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      <p className="text-muted-foreground">No transport requests yet</p>
-                      <Button onClick={() => setIsRequestingTransport(true)} className="mt-4">
-                        Request Transport
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-              
-              {matchingTransporters.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Matching Transport Providers</CardTitle>
-                    <CardDescription>
-                      These transport providers match your recent request
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {matchingTransporters.map(transporter => (
-                        <Card key={transporter.id}>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">{transporter.name}</CardTitle>
+          </div>
+
+          <Tabs defaultValue="transport" className="w-full">
+            <TabsList className="grid w-full md:w-[400px] grid-cols-2">
+              <TabsTrigger value="transport">Transport Requests</TabsTrigger>
+              <TabsTrigger value="warehouse">Warehouse Bookings</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="transport" className="py-4">
+              {loading ? (
+                <div className="flex justify-center items-center py-20">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : transportRequests.length === 0 ? (
+                <div className="text-center py-20">
+                  <Truck className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                  <h2 className="text-xl font-semibold mb-2">No transport requests yet</h2>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    You haven't made any transport requests yet. Request transport to move your produce to market or storage.
+                  </p>
+                  <Button>Request Transport</Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {transportRequests.map((request) => (
+                    <Card key={request.id} className="h-full flex flex-col">
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-lg">{request.origin} to {request.destination}</CardTitle>
                             <CardDescription>
-                              {transporter.counties.join(', ')}
+                              {request.produceType} • {request.quantity} {request.unit}
                             </CardDescription>
-                          </CardHeader>
-                          <CardContent className="space-y-2">
-                            <div className="text-sm">
-                              <span className="font-medium">Vehicle:</span> {transporter.vehicleType}
+                          </div>
+                          {transportStatusBadge(request.status)}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="flex-1">
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <span>Needed by {new Date(request.requiredDate).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Package className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <span>{request.quantity} {request.unit}</span>
+                          </div>
+                          {request.transporterName && (
+                            <div className="flex items-center">
+                              <Truck className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>{request.transporterName}</span>
                             </div>
-                            <div className="text-sm">
-                              <span className="font-medium">Capacity:</span> {transporter.capacity}
+                          )}
+                          {request.price && (
+                            <div className="flex items-center font-medium">
+                              Price: KES {request.price.toLocaleString()}
                             </div>
-                            <div className="text-sm">
-                              <span className="font-medium">Rates:</span> {transporter.rates}
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <div className="w-full">
+                          {request.status === "pending" && (
+                            <Button 
+                              variant="destructive" 
+                              className="w-full" 
+                              onClick={() => {
+                                setSelectedTransportRequest(request);
+                                setCancelDialog(true);
+                              }}
+                            >
+                              Cancel Request
+                            </Button>
+                          )}
+                          {request.status === "accepted" && (
+                            <div className="flex gap-2">
+                              <Button 
+                                variant="outline" 
+                                className="flex-1"
+                                onClick={() => {
+                                  setSelectedTransportRequest(request);
+                                  setSelectedTransporterDialog(true);
+                                }}
+                              >
+                                View Details
+                              </Button>
+                              <Button 
+                                variant="default" 
+                                className="flex-1"
+                                onClick={() => {
+                                  setSelectedTransportRequest(request);
+                                  setConfirmDialog(true);
+                                }}
+                              >
+                                Confirm
+                              </Button>
                             </div>
-                            {transporter.hasRefrigeration && (
-                              <div className="text-sm text-blue-600 dark:text-blue-400">
-                                ✓ Refrigerated transport available
-                              </div>
-                            )}
-                          </CardContent>
-                          <CardFooter>
-                            <Button size="sm" className="w-full">Contact Provider</Button>
-                          </CardFooter>
-                        </Card>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                          )}
+                          {(request.status === "confirmed" || request.status === "completed") && (
+                            <Button 
+                              variant="outline" 
+                              className="w-full"
+                              onClick={() => {
+                                setSelectedTransportRequest(request);
+                                setSelectedTransporterDialog(true);
+                              }}
+                            >
+                              View Details
+                            </Button>
+                          )}
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
               )}
-            </div>
-          </TabsContent>
+            </TabsContent>
+            
+            <TabsContent value="warehouse" className="py-4">
+              {loading ? (
+                <div className="flex justify-center items-center py-20">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : warehouseBookings.length === 0 ? (
+                <div className="text-center py-20">
+                  <Warehouse className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                  <h2 className="text-xl font-semibold mb-2">No warehouse bookings yet</h2>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    You haven't made any warehouse bookings yet. Book warehouse space to store your produce.
+                  </p>
+                  <Button>Find Warehouse</Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {warehouseBookings.map((booking) => (
+                    <Card key={booking.id} className="h-full flex flex-col">
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <CardTitle className="text-lg">{booking.warehouseName}</CardTitle>
+                            <CardDescription>
+                              {booking.produceType} • {booking.quantity} {booking.unit}
+                            </CardDescription>
+                          </div>
+                          {warehouseStatusBadge(booking.status || 'pending')}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="flex-1">
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <span>{booking.county}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <span>{new Date(booking.startDate).toLocaleDateString()} - {new Date(booking.endDate).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Package className="h-4 w-4 mr-2 text-muted-foreground" />
+                            <span>{booking.space}</span>
+                          </div>
+                          <div className="flex items-center font-medium">
+                            Price: KES {booking.price.toLocaleString()}
+                          </div>
+                          {booking.requiresRefrigeration && (
+                            <Badge variant="outline" className="mt-1">Refrigerated</Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <div className="w-full">
+                          {!booking.status || booking.status === "pending" ? (
+                            <Button 
+                              variant="destructive" 
+                              className="w-full"
+                              onClick={() => {
+                                setSelectedWarehouseBooking(booking);
+                                setCancelDialog(true);
+                              }}
+                            >
+                              Cancel Booking
+                            </Button>
+                          ) : (
+                            <Button 
+                              variant="outline" 
+                              className="w-full"
+                              onClick={() => {
+                                setSelectedWarehouseBooking(booking);
+                                setSelectedWarehouseDialog(true);
+                              }}
+                            >
+                              View Details
+                            </Button>
+                          )}
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+      </main>
+      
+      {/* Transport Request Details Dialog */}
+      <Dialog open={selectedTransporterDialog} onOpenChange={setSelectedTransporterDialog}>
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>Transport Request Details</DialogTitle>
+            <DialogDescription>
+              View details about your transport request
+            </DialogDescription>
+          </DialogHeader>
           
-          <TabsContent value="storage">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Warehouse Bookings</CardTitle>
-                  <CardDescription>
-                    Manage your warehouse and storage bookings
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {isLoading ? (
-                    <div className="flex justify-center py-12">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                    </div>
-                  ) : warehouseBookings.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="text-sm text-muted-foreground border-b">
-                            <th className="text-left p-2">ID</th>
-                            <th className="text-left p-2">Warehouse</th>
-                            <th className="text-left p-2">Produce</th>
-                            <th className="text-left p-2">Quantity</th>
-                            <th className="text-left p-2">From</th>
-                            <th className="text-left p-2">To</th>
-                            <th className="text-center p-2">Status</th>
-                            <th className="text-right p-2">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {warehouseBookings.map(booking => (
-                            <tr key={booking.id} className="border-b hover:bg-muted/50">
-                              <td className="p-2 font-medium">{booking.id}</td>
-                              <td className="p-2">{booking.warehouseName}</td>
-                              <td className="p-2">{booking.produceType}</td>
-                              <td className="p-2">{booking.quantity} {booking.unit}</td>
-                              <td className="p-2">{booking.startDate}</td>
-                              <td className="p-2">{booking.endDate}</td>
-                              <td className="p-2 text-center">
-                                <Badge variant={booking.status === 'pending' ? 'outline' : 'default'}>
-                                  {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                                </Badge>
-                              </td>
-                              <td className="p-2 text-right">
-                                <Button variant="ghost" size="sm">Details</Button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      <p className="text-muted-foreground">No warehouse bookings yet</p>
-                      <Button onClick={() => setIsBookingWarehouse(true)} className="mt-4">
-                        Book Warehouse
-                      </Button>
+          {selectedTransportRequest && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Pickup Location</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedTransportRequest.pickupLocation}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Dropoff Location</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedTransportRequest.dropoffLocation}</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Produce Type</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedTransportRequest.produceType}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Quantity</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedTransportRequest.quantity} {selectedTransportRequest.unit}</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Required Date</label>
+                  <p className="mt-1 text-sm text-gray-500">{new Date(selectedTransportRequest.requiredDate).toLocaleDateString()}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedTransportRequest.status}</p>
+                </div>
+              </div>
+              
+              {selectedTransportRequest.transporterName && (
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Transporter Name</label>
+                    <p className="mt-1 text-sm text-gray-500">{selectedTransportRequest.transporterName}</p>
+                  </div>
+                  {selectedTransportRequest.price && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">Price</label>
+                      <p className="mt-1 text-sm text-gray-500">KES {selectedTransportRequest.price.toLocaleString()}</p>
                     </div>
                   )}
-                </CardContent>
-              </Card>
-              
-              {showWarehouseMap && (
-                <WarehouseMap />
+                </div>
               )}
             </div>
-          </TabsContent>
-        </Tabs>
-        
-        {/* Transport Request Modal */}
-        {isRequestingTransport && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-xl">
-              <CardHeader>
-                <CardTitle>Request Transport</CardTitle>
-                <CardDescription>
-                  Request transportation for your agricultural products
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleRequestTransport} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="origin">Origin (Pickup Location)</Label>
-                      <Input id="origin" placeholder="Enter origin location" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="destination">Destination</Label>
-                      <Input id="destination" placeholder="Enter destination" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="produceType">Produce Type</Label>
-                      <Select>
-                        <SelectTrigger id="produceType">
-                          <SelectValue placeholder="Select produce type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="maize">Maize</SelectItem>
-                          <SelectItem value="potatoes">Potatoes</SelectItem>
-                          <SelectItem value="tomatoes">Tomatoes</SelectItem>
-                          <SelectItem value="beans">Beans</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="quantity">Quantity</Label>
-                      <div className="flex">
-                        <Input id="quantity" placeholder="Enter quantity" type="number" min="1" required />
-                        <Select>
-                          <SelectTrigger className="w-[110px] ml-2">
-                            <SelectValue placeholder="Unit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="kg">Kilograms</SelectItem>
-                            <SelectItem value="tons">Tons</SelectItem>
-                            <SelectItem value="bags">Bags</SelectItem>
-                            <SelectItem value="crates">Crates</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="date">Date Needed</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !date && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "PPP") : "Select a date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={setDate}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="vehicleType">Vehicle Type</Label>
-                      <Select>
-                        <SelectTrigger id="vehicleType">
-                          <SelectValue placeholder="Select vehicle type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="any">Any</SelectItem>
-                          <SelectItem value="pickup">Pickup</SelectItem>
-                          <SelectItem value="van">Van</SelectItem>
-                          <SelectItem value="truck-small">Truck (3-5 tons)</SelectItem>
-                          <SelectItem value="truck-medium">Truck (5-10 tons)</SelectItem>
-                          <SelectItem value="truck-large">Heavy Truck (10+ tons)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="refrigeration" />
-                      <label htmlFor="refrigeration" className="text-sm">
-                        Requires refrigeration
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="specialRequirements">Special Requirements</Label>
-                    <Textarea 
-                      id="specialRequirements" 
-                      placeholder="Any special handling instructions or requirements"
-                      rows={3}
-                    />
-                  </div>
-                </form>
-              </CardContent>
-              <CardFooter className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsRequestingTransport(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleRequestTransport}>
-                  Submit Request
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        )}
-        
-        {/* Warehouse Booking Modal */}
-        {isBookingWarehouse && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-xl">
-              <CardHeader>
-                <CardTitle>Book Warehouse</CardTitle>
-                <CardDescription>
-                  Book storage space for your agricultural products
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleBookWarehouse} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2 sm:col-span-2">
-                      <Label htmlFor="warehouse">Warehouse</Label>
-                      <Select>
-                        <SelectTrigger id="warehouse">
-                          <SelectValue placeholder="Select warehouse" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {warehouses.map(warehouse => (
-                            <SelectItem key={warehouse.id} value={warehouse.id}>
-                              {warehouse.name} ({warehouse.county})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="produceType">Produce Type</Label>
-                      <Select>
-                        <SelectTrigger id="produceType">
-                          <SelectValue placeholder="Select produce type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="maize">Maize</SelectItem>
-                          <SelectItem value="potatoes">Potatoes</SelectItem>
-                          <SelectItem value="tomatoes">Tomatoes</SelectItem>
-                          <SelectItem value="beans">Beans</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="quantity">Quantity</Label>
-                      <div className="flex">
-                        <Input id="quantity" placeholder="Enter quantity" type="number" min="1" required />
-                        <Select>
-                          <SelectTrigger className="w-[110px] ml-2">
-                            <SelectValue placeholder="Unit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="kg">Kilograms</SelectItem>
-                            <SelectItem value="tons">Tons</SelectItem>
-                            <SelectItem value="bags">Bags</SelectItem>
-                            <SelectItem value="crates">Crates</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="startDate">Start Date</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !date && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "PPP") : "Select a date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={setDate}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="duration">Duration</Label>
-                      <Select>
-                        <SelectTrigger id="duration">
-                          <SelectValue placeholder="Select duration" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1month">1 Month</SelectItem>
-                          <SelectItem value="2months">2 Months</SelectItem>
-                          <SelectItem value="3months">3 Months</SelectItem>
-                          <SelectItem value="6months">6 Months</SelectItem>
-                          <SelectItem value="custom">Custom Period</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="refrigeration" />
-                      <label htmlFor="refrigeration" className="text-sm">
-                        Requires refrigeration
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="notes">Special Requirements</Label>
-                    <Textarea 
-                      id="notes" 
-                      placeholder="Any special storage requirements or notes"
-                      rows={3}
-                    />
-                  </div>
-                </form>
-              </CardContent>
-              <CardFooter className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsBookingWarehouse(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleBookWarehouse}>
-                  Book Warehouse
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        )}
-      </main>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedTransporterDialog(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Warehouse Booking Details Dialog */}
+      <Dialog open={selectedWarehouseDialog} onOpenChange={setSelectedWarehouseDialog}>
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>Warehouse Booking Details</DialogTitle>
+            <DialogDescription>
+              View details about your warehouse booking
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedWarehouseBooking && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Warehouse Name</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedWarehouseBooking.warehouseName}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">County</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedWarehouseBooking.county}</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Produce Type</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedWarehouseBooking.produceType}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Quantity</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedWarehouseBooking.quantity} {selectedWarehouseBooking.unit}</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                  <p className="mt-1 text-sm text-gray-500">{new Date(selectedWarehouseBooking.startDate).toLocaleDateString()}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">End Date</label>
+                  <p className="mt-1 text-sm text-gray-500">{new Date(selectedWarehouseBooking.endDate).toLocaleDateString()}</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Space</label>
+                  <p className="mt-1 text-sm text-gray-500">{selectedWarehouseBooking.space}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Price</label>
+                  <p className="mt-1 text-sm text-gray-500">KES {selectedWarehouseBooking.price.toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedWarehouseDialog(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Cancel Confirmation Dialog */}
+      <Dialog open={cancelDialog} onOpenChange={setCancelDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Cancel Confirmation</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel this request? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCancelDialog(false)} disabled={processingAction}>
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={() => {
+                if (selectedTransportRequest) {
+                  handleCancelTransportRequest();
+                } else if (selectedWarehouseBooking) {
+                  handleCancelWarehouseBooking();
+                }
+              }} 
+              disabled={processingAction}
+            >
+              {processingAction ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Cancelling...
+                </>
+              ) : (
+                "Confirm Cancel"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Confirm Transport Request Dialog */}
+      <Dialog open={confirmDialog} onOpenChange={setConfirmDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Transport Request</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to confirm this transport request?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDialog(false)} disabled={processingAction}>
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              onClick={handleConfirmTransportRequest} 
+              disabled={processingAction}
+            >
+              {processingAction ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Confirming...
+                </>
+              ) : (
+                "Confirm Request"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
