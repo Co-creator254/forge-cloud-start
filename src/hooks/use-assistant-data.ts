@@ -41,61 +41,6 @@ interface AssistantDataResult {
   isRealData: boolean;
 }
 
-// Mock data for fallback when API calls fail
-const mockMarkets: Market[] = [
-  {
-    id: "m1",
-    name: "Nairobi Central Market",
-    county: "Nairobi",
-    location: {
-      county: "Nairobi",
-      coordinates: { latitude: -1.286389, longitude: 36.817223 }
-    },
-    producePrices: [
-      { id: "p1", produceName: "Maize", price: 45, unit: "kg", date: new Date().toLocaleDateString() },
-      { id: "p2", produceName: "Beans", price: 120, unit: "kg", date: new Date().toLocaleDateString() }
-    ],
-    demand: "High"
-  },
-  {
-    id: "m2",
-    name: "Mombasa Municipal Market",
-    county: "Mombasa",
-    location: {
-      county: "Mombasa",
-      coordinates: { latitude: -4.043477, longitude: 39.668205 }
-    },
-    producePrices: [
-      { id: "p3", produceName: "Tomatoes", price: 80, unit: "kg", date: new Date().toLocaleDateString() },
-      { id: "p4", produceName: "Bananas", price: 15, unit: "piece", date: new Date().toLocaleDateString() }
-    ],
-    demand: "Medium"
-  }
-];
-
-const mockForecasts: Forecast[] = [
-  {
-    id: "f1",
-    produceName: "Maize",
-    period: "May-August 2023",
-    expectedProduction: 120000,
-    expectedDemand: 140000,
-    confidenceLevel: "high",
-    county: "Nakuru",
-    unit: "tons"
-  },
-  {
-    id: "f2",
-    produceName: "Coffee",
-    period: "June-September 2023",
-    expectedProduction: 25000,
-    expectedDemand: 30000,
-    confidenceLevel: "medium",
-    county: "Kiambu",
-    unit: "tons"
-  }
-];
-
 export const useAssistantData = (): AssistantDataResult => {
   const [data, setData] = useState<AssistantData>({
     markets: [],
@@ -131,6 +76,13 @@ export const useAssistantData = (): AssistantDataResult => {
           )
         ]);
 
+        const warehousesPromise = Promise.race([
+          supabase.from('warehouses').select('*'),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Fetch timeout')), 5000)
+          )
+        ]);
+
         const transportersPromise = Promise.race([
           supabase.from('transporters').select('*'),
           new Promise((_, reject) => 
@@ -141,11 +93,13 @@ export const useAssistantData = (): AssistantDataResult => {
         // Use Promise.allSettled to handle partial failures
         const [
           marketPricesResult, 
-          forecastsResult, 
+          forecastsResult,
+          warehousesResult,
           transportersResult
         ] = await Promise.allSettled([
           marketPricesPromise,
           forecastsPromise,
+          warehousesPromise,
           transportersPromise
         ]);
 
@@ -156,16 +110,16 @@ export const useAssistantData = (): AssistantDataResult => {
           
           if (marketPricesError) {
             console.warn(`Market prices error: ${marketPricesError.message}`);
+            // For RLS issues, provide more helpful error info
+            if (marketPricesError.code === '42501') {
+              console.warn('Permission denied error. RLS policies may need to be configured.');
+            }
           } else if (marketPricesData && marketPricesData.length > 0) {
             markets = processMarketPricesData(marketPricesData);
             console.log(`Processed ${markets.length} markets from real data`);
           }
-        }
-
-        // If no real data, use mock data
-        if (markets.length === 0) {
-          console.log('Using mock market data as fallback');
-          markets = mockMarkets;
+        } else {
+          console.error("Failed to fetch market prices:", marketPricesResult.reason);
         }
 
         // Process forecast data
@@ -175,16 +129,35 @@ export const useAssistantData = (): AssistantDataResult => {
           
           if (forecastsError) {
             console.warn(`Forecasts error: ${forecastsError.message}`);
+            // For RLS issues, provide more helpful error info
+            if (forecastsError.code === '42501') {
+              console.warn('Permission denied error. RLS policies may need to be configured.');
+            }
           } else if (forecastsData && forecastsData.length > 0) {
             forecasts = processForecastsData(forecastsData);
             console.log(`Processed ${forecasts.length} forecasts from real data`);
           }
+        } else {
+          console.error("Failed to fetch forecasts:", forecastsResult.reason);
         }
 
-        // If no real forecast data, use mock data
-        if (forecasts.length === 0) {
-          console.log('Using mock forecast data as fallback');
-          forecasts = mockForecasts;
+        // Process warehouses data
+        let warehouses: Warehouse[] = [];
+        if (warehousesResult.status === 'fulfilled') {
+          const { data: warehousesData, error: warehousesError } = warehousesResult.value as any;
+          
+          if (warehousesError) {
+            console.warn(`Warehouses error: ${warehousesError.message}`);
+            // For RLS issues, provide more helpful error info
+            if (warehousesError.code === '42501') {
+              console.warn('Permission denied error. RLS policies may need to be configured.');
+            }
+          } else if (warehousesData && warehousesData.length > 0) {
+            warehouses = processWarehousesData(warehousesData);
+            console.log(`Processed ${warehouses.length} warehouses from real data`);
+          }
+        } else {
+          console.error("Failed to fetch warehouses:", warehousesResult.reason);
         }
 
         // Process transporters data
@@ -202,6 +175,8 @@ export const useAssistantData = (): AssistantDataResult => {
             transporters = processTransportersData(transportersData);
             console.log(`Processed ${transporters.length} transporters from real data`);
           }
+        } else {
+          console.error("Failed to fetch transporters:", transportersResult.reason);
         }
 
         // Update the state with all available data
@@ -209,30 +184,26 @@ export const useAssistantData = (): AssistantDataResult => {
           ...prev, 
           markets,
           forecasts,
+          warehouses,
           transporters,
         }));
         
         // Consider data real if we got at least something from the database
-        const hasRealData = markets.length > 0 || forecasts.length > 0 || transporters.length > 0;
+        const hasRealData = markets.length > 0 || forecasts.length > 0 || warehouses.length > 0 || transporters.length > 0;
         setIsRealData(hasRealData);
         
         if (hasRealData) {
           console.log('Successfully loaded real data from Supabase');
         } else {
-          setError("Couldn't load data from database. Using fallback data instead.");
+          setError("Connection failed: Couldn't load data from database. Please check your connection and try again.");
+          // No more fallback to mock data
         }
 
       } catch (err: any) {
         console.error("Error fetching data from Supabase:", err);
-        setError(err.message || "Failed to load data.");
+        setError(err.message || "Failed to load data. Please check your connection and try again.");
         
-        // Set mock data as fallback
-        setData(prev => ({ 
-          ...prev, 
-          markets: mockMarkets,
-          forecasts: mockForecasts,
-        }));
-        
+        // No more fallback to mock data
         setIsRealData(false);
         
         // Implement retry logic (max 3 retries)
@@ -299,6 +270,28 @@ export const useAssistantData = (): AssistantDataResult => {
                         item.confidence_level > 0.5 ? 'medium' : 'low',
         county: item.county,
         unit: 'kg' // Default unit if not specified
+      };
+    });
+  };
+
+  // Process warehouses data from Supabase
+  const processWarehousesData = (data: any[]): Warehouse[] => {
+    return data.map(item => {
+      return {
+        id: item.id,
+        name: item.name,
+        location: {
+          county: item.county,
+          coordinates: item.coordinates ? {
+            latitude: item.coordinates.lat,
+            longitude: item.coordinates.lng
+          } : undefined
+        },
+        capacity: item.capacity,
+        available: item.available,
+        rates: item.rates,
+        contact: item.contact,
+        hasRefrigeration: item.has_refrigeration
       };
     });
   };

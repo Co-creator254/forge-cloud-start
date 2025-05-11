@@ -8,6 +8,11 @@ export const KIKUYU_KEYWORDS = ['wĩra', 'mũgũnda', 'irio', 'mbembe', 'mbeca',
 export const LUO_KEYWORDS = ['chiemo', 'puothe', 'cham', 'yath', 'ohala', 'lupo'];
 export const KALENJIN_KEYWORDS = ['kerichek', 'imbarek', 'chepkwony', 'beek', 'korosio', 'burgeiyot'];
 
+// Adding support for more tribes in Kenya
+export const KAMBA_KEYWORDS = ['muunda', 'liu', 'mbesa', 'soko', 'mbemba'];
+export const MAASAI_KEYWORDS = ['enkop', 'enkare', 'olkishu', 'olmurrani'];
+export const MERU_KEYWORDS = ['muunda', 'irio', 'mugunda', 'biashara'];
+
 // Language response templates
 export const languageResponses = {
   swahili: {
@@ -22,6 +27,7 @@ export const languageResponses = {
     ],
     generalResponse: "Samahani, sikuelewa vizuri. Tafadhali niulize juu ya bei ya mazao, masoko, au maghala katika eneo fulani.",
     noUnderstanding: "Samahani, sikuelewa ombi lako. Tafadhali jaribu tena kwa kutumia maneno tofauti au niambie unahitaji msaada gani kuhusu kilimo.",
+    voiceTranscriptionPrompt: "Unaweza kurekodia sauti yako na nitaisikiliza na kujibu."
   },
   kikuyu: {
     greeting: "Niatia! Nĩ niĩ mũteithia waku wa ũrĩmi. No ngũteithi kũona thoko, gũthugumĩra thogora, gũkũnyitithania na makorigiriro na athuti, gũcaria agũri, gũtaarana mĩoroorere ya wĩra, na gũkũhe ũmenyo kuuma kũrĩ arĩmi angĩ.",
@@ -29,6 +35,10 @@ export const languageResponses = {
     marketPrices: (crop: string) => `Thogora wa ${crop} ĩraugĩka kuringana na kũrĩa ũrĩ. Ningũkũhe ũhoro makĩria ũnanjĩĩre nĩkũ ũrĩ.`,
     forecast: (crop: string) => `Ũthugumĩri wa thogora wa ${crop} kiumia kĩĩ kĩrooka wonanitie kwona kwongerereka kwa 5-10%. No ũgĩe na thogora mwega makĩria ũetereire.`,
     noUnderstanding: "Nĩndagũthima, no ndiracoka kwĩgua wendi waku. Tafadhali geria rĩngĩ na ciugo ingĩ kana ũnjĩĩre ũteithio ũrĩa ũbataire igũrũ rĩa ũrĩmi.",
+    maizePricesResponses: [
+      "Thogora wa mbembe Mombasa nĩ gatagatĩ ka KES 50-65 kwa kilo. Thoko ĩrĩa nene ya Kongowea ĩrĩ na thogora mwega makĩria."
+    ],
+    generalResponse: "Nĩndagũthima, no ndirataũkĩrwo wega. Tafadhali njũria igũrũ rĩa thogora wa irio, thoko, kana makorigiriro ma kũiga irio gũtũrainĩ."
   },
   luo: {
     greeting: "Ber ahinya! An jakony mari mar pur. Anyalo konyi yudo chiro, koro nengo, riwakonyo gi migepe mag kano kod jooting, yudo jongiewo, chiwo paro mar migepe mag kelo cham, gi miyoi puonj ma ogol kuom jolup pur mamoko.",
@@ -36,6 +46,10 @@ export const languageResponses = {
     marketPrices: (crop: string) => `Nengo mar ${crop} lokore kaluwore gi kama intie. Abiro miyi weche momedore ka inyisa kama intiere.`,
     forecast: (crop: string) => `Nengo mar ${crop} mar juma mabiro nyiso ni biro medore kuom 5-10%. Inyalo yudo nengo maber moloyo ka irito.`,
     noUnderstanding: "Akwayo tweyo, ok awinj penjoni maber. Tem kendo gi weche mopogore kata nyisa kony mane idwaro kuom pur.",
+    maizePricesResponses: [
+      "Nengo mar oduma e Mombasa en kind KES 50-65 kuom kilo achiel. Chiro maduong' mar Kongowea nigi nengo maber moloyo."
+    ],
+    generalResponse: "Akwayo tweyo, ok awinj tiendi maber. Penj kuom nengo mag cham, chirni, kata kuonde mag kano cham e gweng'ni."
   },
   kalenjin: {
     greeting: "Chamgei! Ani ne bo ngo ya kerichek. Amuche anyiny sukik, astap oret, anai temik ak kobet ab getik ak boisionik ab kolet, anai bolenjik, kalenjin oret ab koitab ketik, ak anyinjin imbarek chebo burenik.",
@@ -43,10 +57,48 @@ export const languageResponses = {
     marketPrices: (crop: string) => `Oretab ${crop} kowal koborunet nebo ole imine. Abwatin imanit anan inye ole imine.`,
     forecast: (crop: string) => `Astap ab oretab ${crop} wikit ne inoni kolewen konyor 5-10%. Imoche iny oret ne karam ingonyei.`,
     noUnderstanding: "Sabarei, matanyu kasotik. Saayi kaite ak kasaek alak anan ilenji toretinik ne icham kobo kerichek.",
-  }
+    maizePricesResponses: [
+      "Oretab mbembe e Mombasa ko KES 50-65 ak kilo. Sukik ab Kongowea ko mi oret ne better."
+    ],
+    generalResponse: "Sabarei, matanyu kasotik. Teemwai ingot ak kasaet alak anan ilenji toretinik ne icham kobo kerichek."
+  },
+  kamba: {
+    greeting: "Museo! Ni muthukumi waku wa uimi. Niukweleka kuete masoko ma uimi, kuvikia muthuko, kuukusisya na sitoo na mathakaanio, kuete aendai, kuvikia inano sya kukwatya ndhooa, na kukupa maundu mangi ueni kuma kwoonthe.",
+    cropRequest: "Ni limwa kiliku mwumite?",
+    marketPrices: (crop: string) => `Thogoa wa ${crop} niutwika kwa nzamba ya nthini. Niukakuvikia maundu maingu inda ethiwa ukundavya nthini ili.",
+    forecast: (crop: string) => `Ndukothya wa thogoa wa ${crop} kyumwa kii kyuka yonania kwongeeleekwa kwa 5-10%. No woone thogoa museum mbee wieteeye.`,
+    noUnderstanding: "Ni ndukuvundisya, indi ndingutauka muvango waku. Thiingia ingi na maunya angi kana undavye utethyo wiva igulu wa uimi.",
+    maizePricesResponses: [
+      "Thogoa wa mbemba Mombasa ni katikati wa KES 50-65 kwa kilo. Soko kuu la Kongowea yina thogoa museum kwi."
+    ],
+    generalResponse: "Ni ndukuvundisya, indi ndingutauka nesa. Thiingia ingi na maunya angi kana undavye utethyo wiva igulu wa uimi."
+  },
+  maasai: {
+    greeting: "Sopa! Nanu oltungani kitok loo emuto. Atajeuno aretoki naa atumoki enkisuma, atumo enkitoodol too enkikiama oo enkop, atidio ltungana loo lorikan oo ltungana ootii oo ltaujin, aretoki ltung'ana oomwi, atudutie inono nanyuat oo enkitoodol too enkiama.",
+    cropRequest: "Kainyoo enkitare aino imuto?",
+    marketPrices: (crop: string) => `Enkiguanare e ${crop} etii aikolie enkop ino itii. Aikenuu iyiolo ajo pee iliki ai itii.`,
+    forecast: (crop: string) => `Enkitodolo e enkiguanare e ${crop} ewiki naipuko etodolu enkinyaa 5-10%. Iyiolou enkiguanare supat te nianya.`,
+    noUnderstanding: "Tasere, mme atomu inonangu. Tamayiolo ake itodolu.",
+    maizePricesResponses: [
+      "Enkiguanare e olmukimae Mombasa etii KES 50-65 olokiteng'. Esoko kitok le Kongowea etii enkiguanare supat."
+    ],
+    generalResponse: "Tasere, mme atomu inonangu. Tamayiolo ake itodolu."
+  },
+  meru: {
+    greeting: "Muuga! Nienda muteithia wenu wa urimi. Ningukethiria kuona thoko, kuroria mbeca, kukuunganira na ikumbi na athuti, kuona bacurania, gurora njira cia kuriha biathara, na kukua uugi kuuma kiri arimi bangi.",
+    cropRequest: "Ni mugunda uriku urimite?",
+    marketPrices: (crop: string) => `Thogora ya ${crop} iuthuranagia kuringana na kundu uri. Ningukua uhoro mwingi ukinjira uri ku.`,
+    forecast: (crop: string) => `Mubango wa thogora ya ${crop} kiumia kiri mbele ionanagia kuongerekana na 5-10%. No ugwe na thogora mbega muno ukeeterere.`,
+    noUnderstanding: "Ningukuthima, indi ntikwigua wendi waku. Geria ringi na ciugo ingi kana unjire uteithio uriku ubatarite iguru ria urimi.",
+    maizePricesResponses: [
+      "Thogora ya mpempe Mombasa ni kati ka KES 50-65 kilo. Thoko inene ya Kongowea iri na thogora mbega muno."
+    ],
+    generalResponse: "Ningukuthima, indi ntikwigua wendi waku. Geria ringi na ciugo ingi kana unjire uteithio uriku ubatarite iguru ria urimi."
+  },
+  english: {} // Will fall back to default English responses
 };
 
-type SupportedLanguage = 'english' | 'swahili' | 'kikuyu' | 'luo' | 'kalenjin';
+type SupportedLanguage = 'english' | 'swahili' | 'kikuyu' | 'luo' | 'kalenjin' | 'kamba' | 'maasai' | 'meru';
 
 // Helper to detect language from message
 export const detectLanguage = (message: string): SupportedLanguage => {
@@ -72,6 +124,21 @@ export const detectLanguage = (message: string): SupportedLanguage => {
     return 'kalenjin';
   }
   
+  // Check for Kamba keywords
+  if (KAMBA_KEYWORDS.some(keyword => lowerMessage.includes(keyword))) {
+    return 'kamba';
+  }
+  
+  // Check for Maasai keywords
+  if (MAASAI_KEYWORDS.some(keyword => lowerMessage.includes(keyword))) {
+    return 'maasai';
+  }
+  
+  // Check for Meru keywords
+  if (MERU_KEYWORDS.some(keyword => lowerMessage.includes(keyword))) {
+    return 'meru';
+  }
+  
   // Default to English
   return 'english';
 };
@@ -92,7 +159,7 @@ export const handleLanguageResponse = (
   const crop = cropMatches ? cropMatches[0] : '';
   
   // Check for greetings
-  if (message.match(/^(habari|jambo|hujambo|shikamoo|niatia|ber|chamgei)/i)) {
+  if (message.match(/^(habari|jambo|hujambo|shikamoo|niatia|ber|chamgei|museo|sopa|muuga)/i)) {
     return responses.greeting;
   }
   
@@ -101,8 +168,11 @@ export const handleLanguageResponse = (
       message.includes('mahindi') && 
       message.includes('mombasa') && 
       (message.includes('pesa') || message.includes('bei') || message.includes('ngapi'))) {
-    const randomIndex = Math.floor(Math.random() * responses.maizePricesResponses.length);
-    return responses.maizePricesResponses[randomIndex];
+    // Check if maizePricesResponses exists for the language before accessing it
+    if (responses.maizePricesResponses && responses.maizePricesResponses.length > 0) {
+      const randomIndex = Math.floor(Math.random() * responses.maizePricesResponses.length);
+      return responses.maizePricesResponses[randomIndex];
+    }
   }
   
   // If asking about a crop but no specific question detected
@@ -114,5 +184,5 @@ export const handleLanguageResponse = (
   }
   
   // Default no understanding response
-  return responses.noUnderstanding || responses.generalResponse;
+  return responses.noUnderstanding || (responses.generalResponse || "I don't understand. Please try again in English or another language I support.");
 };
