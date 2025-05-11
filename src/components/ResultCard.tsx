@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataItem } from '@/types';
 import { getCategoryName } from '@/services/apiUtils';
+import { useToast } from '@/hooks/use-toast';
 
 interface ResultCardProps {
   item: DataItem;
@@ -13,6 +14,8 @@ interface ResultCardProps {
 }
 
 const ResultCard: React.FC<ResultCardProps> = ({ item, onClick }) => {
+  const { toast } = useToast();
+  
   const categoryColors = {
     'agriculture': 'bg-sage-100 text-sage-800 hover:bg-sage-200',
     'tender': 'bg-soil-100 text-soil-800 hover:bg-soil-200',
@@ -21,8 +24,43 @@ const ResultCard: React.FC<ResultCardProps> = ({ item, onClick }) => {
   };
 
   const truncate = (text: string, maxLength: number) => {
+    if (!text) return '';
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
+  };
+
+  const handleVerifyLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.stopPropagation();
+    // Check if URL is valid before opening
+    if (!item.url || !isValidUrl(item.url)) {
+      e.preventDefault();
+      toast({
+        title: "Invalid Link",
+        description: "This URL cannot be verified or is invalid.",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  // Helper function to validate URLs
+  function isValidUrl(string: string): boolean {
+    try {
+      const url = new URL(string);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // Format URL for display
+  const getDisplayUrl = (url: string | undefined) => {
+    if (!url) return "No source URL";
+    try {
+      const parsedUrl = new URL(url);
+      return parsedUrl.hostname;
+    } catch {
+      return "Invalid URL";
+    }
   };
 
   return (
@@ -78,7 +116,20 @@ const ResultCard: React.FC<ResultCardProps> = ({ item, onClick }) => {
       
       <CardFooter className="px-6 py-4 bg-muted/30 flex justify-between items-center">
         <div className="text-sm text-muted-foreground">
-          Source: {truncate(item.source || 'Unknown', 30)}
+          {item.url ? (
+            <a 
+              href={item.url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              onClick={handleVerifyLink}
+              className="flex items-center hover:underline"
+            >
+              {getDisplayUrl(item.url)}
+              <ExternalLink className="h-3 w-3 ml-1" />
+            </a>
+          ) : (
+            <span>Source: {truncate(item.source || 'Unknown', 30)}</span>
+          )}
         </div>
         <Button size="sm" onClick={onClick}>
           View Details

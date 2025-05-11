@@ -7,6 +7,8 @@ import DetailView from '@/components/DetailView';
 import CategoryTabs from './search/CategoryTabs';
 import SearchBar from './search/SearchBar';
 import SearchResults from './search/SearchResults';
+import { assessContentLegitimacy, isVerifiedSource } from '@/services/apiUtils';
+import { useToast } from '@/hooks/use-toast';
 
 interface SearchSectionProps {
   id?: string;
@@ -23,6 +25,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ id }) => {
   const [results, setResults] = useState<DataItem[]>([]);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<DataItem | null>(null);
+  const { toast } = useToast();
 
   const handleSearch = async () => {
     setIsLoading(true);
@@ -40,13 +43,49 @@ const SearchSection: React.FC<SearchSectionProps> = ({ id }) => {
     
     try {
       const data = await fetchData(filters);
+      
       // Filter out tender-related items
-      const filteredData = data.filter(
+      let filteredData = data.filter(
         item => item.category !== 'tender' && item.category !== 'awarded-tender'
       );
+      
+      // Apply verification checks for legitimacy and remove fake/unverifiable content
+      filteredData = filteredData.filter(item => {
+        // Check URL validity
+        if (item.url && !isVerifiedSource(item.url)) {
+          console.warn(`Filtered item with unverified URL: ${item.title}`);
+          return false;
+        }
+        
+        // Check content legitimacy
+        if (!assessContentLegitimacy(item)) {
+          console.warn(`Filtered possibly illegitimate content: ${item.title}`);
+          return false;
+        }
+        
+        return true;
+      });
+      
+      // Log verification results
+      console.log(`Showing ${filteredData.length} verified results out of ${data.length} total results`);
+      
+      if (filteredData.length === 0 && data.length > 0) {
+        toast({
+          title: "Verification Results",
+          description: "Some results were filtered out because they could not be verified with legitimate sources.",
+          duration: 5000
+        });
+      }
+      
       setResults(filteredData);
     } catch (error) {
       console.error('Error fetching data:', error);
+      toast({
+        title: "Search Error",
+        description: "Could not complete search. Please try again later.",
+        variant: "destructive"
+      });
+      setResults([]);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +112,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ id }) => {
         </div>
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Find Agricultural Information</h2>
         <p className="text-lg text-foreground/80 max-w-3xl mx-auto">
-          Search across agricultural issues and innovative solutions throughout Kenya.
+          Search across verified agricultural issues and innovative solutions throughout Kenya.
         </p>
       </div>
       

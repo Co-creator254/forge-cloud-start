@@ -1,39 +1,98 @@
 
-// Utility functions for API operations
-import { Category } from '@/types';
-
-// Simulate network delay for demo purposes
-export const simulateDelay = async (ms: number = 1000): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
-
-// Format API URL with parameters
-export const formatApiUrl = (endpoint: string, params?: Record<string, string>): string => {
-  let url = `${API_BASE_URL}${endpoint}`;
-  if (params && Object.keys(params).length > 0) {
-    url += '?' + new URLSearchParams(params).toString();
-  }
-  return url;
-};
-
-// Get human-readable category name
 export const getCategoryName = (category: string): string => {
-  const categoryMap: Record<string, string> = {
-    'all': 'All Categories',
+  const categories: Record<string, string> = {
+    'agriculture': 'Agricultural Issues',
     'solutions': 'Agricultural Solutions',
-    'issues': 'Agricultural Issues',
-    'reports': 'Market Reports',
-    'tender': 'Active Tenders',
-    'awarded-tender': 'Awarded Tenders'
+    'tender': 'Tender',
+    'awarded-tender': 'Awarded Tender'
   };
-
-  return categoryMap[category] || 'Unknown Category';
+  
+  return categories[category] || category;
 };
 
-// Validate API key
-export const validateApiKey = (apiKey: string): boolean => {
-  return apiKey && apiKey.length > 32; // Simple validation
+export const validateUrl = (url: string): boolean => {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch (e) {
+    return false;
+  }
 };
 
-// API base URL
-export const API_BASE_URL = 'https://api.kilimo-connect.com/v1/';
+export const getVerifiedSourceDomains = (): string[] => {
+  return [
+    'kilimo.go.ke',
+    'kenyaseed.com',
+    'kalro.org',
+    'moa.go.ke',
+    'nafis.go.ke',
+    'agritechinnovations.co.ke',
+    'kephis.org',
+    'eaff.org',
+    'farmafrica.org',
+    'agriculture.go.ke',
+    'agra.org'
+  ];
+};
+
+export const isVerifiedSource = (url: string): boolean => {
+  try {
+    const parsedUrl = new URL(url);
+    const domain = parsedUrl.hostname;
+    return getVerifiedSourceDomains().some(verifiedDomain => 
+      domain === verifiedDomain || domain.endsWith(`.${verifiedDomain}`)
+    );
+  } catch (e) {
+    return false;
+  }
+};
+
+// For results that have no URL, generate a link to a search query for them
+export const generateSearchUrl = (title: string, source: string): string => {
+  const query = encodeURIComponent(`${title} ${source} Kenya agriculture`);
+  return `https://www.google.com/search?q=${query}`;
+};
+
+// Check if the content is likely legitimate based on content analysis
+export const assessContentLegitimacy = (item: any): boolean => {
+  // Check for common indicators of fake content
+  const title = item.title?.toLowerCase() || '';
+  const description = item.description?.toLowerCase() || '';
+  
+  // Red flags in content
+  const suspiciousTerms = [
+    'guaranteed results',
+    'miracle solution',
+    'secret that experts',
+    '100% effective',
+    'revolutionary breakthrough'
+  ];
+  
+  // Check for suspicious terms
+  for (const term of suspiciousTerms) {
+    if (title.includes(term) || description.includes(term)) {
+      return false;
+    }
+  }
+  
+  // Verify the source is known
+  if (item.source) {
+    const knownSources = [
+      'Ministry of Agriculture',
+      'Kenya Seed Company',
+      'Kenya Agricultural Research Institute',
+      'KALRO',
+      'FAO',
+      'AgriTech Innovations',
+      'Kenya Plant Health Inspectorate Service',
+      'National Farmers Information Service'
+    ];
+    
+    if (knownSources.some(source => item.source.includes(source))) {
+      return true;
+    }
+  }
+  
+  // Default to returning true if no red flags
+  return true;
+};
