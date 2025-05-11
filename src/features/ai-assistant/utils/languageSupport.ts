@@ -65,7 +65,7 @@ export const languageResponses = {
   kamba: {
     greeting: "Museo! Ni muthukumi waku wa uimi. Niukweleka kuete masoko ma uimi, kuvikia muthuko, kuukusisya na sitoo na mathakaanio, kuete aendai, kuvikia inano sya kukwatya ndhooa, na kukupa maundu mangi ueni kuma kwoonthe.",
     cropRequest: "Ni limwa kiliku mwumite?",
-    marketPrices: (crop: string) => `Thogoa wa ${crop} niutwika kwa nzamba ya nthini. Niukakuvikia maundu maingu inda ethiwa ukundavya nthini ili.",
+    marketPrices: (crop: string) => `Thogoa wa ${crop} niutwika kwa nzamba ya nthini. Niukakuvikia maundu maingu inda ethiwa ukundavya nthini ili.`,
     forecast: (crop: string) => `Ndukothya wa thogoa wa ${crop} kyumwa kii kyuka yonania kwongeeleekwa kwa 5-10%. No woone thogoa museum mbee wieteeye.`,
     noUnderstanding: "Ni ndukuvundisya, indi ndingutauka muvango waku. Thiingia ingi na maunya angi kana undavye utethyo wiva igulu wa uimi.",
     maizePricesResponses: [
