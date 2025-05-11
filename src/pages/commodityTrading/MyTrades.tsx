@@ -16,7 +16,7 @@ import { MobileNav } from '@/components/MobileNav';
 
 const MyTrades: React.FC = () => {
   const { toast } = useToast();
-  const { isMobile } = useIsMobile();
+  const isMobile = useIsMobile();
   
   const [transportRequests, setTransportRequests] = useState<TransportRequest[]>([]);
   const [warehouseBookings, setWarehouseBookings] = useState<WarehouseBooking[]>([]);
