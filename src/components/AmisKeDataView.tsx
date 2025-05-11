@@ -10,6 +10,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   LineChart, 
   Line, 
@@ -22,6 +23,9 @@ import {
 } from 'recharts';
 import { fetchAmisKePrices, fetchAmisKeMarkets, getAmisKePriceHistory } from '@/services/amis-ke';
 import { AmisKePriceData, AmisKeMarket } from '@/services/amis-ke/types';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
 
 const AmisKeDataView: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -32,6 +36,9 @@ const AmisKeDataView: React.FC = () => {
   const [historyLoading, setHistoryLoading] = useState(false);
   const [currentPricesHeadline, setCurrentPricesHeadline] = useState<string>('');
   const [apiError, setApiError] = useState<string | null>(null);
+  const [showSupabasePrices, setShowSupabasePrices] = useState(false);
+  const [supabasePrices, setSupabasePrices] = useState<any[]>([]);
+  const [isLoadingSupabase, setIsLoadingSupabase] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -59,10 +66,13 @@ const AmisKeDataView: React.FC = () => {
           if (uniqueCommodities.length > 0) {
             setSelectedCommodity(uniqueCommodities[0]);
           }
+        } else {
+          // If no data from API, show fallback error that explains the issue
+          setApiError("Unable to connect to AMIS Kenya data service. This could be due to network issues or service unavailability.");
         }
       } catch (error) {
         console.error("Error loading AMIS Kenya data:", error);
-        setApiError("Failed to load market data. Please try again later.");
+        setApiError("Unable to connect to AMIS Kenya data service. This could be due to network issues or service unavailability.");
       } finally {
         setLoading(false);
       }
@@ -82,7 +92,7 @@ const AmisKeDataView: React.FC = () => {
         setPriceHistory(history);
       } catch (error) {
         console.error(`Error loading price history for ${selectedCommodity}:`, error);
-        setApiError(`Failed to load price history for ${selectedCommodity}.`);
+        setApiError(`Failed to load price history for ${selectedCommodity}. The service may be temporarily unavailable.`);
       } finally {
         setHistoryLoading(false);
       }
@@ -94,6 +104,68 @@ const AmisKeDataView: React.FC = () => {
   // Get unique commodities
   const commodities = [...new Set(prices.map(p => p.commodity))];
 
+  // Load backup data from Supabase
+  const loadSupabaseData = async () => {
+    setIsLoadingSupabase(true);
+    try {
+      const { data: marketPricesData, error } = await supabase
+        .from('market_prices')
+        .select('*')
+        .order('date_recorded', { ascending: false });
+      
+      if (error) {
+        console.error("Error fetching backup data from Supabase:", error);
+        setApiError(`Unable to load backup data: ${error.message}`);
+      } else if (marketPricesData && marketPricesData.length > 0) {
+        setSupabasePrices(marketPricesData);
+        setShowSupabasePrices(true);
+      } else {
+        setApiError("No backup data available in the local database.");
+      }
+    } catch (err: any) {
+      console.error("Unexpected error loading backup data:", err);
+      setApiError(err.message || "An unexpected error occurred");
+    } finally {
+      setIsLoadingSupabase(false);
+    }
+  };
+
+  // Generate sample data for demo purposes when all else fails
+  const generateSampleData = () => {
+    const sampleCommodities = ["Maize", "Beans", "Potatoes", "Tomatoes", "Rice"];
+    const sampleMarkets = ["Wakulima Market", "Mombasa Central", "Kisumu Market", "Eldoret Market"];
+    const sampleCounties = ["Nairobi", "Mombasa", "Kisumu", "Uasin Gishu"];
+    
+    const generatedSamples = [];
+    
+    for (let i = 0; i < 10; i++) {
+      const commodity = sampleCommodities[Math.floor(Math.random() * sampleCommodities.length)];
+      const market = sampleMarkets[Math.floor(Math.random() * sampleMarkets.length)];
+      const county = sampleCounties[Math.floor(Math.random() * sampleCounties.length)];
+      
+      generatedSamples.push({
+        id: `sample-${i}`,
+        commodity: commodity,
+        market: market,
+        county: county,
+        price: Math.floor(Math.random() * 200) + 50,
+        unit: "Kg",
+        date: new Date().toISOString().split('T')[0]
+      });
+    }
+    
+    setPrices(generatedSamples);
+    setShowSupabasePrices(false);
+    setApiError("Using demonstration data for preview purposes. This is not real market data.");
+  };
+
+  // Refresh data
+  const handleRefresh = () => {
+    setApiError(null);
+    setShowSupabasePrices(false);
+    loadData();
+  };
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -101,15 +173,30 @@ const AmisKeDataView: React.FC = () => {
         <CardDescription>
           Agricultural commodity prices from the Ministry of Agriculture
         </CardDescription>
-        {currentPricesHeadline && (
+        {currentPricesHeadline && !apiError && (
           <div className="mt-2 bg-muted p-2 rounded-md font-medium text-sm">
             {currentPricesHeadline}
           </div>
         )}
         {apiError && (
-          <div className="mt-2 bg-destructive/10 text-destructive p-2 rounded-md text-sm">
-            {apiError}
-          </div>
+          <Alert variant="destructive" className="mt-4">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Connection Error</AlertTitle>
+            <AlertDescription>{apiError}</AlertDescription>
+            <div className="flex gap-2 mt-4">
+              <Button variant="outline" size="sm" onClick={handleRefresh} className="flex items-center gap-2">
+                <RefreshCw className="h-4 w-4" /> Retry Connection
+              </Button>
+              {!showSupabasePrices && (
+                <Button variant="secondary" size="sm" onClick={loadSupabaseData} disabled={isLoadingSupabase}>
+                  {isLoadingSupabase ? "Loading..." : "Load Cached Data"} 
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" onClick={generateSampleData}>
+                Use Demo Data
+              </Button>
+            </div>
+          </Alert>
         )}
       </CardHeader>
       <CardContent>
@@ -139,23 +226,29 @@ const AmisKeDataView: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {prices.length > 0 ? (
-                        prices.map((price) => (
+                      {prices.length > 0 || (showSupabasePrices && supabasePrices.length > 0) ? (
+                        (showSupabasePrices ? supabasePrices : prices).map((price) => (
                           <tr key={price.id} className="border-b hover:bg-muted/50">
                             <td className="p-2">
-                              <Badge variant="outline">{price.commodity}</Badge>
+                              <Badge variant="outline">{showSupabasePrices ? price.commodity_name : price.commodity}</Badge>
                             </td>
-                            <td className="p-2">{price.market}</td>
+                            <td className="p-2">{showSupabasePrices ? price.market_name : price.market}</td>
                             <td className="p-2">{price.county}</td>
-                            <td className="p-2 text-right font-medium">{price.price.toFixed(2)}</td>
+                            <td className="p-2 text-right font-medium">
+                              {typeof price.price === 'number' ? price.price.toFixed(2) : price.price}
+                            </td>
                             <td className="p-2">{price.unit}</td>
-                            <td className="p-2 text-muted-foreground">{price.date}</td>
+                            <td className="p-2 text-muted-foreground">
+                              {showSupabasePrices 
+                                ? new Date(price.date_recorded).toLocaleDateString() 
+                                : price.date}
+                            </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
                           <td colSpan={6} className="text-center py-8 text-muted-foreground">
-                            {apiError ? 'Failed to load data' : 'No price data available'}
+                            No price data available
                           </td>
                         </tr>
                       )}

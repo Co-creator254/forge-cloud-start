@@ -7,11 +7,11 @@
 const API_BASE_URL = "https://amis.kilimo.go.ke/en/api";
 
 // Maximum number of retry attempts for failed API calls
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 2;
 // Base delay for exponential backoff in milliseconds
 const BASE_RETRY_DELAY = 1000;
-// Cache retention time (30 minutes)
-const CACHE_TTL = 30 * 60 * 1000;
+// Cache retention time (2 hours)
+const CACHE_TTL = 2 * 60 * 60 * 1000;
 
 interface ApiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -20,6 +20,7 @@ interface ApiOptions {
   fallbackReturnValue?: any;
   retries?: number;
   bypassCache?: boolean;
+  timeout?: number;
 }
 
 // Define a generic type for API responses with results arrays
@@ -39,7 +40,8 @@ export class AmisKeApiHandler {
       method: 'GET', 
       queryParams, 
       fallbackReturnValue,
-      bypassCache 
+      bypassCache,
+      timeout: 3000 // 3 second timeout for faster response
     });
   }
 
@@ -54,7 +56,8 @@ export class AmisKeApiHandler {
       queryParams, 
       fallbackReturnValue = { results: [] } as unknown as T,
       retries = 0,
-      bypassCache = false 
+      bypassCache = false,
+      timeout = 5000
     } = options;
 
     // Add query parameters if they exist
@@ -108,7 +111,13 @@ export class AmisKeApiHandler {
     console.log(`Making ${method} request to ${url} (attempt ${retries + 1} of ${MAX_RETRIES + 1})`);
     
     try {
+      // Create an AbortController to handle timeouts
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      requestOptions.signal = controller.signal;
+
       const response = await fetch(url, requestOptions);
+      clearTimeout(timeoutId);
 
       // Check for server errors that might be temporary
       if (response.status >= 500 && response.status < 600) {
@@ -132,9 +141,6 @@ export class AmisKeApiHandler {
       if (!response.ok) {
         const errorText = await response.text();
         console.error(`API error (${response.status}): ${errorText}`);
-        
-        // For 4xx client errors, we shouldn't retry as the request is likely invalid
-        console.warn(`Request failed with status ${response.status}. Using fallback data.`);
         
         // For GET requests, store fallback in cache to prevent hammering the API
         if (method === 'GET') {
@@ -160,8 +166,12 @@ export class AmisKeApiHandler {
       
       return data;
     } catch (error) {
-      // Network errors or JSON parsing errors
-      console.error(`Failed to connect to API (${endpoint}):`, error);
+      // Network errors, timeout errors, or JSON parsing errors
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        console.error(`Request timeout for ${endpoint} after ${timeout}ms`);
+      } else {
+        console.error(`Failed to connect to API (${endpoint}):`, error);
+      }
       
       // Retry for network errors (likely connectivity issues)
       if (retries < MAX_RETRIES) {
@@ -197,15 +207,19 @@ export class AmisKeApiHandler {
   // Helper method to check if API is reachable
   static async checkApiHealth(): Promise<boolean> {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      
       const response = await fetch(`${API_BASE_URL}/health-check`, {
         method: 'GET',
         headers: { 'Accept': 'application/json' },
         mode: 'cors',
         cache: 'no-cache',
         credentials: 'same-origin',
-        timeout: 5000,
-      } as RequestInit);
+        signal: controller.signal
+      });
       
+      clearTimeout(timeoutId);
       return response.ok;
     } catch (error) {
       console.warn('API health check failed:', error);

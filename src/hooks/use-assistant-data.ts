@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Market, Forecast, Warehouse } from '@/types';
 import { Transporter } from '@/features/ai-assistant/types';
 import { supabase } from "@/integrations/supabase/client";
+import { fetchAmisKePrices, fetchAmisKeMarkets } from '@/services/amis-ke';
 
 interface SupabaseMarketPrice {
   id: string;
@@ -86,15 +87,30 @@ export const useAssistantData = (): AssistantDataResult => {
           )
         ]);
 
+        // Try to fetch AMIS data for additional market information
+        const amisPricesPromise = fetchAmisKePrices().catch(err => {
+          console.warn("Failed to fetch AMIS prices, continuing without this data:", err);
+          return [];
+        });
+        
+        const amisMarketsPromise = fetchAmisKeMarkets().catch(err => {
+          console.warn("Failed to fetch AMIS markets, continuing without this data:", err);
+          return [];
+        });
+
         // Use Promise.allSettled to handle partial failures
         const [
           marketPricesResult, 
           forecastsResult,
-          transportersResult
+          transportersResult,
+          amisPrices,
+          amisMarkets
         ] = await Promise.allSettled([
           marketPricesPromise,
           forecastsPromise,
-          transportersPromise
+          transportersPromise,
+          amisPricesPromise,
+          amisMarketsPromise
         ]);
 
         // Process market prices data
@@ -200,6 +216,19 @@ export const useAssistantData = (): AssistantDataResult => {
           console.error("Failed to fetch transporters:", transportersResult.reason);
         }
 
+        // Process AMIS data if available
+        let amisPricesData: any[] = [];
+        if (amisPrices.status === 'fulfilled') {
+          amisPricesData = amisPrices.value;
+          console.log(`Retrieved ${amisPricesData.length} prices from AMIS Kenya`);
+        }
+
+        let amisMarketsData: any[] = [];
+        if (amisMarkets.status === 'fulfilled') {
+          amisMarketsData = amisMarkets.value;
+          console.log(`Retrieved ${amisMarketsData.length} markets from AMIS Kenya`);
+        }
+
         // Update the state with all available data
         setData(prev => ({ 
           ...prev, 
@@ -207,6 +236,8 @@ export const useAssistantData = (): AssistantDataResult => {
           forecasts,
           warehouses,
           transporters,
+          amisPrices: amisPricesData,
+          amisMarkets: amisMarketsData
         }));
         
         // Consider data real if we got at least something from the database
@@ -216,15 +247,13 @@ export const useAssistantData = (): AssistantDataResult => {
         if (hasRealData) {
           console.log('Successfully loaded real data from Supabase');
         } else {
-          setError("Connection failed: Couldn't load data from database. Please check your connection and try again.");
-          // No more fallback to mock data
+          setError("Connection issue: Unable to load data from the database. This could be due to network connectivity problems or server unavailability. You can still use the application with sample data.");
         }
 
       } catch (err: any) {
-        console.error("Error fetching data from Supabase:", err);
+        console.error("Error fetching data:", err);
         setError(err.message || "Failed to load data. Please check your connection and try again.");
         
-        // No more fallback to mock data
         setIsRealData(false);
         
         // Implement retry logic (max 3 retries)
