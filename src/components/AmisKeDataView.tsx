@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Card, 
@@ -40,44 +39,45 @@ const AmisKeDataView: React.FC = () => {
   const [supabasePrices, setSupabasePrices] = useState<any[]>([]);
   const [isLoadingSupabase, setIsLoadingSupabase] = useState(false);
 
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      setApiError(null);
-      try {
-        const [pricesData, marketsData] = await Promise.all([
-          fetchAmisKePrices(),
-          fetchAmisKeMarkets()
-        ]);
-        
-        setPrices(pricesData);
-        setMarkets(marketsData);
-        
-        // Generate headline for current prices
-        if (pricesData.length > 0) {
-          const randomIndex = Math.floor(Math.random() * pricesData.length);
-          const headline = `Today's ${pricesData[randomIndex].commodity} prices at ${pricesData[randomIndex].market}: KES ${pricesData[randomIndex].price} per ${pricesData[randomIndex].unit}`;
-          setCurrentPricesHeadline(headline);
-        }
-        
-        // Set default commodity selection
-        if (pricesData.length > 0) {
-          const uniqueCommodities = [...new Set(pricesData.map(p => p.commodity))];
-          if (uniqueCommodities.length > 0) {
-            setSelectedCommodity(uniqueCommodities[0]);
-          }
-        } else {
-          // If no data from API, show fallback error that explains the issue
-          setApiError("Unable to connect to AMIS Kenya data service. This could be due to network issues or service unavailability.");
-        }
-      } catch (error) {
-        console.error("Error loading AMIS Kenya data:", error);
-        setApiError("Unable to connect to AMIS Kenya data service. This could be due to network issues or service unavailability.");
-      } finally {
-        setLoading(false);
+  // Define the loadData function that was missing
+  const loadData = async () => {
+    setLoading(true);
+    setApiError(null);
+    try {
+      const [pricesData, marketsData] = await Promise.all([
+        fetchAmisKePrices(),
+        fetchAmisKeMarkets()
+      ]);
+      
+      setPrices(pricesData);
+      setMarkets(marketsData);
+      
+      // Generate headline for current prices
+      if (pricesData.length > 0) {
+        const randomIndex = Math.floor(Math.random() * pricesData.length);
+        const headline = `Today's ${pricesData[randomIndex].commodity} prices at ${pricesData[randomIndex].market}: KES ${pricesData[randomIndex].price} per ${pricesData[randomIndex].unit}`;
+        setCurrentPricesHeadline(headline);
       }
-    };
-    
+      
+      // Set default commodity selection
+      if (pricesData.length > 0) {
+        const uniqueCommodities = [...new Set(pricesData.map(p => p.commodity))];
+        if (uniqueCommodities.length > 0) {
+          setSelectedCommodity(uniqueCommodities[0]);
+        }
+      } else {
+        // If no data from API, show fallback error that explains the issue
+        setApiError("Unable to connect to AMIS Kenya data service. This could be due to network issues or service unavailability.");
+      }
+    } catch (error) {
+      console.error("Error loading AMIS Kenya data:", error);
+      setApiError("Unable to connect to AMIS Kenya data service. This could be due to network issues or service unavailability.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadData();
   }, []);
 
