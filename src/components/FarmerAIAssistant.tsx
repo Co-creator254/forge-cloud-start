@@ -4,7 +4,7 @@ import { useAssistantData } from '@/hooks/use-assistant-data';
 import { useAssistantMessages } from '@/hooks/use-assistant-messages';
 import AssistantCard from '@/components/ai-assistant/AssistantCard';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, WifiOff } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 
@@ -26,9 +26,9 @@ const FarmerAIAssistant: React.FC = () => {
     if (error) {
       toast({
         title: "Data Loading Issue",
-        description: "Using fallback data. Some features may be limited.",
+        description: error + " Using fallback data instead.",
         variant: "destructive",
-        duration: 6000,
+        duration: 8000,
       });
     }
   }, [error, toast]);
@@ -55,6 +55,7 @@ const FarmerAIAssistant: React.FC = () => {
           className="absolute top-0 right-0 mr-4 mt-4 z-10"
           variant="outline"
         >
+          <WifiOff className="h-3 w-3 mr-1" /> 
           Using Demo Data
         </Badge>
       )}
@@ -63,8 +64,9 @@ const FarmerAIAssistant: React.FC = () => {
         <Alert variant="destructive" className="mb-4">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Connection Issue</AlertTitle>
-          <AlertDescription>
-            {error} The assistant will use demo data instead of real-time market information.
+          <AlertDescription className="space-y-2">
+            <p>{error}</p>
+            <p className="text-xs opacity-80">Error details: Failed to connect to amis.kilimo.go.ke API services due to network connectivity issues. The assistant will use demo data instead of real-time market information.</p>
           </AlertDescription>
         </Alert>
       )}

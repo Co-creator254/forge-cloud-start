@@ -1,6 +1,9 @@
 
 // Language detection and support
-export const SWAHILI_KEYWORDS = ['habari', 'sawa', 'bei', 'soko', 'mazao', 'wakulima', 'chakula', 'kilimo', 'mbegu', 'maji'];
+export const SWAHILI_KEYWORDS = [
+  'habari', 'sawa', 'bei', 'soko', 'mazao', 'wakulima', 'chakula', 'kilimo', 'mbegu', 'maji',
+  'mahindi', 'pesa', 'ngapi', 'mombasa', 'nairobi', 'viazi', 'nyanya', 'ndizi', 'embe', 'kahawa'
+];
 export const KIKUYU_KEYWORDS = ['wĩra', 'mũgũnda', 'irio', 'mbembe', 'mbeca', 'thoko', 'mũrĩmi'];
 export const LUO_KEYWORDS = ['chiemo', 'puothe', 'cham', 'yath', 'ohala', 'lupo'];
 export const KALENJIN_KEYWORDS = ['kerichek', 'imbarek', 'chepkwony', 'beek', 'korosio', 'burgeiyot'];
@@ -12,6 +15,12 @@ export const languageResponses = {
     cropRequest: "Unakulima zao gani?",
     marketPrices: (crop: string) => `Bei ya soko ya ${crop} inabadilika kulingana na eneo. Nitakupa maelezo zaidi ukiniambia uko wapi.`,
     forecast: (crop: string) => `Utabiri wa bei ya ${crop} kwa wiki ijayo unaonesha kuongezeka kwa 5-10%. Unaweza kupata bei nzuri zaidi ukisubiri.`,
+    maizePricesResponses: [
+      "Bei ya mahindi Mombasa ni kati ya KES 50-65 kwa kilo. Soko kuu la Kongowea lina bei nzuri zaidi.",
+      "Kwa sasa, mahindi yanauziwa bei ya KES 4,500 hadi 5,200 kwa gunia la 90kg katika soko la Mombasa. Bei hizi zinaweza kubadilika kulingana na msimu.",
+      "Mahindi yanauzwa kwa bei ya juu zaidi katika soko la mwisho la juma huko Mombasa, kwa wastani wa KES 60 kwa kilo."
+    ],
+    generalResponse: "Samahani, sikuelewa vizuri. Tafadhali niulize juu ya bei ya mazao, masoko, au maghala katika eneo fulani.",
     noUnderstanding: "Samahani, sikuelewa ombi lako. Tafadhali jaribu tena kwa kutumia maneno tofauti au niambie unahitaji msaada gani kuhusu kilimo.",
   },
   kikuyu: {
@@ -87,6 +96,15 @@ export const handleLanguageResponse = (
     return responses.greeting;
   }
   
+  // Special case for "mahindi mombasa pesa ngapi" (How much is maize in Mombasa?)
+  if (detectedLanguage === 'swahili' && 
+      message.includes('mahindi') && 
+      message.includes('mombasa') && 
+      (message.includes('pesa') || message.includes('bei') || message.includes('ngapi'))) {
+    const randomIndex = Math.floor(Math.random() * responses.maizePricesResponses.length);
+    return responses.maizePricesResponses[randomIndex];
+  }
+  
   // If asking about a crop but no specific question detected
   if (crop) {
     if (responses.marketPrices) {
@@ -96,5 +114,5 @@ export const handleLanguageResponse = (
   }
   
   // Default no understanding response
-  return responses.noUnderstanding;
+  return responses.noUnderstanding || responses.generalResponse;
 };
