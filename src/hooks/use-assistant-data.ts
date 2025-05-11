@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Market, Forecast, Warehouse } from '@/types';
 import { Transporter } from '@/features/ai-assistant/types';
@@ -76,12 +75,8 @@ export const useAssistantData = (): AssistantDataResult => {
           )
         ]);
 
-        const warehousesPromise = Promise.race([
-          supabase.from('warehouses').select('*'),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Fetch timeout')), 5000)
-          )
-        ]);
+        // Remove direct warehouse table query since it doesn't exist
+        // Instead, we'll create mock warehouse data to maintain functionality
 
         const transportersPromise = Promise.race([
           supabase.from('transporters').select('*'),
@@ -94,12 +89,10 @@ export const useAssistantData = (): AssistantDataResult => {
         const [
           marketPricesResult, 
           forecastsResult,
-          warehousesResult,
           transportersResult
         ] = await Promise.allSettled([
           marketPricesPromise,
           forecastsPromise,
-          warehousesPromise,
           transportersPromise
         ]);
 
@@ -141,24 +134,48 @@ export const useAssistantData = (): AssistantDataResult => {
           console.error("Failed to fetch forecasts:", forecastsResult.reason);
         }
 
-        // Process warehouses data
-        let warehouses: Warehouse[] = [];
-        if (warehousesResult.status === 'fulfilled') {
-          const { data: warehousesData, error: warehousesError } = warehousesResult.value as any;
-          
-          if (warehousesError) {
-            console.warn(`Warehouses error: ${warehousesError.message}`);
-            // For RLS issues, provide more helpful error info
-            if (warehousesError.code === '42501') {
-              console.warn('Permission denied error. RLS policies may need to be configured.');
-            }
-          } else if (warehousesData && warehousesData.length > 0) {
-            warehouses = processWarehousesData(warehousesData);
-            console.log(`Processed ${warehouses.length} warehouses from real data`);
+        // Create sample warehouses data since the table doesn't exist yet
+        // This ensures the app can still function while maintaining type compatibility
+        const warehouses: Warehouse[] = [
+          {
+            id: "w1",
+            name: "Nakuru Cold Storage",
+            location: {
+              county: "Nakuru",
+              specificLocation: "Industrial Area",
+              coordinates: {
+                latitude: -0.303099,
+                longitude: 36.080025
+              }
+            },
+            capacity: 5000,
+            capacityUnit: "tons",
+            hasRefrigeration: true,
+            hasCertifications: true,
+            certificationTypes: ["KEBS", "ISO 22000"],
+            goodsTypes: ["Cereals", "Dairy", "Vegetables"],
+            rates: "KES 50 per bag per month",
+            contact: "+254722123456"
+          },
+          {
+            id: "w2",
+            name: "Mombasa Coastal Storage",
+            location: {
+              county: "Mombasa",
+              specificLocation: "Port Area",
+              coordinates: {
+                latitude: -4.043740,
+                longitude: 39.668121
+              }
+            },
+            capacity: 8000,
+            capacityUnit: "sq-m",
+            hasRefrigeration: false,
+            goodsTypes: ["Cereals", "Legumes", "Root Crops"],
+            rates: "KES 35-45 per bag per month"
           }
-        } else {
-          console.error("Failed to fetch warehouses:", warehousesResult.reason);
-        }
+        ];
+        console.log(`Using ${warehouses.length} sample warehouses data`);
 
         // Process transporters data
         let transporters: Transporter[] = [];
@@ -189,7 +206,7 @@ export const useAssistantData = (): AssistantDataResult => {
         }));
         
         // Consider data real if we got at least something from the database
-        const hasRealData = markets.length > 0 || forecasts.length > 0 || warehouses.length > 0 || transporters.length > 0;
+        const hasRealData = markets.length > 0 || forecasts.length > 0 || transporters.length > 0;
         setIsRealData(hasRealData);
         
         if (hasRealData) {
@@ -270,28 +287,6 @@ export const useAssistantData = (): AssistantDataResult => {
                         item.confidence_level > 0.5 ? 'medium' : 'low',
         county: item.county,
         unit: 'kg' // Default unit if not specified
-      };
-    });
-  };
-
-  // Process warehouses data from Supabase
-  const processWarehousesData = (data: any[]): Warehouse[] => {
-    return data.map(item => {
-      return {
-        id: item.id,
-        name: item.name,
-        location: {
-          county: item.county,
-          coordinates: item.coordinates ? {
-            latitude: item.coordinates.lat,
-            longitude: item.coordinates.lng
-          } : undefined
-        },
-        capacity: item.capacity,
-        available: item.available,
-        rates: item.rates,
-        contact: item.contact,
-        hasRefrigeration: item.has_refrigeration
       };
     });
   };
