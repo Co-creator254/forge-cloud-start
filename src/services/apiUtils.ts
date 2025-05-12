@@ -33,7 +33,7 @@ export const getVerifiedSourceDomains = (): string[] => {
     'agriculture.go.ke',
     'agra.org',
     'kebs.org',
-    'horticulture.agricultureauthority.go.ke',
+    'afa.go.ke',
     'agricultureauthority.go.ke',
     'globalgap.org',
     'koan.co.ke',
@@ -93,7 +93,8 @@ export const assessContentLegitimacy = (item: any): boolean => {
       'Kenya Plant Health Inspectorate Service',
       'Kenya Bureau of Standards',
       'KEBS',
-      'National Farmers Information Service'
+      'National Farmers Information Service',
+      'Agriculture and Food Authority'
     ];
     
     if (knownSources.some(source => item.source.includes(source))) {
@@ -132,4 +133,3 @@ export const validateApiKey = (apiKey?: string): boolean => {
   // Real keys would have a more complex validation process
   return /^amiske_[a-zA-Z0-9]{24}$/.test(apiKey);
 };
-
