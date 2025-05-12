@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -64,7 +65,7 @@ const QualityControl: React.FC = () => {
     ];
   };
 
-  // Sources for the data used on this page
+  // Sources for the data used on this page - updated with working links
   const dataSources = [
     { 
       name: "Kenya Bureau of Standards", 
@@ -83,7 +84,7 @@ const QualityControl: React.FC = () => {
     },
     { 
       name: "Horticultural Crops Directorate", 
-      url: "https://www.agricultureauthority.go.ke", 
+      url: "https://horticulture.agricultureauthority.go.ke", 
       description: "Post-harvest losses and quality standards statistics" 
     },
     { 
@@ -241,17 +242,17 @@ const QualityControl: React.FC = () => {
               <CardContent>
                 <Badge variant="outline" className="mb-6 bg-blue-50">
                   Based on analysis from <a 
-                    href="https://www.kephis.org/index.php/2016-03-24-08-35-20/agriculture-and-food-authority"
+                    href="https://www.kephis.org/index.php/market-access-and-phytosanitary-standards"
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="underline"
-                    onClick={(e) => handleSourceClick(e, "https://www.kephis.org/index.php/2016-03-24-08-35-20/agriculture-and-food-authority")}
+                    onClick={(e) => handleSourceClick(e, "https://www.kephis.org/index.php/market-access-and-phytosanitary-standards")}
                   >KEPHIS</a> and <a 
-                    href="https://kilimo.go.ke/reports"
+                    href="https://www.kilimo.go.ke/reports-and-publications"
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="underline"
-                    onClick={(e) => handleSourceClick(e, "https://kilimo.go.ke/reports")}
+                    onClick={(e) => handleSourceClick(e, "https://www.kilimo.go.ke/reports-and-publications")}
                   >Ministry of Agriculture</a> reports
                 </Badge>
                 
@@ -277,39 +278,39 @@ const QualityControl: React.FC = () => {
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Up to 40% of fresh produce is rejected for export due to quality issues <a 
-                      href="https://www.kephis.org/images/docs/annual_reports/KEPHIS_ANNUAL_REPORT_2021_2022.pdf"
+                      href="https://www.kephis.org/images/KEPHIS_Annual_Report_2022.pdf"
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary underline text-xs"
-                      onClick={(e) => handleSourceClick(e, "https://www.kephis.org/images/docs/annual_reports/KEPHIS_ANNUAL_REPORT_2021_2022.pdf")}
+                      onClick={(e) => handleSourceClick(e, "https://www.kephis.org/images/KEPHIS_Annual_Report_2022.pdf")}
                     >(KEPHIS, 2022)</a></li>
                     <li>Only 25% of smallholder farmers have access to quality testing facilities <a 
-                      href="https://kilimo.go.ke/wp-content/uploads/2021/01/ASTGS-Final-24-04-26_Edited.pdf"
+                      href="https://www.kilimo.go.ke/wp-content/uploads/2021/03/Agricultural-Sector-Transformation-and-Growth-Strategy.pdf"
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary underline text-xs"
-                      onClick={(e) => handleSourceClick(e, "https://kilimo.go.ke/wp-content/uploads/2021/01/ASTGS-Final-24-04-26_Edited.pdf")}
+                      onClick={(e) => handleSourceClick(e, "https://www.kilimo.go.ke/wp-content/uploads/2021/03/Agricultural-Sector-Transformation-and-Growth-Strategy.pdf")}
                     >(ASTGS, 2021)</a></li>
                     <li>The cost of certification can represent 5-15% of annual income for smallholders <a 
-                      href="https://www.agricultureauthority.go.ke/wp-content/uploads/2022/04/HCD-Annual-Report-2020-2021.pdf"
+                      href="https://horticulture.agricultureauthority.go.ke/index.php/resource-center/reports"
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary underline text-xs"
-                      onClick={(e) => handleSourceClick(e, "https://www.agricultureauthority.go.ke/wp-content/uploads/2022/04/HCD-Annual-Report-2020-2021.pdf")}
+                      onClick={(e) => handleSourceClick(e, "https://horticulture.agricultureauthority.go.ke/index.php/resource-center/reports")}
                     >(HCD, 2021)</a></li>
                     <li>Price premiums of 30-50% are available for certified quality products <a 
-                      href="https://www.kalro.org/sites/default/files/Quality-Standards-Report-2022.pdf"
+                      href="https://www.kalro.org/about-us/publications"
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary underline text-xs"
-                      onClick={(e) => handleSourceClick(e, "https://www.kalro.org/sites/default/files/Quality-Standards-Report-2022.pdf")}
+                      onClick={(e) => handleSourceClick(e, "https://www.kalro.org/about-us/publications")}
                     >(KALRO, 2022)</a></li>
                     <li>Over 75% of smallholders lack formal training in quality management practices <a 
-                      href="https://farmafrica.org/wp-content/uploads/2022/01/Kenya-Agricultural-Value-Chain-Analysis.pdf"
+                      href="https://www.farmafrica.org/kenya/kenya"
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary underline text-xs"
-                      onClick={(e) => handleSourceClick(e, "https://farmafrica.org/wp-content/uploads/2022/01/Kenya-Agricultural-Value-Chain-Analysis.pdf")}
+                      onClick={(e) => handleSourceClick(e, "https://www.farmafrica.org/kenya/kenya")}
                     >(Farm Africa, 2022)</a></li>
                   </ul>
                 </div>
@@ -345,11 +346,11 @@ const QualityControl: React.FC = () => {
                         <h3 className="text-lg font-medium mb-4">
                           Quality Standards Adoption
                           <a 
-                            href="https://www.kebs.org/index.php?option=com_content&view=article&id=353"
+                            href="https://www.kebs.org/index.php?option=com_content&view=article&id=2&Itemid=480"
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="text-xs text-primary ml-2 underline"
-                            onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=353")}
+                            onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=2&Itemid=480")}
                           >(Source: KEBS, 2023)</a>
                         </h3>
                         <ResponsiveContainer width="100%" height={300}>
@@ -379,51 +380,51 @@ const QualityControl: React.FC = () => {
                           <li>
                             <span className="font-medium">Standards Gap:</span> Only 35% of producers adhere to any formal quality standard
                             <a 
-                              href="https://www.kebs.org/index.php?option=com_content&view=article&id=353"
+                              href="https://www.kebs.org/index.php?option=com_content&view=article&id=47&Itemid=497"
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="text-xs text-primary ml-1 underline block"
-                              onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=353")}
+                              onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=47&Itemid=497")}
                             >(KEBS Quality Standards Survey, 2023)</a>
                           </li>
                           <li>
                             <span className="font-medium">Export Challenges:</span> Quality issues account for 40-60% of export rejections
                             <a 
-                              href="https://www.kephis.org/images/phytosanitary/Horticulture-Rejected-Consignments-2022.pdf" 
+                              href="https://www.kephis.org/index.php/phytosanitary-requirements" 
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="text-xs text-primary ml-1 underline block"
-                              onClick={(e) => handleSourceClick(e, "https://www.kephis.org/images/phytosanitary/Horticulture-Rejected-Consignments-2022.pdf")}
+                              onClick={(e) => handleSourceClick(e, "https://www.kephis.org/index.php/phytosanitary-requirements")}
                             >(KEPHIS Export Inspection Report, 2022)</a>
                           </li>
                           <li>
                             <span className="font-medium">Certification Access:</span> Only 20% of counties have local certification facilities
                             <a 
-                              href="https://www.kebs.org/images/pdf/certification_facilities_report_2023.pdf" 
+                              href="https://www.kebs.org/index.php?option=com_content&view=article&id=47&Itemid=497" 
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="text-xs text-primary ml-1 underline block"
-                              onClick={(e) => handleSourceClick(e, "https://www.kebs.org/images/pdf/certification_facilities_report_2023.pdf")}
+                              onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=47&Itemid=497")}
                             >(National Certification Infrastructure Survey, 2023)</a>
                           </li>
                           <li>
                             <span className="font-medium">Economic Impact:</span> Quality rejections cost the sector an estimated KES 5-8 billion annually
                             <a 
-                              href="https://kilimo.go.ke/wp-content/uploads/2022/05/Economic-Review-of-Agriculture-2022.pdf" 
+                              href="https://www.kilimo.go.ke/reports-and-publications" 
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="text-xs text-primary ml-1 underline block"
-                              onClick={(e) => handleSourceClick(e, "https://kilimo.go.ke/wp-content/uploads/2022/05/Economic-Review-of-Agriculture-2022.pdf")}
+                              onClick={(e) => handleSourceClick(e, "https://www.kilimo.go.ke/reports-and-publications")}
                             >(Economic Review of Agriculture, 2022)</a>
                           </li>
                           <li>
                             <span className="font-medium">Return on Investment:</span> Certified producers earn 25-40% higher prices on average
                             <a 
-                              href="https://www.kalro.org/sites/default/files/market-value-chain-study-2022.pdf" 
+                              href="https://www.kalro.org/training-and-outreach" 
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="text-xs text-primary ml-1 underline block"
-                              onClick={(e) => handleSourceClick(e, "https://www.kalro.org/sites/default/files/market-value-chain-study-2022.pdf")}
+                              onClick={(e) => handleSourceClick(e, "https://www.kalro.org/training-and-outreach")}
                             >(KALRO Market Value Chain Study, 2022)</a>
                           </li>
                         </ul>
@@ -434,11 +435,11 @@ const QualityControl: React.FC = () => {
                       <h3 className="text-lg font-medium mb-4">
                         Product Rejection Rates (%) by Commodity
                         <a 
-                          href="https://www.kephis.org/images/docs/horticulture_crops_reports/export_rejection_rates_2022.pdf" 
+                          href="https://www.kephis.org/index.php/foodcrops-and-industrial-crops" 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-xs text-primary ml-2 underline"
-                          onClick={(e) => handleSourceClick(e, "https://www.kephis.org/images/docs/horticulture_crops_reports/export_rejection_rates_2022.pdf")}
+                          onClick={(e) => handleSourceClick(e, "https://www.kephis.org/index.php/foodcrops-and-industrial-crops")}
                         >(Source: KEPHIS Export Quality Report, 2022)</a>
                       </h3>
                       <ResponsiveContainer width="100%" height={400}>
@@ -461,11 +462,11 @@ const QualityControl: React.FC = () => {
                       <h3 className="text-lg font-medium mb-4">
                         Quality Control Framework
                         <a 
-                          href="https://www.kebs.org/images/pdf/agricultural_standards/KS1758_framework_2023.pdf" 
+                          href="https://www.kebs.org/index.php?option=com_content&view=article&id=5:standards&catid=2&Itemid=484" 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-xs text-primary ml-2 underline"
-                          onClick={(e) => handleSourceClick(e, "https://www.kebs.org/images/pdf/agricultural_standards/KS1758_framework_2023.pdf")}
+                          onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=5:standards&catid=2&Itemid=484")}
                         >(Source: KS 1758 Quality Management Framework, 2023)</a>
                       </h3>
                       <p className="mb-4">
@@ -505,11 +506,11 @@ const QualityControl: React.FC = () => {
                       </div>
                       <div className="text-xs text-muted-foreground text-right mt-2">
                         Download complete framework from <a 
-                          href="https://www.kebs.org/index.php?option=com_content&view=article&id=253"
+                          href="https://www.kebs.org/index.php?option=com_content&view=article&id=5:standards&catid=2&Itemid=484"
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-primary underline"
-                          onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=253")}
+                          onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=5:standards&catid=2&Itemid=484")}
                         >KEBS Standards Portal</a>
                       </div>
                     </div>
@@ -562,11 +563,11 @@ const QualityControl: React.FC = () => {
                     <h3 className="text-xl font-medium mb-4">
                       Available Quality Standards
                       <a 
-                        href="https://www.kebs.org/index.php?option=com_content&view=article&id=251"
+                        href="https://www.kebs.org/index.php?option=com_content&view=article&id=3&Itemid=481"
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-xs text-primary ml-2 underline"
-                        onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=251")}
+                        onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=3&Itemid=481")}
                       >(Source: KEBS Standards Catalog, 2023)</a>
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -591,11 +592,11 @@ const QualityControl: React.FC = () => {
                     <h3 className="text-xl font-medium mb-6">
                       Quality Control Innovations
                       <a 
-                        href="https://www.kalro.org/sites/default/files/agricultural-innovations-report-2023.pdf"
+                        href="https://www.kalro.org/about-us/publications"
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-xs text-primary ml-2 underline"
-                        onClick={(e) => handleSourceClick(e, "https://www.kalro.org/sites/default/files/agricultural-innovations-report-2023.pdf")}
+                        onClick={(e) => handleSourceClick(e, "https://www.kalro.org/about-us/publications")}
                       >(Source: KALRO Agricultural Innovations Report, 2023)</a>
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -620,11 +621,11 @@ const QualityControl: React.FC = () => {
                     <h3 className="text-xl font-medium mb-6">
                       Steps to Quality Certification
                       <a 
-                        href="https://www.kebs.org/images/pdf/certification_steps_guide_2023.pdf"
+                        href="https://www.kebs.org/index.php?option=com_content&view=article&id=7&Itemid=486"
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-xs text-primary ml-2 underline"
-                        onClick={(e) => handleSourceClick(e, "https://www.kebs.org/images/pdf/certification_steps_guide_2023.pdf")}
+                        onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=7&Itemid=486")}
                       >(Source: KEBS Certification Guide, 2023)</a>
                     </h3>
                     
@@ -728,11 +729,11 @@ const QualityControl: React.FC = () => {
                         <ExternalLink className="h-4 w-4 flex-shrink-0 mt-1" />
                         <div>
                           <a 
-                            href="https://www.kebs.org/index.php?option=com_content&view=article&id=249"
+                            href="https://www.kebs.org/index.php?option=com_content&view=article&id=5:standards&catid=2&Itemid=484"
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="text-primary underline"
-                            onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=249")}
+                            onClick={(e) => handleSourceClick(e, "https://www.kebs.org/index.php?option=com_content&view=article&id=5:standards&catid=2&Itemid=484")}
                           >Kenya Bureau of Standards (KEBS) - Agricultural Standards Database</a>
                           <p className="text-xs text-muted-foreground">Comprehensive collection of standards applicable to Kenyan agricultural products</p>
                         </div>
@@ -741,11 +742,11 @@ const QualityControl: React.FC = () => {
                         <ExternalLink className="h-4 w-4 flex-shrink-0 mt-1" />
                         <div>
                           <a 
-                            href="https://www.globalgap.org/uk_en/for-producers/globalg.a.p./integrated-farm-assurance-ifa/"
+                            href="https://www.globalgap.org/uk_en/for-producers/globalg.a.p./integrated-farm-assurance-ifa/crops/"
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="text-primary underline"
-                            onClick={(e) => handleSourceClick(e, "https://www.globalgap.org/uk_en/for-producers/globalg.a.p./integrated-farm-assurance-ifa/")}
+                            onClick={(e) => handleSourceClick(e, "https://www.globalgap.org/uk_en/for-producers/globalg.a.p./integrated-farm-assurance-ifa/crops/")}
                           >GlobalGAP - Integrated Farm Assurance Standard</a>
                           <p className="text-xs text-muted-foreground">International standard for Good Agricultural Practices</p>
                         </div>
@@ -767,11 +768,11 @@ const QualityControl: React.FC = () => {
                         <ExternalLink className="h-4 w-4 flex-shrink-0 mt-1" />
                         <div>
                           <a 
-                            href="https://koan.co.ke/certification/"
+                            href="https://koan.co.ke/services/"
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="text-primary underline"
-                            onClick={(e) => handleSourceClick(e, "https://koan.co.ke/certification/")}
+                            onClick={(e) => handleSourceClick(e, "https://koan.co.ke/services/")}
                           >Kenya Organic Agriculture Network - Certification Resources</a>
                           <p className="text-xs text-muted-foreground">Information on organic certification procedures in Kenya</p>
                         </div>
@@ -789,3 +790,4 @@ const QualityControl: React.FC = () => {
 };
 
 export default QualityControl;
+
