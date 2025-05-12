@@ -96,3 +96,31 @@ export const assessContentLegitimacy = (item: any): boolean => {
   // Default to returning true if no red flags
   return true;
 };
+
+// Adding the missing functions that are being imported by other files
+export const simulateDelay = (ms: number = 800) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const formatApiUrl = (endpoint: string, params?: Record<string, string>): string => {
+  const baseUrl = 'https://api.amis.ke/v1';
+  const url = new URL(`${baseUrl}/${endpoint}`);
+  
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        url.searchParams.append(key, value);
+      }
+    });
+  }
+  
+  return url.toString();
+};
+
+export const validateApiKey = (apiKey?: string): boolean => {
+  // In a real implementation, this would validate the format of the API key
+  // or potentially make a lightweight validation call to the API
+  if (!apiKey) return false;
+  
+  // Simple validation: Check if it matches the expected format
+  // Real keys would have a more complex validation process
+  return /^amiske_[a-zA-Z0-9]{24}$/.test(apiKey);
+};
