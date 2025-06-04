@@ -20,21 +20,30 @@ const LandManagement: React.FC = () => {
   const [parcels] = useState<Parcel[]>([
     {
       id: '1',
-      name: 'Grande-Terre Nord',
+      name: 'Nakuru North',
       size: 12.5,
-      crop: 'Canne à Sucre',
+      crop: 'Maize',
       status: 'active',
       lastHarvest: '8/15/2023',
-      harvestIn: 476
+      harvestIn: 76
     },
     {
       id: '2',
-      name: 'Basse-Terre Sud',
+      name: 'Kiambu South',
       size: 8.3,
-      crop: 'Banane',
+      crop: 'Coffee',
       status: 'active',
-      lastHarvest: '8/10/2023',
+      lastHarvest: '6/10/2023',
       harvestIn: 120
+    },
+    {
+      id: '3',
+      name: 'Meru East',
+      size: 5.2,
+      crop: 'Beans',
+      status: 'active',
+      lastHarvest: '9/20/2023',
+      harvestIn: 45
     }
   ]);
 
@@ -49,24 +58,24 @@ const LandManagement: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Gestion des Parcelles</h2>
-          <p className="text-muted-foreground">Gérez et surveillez toutes vos parcelles agricoles</p>
+          <h2 className="text-2xl font-bold">Land & Parcel Management</h2>
+          <p className="text-muted-foreground">Manage and monitor all your agricultural parcels across Kenya</p>
         </div>
         <Button className="bg-green-600 hover:bg-green-700">
           <Plus className="h-4 w-4 mr-2" />
-          Ajouter une parcelle
+          Add New Parcel
         </Button>
       </div>
 
       <div className="flex gap-4">
         <Input
-          placeholder="Rechercher..."
+          placeholder="Search parcels..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-sm"
         />
         <select className="px-3 py-2 border rounded-md">
-          <option>Tous</option>
+          <option>All Status</option>
           <option>Active</option>
           <option>Inactive</option>
         </select>
@@ -100,16 +109,16 @@ const LandManagement: React.FC = () => {
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Superficie:</span>
-                    <span className="font-medium">{parcel.size} ha</span>
+                    <span className="text-muted-foreground">Size:</span>
+                    <span className="font-medium">{parcel.size} acres</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-muted-foreground">Dernière récolte:</span>
+                    <span className="text-muted-foreground">Last harvest:</span>
                     <span>{parcel.lastHarvest}</span>
                   </div>
                   <div className="mt-3 p-2 bg-green-50 rounded">
                     <div className="text-sm font-medium text-green-800">{parcel.crop}</div>
-                    <div className="text-xs text-green-600">Récolte dans: {parcel.harvestIn} jours</div>
+                    <div className="text-xs text-green-600">Next harvest in: {parcel.harvestIn} days</div>
                   </div>
                 </div>
               </CardContent>
@@ -120,12 +129,12 @@ const LandManagement: React.FC = () => {
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Sélectionnez une parcelle</CardTitle>
+              <CardTitle>Select a parcel</CardTitle>
             </CardHeader>
             <CardContent className="text-center py-12">
               <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">
-                Cliquez sur une parcelle dans la liste à gauche pour afficher ses détails et accéder à la carte
+                Click on a parcel from the list to view its details and access the map view
               </p>
             </CardContent>
           </Card>

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Plus, Package, Filter } from 'lucide-react';
+import { AlertTriangle, Plus, Package, Filter, Trash2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface InventoryItem {
@@ -21,23 +21,23 @@ interface InventoryItem {
 
 const InventoryManagement: React.FC = () => {
   const [items] = useState<InventoryItem[]>([
-    { id: '1', name: 'Carburant Diesel', category: 'Carburants', quantity: 350, unit: 'L', unitPrice: 1.8, totalValue: 630, status: 'normal', minimum: 100 },
-    { id: '2', name: 'Engrais NPK', category: 'Engrais', quantity: 800, unit: 'kg', unitPrice: 1.2, totalValue: 960, status: 'normal', minimum: 200 },
-    { id: '3', name: 'Ficelle pour bottes', category: 'Consommables', quantity: 15, unit: 'rouleau', unitPrice: 25, totalValue: 375, status: 'normal', minimum: 5 },
-    { id: '4', name: 'Herbicide Roundup', category: 'Produits phytosanitaires', quantity: 50, unit: 'L', unitPrice: 15, totalValue: 750, status: 'normal', minimum: 20 },
-    { id: '5', name: 'Huile moteur', category: 'Lubrifiants', quantity: 25, unit: 'L', unitPrice: 5.2, totalValue: 130, status: 'normal', minimum: 10 },
-    { id: '6', name: 'Semences de blé', category: 'Semences', quantity: 500, unit: 'kg', unitPrice: 0.5, totalValue: 250, status: 'normal', minimum: 100 },
-    { id: '7', name: 'Semences de maïs', category: 'Semences', quantity: 80, unit: 'kg', unitPrice: 4.5, totalValue: 360, status: 'warning', minimum: 100 }
+    { id: '1', name: 'Diesel Fuel', category: 'Fuel', quantity: 350, unit: 'L', unitPrice: 150, totalValue: 52500, status: 'normal', minimum: 100 },
+    { id: '2', name: 'NPK Fertilizer', category: 'Fertilizers', quantity: 800, unit: 'kg', unitPrice: 80, totalValue: 64000, status: 'normal', minimum: 200 },
+    { id: '3', name: 'Maize Seeds', category: 'Seeds', quantity: 150, unit: 'kg', unitPrice: 300, totalValue: 45000, status: 'normal', minimum: 50 },
+    { id: '4', name: 'Roundup Herbicide', category: 'Pesticides', quantity: 50, unit: 'L', unitPrice: 1200, totalValue: 60000, status: 'normal', minimum: 20 },
+    { id: '5', name: 'Engine Oil', category: 'Lubricants', quantity: 25, unit: 'L', unitPrice: 800, totalValue: 20000, status: 'normal', minimum: 10 },
+    { id: '6', name: 'Bean Seeds', category: 'Seeds', quantity: 80, unit: 'kg', unitPrice: 400, totalValue: 32000, status: 'warning', minimum: 100 },
+    { id: '7', name: 'Coffee Seedlings', category: 'Planting Material', quantity: 500, unit: 'pieces', unitPrice: 25, totalValue: 12500, status: 'normal', minimum: 200 }
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Toutes catégories');
+  const [selectedCategory, setSelectedCategory] = useState('All Categories');
 
-  const categories = ['Toutes catégories', ...Array.from(new Set(items.map(item => item.category)))];
+  const categories = ['All Categories', ...Array.from(new Set(items.map(item => item.category)))];
   
   const filteredItems = items.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'Toutes catégories' || item.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'All Categories' || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -45,8 +45,8 @@ const InventoryManagement: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'critical': return <Badge variant="destructive">Critique</Badge>;
-      case 'warning': return <Badge className="bg-yellow-100 text-yellow-800">Attention</Badge>;
+      case 'critical': return <Badge variant="destructive">Critical</Badge>;
+      case 'warning': return <Badge className="bg-yellow-100 text-yellow-800">Warning</Badge>;
       default: return <Badge className="bg-green-100 text-green-800">Normal</Badge>;
     }
   };
@@ -55,17 +55,17 @@ const InventoryManagement: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Gestion des Stocks et Récoltes</h2>
-          <p className="text-muted-foreground">Gérez votre inventaire et suivez les niveaux de stock de vos cultures guadeloupéennes</p>
+          <h2 className="text-2xl font-bold">Inventory & Stock Management</h2>
+          <p className="text-muted-foreground">Manage your farm inventory and track stock levels for Kenyan agricultural operations</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
             <Package className="h-4 w-4 mr-2" />
-            Importer
+            Import
           </Button>
           <Button className="bg-green-600 hover:bg-green-700">
             <Plus className="h-4 w-4 mr-2" />
-            Ajouter un stock
+            Add Stock Item
           </Button>
         </div>
       </div>
@@ -75,7 +75,7 @@ const InventoryManagement: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-yellow-800">
               <AlertTriangle className="h-5 w-5" />
-              Alertes de stock bas
+              Low Stock Alerts
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -84,7 +84,7 @@ const InventoryManagement: React.FC = () => {
                 <div key={item.id} className="flex justify-between items-center text-sm">
                   <span className="font-medium">{item.name}</span>
                   <div>
-                    <span>Stock actuel: {item.quantity}</span>
+                    <span>Current stock: {item.quantity}</span>
                     <span className="text-muted-foreground ml-2">Minimum: {item.minimum}</span>
                   </div>
                 </div>
@@ -96,7 +96,7 @@ const InventoryManagement: React.FC = () => {
 
       <div className="flex gap-4">
         <Input
-          placeholder="Rechercher dans l'inventaire..."
+          placeholder="Search inventory..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-sm"
@@ -112,38 +112,38 @@ const InventoryManagement: React.FC = () => {
         </select>
         <Button variant="outline">
           <Filter className="h-4 w-4 mr-2" />
-          Filtrer par date
+          Filter by date
         </Button>
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle>Gestion des Stocks</CardTitle>
+            <CardTitle>Stock Management</CardTitle>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline">Liste</Button>
-              <Button size="sm" variant="outline">Statistiques</Button>
-              <Button size="sm" variant="outline">Exporter</Button>
-              <Button size="sm" variant="outline">Importer</Button>
+              <Button size="sm" variant="outline">List</Button>
+              <Button size="sm" variant="outline">Statistics</Button>
+              <Button size="sm" variant="outline">Export</Button>
+              <Button size="sm" variant="outline">Import</Button>
               <Button size="sm" className="bg-green-600 hover:bg-green-700">
                 <Plus className="h-4 w-4 mr-2" />
-                Ajouter un article
+                Add Item
               </Button>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground">Gérez votre inventaire et suivez les niveaux de stock</p>
+          <p className="text-sm text-muted-foreground">Manage your inventory and track stock levels</p>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Article</TableHead>
-                  <TableHead>Catégorie</TableHead>
-                  <TableHead>Quantité</TableHead>
-                  <TableHead>Prix unitaire</TableHead>
-                  <TableHead>Valeur totale</TableHead>
-                  <TableHead>Statut</TableHead>
+                  <TableHead>Item</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Unit Price</TableHead>
+                  <TableHead>Total Value</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -153,8 +153,8 @@ const InventoryManagement: React.FC = () => {
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.category}</TableCell>
                     <TableCell>{item.quantity} {item.unit}</TableCell>
-                    <TableCell>{item.unitPrice.toFixed(2)} €</TableCell>
-                    <TableCell>{item.totalValue.toFixed(2)} €</TableCell>
+                    <TableCell>KES {item.unitPrice.toFixed(2)}</TableCell>
+                    <TableCell>KES {item.totalValue.toFixed(2)}</TableCell>
                     <TableCell>{getStatusBadge(item.status)}</TableCell>
                     <TableCell>
                       <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">

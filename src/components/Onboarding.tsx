@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Package, Truck, BarChart, UserCheck, AlertCircle } from 'lucide-react';
+import { Package, Truck, BarChart, UserCheck, AlertCircle, Tractor, TrendingUp, Users, MapPin, MessageSquare } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface OnboardingProps {
@@ -13,49 +13,95 @@ interface OnboardingProps {
 
 const onboardingSteps = [
   {
-    title: "Welcome to Soko Connect",
-    description: "The complete platform for agricultural information and supply chain solutions in Kenya.",
+    title: "Welcome to AgriTender Connect",
+    description: "The complete agricultural platform connecting farmers, buyers, and service providers across Kenya for efficient trade and supply chain management.",
     icon: (
       <div className="w-24 h-24 mx-auto mb-6 relative">
         <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center">
-          <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
-          </svg>
+          <Tractor className="w-12 h-12 text-primary" />
         </div>
         <div className="absolute top-0 left-0 w-full h-full rounded-full border-4 border-primary border-l-transparent animate-spin-slow"></div>
       </div>
     )
   },
   {
-    title: "Direct Trading Platform",
-    description: "Buy, sell, and barter agricultural commodities directly with other farmers and buyers, eliminating middlemen.",
+    title: "Comprehensive Farm Management",
+    description: "Manage your entire farm operation with land management, crop tracking, inventory control, and financial analytics - all in one integrated platform.",
     icon: (
       <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center animate-pulse-slow">
-        <Package className="w-12 h-12 text-primary" />
+        <BarChart className="w-12 h-12 text-primary" />
       </div>
-    )
+    ),
+    features: [
+      "Land & Parcel Management with GPS mapping",
+      "Crop Yield Tracking & Performance Analytics", 
+      "Inventory & Stock Management with alerts",
+      "Financial Management & Profit Analysis"
+    ]
   },
   {
-    title: "Supply Chain Solutions",
-    description: "Access innovative solutions for post-harvest losses, logistics, market access, and quality control.",
+    title: "Direct Trading & Market Access",
+    description: "Buy, sell, and barter agricultural commodities directly with verified farmers and buyers across Kenya, eliminating middlemen and maximizing profits.",
+    icon: (
+      <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
+        <Package className="w-12 h-12 text-primary animate-bounce-slow" />
+      </div>
+    ),
+    features: [
+      "Real-time commodity trading platform",
+      "Direct farmer-to-buyer connections",
+      "Barter exchange for resource sharing",
+      "Quality verification & certification"
+    ]
+  },
+  {
+    title: "Smart Logistics & Supply Chain",
+    description: "Access an integrated network of transporters, warehouses, and storage facilities with route optimization and real-time tracking.",
     icon: (
       <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
         <Truck className="w-12 h-12 text-primary animate-slide-right" />
       </div>
-    )
+    ),
+    features: [
+      "GPS-enabled transporter network",
+      "Warehouse & storage facility mapping",
+      "Route optimization & cost calculation",
+      "Real-time shipment tracking"
+    ]
   },
   {
-    title: "Market Intelligence",
-    description: "Access real-time market data, price trends, and agricultural statistics to make informed decisions.",
+    title: "Market Intelligence & Analytics", 
+    description: "Make informed decisions with AI-powered market analysis, price forecasting, and real-time agricultural data from across Kenya.",
     icon: (
       <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
-        <BarChart className="w-12 h-12 text-primary animate-bounce-slow" />
+        <TrendingUp className="w-12 h-12 text-primary animate-pulse" />
       </div>
-    )
+    ),
+    features: [
+      "Real-time market prices from AMIS Kenya",
+      "AI-powered price forecasting",
+      "Supply chain problem identification",
+      "Performance benchmarking & KPIs"
+    ]
   },
   {
-    title: "Get Started Now",
-    description: "Complete your profile to personalize your experience and start accessing all platform features.",
+    title: "Community & Knowledge Sharing",
+    description: "Connect with fellow farmers, agricultural experts, and service providers. Share knowledge, solve problems, and grow together.",
+    icon: (
+      <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
+        <Users className="w-12 h-12 text-primary animate-pulse" />
+      </div>
+    ),
+    features: [
+      "Community forums & discussions",
+      "Expert agricultural advice & support",
+      "Success stories & best practices",
+      "Training events & workshops"
+    ]
+  },
+  {
+    title: "Start Your Agricultural Journey",
+    description: "Join thousands of Kenyan farmers already using AgriTender Connect to increase their profits, reduce losses, and grow their agricultural business.",
     icon: (
       <div className="w-24 h-24 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
         <UserCheck className="w-12 h-12 text-primary animate-pulse" />
@@ -63,12 +109,20 @@ const onboardingSteps = [
     ),
     actionItems: [
       {
-        title: "Create Your Profile",
-        description: "Set up your farmer or buyer profile to get started"
+        title: "Create Your Farmer Profile",
+        description: "Set up your profile and list your crops and commodities"
       },
       {
-        title: "Connect With Others",
-        description: "Find and connect with other farmers and buyers"
+        title: "Explore the Farm Management Portal",
+        description: "Track your land, crops, inventory, and finances"
+      },
+      {
+        title: "Connect With Buyers & Markets",
+        description: "Start trading directly and access better prices"
+      },
+      {
+        title: "Join the Community",
+        description: "Learn from other farmers and share your experiences"
       }
     ]
   }
@@ -82,7 +136,6 @@ const Onboarding: React.FC<OnboardingProps> = ({
   const [open, setOpen] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // Clear any error when changing steps
   useEffect(() => {
     setError(null);
   }, [currentStep]);
@@ -103,7 +156,6 @@ const Onboarding: React.FC<OnboardingProps> = ({
   
   const handleComplete = () => {
     try {
-      // In a real app, we might do more validation or save profile data here
       setOpen(false);
       completeOnboarding();
     } catch (err) {
@@ -116,11 +168,10 @@ const Onboarding: React.FC<OnboardingProps> = ({
   
   return (
     <Dialog open={open} onOpenChange={(value) => {
-      // Only allow closing via the buttons, not by clicking outside
       if (!value) return;
       setOpen(value);
     }}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-2xl p-0 overflow-hidden">
         <DialogTitle className="sr-only">Onboarding - {currentStepData.title}</DialogTitle>
         <div className="p-6 animate-fade-up">
           {currentStepData.icon}
@@ -133,9 +184,25 @@ const Onboarding: React.FC<OnboardingProps> = ({
             {currentStepData.description}
           </p>
 
-          {/* Display action items if available */}
+          {currentStepData.features && (
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3 text-center">Key Features:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {currentStepData.features.map((feature, index) => (
+                  <div key={index} className="flex items-start bg-muted/40 p-3 rounded-lg">
+                    <div className="bg-primary/10 w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-0.5">
+                      <span className="text-primary font-semibold text-xs">{index + 1}</span>
+                    </div>
+                    <span className="text-sm">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {currentStepData.actionItems && (
             <div className="mb-6">
+              <h3 className="font-semibold mb-3 text-center">Get Started:</h3>
               {currentStepData.actionItems.map((item, index) => (
                 <div key={index} className="flex items-start mb-3 bg-muted/40 p-3 rounded-lg">
                   <div className="bg-primary/10 w-8 h-8 rounded-full flex items-center justify-center mr-3 mt-0.5">
@@ -150,7 +217,6 @@ const Onboarding: React.FC<OnboardingProps> = ({
             </div>
           )}
           
-          {/* Error message if any */}
           {error && (
             <Alert variant="destructive" className="mb-4">
               <AlertCircle className="h-4 w-4" />
@@ -183,7 +249,7 @@ const Onboarding: React.FC<OnboardingProps> = ({
             )}
             
             <Button onClick={handleNext}>
-              {currentStep < onboardingSteps.length - 1 ? 'Next' : 'Get Started'}
+              {currentStep < onboardingSteps.length - 1 ? 'Next' : 'Start Farming'}
             </Button>
           </div>
           
