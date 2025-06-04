@@ -1,31 +1,30 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAssistantData } from '@/hooks/use-assistant-data';
-import { useAssistantMessages } from '@/hooks/use-assistant-messages';
 import AssistantCard from '@/components/ai-assistant/AssistantCard';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Loader2, WifiOff, Mic, MicOff } from 'lucide-react';
+import { AlertCircle, Loader2, WifiOff } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
+import { Message } from '@/features/ai-assistant/types';
+import { detectLanguageAdvanced, generateMultilingualResponse } from '@/services/ai/multilingualAssistant';
+import { EnhancedMessageInput } from '@/components/ai-assistant/EnhancedMessageInput';
 
 const FarmerAIAssistant: React.FC = () => {
   // Fetch all agricultural data from Supabase
   const { data, dataLoading, error, isRealData } = useAssistantData();
   const { toast } = useToast();
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [recordingStatus, setRecordingStatus] = useState('idle');
   
-  // Setup messaging functionality
-  const { messages, isLoading, handleSendMessage } = useAssistantMessages(
-    data.markets,
-    data.forecasts,
-    data.warehouses,
-    data.transporters
-  );
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      content: 'Habari! Ninaweza kukusaidia kupata masoko ya mazao yako, kuelewa mienendo ya mahitaji, kubashiri bei na kupendekeza wakati bora wa kuuza. Pia ninaweza kupendekeza maghala na wasafirishaji. Unakulima mazao gani? 🌾\n\nHello! I can help you find markets for your crops, understand demand trends, forecast prices and suggest the best time to sell. I can also recommend warehouses and transporters. What crops are you growing? 🌾',
+      role: 'assistant',
+      timestamp: new Date()
+    }
+  ]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Show toast notification when there's an error with data loading
   useEffect(() => {
@@ -39,92 +38,79 @@ const FarmerAIAssistant: React.FC = () => {
     }
   }, [error, toast]);
 
-  // Voice recording functionality
-  const startRecording = async () => {
-    try {
-      setRecordingStatus('requesting_permission');
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      setAudioStream(stream);
-      
-      const recorder = new MediaRecorder(stream);
-      setMediaRecorder(recorder);
-      
-      const audioChunks: BlobPart[] = [];
-      
-      recorder.ondataavailable = (e) => {
-        audioChunks.push(e.data);
-      };
-      
-      recorder.onstop = async () => {
-        setRecordingStatus('processing');
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        
-        // Convert Blob to Base64
-        const reader = new FileReader();
-        reader.readAsDataURL(audioBlob);
-        reader.onloadend = async () => {
-          const base64Audio = reader.result?.toString().split(',')[1];
-          
-          if (base64Audio) {
-            try {
-              // Call Supabase Edge Function for speech-to-text
-              const { data, error } = await supabase.functions.invoke('transcribe-audio', {
-                body: { audio: base64Audio }
-              });
-              
-              if (error) throw error;
-              
-              if (data?.text) {
-                handleSendMessage(data.text);
-                toast({
-                  title: "Voice Transcribed",
-                  description: `"${data.text}"`,
-                });
-              } else {
-                toast({
-                  title: "Transcription Error",
-                  description: "Could not transcribe audio. Please try again or type your message.",
-                  variant: "destructive",
-                });
-              }
-            } catch (err) {
-              console.error("Error transcribing audio:", err);
-              toast({
-                title: "Transcription Failed",
-                description: "Could not process audio. Please try typing your message instead.",
-                variant: "destructive",
-              });
-            }
-          }
-          
-          setRecordingStatus('idle');
-        };
-      };
-      
-      recorder.start();
-      setIsRecording(true);
-      setRecordingStatus('recording');
-      
-    } catch (err) {
-      console.error("Error accessing microphone:", err);
-      setRecordingStatus('idle');
+  const handleSendMessage = async (input: string, detectedLanguage?: string) => {
+    // Don't allow empty messages
+    if (!input.trim()) return;
+
+    // Check if data is available before proceeding
+    if (data.markets.length === 0 && data.forecasts.length === 0 && data.warehouses.length === 0) {
       toast({
-        title: "Microphone Access Denied",
-        description: "Please allow microphone access to use voice features.",
-        variant: "destructive",
+        title: "Limited Functionality",
+        description: "Some data couldn't be loaded. Responses may be incomplete.",
+        variant: "destructive"
       });
     }
-  };
-  
-  const stopRecording = () => {
-    if (mediaRecorder && isRecording) {
-      mediaRecorder.stop();
-      setIsRecording(false);
+
+    // Add user message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: input,
+      role: 'user',
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+
+    try {
+      // Detect language if not provided
+      const language = detectedLanguage || await detectLanguageAdvanced(input);
+      console.log(`Detected language: ${language}`);
+
+      // Generate AI response using Hugging Face models
+      const responseContent = await generateMultilingualResponse(
+        input,
+        data,
+        language
+      );
       
-      // Stop all audio tracks
-      if (audioStream) {
-        audioStream.getTracks().forEach(track => track.stop());
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: responseContent,
+        role: 'assistant',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, aiResponse]);
+      
+      // Show success toast for multilingual detection
+      if (language !== 'english') {
+        toast({
+          title: "Language Detected",
+          description: `Responding in ${language}`,
+          duration: 3000,
+        });
       }
+      
+    } catch (error) {
+      console.error('Error generating AI response:', error);
+      
+      // Fallback response
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "Samahani, nimepata tatizo katika kuchakata ombi lako. Tafadhali jaribu tena kwa njia tofauti.\n\nI apologize, but I encountered an error processing your request. Could you try asking in a different way?",
+        role: 'assistant',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorResponse]);
+      
+      toast({
+        title: "Response Error",
+        description: "There was a problem generating a response. Using fallback.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -174,39 +160,81 @@ const FarmerAIAssistant: React.FC = () => {
         </Alert>
       )}
       
-      <div className="flex items-center justify-between mb-2">
-        <Button
-          size="icon"
-          variant="outline"
-          className={`rounded-full ${recordingStatus === 'recording' ? 'bg-red-100 text-red-600 border-red-300 animate-pulse' : ''}`}
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={recordingStatus === 'processing' || recordingStatus === 'requesting_permission'}
-        >
-          {recordingStatus === 'recording' ? (
-            <MicOff className="h-4 w-4" />
-          ) : recordingStatus === 'processing' || recordingStatus === 'requesting_permission' ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Mic className="h-4 w-4" />
-          )}
-        </Button>
-        {recordingStatus === 'recording' && (
-          <span className="text-sm text-red-600 animate-pulse">Recording... Click to stop</span>
-        )}
-        {recordingStatus === 'processing' && (
-          <span className="text-sm text-muted-foreground">Processing audio...</span>
-        )}
+      <div className="space-y-4">
+        {/* Enhanced AI Assistant Card */}
+        <div className="bg-white rounded-lg shadow-md border-primary/20 border">
+          <div className="bg-gradient-to-r from-primary/5 to-background p-4 rounded-t-lg">
+            <h2 className="text-xl font-semibold">Agricultural Market Assistant</h2>
+            <p className="text-muted-foreground">
+              Ask about market demand, prices, forecasts, and the best places to sell your produce
+              <br />
+              <span className="text-sm">Uliza kuhusu mahitaji ya soko, bei, utabiri, na maeneo bora ya kuuza mazao yako</span>
+            </p>
+            {dataLoading && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                <span>Loading market data from AMIS Kenya and Kilimo Statistics...</span>
+              </div>
+            )}
+          </div>
+          
+          {/* Chat Interface */}
+          <div className="p-4 max-h-96 overflow-y-auto">
+            <div className="space-y-4">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] p-3 rounded-lg ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted'
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-xs opacity-70 mt-1">
+                      {message.timestamp.toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-muted p-3 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span className="text-sm">Generating response...</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Enhanced Message Input */}
+          <div className="border-t bg-muted/10 p-4">
+            <EnhancedMessageInput 
+              onSendMessage={handleSendMessage}
+              isLoading={isLoading}
+              placeholder="Ask about crops, market prices, forecasts... (Swahili, Kikuyu, Luo & Kalenjin supported) / Uliza kuhusu mazao, bei za soko, utabiri..."
+            />
+          </div>
+        </div>
+        
+        {/* Language Support Notice */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <h3 className="font-medium text-blue-900 mb-2">Language Support / Lugha Zinazotumika</h3>
+          <p className="text-sm text-blue-800">
+            🗣️ <strong>Voice & Text Support:</strong> English, Kiswahili, Kikuyu, Dholuo, Kalenjin, Kikamba, Maa, Kimeru
+            <br />
+            🎤 <strong>Audio Upload:</strong> Supports all major audio formats (MP3, WAV, WebM, M4A)
+            <br />
+            📱 <strong>Offline Capable:</strong> Voice transcription works without internet after initial load
+          </p>
+        </div>
       </div>
-      
-      <AssistantCard
-        title="Agricultural Market Assistant"
-        description="Ask about market demand, prices, forecasts, and the best places to sell your produce"
-        messages={messages}
-        isLoading={isLoading}
-        dataLoading={dataLoading}
-        error={error}
-        onSendMessage={handleSendMessage}
-      />
     </div>
   );
 };
