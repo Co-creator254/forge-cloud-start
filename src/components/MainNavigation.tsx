@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -13,9 +12,17 @@ import {
 import { Button } from '@/components/ui/button';
 import { Package, TrendingUp, Truck, Database, FileText, Briefcase, BarChart } from 'lucide-react';
 
-const MainNavigation: React.FC = () => {
+const MainNavigation = () => {
   const location = useLocation();
   
+  const farmingNavigation = [
+    {
+      name: "Portail Agriculteur",
+      href: "/farmer-portal",
+      description: "Tableau de bord complet pour la gestion de votre exploitation"
+    }
+  ];
+
   return (
     <NavigationMenu className="max-w-full w-full justify-start">
       <NavigationMenuList className="flex flex-wrap gap-1">
