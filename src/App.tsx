@@ -1,18 +1,18 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from './components/theme-provider';
+import { ThemeProvider } from './components/ThemeProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from "@/components/ui/toaster"
 
 import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './pages/Home';
+import Home from './pages/Index';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import CommodityTrading from './pages/CommodityTrading';
-import Logistics from './pages/Logistics';
+import Logistics from './pages/LogisticsSolutionsMap';
 import ServiceProviders from './pages/ServiceProviders';
-import MarketInformation from './pages/MarketInformation';
+import MarketInformation from './pages/MarketLinkages';
 import CommunityForum from './pages/CommunityForum';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
