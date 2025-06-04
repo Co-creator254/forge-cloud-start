@@ -3,6 +3,11 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FarmDashboard from '@/components/farm/FarmDashboard';
 import ProduceManagement from '@/components/farm/ProduceManagement';
+import LandManagement from '@/components/farm/LandManagement';
+import CropTracking from '@/components/farm/CropTracking';
+import InventoryManagement from '@/components/farm/InventoryManagement';
+import FinancialManagement from '@/components/farm/FinancialManagement';
+import AnalyticsDashboard from '@/components/farm/AnalyticsDashboard';
 import FarmerProductForm from '@/components/FarmerProductForm';
 import { Produce } from '@/types/farmer';
 
@@ -39,7 +44,6 @@ const FarmerPortal: React.FC = () => {
   };
 
   const handleEditProduce = (produce: Produce) => {
-    // Implementation for editing produce
     console.log('Editing produce:', produce);
   };
 
@@ -47,15 +51,39 @@ const FarmerPortal: React.FC = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-6">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="dashboard">Tableau de Bord</TabsTrigger>
+            <TabsTrigger value="parcels">Parcelles</TabsTrigger>
+            <TabsTrigger value="crops">Cultures</TabsTrigger>
+            <TabsTrigger value="inventory">Inventaire</TabsTrigger>
+            <TabsTrigger value="finances">Finances</TabsTrigger>
+            <TabsTrigger value="analytics">Statistiques</TabsTrigger>
             <TabsTrigger value="products">Mes Produits</TabsTrigger>
             <TabsTrigger value="add-product">Ajouter Produit</TabsTrigger>
-            <TabsTrigger value="analytics">Analyses</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard">
             <FarmDashboard />
+          </TabsContent>
+
+          <TabsContent value="parcels">
+            <LandManagement />
+          </TabsContent>
+
+          <TabsContent value="crops">
+            <CropTracking />
+          </TabsContent>
+
+          <TabsContent value="inventory">
+            <InventoryManagement />
+          </TabsContent>
+
+          <TabsContent value="finances">
+            <FinancialManagement />
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <AnalyticsDashboard />
           </TabsContent>
 
           <TabsContent value="products">
@@ -69,15 +97,6 @@ const FarmerPortal: React.FC = () => {
           <TabsContent value="add-product">
             <div className="max-w-2xl mx-auto">
               <FarmerProductForm />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="analytics">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Analytics content will be added here */}
-              <div className="p-8 text-center text-muted-foreground">
-                Analyses détaillées à venir
-              </div>
             </div>
           </TabsContent>
         </Tabs>
