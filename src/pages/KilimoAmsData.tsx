@@ -48,7 +48,7 @@ const KilimoAmsData: React.FC = () => {
   // Prepare data for D3 visualizations (only with verified real data)
   const chartData = filteredData.slice(0, 10).map(item => ({
     name: item.name,
-    value: parseFloat(item.value.replace(/[^\d.]/g, '')) || 0,
+    value: parseFloat(item.value.toString().replace(/[^\d.]/g, '')) || 0,
     category: item.category
   }));
 
@@ -167,7 +167,7 @@ const KilimoAmsData: React.FC = () => {
                               </td>
                               <td className="p-2">{item.county}</td>
                               <td className="p-2 text-right font-medium">{item.value}</td>
-                              <td className="p-2 text-sm text-muted-foreground">{item.source}</td>
+                              <td className="p-2 text-sm text-muted-foreground">{item.source || 'Verified Source'}</td>
                               <td className="p-2 text-center">
                                 {item.verified && <Verified className="h-4 w-4 text-green-600 mx-auto" />}
                               </td>

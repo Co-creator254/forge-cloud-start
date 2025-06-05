@@ -15,26 +15,26 @@ const FarmerPortal: React.FC = () => {
   const [userProduce, setUserProduce] = useState<Produce[]>([
     {
       id: '1',
-      name: 'Maïs',
-      category: 'Céréales',
+      name: 'Maize',
+      category: 'Grains',
       county: 'Nakuru',
       quantity: 500,
       unit: 'kg',
       qualityGrade: 'A',
       availableFrom: '2023-10-15',
-      farmer: 'Jean Kariuki',
+      farmer: 'John Kariuki',
       farmerId: 'farmer-1'
     },
     {
       id: '2', 
-      name: 'Tomates',
-      category: 'Légumes',
+      name: 'Tomatoes',
+      category: 'Vegetables',
       county: 'Kiambu',
       quantity: 200,
       unit: 'kg',
       qualityGrade: 'B',
       availableFrom: '2023-10-20',
-      farmer: 'Jean Kariuki',
+      farmer: 'John Kariuki',
       farmerId: 'farmer-1'
     }
   ]);
@@ -52,14 +52,14 @@ const FarmerPortal: React.FC = () => {
       <div className="container mx-auto py-6">
         <Tabs defaultValue="dashboard" className="w-full">
           <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="dashboard">Tableau de Bord</TabsTrigger>
-            <TabsTrigger value="parcels">Parcelles</TabsTrigger>
-            <TabsTrigger value="crops">Cultures</TabsTrigger>
-            <TabsTrigger value="inventory">Inventaire</TabsTrigger>
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="parcels">Land Parcels</TabsTrigger>
+            <TabsTrigger value="crops">Crops</TabsTrigger>
+            <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="finances">Finances</TabsTrigger>
-            <TabsTrigger value="analytics">Statistiques</TabsTrigger>
-            <TabsTrigger value="products">Mes Produits</TabsTrigger>
-            <TabsTrigger value="add-product">Ajouter Produit</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="products">My Products</TabsTrigger>
+            <TabsTrigger value="add-product">Add Product</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard">
