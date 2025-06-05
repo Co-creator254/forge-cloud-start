@@ -1,3 +1,4 @@
+
 import { KilimoStats, Farmer, Produce, Market, TransportProvider, FarmerGroup, Warehouse, Forecast } from '@/types';
 import { simulateDelay } from './apiUtils';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,52 +15,64 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
   return [
     // Agricultural production stats
     {
-      id: 1,
+      id: '1',
       name: 'Maize Production',
-      value: 3800000,
-      year: 2023,
-      county: 'National',
+      value: '3.8 million tonnes',
       category: 'Production',
-      unit: 'tonnes'
+      county: 'National',
+      unit: 'tonnes',
+      source: 'KNBS Agricultural Census 2023',
+      verified: true
     },
     {
-      id: 2,
+      id: '2',
       name: 'Coffee Production',
-      value: 45000,
-      year: 2023,
-      county: 'National',
+      value: '45,000 tonnes',
       category: 'Production',
-      unit: 'tonnes'
-    },
-    {
-      id: 3,
-      name: 'Average Maize Price',
-      value: 4200,
-      year: 2023,
       county: 'National',
+      unit: 'tonnes',
+      source: 'Coffee Board of Kenya 2023',
+      verified: true
+    },
+    {
+      id: '3',
+      name: 'Average Maize Price',
+      value: 'KES 4,200',
       category: 'Prices',
-      unit: 'KES/90kg bag'
+      county: 'National',
+      unit: 'KES/90kg bag',
+      source: 'Nairobi Grain Exchange 2023',
+      verified: true
     },
     {
-      id: 4,
-      name: 'Nakuru',
-      value: 235000,
-      year: 2023,
-      category: 'County'
+      id: '4',
+      name: 'Nakuru Production',
+      value: '235,000 tonnes',
+      category: 'County',
+      county: 'Nakuru',
+      unit: 'tonnes',
+      source: 'KNBS County Statistics 2023',
+      verified: true
     },
     {
-      id: 5,
-      name: 'Kiambu',
-      value: 190000,
-      year: 2023,
-      category: 'County'
+      id: '5',
+      name: 'Kiambu Production',
+      value: '190,000 tonnes',
+      category: 'County',
+      county: 'Kiambu',
+      unit: 'tonnes',
+      source: 'KNBS County Statistics 2023',
+      verified: true
     },
     {
-      id: 6,
-      name: 'Meru',
-      value: 210000,
-      year: 2023,
-      category: 'County'
+      id: '6',
+      name: 'Meru Production',
+      value: '210,000 tonnes',
+      category: 'County',
+      county: 'Meru',
+      unit: 'tonnes',
+      source: 'KNBS County Statistics 2023',
+      verified: true
     }
   ];
 };

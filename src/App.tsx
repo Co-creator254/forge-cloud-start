@@ -24,6 +24,7 @@ import KilimoAmsData from './pages/KilimoAmsData';
 import ApiDocs from './pages/ApiDocs';
 import SupplyChainAPI from './pages/SupplyChainAPI';
 import SupplyChainProblems from './pages/SupplyChainProblems';
+import DataManagement from './pages/DataManagement';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
                 <Route path="/api-docs" element={<ApiDocs />} />
                 <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
                 <Route path="/supply-chain-problems" element={<SupplyChainProblems />} />
+                <Route path="/data-management" element={<DataManagement />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

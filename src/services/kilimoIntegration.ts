@@ -21,11 +21,12 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
     return Array.isArray(data) ? data.map((item: any) => ({
       id: item.id || Math.random().toString(36).substring(2, 9),
       name: item.name || item.crop_name || item.commodity || '',
-      value: parseFloat(item.value || item.price || item.amount || 0),
-      year: parseInt(item.year || item.date_year || new Date().getFullYear()),
-      county: item.county || item.location || '',
+      value: item.value?.toString() || item.price?.toString() || item.amount?.toString() || '0',
       category: item.category || item.crop_type || item.commodity_type || '',
+      county: item.county || item.location || '',
       unit: item.unit || item.measure || '',
+      source: 'Kilimo Statistics API',
+      verified: true
     })) : [];
   } catch (error) {
     console.error("Error fetching Kilimo stats:", error);
@@ -36,10 +37,10 @@ export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
 /**
  * Transform raw Kilimo data into a format usable for charts
  * @param data Raw Kilimo statistics
- * @param groupBy Property to group by (e.g., 'year', 'county', 'category')
+ * @param groupBy Property to group by (e.g., 'category', 'county')
  * @returns Grouped data for visualization
  */
-export const transformKilimoDataForCharts = (data: KilimoStats[], groupBy: 'year' | 'county' | 'category' = 'year') => {
+export const transformKilimoDataForCharts = (data: KilimoStats[], groupBy: 'category' | 'county' = 'category') => {
   const grouped = data.reduce((acc, curr) => {
     const key = curr[groupBy]?.toString() || 'Unknown';
     if (!acc[key]) {
