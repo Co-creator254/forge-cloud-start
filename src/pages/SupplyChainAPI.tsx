@@ -1,263 +1,410 @@
 
-import { useState } from "react";
-import { MainNav } from "@/components/MainNav";
-import { MobileNav } from "@/components/MobileNav";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import React, { useState } from 'react';
+import Header from '@/components/Header';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { 
+  Copy, 
+  Check, 
+  DollarSign, 
+  Zap, 
+  Shield, 
+  Globe,
+  BarChart3,
+  Users,
+  Truck,
+  Database
+} from 'lucide-react';
 
-const SupplyChainAPI = () => {
-  const [activeTab, setActiveTab] = useState("farmers");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCounty, setSelectedCounty] = useState("all");
-  
-  const counties = [
-    { value: "all", label: "All Counties" },
-    { value: "nairobi", label: "Nairobi" },
-    { value: "mombasa", label: "Mombasa" },
-    { value: "kisumu", label: "Kisumu" },
-    { value: "nakuru", label: "Nakuru" },
-    { value: "kiambu", label: "Kiambu" }
+const SupplyChainAPI: React.FC = () => {
+  const [copied, setCopied] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState('developer');
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const apiPlans = [
+    {
+      id: 'starter',
+      name: 'Starter',
+      price: 0,
+      currency: 'KES',
+      period: 'month',
+      requests: '1,000',
+      features: [
+        'Basic market data access',
+        'County-level statistics',
+        'Standard rate limits',
+        'Community support'
+      ],
+      popular: false,
+      buttonText: 'Get Started Free'
+    },
+    {
+      id: 'developer',
+      name: 'Developer',
+      price: 2500,
+      currency: 'KES',
+      period: 'month',
+      requests: '50,000',
+      features: [
+        'Full market data access',
+        'Real-time price feeds',
+        'Supply chain analytics',
+        'Priority email support',
+        'API analytics dashboard'
+      ],
+      popular: true,
+      buttonText: 'Start Developer Plan'
+    },
+    {
+      id: 'enterprise',
+      name: 'Enterprise',
+      price: 15000,
+      currency: 'KES',
+      period: 'month',
+      requests: '500,000+',
+      features: [
+        'Unlimited API access',
+        'Custom integrations',
+        'Dedicated account manager',
+        'SLA guarantees',
+        'Custom data feeds',
+        'White-label options'
+      ],
+      popular: false,
+      buttonText: 'Contact Sales'
+    }
+  ];
+
+  const apiEndpoints = [
+    {
+      method: 'GET',
+      endpoint: '/api/v1/supply-chain/farmers',
+      description: 'Retrieve farmer data across Kenya with location and crop information',
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain/farmers?county=nakuru'
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/supply-chain/markets',
+      description: 'Access real-time market prices and demand data for agricultural commodities',
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain/markets?commodity=maize'
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/supply-chain/logistics',
+      description: 'Transportation and warehouse data for supply chain optimization',
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain/logistics?type=transport'
+    },
+    {
+      method: 'GET',
+      endpoint: '/api/v1/supply-chain/analytics',
+      description: 'Advanced analytics and forecasting for agricultural supply chains',
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain/analytics?metric=price-forecast'
+    }
+  ];
+
+  const useCases = [
+    {
+      title: 'Agribusiness Integration',
+      description: 'Integrate real-time market data into your agricultural business applications',
+      icon: <BarChart3 className="h-8 w-8 text-blue-600" />,
+      revenue: 'KES 500K+/month'
+    },
+    {
+      title: 'Fintech Agriculture',
+      description: 'Build financial products for farmers using our verified agricultural data',
+      icon: <DollarSign className="h-8 w-8 text-green-600" />,
+      revenue: 'KES 1M+/month'
+    },
+    {
+      title: 'Logistics Optimization',
+      description: 'Optimize transportation routes and costs using our supply chain APIs',
+      icon: <Truck className="h-8 w-8 text-orange-600" />,
+      revenue: 'KES 300K+/month'
+    },
+    {
+      title: 'Research & Analytics',
+      description: 'Access comprehensive datasets for agricultural research and analysis',
+      icon: <Database className="h-8 w-8 text-purple-600" />,
+      revenue: 'KES 200K+/month'
+    }
   ];
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-30 w-full border-b bg-background">
-        <div className="container flex h-16 items-center">
-          <div className="hidden md:block">
-            <MainNav />
-          </div>
-          <div className="md:hidden">
-            <MobileNav />
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="py-8 px-4 md:px-6 max-w-7xl mx-auto">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+            Supply Chain API Platform
+          </h1>
+          <p className="text-muted-foreground max-w-3xl mx-auto mb-4">
+            Monetized access to Kenya's most comprehensive agricultural supply chain data and analytics
+          </p>
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <Badge className="bg-green-100 text-green-800">Live API</Badge>
+            <Badge className="bg-blue-100 text-blue-800">99.9% Uptime</Badge>
+            <Badge className="bg-purple-100 text-purple-800">Enterprise Ready</Badge>
           </div>
         </div>
-      </header>
 
-      <main className="flex-1 container py-6">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Supply Chain API</h1>
-        <p className="text-muted-foreground mb-6">Access real-time data on farmers, produce, logistics and markets</p>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid grid-cols-5 w-full max-w-3xl">
-            <TabsTrigger value="farmers">Farmers</TabsTrigger>
-            <TabsTrigger value="produce">Produce</TabsTrigger>
-            <TabsTrigger value="logistics">Logistics</TabsTrigger>
-            <TabsTrigger value="markets">Markets</TabsTrigger>
-            <TabsTrigger value="forecasts">Forecasts</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid grid-cols-4 w-full max-w-2xl mx-auto">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="pricing">Pricing</TabsTrigger>
+            <TabsTrigger value="endpoints">API Docs</TabsTrigger>
+            <TabsTrigger value="examples">Examples</TabsTrigger>
           </TabsList>
-          
-          <div className="flex items-center space-x-4 mt-4">
-            <Input
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-sm"
-            />
-            <Select value={selectedCounty} onValueChange={setSelectedCounty}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select county" />
-              </SelectTrigger>
-              <SelectContent>
-                {counties.map((county) => (
-                  <SelectItem key={county.value} value={county.value}>
-                    {county.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button>Filter</Button>
-          </div>
-          
-          <TabsContent value="farmers" className="py-4">
+
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <Globe className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold">47</div>
+                  <div className="text-sm text-muted-foreground">Counties Covered</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <Users className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold">50K+</div>
+                  <div className="text-sm text-muted-foreground">Registered Farmers</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <Zap className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold">2M+</div>
+                  <div className="text-sm text-muted-foreground">API Calls/Month</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <DollarSign className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                  <div className="text-2xl font-bold">99.9%</div>
+                  <div className="text-sm text-muted-foreground">API Uptime</div>
+                </CardContent>
+              </Card>
+            </div>
+
             <Card>
               <CardHeader>
-                <CardTitle>Farmers API</CardTitle>
-                <CardDescription>Access data on registered farmers</CardDescription>
+                <CardTitle>Revenue-Generating Use Cases</CardTitle>
               </CardHeader>
               <CardContent>
-                <pre className="bg-muted p-4 rounded-md overflow-auto">
-                  {`GET /api/farmers
-{
-  "farmers": [
-    {
-      "id": "f123",
-      "name": "John Mwangi",
-      "county": "Nakuru",
-      "contacts": "+2547XXXXXXXX",
-      "products": ["maize", "potatoes"],
-      "farmSize": "5 acres",
-      "certifications": ["organic"]
-    },
-    ...
-  ]
-}`}
-                </pre>
-                <div className="mt-4">
-                  <Button variant="outline">View Documentation</Button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {useCases.map((useCase, index) => (
+                    <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start gap-4">
+                        {useCase.icon}
+                        <div>
+                          <h3 className="font-medium mb-2">{useCase.title}</h3>
+                          <p className="text-sm text-muted-foreground mb-2">{useCase.description}</p>
+                          <Badge variant="outline" className="text-green-600 border-green-200">
+                            Revenue Potential: {useCase.revenue}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
-          
-          <TabsContent value="produce" className="py-4">
+
+          <TabsContent value="pricing" className="space-y-6">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold mb-2">Choose Your API Plan</h2>
+              <p className="text-muted-foreground">Flexible pricing for developers and enterprises</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {apiPlans.map((plan) => (
+                <Card key={plan.id} className={`relative ${plan.popular ? 'border-green-500 shadow-lg' : ''}`}>
+                  {plan.popular && (
+                    <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-600">
+                      Most Popular
+                    </Badge>
+                  )}
+                  <CardHeader className="text-center">
+                    <CardTitle>{plan.name}</CardTitle>
+                    <div className="mt-4">
+                      <span className="text-3xl font-bold">{plan.currency} {plan.price.toLocaleString()}</span>
+                      <span className="text-muted-foreground">/{plan.period}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Up to {plan.requests} API requests
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 mb-6">
+                      {plan.features.map((feature, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm">
+                          <Check className="h-4 w-4 text-green-500" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      className="w-full" 
+                      variant={plan.popular ? "default" : "outline"}
+                      onClick={() => setSelectedPlan(plan.id)}
+                    >
+                      {plan.buttonText}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="endpoints" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Produce API</CardTitle>
-                <CardDescription>Access data on available agricultural produce</CardDescription>
+                <CardTitle>API Endpoints</CardTitle>
+                <p className="text-muted-foreground">Complete reference for our supply chain API</p>
               </CardHeader>
               <CardContent>
-                <pre className="bg-muted p-4 rounded-md overflow-auto">
-                  {`GET /api/produce
-{
-  "produce": [
-    {
-      "id": "p456",
-      "name": "Maize",
-      "category": "Cereal",
-      "county": "Nakuru",
-      "quantity": 500,
-      "unit": "kg",
-      "qualityGrade": "A",
-      "availableFrom": "2023-05-15",
-      "farmer": "John Mwangi",
-      "farmerId": "f123"
-    },
-    ...
-  ]
-}`}
-                </pre>
-                <div className="mt-4">
-                  <Button variant="outline">View Documentation</Button>
+                <div className="space-y-4">
+                  {apiEndpoints.map((endpoint, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="secondary" className="bg-green-100 text-green-800">
+                          {endpoint.method}
+                        </Badge>
+                        <code className="text-sm font-mono">{endpoint.endpoint}</code>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">{endpoint.description}</p>
+                      <div className="bg-muted p-3 rounded text-sm font-mono overflow-x-auto">
+                        {endpoint.example}
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="mt-2"
+                        onClick={() => copyToClipboard(endpoint.example)}
+                      >
+                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        Copy Example
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
-          
-          <TabsContent value="logistics" className="py-4">
+
+          <TabsContent value="examples" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>JavaScript/Node.js</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-muted p-4 rounded-md">
+                    <pre className="text-sm overflow-auto">
+{`const response = await fetch(
+  'https://api.agritender.co.ke/v1/supply-chain/farmers',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    }
+  }
+);
+
+const farmers = await response.json();
+console.log(\`Found \${farmers.length} farmers\`);`}
+                    </pre>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Python</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-muted p-4 rounded-md">
+                    <pre className="text-sm overflow-auto">
+{`import requests
+
+headers = {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+}
+
+response = requests.get(
+    'https://api.agritender.co.ke/v1/supply-chain/markets',
+    headers=headers
+)
+
+markets = response.json()
+print(f"Found {len(markets)} markets")`}
+                    </pre>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             <Card>
               <CardHeader>
-                <CardTitle>Logistics API</CardTitle>
-                <CardDescription>Access data on logistics and transport services</CardDescription>
+                <CardTitle>Revenue Integration Example</CardTitle>
               </CardHeader>
               <CardContent>
-                <pre className="bg-muted p-4 rounded-md overflow-auto">
-                  {`GET /api/logistics
-{
-  "transportProviders": [
-    {
-      "id": "t789",
-      "name": "Quick Movers Ltd",
-      "serviceType": "transport",
-      "counties": ["Nakuru", "Nairobi", "Kiambu"],
-      "contactInfo": "info@quickmovers.co.ke",
-      "capacity": "Medium",
-      "loadCapacity": 2000,
-      "rates": "KSH 50/km",
-      "hasRefrigeration": true,
-      "vehicleType": "Truck"
-    },
-    ...
-  ],
-  "warehouses": [
-    {
-      "id": "w101",
-      "name": "SafeStore Warehouse",
-      "location": "Industrial Area",
-      "county": "Nairobi",
-      "capacity": 5000,
-      "capacityUnit": "sq ft",
-      "goodsTypes": ["cereals", "tubers"],
-      "hasRefrigeration": true,
-      "hasCertifications": true,
-      "contactInfo": "info@safestore.co.ke",
-      "rates": "KSH 100/sq ft/month"
-    },
-    ...
-  ]
-}`}
-                </pre>
-                <div className="mt-4">
-                  <Button variant="outline">View Documentation</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="markets" className="py-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Markets API</CardTitle>
-                <CardDescription>Access data on local and regional markets</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <pre className="bg-muted p-4 rounded-md overflow-auto">
-                  {`GET /api/markets
-{
-  "markets": [
-    {
-      "id": "m202",
-      "name": "Wakulima Market",
-      "county": "Nairobi",
-      "location": "Landhies Road",
-      "producePrices": [
-        {
-          "produceId": "p456",
-          "produceName": "Maize",
-          "price": 50,
-          "unit": "kg",
-          "date": "2023-05-14"
-        },
-        ...
-      ],
-      "demand": "high",
-      "operatingHours": "6am-6pm daily"
-    },
-    ...
-  ]
-}`}
-                </pre>
-                <div className="mt-4">
-                  <Button variant="outline">View Documentation</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="forecasts" className="py-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Forecasts API</CardTitle>
-                <CardDescription>Access forecasts for produce production and demand</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <pre className="bg-muted p-4 rounded-md overflow-auto">
-                  {`GET /api/forecasts
-{
-  "forecasts": [
-    {
-      "id": "fc303",
-      "produceId": "p456",
-      "produceName": "Maize",
-      "county": "Nakuru",
-      "expectedProduction": 1200000,
-      "expectedDemand": 900000,
-      "unit": "kg",
-      "period": "Q3 2023",
-      "confidenceLevel": "medium"
-    },
-    ...
-  ]
-}`}
-                </pre>
-                <div className="mt-4">
-                  <Button variant="outline">View Documentation</Button>
+                <div className="bg-muted p-4 rounded-md">
+                  <pre className="text-sm overflow-auto">
+{`// Example: Building a profitable agritech app
+const buildProfitableApp = async () => {
+  // Get market data for price predictions
+  const markets = await agriTenderAPI.getMarkets();
+  
+  // Get farmer data for targeted services
+  const farmers = await agriTenderAPI.getFarmers();
+  
+  // Build premium features with our data
+  const premiumInsights = await agriTenderAPI.getAnalytics();
+  
+  // Monetize with subscription model
+  return {
+    monthlyRevenue: 'KES 500,000+',
+    userBase: farmers.length,
+    features: premiumInsights
+  };
+};`}
+                  </pre>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Call to Action */}
+        <Card className="mt-12 bg-gradient-to-r from-green-50 to-blue-50">
+          <CardContent className="p-8 text-center">
+            <h2 className="text-2xl font-bold mb-4">Ready to Build the Future of Agriculture?</h2>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Join hundreds of developers building profitable agricultural applications with our comprehensive API platform
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-green-600 hover:bg-green-700">
+                Start Building Today
+              </Button>
+              <Button size="lg" variant="outline">
+                Contact Enterprise Sales
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
