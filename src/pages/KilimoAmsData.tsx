@@ -10,6 +10,7 @@ import { Loader2, Link as LinkIcon, ExternalLink } from 'lucide-react';
 import KilimoStatsView from '@/components/KilimoStatsView';
 import AmisKeDataView from '@/components/AmisKeDataView';
 import FarmerAIAssistant from '@/components/FarmerAIAssistant';
+import D3Visualizations from '@/components/analytics/D3Visualizations';
 import { fetchKilimoStats } from '@/services/api';
 import { KilimoStats } from '@/types';
 
@@ -46,6 +47,13 @@ const KilimoAmsData: React.FC = () => {
     const matchesCounty = !selectedCounty || selectedCounty === 'All Counties' || item.county === selectedCounty;
     return matchesCategory && matchesCounty;
   });
+
+  // Prepare data for D3 visualizations
+  const chartData = filteredData.slice(0, 10).map(item => ({
+    name: item.name,
+    value: typeof item.value === 'string' ? parseFloat(item.value) || 0 : item.value,
+    category: item.category
+  }));
 
   // External data source URLs for authenticity and verification
   const dataSourceUrls = {
@@ -160,6 +168,40 @@ const KilimoAmsData: React.FC = () => {
                     </TabsContent>
                   </div>
                 </Tabs>
+              </CardContent>
+            </Card>
+
+            {/* D3.js Visualizations Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Advanced Data Visualizations</CardTitle>
+                <CardDescription>
+                  Interactive D3.js powered analytics and insights
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <D3Visualizations 
+                    data={chartData} 
+                    title="Agricultural Production by Category" 
+                    type="bar" 
+                  />
+                  <D3Visualizations 
+                    data={chartData} 
+                    title="Market Distribution" 
+                    type="pie" 
+                  />
+                  <D3Visualizations 
+                    data={chartData} 
+                    title="Trend Analysis" 
+                    type="line" 
+                  />
+                  <D3Visualizations 
+                    data={chartData} 
+                    title="Regional Comparison" 
+                    type="scatter" 
+                  />
+                </div>
               </CardContent>
             </Card>
 

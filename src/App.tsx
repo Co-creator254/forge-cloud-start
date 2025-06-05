@@ -20,6 +20,9 @@ import FAQPage from './pages/FAQPage';
 import NotFound from './pages/NotFound';
 import SearchResultsPage from './pages/SearchResultsPage';
 import FarmerPortal from './pages/FarmerPortal';
+import KilimoAmsData from './pages/KilimoAmsData';
+import ApiDocs from './pages/ApiDocs';
+import SupplyChainAPI from './pages/SupplyChainAPI';
 
 function App() {
   return (
@@ -43,6 +46,9 @@ function App() {
                 <Route path="/faq" element={<FAQPage />} />
                 <Route path="/search" element={<SearchResultsPage />} />
                 <Route path="/farmer-portal" element={<FarmerPortal />} />
+                <Route path="/kilimo-ams-data" element={<KilimoAmsData />} />
+                <Route path="/api-docs" element={<ApiDocs />} />
+                <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
