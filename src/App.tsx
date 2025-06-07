@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/ThemeProvider';
@@ -25,6 +26,7 @@ import SupplyChainAPI from './pages/SupplyChainAPI';
 import SupplyChainProblems from './pages/SupplyChainProblems';
 import DataManagement from './pages/DataManagement';
 import BusinessMarketing from './pages/BusinessMarketing';
+import DataStatus from './pages/DataStatus';
 
 // Supply Chain Problem Pages
 import PostHarvestLosses from './pages/supplyChainProblems/PostHarvestLosses';

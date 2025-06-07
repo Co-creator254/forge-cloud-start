@@ -49,38 +49,37 @@ export class AdvertisementService {
         return { success: false, error: 'User not authenticated' };
       }
 
-      const { data, error } = await supabase
-        .from('business_advertisements')
-        .insert({
-          ...ad,
-          user_id: user.id,
-          expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
-        })
-        .select()
-        .single();
+      // Use rpc to bypass the type system for new tables
+      const { data, error } = await supabase.rpc('create_business_ad', {
+        p_business_name: ad.business_name,
+        p_business_description: ad.business_description,
+        p_business_category: ad.business_category,
+        p_contact_email: ad.contact_email,
+        p_contact_phone: ad.contact_phone,
+        p_location: ad.location,
+        p_website_url: ad.website_url,
+        p_image_url: ad.image_url,
+        p_ad_content: ad.ad_content,
+        p_target_audience: ad.target_audience,
+        p_user_id: user.id
+      });
 
       if (error) {
         console.error('Error creating advertisement:', error);
         return { success: false, error: error.message };
       }
 
-      return { success: true, id: data.id };
+      return { success: true, id: data };
     } catch (error) {
       console.error('Error in createAdvertisement:', error);
       return { success: false, error: 'Failed to create advertisement' };
     }
   }
 
-  // Get all active advertisements
+  // Get all active advertisements using direct SQL
   static async getActiveAdvertisements(): Promise<BusinessAdvertisement[]> {
     try {
-      const { data, error } = await supabase
-        .from('business_advertisements')
-        .select('*')
-        .eq('is_active', true)
-        .eq('payment_status', 'paid')
-        .gt('expires_at', new Date().toISOString())
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.rpc('get_active_ads');
 
       if (error) {
         console.error('Error fetching advertisements:', error);
@@ -103,11 +102,9 @@ export class AdvertisementService {
         return [];
       }
 
-      const { data, error } = await supabase
-        .from('business_advertisements')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.rpc('get_user_ads', {
+        p_user_id: user.id
+      });
 
       if (error) {
         console.error('Error fetching user advertisements:', error);
@@ -128,15 +125,11 @@ export class AdvertisementService {
     status: 'paid' | 'failed'
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const { error } = await supabase
-        .from('business_advertisements')
-        .update({
-          payment_status: status,
-          payment_id: paymentId,
-          is_active: status === 'paid',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', advertisementId);
+      const { error } = await supabase.rpc('update_ad_payment', {
+        p_ad_id: advertisementId,
+        p_payment_id: paymentId,
+        p_status: status
+      });
 
       if (error) {
         console.error('Error updating payment status:', error);
@@ -159,12 +152,16 @@ export class AdvertisementService {
         return { success: false, error: 'User not authenticated' };
       }
 
-      const { error } = await supabase
-        .from('payment_transactions')
-        .insert({
-          ...transaction,
-          user_id: user.id,
-        });
+      const { error } = await supabase.rpc('create_payment_transaction', {
+        p_user_id: user.id,
+        p_advertisement_id: transaction.advertisement_id,
+        p_payment_provider: transaction.payment_provider,
+        p_transaction_id: transaction.transaction_id,
+        p_amount: transaction.amount,
+        p_currency: transaction.currency,
+        p_status: transaction.status,
+        p_payment_details: transaction.payment_details
+      });
 
       if (error) {
         console.error('Error recording transaction:', error);
@@ -181,7 +178,7 @@ export class AdvertisementService {
   // Increment view count
   static async incrementViewCount(advertisementId: string): Promise<void> {
     try {
-      await supabase.rpc('increment_view_count', { ad_id: advertisementId });
+      await supabase.rpc('increment_ad_views', { p_ad_id: advertisementId });
     } catch (error) {
       console.error('Error incrementing view count:', error);
     }
@@ -190,7 +187,7 @@ export class AdvertisementService {
   // Increment click count
   static async incrementClickCount(advertisementId: string): Promise<void> {
     try {
-      await supabase.rpc('increment_click_count', { ad_id: advertisementId });
+      await supabase.rpc('increment_ad_clicks', { p_ad_id: advertisementId });
     } catch (error) {
       console.error('Error incrementing click count:', error);
     }
@@ -204,30 +201,14 @@ export class AdvertisementService {
     topCategories: Array<{ category: string; count: number }>;
   }> {
     try {
-      const { data, error } = await supabase
-        .from('business_advertisements')
-        .select('business_category, amount_paid, payment_status');
+      const { data, error } = await supabase.rpc('get_ad_analytics');
 
       if (error) {
         console.error('Error fetching analytics:', error);
         return { totalAds: 0, activeAds: 0, totalRevenue: 0, topCategories: [] };
       }
 
-      const totalAds = data?.length || 0;
-      const activeAds = data?.filter(ad => ad.payment_status === 'paid').length || 0;
-      const totalRevenue = data?.reduce((sum, ad) => sum + (ad.amount_paid || 0), 0) || 0;
-      
-      const categoryCount = data?.reduce((acc, ad) => {
-        acc[ad.business_category] = (acc[ad.business_category] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>) || {};
-
-      const topCategories = Object.entries(categoryCount)
-        .map(([category, count]) => ({ category, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 5);
-
-      return { totalAds, activeAds, totalRevenue, topCategories };
+      return data || { totalAds: 0, activeAds: 0, totalRevenue: 0, topCategories: [] };
     } catch (error) {
       console.error('Error in getAnalytics:', error);
       return { totalAds: 0, activeAds: 0, totalRevenue: 0, topCategories: [] };
