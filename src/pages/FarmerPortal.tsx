@@ -50,6 +50,11 @@ const FarmerPortal: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-6">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold mb-2">Farmer Portal</h1>
+          <p className="text-muted-foreground">Manage your farm operations and produce</p>
+        </div>
+        
         <Tabs defaultValue="dashboard" className="w-full">
           <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>

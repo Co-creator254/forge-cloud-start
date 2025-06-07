@@ -8,26 +8,37 @@ import { simulateDelay } from './apiUtils';
  */
 export const fetchKilimoStats = async (): Promise<KilimoStats[]> => {
   try {
-    // Updated to use the JSON format endpoint
-    const response = await fetch("https://statistics.kilimo.go.ke/en/api/apputils/?format=json");
+    const response = await fetch("https://statistics.kilimo.go.ke/en/api/apputils/", {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    });
     
     if (!response.ok) {
-      throw new Error(`Failed to fetch Kilimo stats: ${response.status} ${response.statusText}`);
+      console.error(`Failed to fetch Kilimo stats: ${response.status} ${response.statusText}`);
+      return [];
     }
     
     const data = await response.json();
-    console.log("Fetched Kilimo data:", data); // Log the structure to understand the API
+    console.log("Successfully fetched Kilimo data:", data);
     
-    return Array.isArray(data) ? data.map((item: any) => ({
-      id: item.id || Math.random().toString(36).substring(2, 9),
-      name: item.name || item.crop_name || item.commodity || '',
-      value: item.value?.toString() || item.price?.toString() || item.amount?.toString() || '0',
-      category: item.category || item.crop_type || item.commodity_type || '',
-      county: item.county || item.location || '',
-      unit: item.unit || item.measure || '',
-      source: 'Kilimo Statistics API',
-      verified: true
-    })) : [];
+    // Transform the county data from the API
+    if (data && data.county && Array.isArray(data.county)) {
+      return data.county.map((county: any) => ({
+        id: county.id?.toString() || Math.random().toString(36).substring(2, 9),
+        name: county.name || 'Unknown County',
+        value: `County Code: ${county.code}`,
+        category: 'Counties',
+        county: county.name || 'Unknown',
+        unit: 'county',
+        source: 'Kilimo Statistics API - Kenya Counties',
+        verified: true
+      }));
+    }
+    
+    return [];
   } catch (error) {
     console.error("Error fetching Kilimo stats:", error);
     return [];

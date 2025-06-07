@@ -26,6 +26,13 @@ import SupplyChainAPI from './pages/SupplyChainAPI';
 import SupplyChainProblems from './pages/SupplyChainProblems';
 import DataManagement from './pages/DataManagement';
 
+// Supply Chain Problem Pages
+import PostHarvestLosses from './pages/supplyChainProblems/PostHarvestLosses';
+import MarketAccess from './pages/supplyChainProblems/MarketAccess';
+import LogisticsIssues from './pages/supplyChainProblems/LogisticsIssues';
+import PriceVolatility from './pages/supplyChainProblems/PriceVolatility';
+import QualityControl from './pages/supplyChainProblems/QualityControl';
+
 function App() {
   return (
     <QueryClientProvider client={new QueryClient()}>
@@ -53,6 +60,14 @@ function App() {
                 <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
                 <Route path="/supply-chain-problems" element={<SupplyChainProblems />} />
                 <Route path="/data-management" element={<DataManagement />} />
+                
+                {/* Supply Chain Problem Routes */}
+                <Route path="/supply-chain-problems/post-harvest-losses" element={<PostHarvestLosses />} />
+                <Route path="/supply-chain-problems/market-access" element={<MarketAccess />} />
+                <Route path="/supply-chain-problems/logistics-issues" element={<LogisticsIssues />} />
+                <Route path="/supply-chain-problems/price-volatility" element={<PriceVolatility />} />
+                <Route path="/supply-chain-problems/quality-control" element={<QualityControl />} />
+                
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
