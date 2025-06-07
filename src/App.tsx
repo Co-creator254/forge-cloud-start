@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/ThemeProvider';
@@ -25,6 +24,7 @@ import ApiDocs from './pages/ApiDocs';
 import SupplyChainAPI from './pages/SupplyChainAPI';
 import SupplyChainProblems from './pages/SupplyChainProblems';
 import DataManagement from './pages/DataManagement';
+import BusinessMarketing from './pages/BusinessMarketing';
 
 // Supply Chain Problem Pages
 import PostHarvestLosses from './pages/supplyChainProblems/PostHarvestLosses';
@@ -60,6 +60,7 @@ function App() {
                 <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
                 <Route path="/supply-chain-problems" element={<SupplyChainProblems />} />
                 <Route path="/data-management" element={<DataManagement />} />
+                <Route path="/business-marketing" element={<BusinessMarketing />} />
                 
                 {/* Supply Chain Problem Routes */}
                 <Route path="/supply-chain-problems/post-harvest-losses" element={<PostHarvestLosses />} />

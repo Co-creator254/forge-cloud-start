@@ -9,6 +9,84 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      data_fetch_logs: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          records_count: number | null
+          source: string
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          records_count?: number | null
+          source: string
+          status: string
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          records_count?: number | null
+          source?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      kilimo_statistics: {
+        Row: {
+          category: string
+          county: string
+          created_at: string | null
+          external_id: string | null
+          fetch_date: string | null
+          id: string
+          metadata: Json | null
+          name: string
+          source: string | null
+          unit: string | null
+          updated_at: string | null
+          value: string
+          verified: boolean | null
+        }
+        Insert: {
+          category: string
+          county: string
+          created_at?: string | null
+          external_id?: string | null
+          fetch_date?: string | null
+          id?: string
+          metadata?: Json | null
+          name: string
+          source?: string | null
+          unit?: string | null
+          updated_at?: string | null
+          value: string
+          verified?: boolean | null
+        }
+        Update: {
+          category?: string
+          county?: string
+          created_at?: string | null
+          external_id?: string | null
+          fetch_date?: string | null
+          id?: string
+          metadata?: Json | null
+          name?: string
+          source?: string | null
+          unit?: string | null
+          updated_at?: string | null
+          value?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
       market_forecasts: {
         Row: {
           commodity_name: string
