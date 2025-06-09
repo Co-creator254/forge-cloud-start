@@ -31,6 +31,10 @@ const ApiDocs: React.FC = () => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
+    toast({
+      title: "Copied!",
+      description: "API example copied to clipboard",
+    });
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -73,15 +77,16 @@ const ApiDocs: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="py-8 px-4 md:px-6 max-w-7xl mx-auto">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">AgriConnect API</h1>
-          <p className="text-muted-foreground max-w-3xl mx-auto">
+      {/* Single Main Header */}
+      <header className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">AgriConnect API Documentation</h1>
+          <p className="text-muted-foreground max-w-3xl">
             Comprehensive API access to Kenya's agricultural data, market information, and supply chain intelligence
           </p>
           
           {/* API Access Status */}
-          <div className="mt-4 flex items-center justify-center gap-4">
+          <div className="mt-4 flex items-center gap-4">
             <div className="flex items-center gap-2">
               {apiAccess.hasAccess ? (
                 <Unlock className="h-4 w-4 text-green-600" />
@@ -99,7 +104,9 @@ const ApiDocs: React.FC = () => {
             </div>
           </div>
         </div>
+      </header>
 
+      <main className="py-8 px-4 md:px-6 max-w-7xl mx-auto">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid grid-cols-4 w-full max-w-2xl mx-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -120,62 +127,113 @@ const ApiDocs: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle>API Endpoints Reference</CardTitle>
+                <p className="text-muted-foreground">
+                  Real API endpoints for accessing agricultural data in Kenya
+                </p>
               </CardHeader>
               <CardContent className="space-y-6">
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold mb-2">Base URL</h3>
+                  <code className="bg-muted p-2 rounded-md block text-sm">
+                    https://api.agriconnect.co.ke/v1
+                  </code>
+                </div>
+
                 <div className="grid gap-4">
                   <div className="border rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary">GET</Badge>
-                      <code className="text-sm">/api/v1/farmers</code>
-                      {!apiAccess.hasAccess && <Lock className="h-4 w-4 text-red-600" />}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">GET</Badge>
+                        <code className="text-sm">/api/v1/farmers</code>
+                        {apiAccess.subscriptionType === 'free' && <Badge variant="outline" className="text-xs">Premium Required</Badge>}
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/farmers')}
+                      >
+                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        Copy
+                      </Button>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">Retrieve farmer data across Kenya</p>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      disabled={!apiAccess.hasAccess}
-                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/farmers')}
-                    >
-                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                      Copy Example
-                    </Button>
+                    <div className="bg-muted p-2 rounded text-xs">
+                      <pre>curl -H "Authorization: Bearer YOUR_API_KEY" \{'\n'}     https://api.agriconnect.co.ke/v1/farmers</pre>
+                    </div>
                   </div>
 
                   <div className="border rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary">GET</Badge>
-                      <code className="text-sm">/api/v1/markets</code>
-                      {apiAccess.subscriptionType === 'free' && <Lock className="h-4 w-4 text-amber-600" />}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">GET</Badge>
+                        <code className="text-sm">/api/v1/markets</code>
+                        {apiAccess.subscriptionType === 'free' && <Badge variant="outline" className="text-xs">Developer Required</Badge>}
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/markets')}
+                      >
+                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        Copy
+                      </Button>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">Access market prices and demand data</p>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      disabled={apiAccess.subscriptionType === 'free'}
-                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/markets')}
-                    >
-                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                      Copy Example
-                    </Button>
+                    <div className="bg-muted p-2 rounded text-xs">
+                      <pre>curl -H "Authorization: Bearer YOUR_API_KEY" \{'\n'}     https://api.agriconnect.co.ke/v1/markets</pre>
+                    </div>
                   </div>
 
                   <div className="border rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary">GET</Badge>
-                      <code className="text-sm">/api/v1/supply-chain</code>
-                      {apiAccess.subscriptionType !== 'enterprise' && <Lock className="h-4 w-4 text-red-600" />}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">GET</Badge>
+                        <code className="text-sm">/api/v1/supply-chain</code>
+                        {apiAccess.subscriptionType !== 'enterprise' && <Badge variant="outline" className="text-xs">Enterprise Required</Badge>}
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/supply-chain')}
+                      >
+                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        Copy
+                      </Button>
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">Supply chain analytics and logistics data</p>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      disabled={apiAccess.subscriptionType !== 'enterprise'}
-                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/supply-chain')}
-                    >
-                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                      Copy Example
-                    </Button>
+                    <div className="bg-muted p-2 rounded text-xs">
+                      <pre>curl -H "Authorization: Bearer YOUR_API_KEY" \{'\n'}     https://api.agriconnect.co.ke/v1/supply-chain</pre>
+                    </div>
                   </div>
+
+                  <div className="border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">GET</Badge>
+                        <code className="text-sm">/api/v1/commodities</code>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/commodities')}
+                      >
+                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        Copy
+                      </Button>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">Get commodity prices and market trends</p>
+                    <div className="bg-muted p-2 rounded text-xs">
+                      <pre>curl -H "Authorization: Bearer YOUR_API_KEY" \{'\n'}     https://api.agriconnect.co.ke/v1/commodities</pre>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium mb-2">Authentication Required</h4>
+                  <p className="text-sm text-muted-foreground">
+                    All API endpoints require a valid API key in the Authorization header. 
+                    Get your API key by subscribing to one of our plans below.
+                  </p>
                 </div>
               </CardContent>
             </Card>
