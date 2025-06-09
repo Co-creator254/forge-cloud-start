@@ -5,7 +5,6 @@ import { ThemeProvider } from './components/ThemeProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from "@/components/ui/toaster"
 
-import Header from './components/Header';
 import Home from './pages/Index';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -41,7 +40,6 @@ function App() {
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <BrowserRouter>
           <div className="min-h-screen bg-background flex flex-col">
-            <Header />
             <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Home />} />

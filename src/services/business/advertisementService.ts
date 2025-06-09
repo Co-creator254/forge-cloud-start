@@ -39,6 +39,13 @@ export interface PaymentTransaction {
   updated_at?: string;
 }
 
+export interface ApiAccessStatus {
+  hasAccess: boolean;
+  subscriptionType: 'free' | 'developer' | 'enterprise' | null;
+  requestsRemaining: number;
+  expiresAt?: string;
+}
+
 export class AdvertisementService {
   // Create a new advertisement
   static async createAdvertisement(ad: BusinessAdvertisement): Promise<{ success: boolean; id?: string; error?: string }> {
@@ -136,12 +143,19 @@ export class AdvertisementService {
     status: 'paid' | 'failed'
   ): Promise<{ success: boolean; error?: string }> {
     try {
+      // Set expiration date to 30 days from now for paid ads
+      const expiresAt = status === 'paid' 
+        ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        : null;
+
       const { error } = await supabase
         .from('business_advertisements')
         .update({
           payment_status: status,
           payment_id: paymentId,
-          is_active: status === 'paid'
+          is_active: status === 'paid',
+          expires_at: expiresAt,
+          amount_paid: status === 'paid' ? 20.00 : null
         })
         .eq('id', advertisementId);
 
@@ -191,13 +205,68 @@ export class AdvertisementService {
     }
   }
 
+  // Check API access status for user
+  static async checkApiAccess(): Promise<ApiAccessStatus> {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        return { hasAccess: false, subscriptionType: null, requestsRemaining: 0 };
+      }
+
+      // Check for active paid advertisements (indicates subscription)
+      const { data: ads, error } = await supabase
+        .from('business_advertisements')
+        .select('payment_status, expires_at, amount_paid')
+        .eq('user_id', user.id)
+        .eq('payment_status', 'paid')
+        .gt('expires_at', new Date().toISOString());
+
+      if (error) {
+        console.error('Error checking API access:', error);
+        return { hasAccess: false, subscriptionType: 'free', requestsRemaining: 1000 };
+      }
+
+      // Determine subscription type based on payment amount
+      let subscriptionType: 'free' | 'developer' | 'enterprise' = 'free';
+      let requestsRemaining = 1000; // Free tier
+      let expiresAt: string | undefined;
+
+      if (ads && ads.length > 0) {
+        const highestPaid = ads.reduce((max, ad) => 
+          (ad.amount_paid || 0) > (max.amount_paid || 0) ? ad : max
+        );
+
+        if (highestPaid.amount_paid) {
+          if (highestPaid.amount_paid >= 15000) {
+            subscriptionType = 'enterprise';
+            requestsRemaining = 500000;
+          } else if (highestPaid.amount_paid >= 2500) {
+            subscriptionType = 'developer';
+            requestsRemaining = 50000;
+          }
+          expiresAt = highestPaid.expires_at;
+        }
+      }
+
+      return {
+        hasAccess: true,
+        subscriptionType,
+        requestsRemaining,
+        expiresAt
+      };
+    } catch (error) {
+      console.error('Error in checkApiAccess:', error);
+      return { hasAccess: false, subscriptionType: 'free', requestsRemaining: 1000 };
+    }
+  }
+
   // Increment view count
   static async incrementViewCount(advertisementId: string): Promise<void> {
     try {
-      const { error } = await supabase
-        .from('business_advertisements')
-        .update({ views_count: supabase.raw('views_count + 1') })
-        .eq('id', advertisementId);
+      const { error } = await supabase.rpc('increment_view_count', {
+        ad_id: advertisementId
+      });
 
       if (error) {
         console.error('Error incrementing view count:', error);
@@ -210,10 +279,9 @@ export class AdvertisementService {
   // Increment click count
   static async incrementClickCount(advertisementId: string): Promise<void> {
     try {
-      const { error } = await supabase
-        .from('business_advertisements')
-        .update({ clicks_count: supabase.raw('clicks_count + 1') })
-        .eq('id', advertisementId);
+      const { error } = await supabase.rpc('increment_click_count', {
+        ad_id: advertisementId
+      });
 
       if (error) {
         console.error('Error incrementing click count:', error);
@@ -269,6 +337,32 @@ export class AdvertisementService {
     } catch (error) {
       console.error('Error in getAnalytics:', error);
       return { totalAds: 0, activeAds: 0, totalRevenue: 0, topCategories: [] };
+    }
+  }
+
+  // Renew advertisement subscription
+  static async renewAdvertisement(advertisementId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const newExpiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      
+      const { error } = await supabase
+        .from('business_advertisements')
+        .update({
+          expires_at: newExpiryDate,
+          is_active: true,
+          payment_status: 'paid'
+        })
+        .eq('id', advertisementId);
+
+      if (error) {
+        console.error('Error renewing advertisement:', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error in renewAdvertisement:', error);
+      return { success: false, error: 'Failed to renew advertisement' };
     }
   }
 }

@@ -9,6 +9,78 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      business_advertisements: {
+        Row: {
+          ad_content: string
+          amount_paid: number | null
+          business_category: string
+          business_description: string
+          business_name: string
+          clicks_count: number | null
+          contact_email: string
+          contact_phone: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          location: string
+          payment_id: string | null
+          payment_status: string | null
+          target_audience: string[] | null
+          updated_at: string
+          user_id: string | null
+          views_count: number | null
+          website_url: string | null
+        }
+        Insert: {
+          ad_content: string
+          amount_paid?: number | null
+          business_category: string
+          business_description: string
+          business_name: string
+          clicks_count?: number | null
+          contact_email: string
+          contact_phone?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          location: string
+          payment_id?: string | null
+          payment_status?: string | null
+          target_audience?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+          views_count?: number | null
+          website_url?: string | null
+        }
+        Update: {
+          ad_content?: string
+          amount_paid?: number | null
+          business_category?: string
+          business_description?: string
+          business_name?: string
+          clicks_count?: number | null
+          contact_email?: string
+          contact_phone?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          location?: string
+          payment_id?: string | null
+          payment_status?: string | null
+          target_audience?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+          views_count?: number | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       data_fetch_logs: {
         Row: {
           created_at: string | null
@@ -233,6 +305,56 @@ export type Database = {
           sender_id?: string | null
         }
         Relationships: []
+      }
+      payment_transactions: {
+        Row: {
+          advertisement_id: string | null
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          payment_details: Json | null
+          payment_provider: string
+          status: string | null
+          transaction_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          advertisement_id?: string | null
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          payment_details?: Json | null
+          payment_provider: string
+          status?: string | null
+          transaction_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          advertisement_id?: string | null
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          payment_details?: Json | null
+          payment_provider?: string
+          status?: string | null
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_advertisement_id_fkey"
+            columns: ["advertisement_id"]
+            isOneToOne: false
+            referencedRelation: "business_advertisements"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
