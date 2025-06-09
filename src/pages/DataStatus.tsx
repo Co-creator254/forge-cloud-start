@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, AlertTriangle, Refresh, Database, ExternalLink } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, RefreshCw, Database, ExternalLink } from 'lucide-react';
 import { KilimoDataService } from '@/services/database/kilimoDataService';
 import { useToast } from '@/hooks/use-toast';
 
@@ -128,7 +128,7 @@ const DataStatus: React.FC = () => {
             Real-time verification of API connectivity and data collection
           </p>
           <Button onClick={checkSystemStatus} className="mt-4 mr-4">
-            <Refresh className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-4 w-4 mr-2" />
             Refresh Status
           </Button>
           <Button onClick={triggerManualFetch} variant="outline">

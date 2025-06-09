@@ -14,13 +14,13 @@ const ApiOverview: React.FC = () => {
         <div>
           <h3 className="text-lg font-semibold mb-2">Base URL</h3>
           <code className="bg-muted p-2 rounded-md block">
-            https://api.agritender.co.ke/v1
+            https://api.agriconnect.co.ke/v1
           </code>
         </div>
         
         <div>
           <h3 className="text-lg font-semibold mb-2">Available API Endpoints</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card className="flex flex-col">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Supply Chain API</CardTitle>
@@ -32,19 +32,10 @@ const ApiOverview: React.FC = () => {
             
             <Card className="flex flex-col">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Tenders API</CardTitle>
+                <CardTitle className="text-lg">Business Marketing API</CardTitle>
               </CardHeader>
               <CardContent className="flex-grow">
-                <p className="text-sm mb-4">Access agricultural tender information from government agencies, NGOs, and private companies across Kenya.</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="flex flex-col">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Jobs API</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-sm mb-4">Access agricultural job listings, training opportunities, and skill requirements for the agricultural sector.</p>
+                <p className="text-sm mb-4">Access business advertisement and marketing data from agricultural companies across Kenya.</p>
               </CardContent>
             </Card>
           </div>

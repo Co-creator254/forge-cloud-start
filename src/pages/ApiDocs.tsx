@@ -52,19 +52,18 @@ const ApiDocs: React.FC = () => {
       <Header />
       <main className="py-8 px-4 md:px-6 max-w-7xl mx-auto">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">AgriTender Connect API</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">AgriConnect API</h1>
           <p className="text-muted-foreground max-w-3xl mx-auto">
             Comprehensive API access to Kenya's agricultural data, market information, and supply chain intelligence
           </p>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-5 w-full max-w-2xl mx-auto">
+          <TabsList className="grid grid-cols-4 w-full max-w-2xl mx-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="authentication">Auth</TabsTrigger>
             <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
-            <TabsTrigger value="examples">Examples</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -91,7 +90,7 @@ const ApiDocs: React.FC = () => {
                     <Button 
                       size="sm" 
                       variant="outline"
-                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/farmers')}
+                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/farmers')}
                     >
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       Copy Example
@@ -107,7 +106,7 @@ const ApiDocs: React.FC = () => {
                     <Button 
                       size="sm" 
                       variant="outline"
-                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/markets')}
+                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/markets')}
                     >
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       Copy Example
@@ -123,7 +122,7 @@ const ApiDocs: React.FC = () => {
                     <Button 
                       size="sm" 
                       variant="outline"
-                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain')}
+                      onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/supply-chain')}
                     >
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       Copy Example
@@ -168,71 +167,6 @@ const ApiDocs: React.FC = () => {
                       </Button>
                     </div>
                   ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="examples" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Code Examples</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">JavaScript/Node.js</h3>
-                  <div className="bg-muted p-4 rounded-md">
-                    <pre className="text-sm overflow-auto">
-{`const response = await fetch('https://api.agritender.co.ke/v1/farmers', {
-  headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  }
-});
-
-const farmers = await response.json();
-console.log(farmers);`}
-                    </pre>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Python</h3>
-                  <div className="bg-muted p-4 rounded-md">
-                    <pre className="text-sm overflow-auto">
-{`import requests
-
-headers = {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-}
-
-response = requests.get('https://api.agritender.co.ke/v1/farmers', headers=headers)
-farmers = response.json()
-print(farmers)`}
-                    </pre>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">PHP</h3>
-                  <div className="bg-muted p-4 rounded-md">
-                    <pre className="text-sm overflow-auto">
-{`<?php
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://api.agritender.co.ke/v1/farmers');
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Authorization: Bearer YOUR_API_KEY',
-    'Content-Type: application/json'
-]);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-$response = curl_exec($ch);
-$farmers = json_decode($response, true);
-curl_close($ch);
-?>`}
-                    </pre>
-                  </div>
                 </div>
               </CardContent>
             </Card>

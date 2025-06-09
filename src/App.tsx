@@ -63,6 +63,7 @@ function App() {
                 <Route path="/supply-chain-problems" element={<SupplyChainProblems />} />
                 <Route path="/data-management" element={<DataManagement />} />
                 <Route path="/business-marketing" element={<BusinessMarketing />} />
+                <Route path="/data-status" element={<DataStatus />} />
                 
                 {/* Supply Chain Problem Routes */}
                 <Route path="/supply-chain-problems/post-harvest-losses" element={<PostHarvestLosses />} />

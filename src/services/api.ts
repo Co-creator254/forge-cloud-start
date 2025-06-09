@@ -37,9 +37,6 @@ export {
 // Search API functionality
 export { fetchData, fetchItemById } from './searchAPI';
 
-// Re-export for Tender API
-export { fetchAwardedTenders } from './awardedTendersAPI';
-
 // AmisKe Data API
 export { 
   fetchAmisKePrices,
@@ -72,11 +69,4 @@ export const registerServiceProvider = async (serviceProvider: any) => {
   console.log('Registering service provider:', serviceProvider);
   await simulateDelay(1000);
   return { success: true, id: crypto.randomUUID() };
-};
-
-// Jobs API (to be implemented with real data in the future)
-export const fetchJobs = async (filters?: any) => {
-  // This is a placeholder that would be replaced with a real API implementation
-  await simulateDelay(800);
-  return [];
 };

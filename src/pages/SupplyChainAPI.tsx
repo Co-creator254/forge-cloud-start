@@ -89,25 +89,25 @@ const SupplyChainAPI: React.FC = () => {
       method: 'GET',
       endpoint: '/api/v1/supply-chain/farmers',
       description: 'Retrieve farmer data across Kenya with location and crop information',
-      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain/farmers?county=nakuru'
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/supply-chain/farmers?county=nakuru'
     },
     {
       method: 'GET',
       endpoint: '/api/v1/supply-chain/markets',
       description: 'Access real-time market prices and demand data for agricultural commodities',
-      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain/markets?commodity=maize'
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/supply-chain/markets?commodity=maize'
     },
     {
       method: 'GET',
       endpoint: '/api/v1/supply-chain/logistics',
       description: 'Transportation and warehouse data for supply chain optimization',
-      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain/logistics?type=transport'
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/supply-chain/logistics?type=transport'
     },
     {
       method: 'GET',
       endpoint: '/api/v1/supply-chain/analytics',
       description: 'Advanced analytics and forecasting for agricultural supply chains',
-      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agritender.co.ke/v1/supply-chain/analytics?metric=price-forecast'
+      example: 'curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/supply-chain/analytics?metric=price-forecast'
     }
   ];
 
@@ -313,7 +313,7 @@ const SupplyChainAPI: React.FC = () => {
                   <div className="bg-muted p-4 rounded-md">
                     <pre className="text-sm overflow-auto">
 {`const response = await fetch(
-  'https://api.agritender.co.ke/v1/supply-chain/farmers',
+  'https://api.agriconnect.co.ke/v1/supply-chain/farmers',
   {
     headers: {
       'Authorization': 'Bearer YOUR_API_KEY',
@@ -344,7 +344,7 @@ headers = {
 }
 
 response = requests.get(
-    'https://api.agritender.co.ke/v1/supply-chain/markets',
+    'https://api.agriconnect.co.ke/v1/supply-chain/markets',
     headers=headers
 )
 
@@ -366,13 +366,13 @@ print(f"Found {len(markets)} markets")`}
 {`// Example: Building a profitable agritech app
 const buildProfitableApp = async () => {
   // Get market data for price predictions
-  const markets = await agriTenderAPI.getMarkets();
+  const markets = await agriConnectAPI.getMarkets();
   
   // Get farmer data for targeted services
-  const farmers = await agriTenderAPI.getFarmers();
+  const farmers = await agriConnectAPI.getFarmers();
   
   // Build premium features with our data
-  const premiumInsights = await agriTenderAPI.getAnalytics();
+  const premiumInsights = await agriConnectAPI.getAnalytics();
   
   // Monetize with subscription model
   return {
