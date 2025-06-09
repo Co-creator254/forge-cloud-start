@@ -102,7 +102,11 @@ export class AdvertisementService {
         return [];
       }
 
-      return data || [];
+      // Type cast the data to our interface
+      return (data || []).map(ad => ({
+        ...ad,
+        payment_status: ad.payment_status as 'pending' | 'paid' | 'expired'
+      }));
     } catch (error) {
       console.error('Error in getActiveAdvertisements:', error);
       return [];
@@ -129,7 +133,11 @@ export class AdvertisementService {
         return [];
       }
 
-      return data || [];
+      // Type cast the data to our interface
+      return (data || []).map(ad => ({
+        ...ad,
+        payment_status: ad.payment_status as 'pending' | 'paid' | 'expired'
+      }));
     } catch (error) {
       console.error('Error in getUserAdvertisements:', error);
       return [];
@@ -261,30 +269,44 @@ export class AdvertisementService {
     }
   }
 
-  // Increment view count
+  // Increment view count - simplified version without RPC
   static async incrementViewCount(advertisementId: string): Promise<void> {
     try {
-      const { error } = await supabase.rpc('increment_view_count', {
-        ad_id: advertisementId
-      });
+      // Get current view count
+      const { data: currentAd } = await supabase
+        .from('business_advertisements')
+        .select('views_count')
+        .eq('id', advertisementId)
+        .single();
 
-      if (error) {
-        console.error('Error incrementing view count:', error);
+      if (currentAd) {
+        const newCount = (currentAd.views_count || 0) + 1;
+        await supabase
+          .from('business_advertisements')
+          .update({ views_count: newCount })
+          .eq('id', advertisementId);
       }
     } catch (error) {
       console.error('Error incrementing view count:', error);
     }
   }
 
-  // Increment click count
+  // Increment click count - simplified version without RPC
   static async incrementClickCount(advertisementId: string): Promise<void> {
     try {
-      const { error } = await supabase.rpc('increment_click_count', {
-        ad_id: advertisementId
-      });
+      // Get current click count
+      const { data: currentAd } = await supabase
+        .from('business_advertisements')
+        .select('clicks_count')
+        .eq('id', advertisementId)
+        .single();
 
-      if (error) {
-        console.error('Error incrementing click count:', error);
+      if (currentAd) {
+        const newCount = (currentAd.clicks_count || 0) + 1;
+        await supabase
+          .from('business_advertisements')
+          .update({ clicks_count: newCount })
+          .eq('id', advertisementId);
       }
     } catch (error) {
       console.error('Error incrementing click count:', error);
