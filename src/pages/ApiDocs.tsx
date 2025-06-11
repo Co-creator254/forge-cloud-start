@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, Copy, ExternalLink, Lock, Unlock } from 'lucide-react';
 import ApiOverview from '@/components/api-docs/ApiOverview';
 import ApiAuthentication from '@/components/api-docs/ApiAuthentication';
+import ApiKeyManager from '@/components/api-management/ApiKeyManager';
 import { AdvertisementService, type ApiAccessStatus } from '@/services/business/advertisementService';
 import { useToast } from '@/hooks/use-toast';
 
