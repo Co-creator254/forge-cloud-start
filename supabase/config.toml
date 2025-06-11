@@ -1,6 +1,23 @@
 
-# Update this section with your project id
 project_id = "cwcduhvwkihpnuaoflps"
 
 [functions.transcribe-audio]
+verify_jwt = false
+
+[functions.api-farmers]
+verify_jwt = false
+
+[functions.api-markets]
+verify_jwt = false
+
+[functions.api-supply-chain]
+verify_jwt = false
+
+[functions.api-commodities]
+verify_jwt = false
+
+[functions.api-keys-management]
+verify_jwt = false
+
+[functions.api-middleware]
 verify_jwt = false

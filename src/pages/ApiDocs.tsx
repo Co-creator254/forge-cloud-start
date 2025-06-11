@@ -82,7 +82,7 @@ const ApiDocs: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">AgriConnect API Documentation</h1>
           <p className="text-muted-foreground max-w-3xl">
-            Comprehensive API access to Kenya's agricultural data, market information, and supply chain intelligence
+            Production-ready API access to Kenya's agricultural data, market information, and supply chain intelligence
           </p>
           
           {/* API Access Status */}
@@ -108,15 +108,65 @@ const ApiDocs: React.FC = () => {
 
       <main className="py-8 px-4 md:px-6 max-w-7xl mx-auto">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-4 w-full max-w-2xl mx-auto">
+          <TabsList className="grid grid-cols-5 w-full max-w-2xl mx-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="authentication">Auth</TabsTrigger>
             <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
+            <TabsTrigger value="keys">API Keys</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
-            <ApiOverview />
+            <Card>
+              <CardHeader>
+                <CardTitle>Production API Overview</CardTitle>
+                <p className="text-muted-foreground">
+                  Real, authenticated API endpoints with rate limiting and subscription-based access control
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Base URL</h3>
+                  <code className="bg-muted p-2 rounded-md block text-sm">
+                    https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1
+                  </code>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg">✅ Production Features</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2 text-sm">
+                        <li>• Real API key authentication</li>
+                        <li>• Rate limiting by subscription tier</li>
+                        <li>• Usage tracking and analytics</li>
+                        <li>• Subscription-based access control</li>
+                        <li>• Live agricultural data from Kenya</li>
+                        <li>• CORS-enabled for web applications</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg">🔒 Security Features</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2 text-sm">
+                        <li>• API keys with SHA-256 hashing</li>
+                        <li>• Row-level security policies</li>
+                        <li>• Request logging and monitoring</li>
+                        <li>• IP address tracking</li>
+                        <li>• Automatic key expiration</li>
+                        <li>• User-specific data access</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="authentication">
@@ -126,16 +176,19 @@ const ApiDocs: React.FC = () => {
           <TabsContent value="endpoints" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>API Endpoints Reference</CardTitle>
+                <CardTitle>Production API Endpoints</CardTitle>
                 <p className="text-muted-foreground">
-                  Real API endpoints for accessing agricultural data in Kenya
+                  Live API endpoints with authentication and subscription-based access control
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">Base URL</h3>
+                  <h3 className="text-lg font-semibold mb-2">Authentication</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Include your API key in the <code>X-API-Key</code> header:
+                  </p>
                   <code className="bg-muted p-2 rounded-md block text-sm">
-                    https://api.agriconnect.co.ke/v1
+                    X-API-Key: your_api_key_here
                   </code>
                 </div>
 
@@ -144,21 +197,21 @@ const ApiDocs: React.FC = () => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary">GET</Badge>
-                        <code className="text-sm">/api/v1/farmers</code>
-                        {apiAccess.subscriptionType === 'free' && <Badge variant="outline" className="text-xs">Premium Required</Badge>}
+                        <code className="text-sm">/api-farmers</code>
+                        <Badge variant="outline" className="text-xs">All Tiers</Badge>
                       </div>
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/farmers')}
+                        onClick={() => copyToClipboard('curl -H "X-API-Key: YOUR_API_KEY" https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1/api-farmers')}
                       >
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                         Copy
                       </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-2">Retrieve farmer data across Kenya</p>
+                    <p className="text-sm text-muted-foreground mb-2">Get farmer data (limited by subscription tier)</p>
                     <div className="bg-muted p-2 rounded text-xs">
-                      <pre>curl -H "Authorization: Bearer YOUR_API_KEY" \{'\n'}     https://api.agriconnect.co.ke/v1/farmers</pre>
+                      <pre>curl -H "X-API-Key: YOUR_API_KEY" \{'\n'}     https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1/api-farmers</pre>
                     </div>
                   </div>
 
@@ -166,21 +219,21 @@ const ApiDocs: React.FC = () => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary">GET</Badge>
-                        <code className="text-sm">/api/v1/markets</code>
-                        {apiAccess.subscriptionType === 'free' && <Badge variant="outline" className="text-xs">Developer Required</Badge>}
+                        <code className="text-sm">/api-markets</code>
+                        <Badge variant="outline" className="text-xs">Developer+ Required</Badge>
                       </div>
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/markets')}
+                        onClick={() => copyToClipboard('curl -H "X-API-Key: YOUR_API_KEY" https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1/api-markets')}
                       >
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                         Copy
                       </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-2">Access market prices and demand data</p>
+                    <p className="text-sm text-muted-foreground mb-2">Access real market prices and demand data</p>
                     <div className="bg-muted p-2 rounded text-xs">
-                      <pre>curl -H "Authorization: Bearer YOUR_API_KEY" \{'\n'}     https://api.agriconnect.co.ke/v1/markets</pre>
+                      <pre>curl -H "X-API-Key: YOUR_API_KEY" \{'\n'}     https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1/api-markets</pre>
                     </div>
                   </div>
 
@@ -188,21 +241,21 @@ const ApiDocs: React.FC = () => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary">GET</Badge>
-                        <code className="text-sm">/api/v1/supply-chain</code>
-                        {apiAccess.subscriptionType !== 'enterprise' && <Badge variant="outline" className="text-xs">Enterprise Required</Badge>}
+                        <code className="text-sm">/api-supply-chain</code>
+                        <Badge variant="destructive" className="text-xs">Enterprise Only</Badge>
                       </div>
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/supply-chain')}
+                        onClick={() => copyToClipboard('curl -H "X-API-Key: YOUR_API_KEY" https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1/api-supply-chain')}
                       >
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                         Copy
                       </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-2">Supply chain analytics and logistics data</p>
+                    <p className="text-sm text-muted-foreground mb-2">Comprehensive supply chain analytics</p>
                     <div className="bg-muted p-2 rounded text-xs">
-                      <pre>curl -H "Authorization: Bearer YOUR_API_KEY" \{'\n'}     https://api.agriconnect.co.ke/v1/supply-chain</pre>
+                      <pre>curl -H "X-API-Key: YOUR_API_KEY" \{'\n'}     https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1/api-supply-chain</pre>
                     </div>
                   </div>
 
@@ -210,12 +263,13 @@ const ApiDocs: React.FC = () => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary">GET</Badge>
-                        <code className="text-sm">/api/v1/commodities</code>
+                        <code className="text-sm">/api-commodities</code>
+                        <Badge variant="outline" className="text-xs">All Tiers</Badge>
                       </div>
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => copyToClipboard('curl -H "Authorization: Bearer YOUR_API_KEY" https://api.agriconnect.co.ke/v1/commodities')}
+                        onClick={() => copyToClipboard('curl -H "X-API-Key: YOUR_API_KEY" https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1/api-commodities')}
                       >
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                         Copy
@@ -223,23 +277,27 @@ const ApiDocs: React.FC = () => {
                     </div>
                     <p className="text-sm text-muted-foreground mb-2">Get commodity prices and market trends</p>
                     <div className="bg-muted p-2 rounded text-xs">
-                      <pre>curl -H "Authorization: Bearer YOUR_API_KEY" \{'\n'}     https://api.agriconnect.co.ke/v1/commodities</pre>
+                      <pre>curl -H "X-API-Key: YOUR_API_KEY" \{'\n'}     https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1/api-commodities</pre>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-medium mb-2">Authentication Required</h4>
-                  <p className="text-sm text-muted-foreground">
-                    All API endpoints require a valid API key in the Authorization header. 
-                    Get your API key by subscribing to one of our plans below.
+                <div className="mt-6 p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-medium mb-2 text-green-800">✅ Production Ready</h4>
+                  <p className="text-sm text-green-700">
+                    All endpoints are fully functional with authentication, rate limiting, and subscription-tier access control.
+                    Try them with a valid API key!
                   </p>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="pricing" className="space-y-6">
+          <TabsContent value="keys" className="space-y-6">
+            <ApiKeyManager />
+          </TabsContent>
+
+          <TabsContent value="pricing">
             <Card>
               <CardHeader>
                 <CardTitle>API Pricing Plans</CardTitle>
