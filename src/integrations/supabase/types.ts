@@ -200,6 +200,78 @@ export type Database = {
         }
         Relationships: []
       }
+      farm_statistics: {
+        Row: {
+          active_alerts: number | null
+          average_yield: number | null
+          created_at: string
+          id: string
+          monthly_revenue: number | null
+          total_area: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_alerts?: number | null
+          average_yield?: number | null
+          created_at?: string
+          id?: string
+          monthly_revenue?: number | null
+          total_area?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_alerts?: number | null
+          average_yield?: number | null
+          created_at?: string
+          id?: string
+          monthly_revenue?: number | null
+          total_area?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      farm_tasks: {
+        Row: {
+          created_at: string
+          crop: string
+          date: string
+          description: string | null
+          id: string
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          date: string
+          description?: string | null
+          id?: string
+          priority: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          date?: string
+          description?: string | null
+          id?: string
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kilimo_statistics: {
         Row: {
           category: string
@@ -395,6 +467,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       payment_transactions: {
         Row: {
           advertisement_id: string | null
@@ -444,6 +549,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pricing_tiers: {
+        Row: {
+          created_at: string
+          currency: string
+          features: string[]
+          id: string
+          is_active: boolean | null
+          is_popular: boolean | null
+          name: string
+          period: string
+          price: number
+          requests: number
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          features?: string[]
+          id: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name: string
+          period: string
+          price: number
+          requests: number
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          features?: string[]
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name?: string
+          period?: string
+          price?: number
+          requests?: number
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -526,6 +670,42 @@ export type Database = {
           updated_at?: string
           user_id?: string
           vehicle_type?: string
+        }
+        Relationships: []
+      }
+      weather_alerts: {
+        Row: {
+          created_at: string
+          description: string
+          end_date: string
+          id: string
+          is_active: boolean | null
+          region: string
+          severity: string
+          start_date: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          region: string
+          severity: string
+          start_date: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          region?: string
+          severity?: string
+          start_date?: string
+          type?: string
         }
         Relationships: []
       }

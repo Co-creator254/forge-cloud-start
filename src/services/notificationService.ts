@@ -16,13 +16,12 @@ export class NotificationService {
   static async getUserNotifications(userId: string): Promise<Notification[]> {
     try {
       const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(50);
+        .rpc('get_user_notifications', { p_user_id: userId });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching notifications:', error);
+        return [];
+      }
       return data || [];
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -33,9 +32,7 @@ export class NotificationService {
   static async markAsRead(notificationId: string): Promise<boolean> {
     try {
       const { error } = await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('id', notificationId);
+        .rpc('mark_notification_read', { p_notification_id: notificationId });
 
       return !error;
     } catch (error) {
@@ -47,10 +44,7 @@ export class NotificationService {
   static async markAllAsRead(userId: string): Promise<boolean> {
     try {
       const { error } = await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('user_id', userId)
-        .eq('is_read', false);
+        .rpc('mark_all_notifications_read', { p_user_id: userId });
 
       return !error;
     } catch (error) {
@@ -62,8 +56,13 @@ export class NotificationService {
   static async createNotification(notification: Omit<Notification, 'id' | 'created_at'>): Promise<boolean> {
     try {
       const { error } = await supabase
-        .from('notifications')
-        .insert(notification);
+        .rpc('create_notification', {
+          p_user_id: notification.user_id,
+          p_title: notification.title,
+          p_message: notification.message,
+          p_type: notification.type,
+          p_action_url: notification.action_url
+        });
 
       return !error;
     } catch (error) {
@@ -74,14 +73,14 @@ export class NotificationService {
 
   static async getUnreadCount(userId: string): Promise<number> {
     try {
-      const { count, error } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
-        .eq('is_read', false);
+      const { data, error } = await supabase
+        .rpc('get_unread_notification_count', { p_user_id: userId });
 
-      if (error) throw error;
-      return count || 0;
+      if (error) {
+        console.error('Error getting unread count:', error);
+        return 0;
+      }
+      return data || 0;
     } catch (error) {
       console.error('Error getting unread count:', error);
       return 0;

@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ModeToggle';
-import { UserAvatar } from '@/components/UserAvatar';
+import UserAvatar from '@/components/UserAvatar';
 import { MainNav } from '@/components/MainNav';
 import { MobileNav } from '@/components/MobileNav';
 import NotificationCenter from '@/components/NotificationCenter';
