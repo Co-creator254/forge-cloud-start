@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,10 +14,10 @@ const FarmDashboard: React.FC = () => {
   const [farmTasks, setFarmTasks] = useState<FarmTask[]>([]);
   const [weatherAlerts, setWeatherAlerts] = useState<WeatherAlert[]>([]);
   const [farmStats, setFarmStats] = useState<FarmStats>({
-    monthlyRevenue: 0,
-    totalArea: 0,
-    averageYield: 0,
-    activeAlerts: 0
+    monthly_revenue: 0,
+    total_area: 0,
+    average_yield: 0,
+    active_alerts: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -128,7 +127,7 @@ const FarmDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Monthly Revenue</p>
-                <p className="text-2xl font-bold">KES {farmStats.monthlyRevenue.toLocaleString()}</p>
+                <p className="text-2xl font-bold">KES {farmStats.monthly_revenue.toLocaleString()}</p>
                 <p className="text-xs text-green-600">↗ +6.5%</p>
               </div>
             </div>
@@ -140,7 +139,7 @@ const FarmDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Cultivated Area</p>
-                <p className="text-2xl font-bold">{farmStats.totalArea} ha</p>
+                <p className="text-2xl font-bold">{farmStats.total_area} ha</p>
                 <p className="text-xs text-muted-foreground">5 parcels</p>
               </div>
             </div>
@@ -152,7 +151,7 @@ const FarmDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Average Yield</p>
-                <p className="text-2xl font-bold">{farmStats.averageYield} t/ha</p>
+                <p className="text-2xl font-bold">{farmStats.average_yield} t/ha</p>
                 <p className="text-xs text-green-600">↗ +5.2%</p>
               </div>
             </div>
@@ -164,7 +163,7 @@ const FarmDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active Alerts</p>
-                <p className="text-2xl font-bold">{farmStats.activeAlerts}</p>
+                <p className="text-2xl font-bold">{farmStats.active_alerts}</p>
                 <p className="text-xs text-yellow-600">⚠ Recent</p>
               </div>
             </div>
@@ -273,7 +272,7 @@ const FarmDashboard: React.FC = () => {
                       <p className="text-sm text-muted-foreground mb-1">{alert.region}</p>
                       <p className="text-sm">{alert.description}</p>
                       <div className="text-xs text-muted-foreground mt-2">
-                        Start: {alert.startDate} | End: {alert.endDate}
+                        Start: {alert.start_date} | End: {alert.end_date}
                       </div>
                     </div>
                   ))

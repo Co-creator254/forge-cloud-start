@@ -33,7 +33,10 @@ export class FarmerService {
   static async getFarmTasks(userId: string): Promise<FarmTask[]> {
     try {
       const { data, error } = await supabase
-        .rpc('get_farm_tasks', { p_user_id: userId });
+        .from('farm_tasks')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching farm tasks:', error);
@@ -49,15 +52,10 @@ export class FarmerService {
   static async createFarmTask(task: Omit<FarmTask, 'id'>): Promise<FarmTask | null> {
     try {
       const { data, error } = await supabase
-        .rpc('create_farm_task', {
-          p_user_id: task.user_id,
-          p_title: task.title,
-          p_description: task.description,
-          p_crop: task.crop,
-          p_date: task.date,
-          p_priority: task.priority,
-          p_status: task.status
-        });
+        .from('farm_tasks')
+        .insert([task])
+        .select()
+        .single();
 
       if (error) {
         console.error('Error creating farm task:', error);
@@ -73,10 +71,9 @@ export class FarmerService {
   static async updateFarmTask(id: string, updates: Partial<FarmTask>): Promise<boolean> {
     try {
       const { error } = await supabase
-        .rpc('update_farm_task', {
-          p_task_id: id,
-          p_updates: updates
-        });
+        .from('farm_tasks')
+        .update(updates)
+        .eq('id', id);
 
       return !error;
     } catch (error) {
@@ -88,7 +85,9 @@ export class FarmerService {
   static async deleteFarmTask(id: string): Promise<boolean> {
     try {
       const { error } = await supabase
-        .rpc('delete_farm_task', { p_task_id: id });
+        .from('farm_tasks')
+        .delete()
+        .eq('id', id);
 
       return !error;
     } catch (error) {
@@ -100,10 +99,13 @@ export class FarmerService {
   static async getFarmStats(userId: string): Promise<FarmStats> {
     try {
       const { data, error } = await supabase
-        .rpc('get_farm_stats', { p_user_id: userId });
+        .from('farm_statistics')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
 
-      if (error) {
-        console.error('Error fetching farm stats:', error);
+      if (error || !data) {
+        console.log('No farm stats found, returning defaults');
         return {
           monthly_revenue: 0,
           total_area: 0,
@@ -112,11 +114,11 @@ export class FarmerService {
         };
       }
 
-      return data || {
-        monthly_revenue: 0,
-        total_area: 0,
-        average_yield: 0,
-        active_alerts: 0
+      return {
+        monthly_revenue: data.monthly_revenue || 0,
+        total_area: data.total_area || 0,
+        average_yield: data.average_yield || 0,
+        active_alerts: data.active_alerts || 0
       };
     } catch (error) {
       console.error('Error fetching farm stats:', error);
@@ -132,7 +134,11 @@ export class FarmerService {
   static async getWeatherAlerts(region: string): Promise<WeatherAlert[]> {
     try {
       const { data, error } = await supabase
-        .rpc('get_weather_alerts', { p_region: region });
+        .from('weather_alerts')
+        .select('*')
+        .eq('region', region)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching weather alerts:', error);
