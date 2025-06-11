@@ -1,10 +1,11 @@
-
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/ThemeProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from '@/hooks/useAuth';
+import Footer from './components/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 
 import Home from './pages/Index';
 import About from './pages/About';
@@ -75,6 +76,8 @@ function App() {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
+              <Footer />
+              <ScrollToTop />
             </div>
             <Toaster />
           </BrowserRouter>

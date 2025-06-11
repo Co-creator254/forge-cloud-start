@@ -25,7 +25,10 @@ export class NotificationService {
         console.error('Error fetching notifications:', error);
         return [];
       }
-      return data || [];
+      return (data || []).map(notification => ({
+        ...notification,
+        type: notification.type as 'info' | 'warning' | 'error' | 'success'
+      }));
     } catch (error) {
       console.error('Error fetching notifications:', error);
       return [];

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Plus, MapPin, Edit, Trash2 } from 'lucide-react';
+import ParcelMapView from './ParcelMapView';
 
 interface Parcel {
   id: string;
@@ -14,6 +15,7 @@ interface Parcel {
   status: 'active' | 'inactive';
   lastHarvest: string;
   harvestIn: number;
+  coordinates?: [number, number];
 }
 
 const LandManagement: React.FC = () => {
@@ -25,7 +27,8 @@ const LandManagement: React.FC = () => {
       crop: 'Maize',
       status: 'active',
       lastHarvest: '8/15/2023',
-      harvestIn: 76
+      harvestIn: 76,
+      coordinates: [36.0667, -0.3031]
     },
     {
       id: '2',
@@ -34,7 +37,8 @@ const LandManagement: React.FC = () => {
       crop: 'Coffee',
       status: 'active',
       lastHarvest: '6/10/2023',
-      harvestIn: 120
+      harvestIn: 120,
+      coordinates: [36.8356, -1.1743]
     },
     {
       id: '3',
@@ -43,11 +47,13 @@ const LandManagement: React.FC = () => {
       crop: 'Beans',
       status: 'active',
       lastHarvest: '9/20/2023',
-      harvestIn: 45
+      harvestIn: 45,
+      coordinates: [37.6573, 0.0472]
     }
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedParcel, setSelectedParcel] = useState<Parcel | undefined>();
 
   const filteredParcels = parcels.filter(parcel => 
     parcel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,7 +90,13 @@ const LandManagement: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           {filteredParcels.map((parcel) => (
-            <Card key={parcel.id} className="border-l-4 border-l-green-500">
+            <Card 
+              key={parcel.id} 
+              className={`border-l-4 border-l-green-500 cursor-pointer transition-all hover:shadow-md ${
+                selectedParcel?.id === parcel.id ? 'ring-2 ring-primary' : ''
+              }`}
+              onClick={() => setSelectedParcel(parcel)}
+            >
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div>
@@ -127,17 +139,7 @@ const LandManagement: React.FC = () => {
         </div>
 
         <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Select a parcel</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center py-12">
-              <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
-                Click on a parcel from the list to view its details and access the map view
-              </p>
-            </CardContent>
-          </Card>
+          <ParcelMapView selectedParcel={selectedParcel} />
         </div>
       </div>
     </div>

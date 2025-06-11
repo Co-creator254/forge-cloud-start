@@ -1,171 +1,134 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, Upload, FileText, Plus, Trash2 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-
-interface Transaction {
-  id: string;
-  date: string;
-  type: 'revenue' | 'expense';
-  category: string;
-  description: string;
-  amount: number;
-}
+import { TrendingUp, TrendingDown, DollarSign, PieChart, BarChart3, Download, Upload, Plus } from 'lucide-react';
+import ReportGenerator from './ReportGenerator';
 
 const FinancialManagement: React.FC = () => {
-  const [transactions] = useState<Transaction[]>([
-    { id: '1', date: '7/28/2023', type: 'expense', category: 'Salaires', description: 'Salaires employés', amount: 2800 },
-    { id: '2', date: '7/25/2023', type: 'revenue', category: 'Subventions', description: 'Subvention agricole', amount: 4200 }
+  const [transactions] = useState([
+    { id: '1', date: '2023-11-01', description: 'Maize Sale', amount: 2800, type: 'income' },
+    { id: '2', date: '2023-11-02', description: 'Fertilizer Purchase', amount: -1200, type: 'expense' },
+    { id: '3', date: '2023-11-03', description: 'Coffee Sale', amount: 3500, type: 'income' },
+    { id: '4', date: '2023-11-04', description: 'Equipment Maintenance', amount: -800, type: 'expense' },
   ]);
-
-  const monthlyData = [
-    { month: 'Jan', revenus: 7500, depenses: 6800, profit: 700 },
-    { month: 'Fév', revenus: 8200, depenses: 7200, profit: 1000 },
-    { month: 'Mar', revenus: 8800, depenses: 7500, profit: 1300 },
-    { month: 'Avr', revenus: 9500, depenses: 8000, profit: 1500 },
-    { month: 'Mai', revenus: 10200, depenses: 8200, profit: 2000 },
-    { month: 'Juin', revenus: 11000, depenses: 8500, profit: 2500 },
-    { month: 'Juil', revenus: 11800, depenses: 9000, profit: 2800 },
-    { month: 'Août', revenus: 12500, depenses: 9200, profit: 3300 },
-    { month: 'Sep', revenus: 11500, depenses: 8800, profit: 2700 },
-    { month: 'Oct', revenus: 10800, depenses: 8300, profit: 2500 },
-    { month: 'Nov', revenus: 9800, depenses: 7800, profit: 2000 },
-    { month: 'Déc', revenus: 8900, depenses: 7300, profit: 1600 }
-  ];
 
   const totalRevenue = 8900;
   const totalExpenses = 4720;
-  const balance = totalRevenue - totalExpenses;
+  const netProfit = totalRevenue - totalExpenses;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Gestion Financière</h2>
-          <p className="text-muted-foreground">Suivez vos revenus, dépenses et la rentabilité de votre exploitation agricole</p>
+          <h2 className="text-2xl font-bold">Financial Management</h2>
+          <p className="text-muted-foreground">Track your farm revenue, expenses, and profitability</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Exporter
-          </Button>
-          <Button variant="outline">
-            <Upload className="h-4 w-4 mr-2" />
-            Importer
-          </Button>
-          <Button className="bg-green-600 hover:bg-green-700">
-            <FileText className="h-4 w-4 mr-2" />
-            Générer un rapport
-          </Button>
-        </div>
+        <ReportGenerator />
       </div>
 
-      <Tabs defaultValue="apercu" className="w-full">
+      {/* Financial Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Revenue</p>
+                <p className="text-sm text-muted-foreground">Total Income</p>
+                <p className="text-2xl font-bold text-green-600">KES {totalRevenue.toLocaleString()}</p>
+                <p className="text-xs text-green-600 flex items-center">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +6.5%
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Expenses</p>
+                <p className="text-sm text-muted-foreground">Total Outgoing</p>
+                <p className="text-2xl font-bold text-red-600">KES {totalExpenses.toLocaleString()}</p>
+                <p className="text-xs text-red-600 flex items-center">
+                  <TrendingDown className="h-3 w-3 mr-1" />
+                  +2.1%
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Profit</p>
+                <p className="text-sm text-muted-foreground">Revenue - Expenses</p>
+                <p className="text-2xl font-bold text-green-600">KES {netProfit.toLocaleString()}</p>
+                <p className="text-xs text-green-600 flex items-center">
+                  <TrendingUp className="h-3 w-3 mr-1" />
+                  +8.3%
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="apercu">Aperçu général</TabsTrigger>
-          <TabsTrigger value="revenus">Revenus</TabsTrigger>
-          <TabsTrigger value="depenses">Dépenses</TabsTrigger>
-          <TabsTrigger value="previsions">Prévisions</TabsTrigger>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="revenue">Revenue</TabsTrigger>
+          <TabsTrigger value="expenses">Expenses</TabsTrigger>
+          <TabsTrigger value="forecasts">Forecasts</TabsTrigger>
           <TabsTrigger value="budget">Budget</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="apercu" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Revenus</CardTitle>
-                <div className="text-sm text-muted-foreground">Total des entrées</div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">{totalRevenue.toLocaleString()} €</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Dépenses</CardTitle>
-                <div className="text-sm text-muted-foreground">Total des sorties</div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-red-600">{totalExpenses.toLocaleString()} €</div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-muted-foreground">Solde</CardTitle>
-                <div className="text-sm text-muted-foreground">Revenus - Dépenses</div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">{balance.toLocaleString()} €</div>
-              </CardContent>
-            </Card>
-          </div>
-
+        <TabsContent value="overview">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Aperçu Mensuel</CardTitle>
+                <CardTitle>Monthly Overview</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="revenus" fill="#22c55e" />
-                      <Bar dataKey="depenses" fill="#ef4444" />
-                    </BarChart>
-                  </ResponsiveContainer>
+                <div className="h-64 flex items-center justify-center text-muted-foreground">
+                  Monthly revenue and expense chart will be displayed here
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>Transactions Récentes</CardTitle>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline">
-                      <Download className="h-4 w-4 mr-2" />
-                      Exporter
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <FileText className="h-4 w-4 mr-2" />
-                      Imprimer
-                    </Button>
-                    <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Ajouter
-                    </Button>
-                  </div>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Recent Transactions</CardTitle>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <Upload className="h-4 w-4 mr-2" />
+                    Import
+                  </Button>
+                  <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add
+                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {transactions.map((transaction) => (
-                    <div key={transaction.id} className="flex justify-between items-center p-3 border rounded">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full ${transaction.type === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`} />
-                        <div>
-                          <div className="font-medium">{transaction.description}</div>
-                          <div className="text-sm text-muted-foreground">{transaction.date} • {transaction.category}</div>
-                        </div>
+                  {transactions.slice(0, 5).map((transaction) => (
+                    <div key={transaction.id} className="flex items-center justify-between p-2 border rounded">
+                      <div>
+                        <p className="font-medium">{transaction.description}</p>
+                        <p className="text-xs text-muted-foreground">{transaction.date}</p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`font-bold ${transaction.type === 'revenue' ? 'text-green-600' : 'text-red-600'}`}>
-                          {transaction.type === 'revenue' ? '+' : '-'}{transaction.amount}
-                        </span>
-                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <span className={`font-bold ${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {transaction.amount > 0 ? '+' : ''}KES {Math.abs(transaction.amount).toLocaleString()}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -174,40 +137,40 @@ const FinancialManagement: React.FC = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="revenus">
+        <TabsContent value="revenue">
           <Card>
             <CardHeader>
-              <CardTitle>Gestion des Revenus</CardTitle>
+              <CardTitle>Revenue Analysis</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                Fonctionnalité en cours de développement
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
+                Revenue chart and analysis will be displayed here
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="depenses">
+        <TabsContent value="expenses">
           <Card>
             <CardHeader>
-              <CardTitle>Gestion des Dépenses</CardTitle>
+              <CardTitle>Expense Analysis</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                Fonctionnalité en cours de développement
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
+                Expense chart and analysis will be displayed here
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="previsions">
+        <TabsContent value="forecasts">
           <Card>
             <CardHeader>
-              <CardTitle>Prévisions Financières</CardTitle>
+              <CardTitle>Financial Forecasts</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                Fonctionnalité en cours de développement
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
+                Financial forecasts and projections will be displayed here
               </div>
             </CardContent>
           </Card>
@@ -216,11 +179,11 @@ const FinancialManagement: React.FC = () => {
         <TabsContent value="budget">
           <Card>
             <CardHeader>
-              <CardTitle>Gestion du Budget</CardTitle>
+              <CardTitle>Budget Planning</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                Fonctionnalité en cours de développement
+              <div className="h-64 flex items-center justify-center text-muted-foreground">
+                Budget planning tools and resources will be displayed here
               </div>
             </CardContent>
           </Card>

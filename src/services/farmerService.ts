@@ -42,7 +42,11 @@ export class FarmerService {
         console.error('Error fetching farm tasks:', error);
         return [];
       }
-      return data || [];
+      return (data || []).map(task => ({
+        ...task,
+        priority: task.priority as 'High' | 'Medium' | 'Low',
+        status: task.status as 'pending' | 'completed'
+      }));
     } catch (error) {
       console.error('Error fetching farm tasks:', error);
       return [];
@@ -61,7 +65,11 @@ export class FarmerService {
         console.error('Error creating farm task:', error);
         return null;
       }
-      return data;
+      return data ? {
+        ...data,
+        priority: data.priority as 'High' | 'Medium' | 'Low',
+        status: data.status as 'pending' | 'completed'
+      } : null;
     } catch (error) {
       console.error('Error creating farm task:', error);
       return null;
@@ -144,7 +152,11 @@ export class FarmerService {
         console.error('Error fetching weather alerts:', error);
         return [];
       }
-      return data || [];
+      return (data || []).map(alert => ({
+        ...alert,
+        type: alert.type as 'Cyclone' | 'Rain' | 'Drought',
+        severity: alert.severity as 'critical' | 'moderate' | 'low'
+      }));
     } catch (error) {
       console.error('Error fetching weather alerts:', error);
       return [];
