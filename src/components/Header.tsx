@@ -1,22 +1,39 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ModeToggle';
+import { UserAvatar } from '@/components/UserAvatar';
 import { MainNav } from '@/components/MainNav';
 import { MobileNav } from '@/components/MobileNav';
-import UserAvatar from './UserAvatar';
+import NotificationCenter from '@/components/NotificationCenter';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header: React.FC = () => {
+  const { user } = useAuth();
+
   return (
-    <header className="bg-background sticky top-0 z-50 w-full border-b">
-      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center">
+        <MainNav />
         <MobileNav />
-        <Link to="/" className="hidden sm:flex items-center font-semibold">
-          <span className="mr-2">AgriConnect</span>
-        </Link>
-        <MainNav className="mx-6 hidden space-x-4 sm:block" />
-        <div className="flex items-center space-x-2">
-          <UserAvatar />
-          <ModeToggle />
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
+            {/* Search functionality could go here */}
+          </div>
+          <nav className="flex items-center space-x-2">
+            {user && <NotificationCenter />}
+            <ModeToggle />
+            {user ? (
+              <UserAvatar />
+            ) : (
+              <Link to="/auth">
+                <Button variant="default" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </nav>
         </div>
       </div>
     </header>

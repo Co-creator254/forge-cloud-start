@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -8,7 +7,9 @@ import { Check, Copy, ExternalLink, Lock, Unlock } from 'lucide-react';
 import ApiOverview from '@/components/api-docs/ApiOverview';
 import ApiAuthentication from '@/components/api-docs/ApiAuthentication';
 import ApiKeyManager from '@/components/api-management/ApiKeyManager';
+import NotificationCenter from '@/components/NotificationCenter';
 import { AdvertisementService, type ApiAccessStatus } from '@/services/business/advertisementService';
+import { PricingService, type PricingTier } from '@/services/pricingService';
 import { useToast } from '@/hooks/use-toast';
 
 const ApiDocs: React.FC = () => {
@@ -18,15 +19,25 @@ const ApiDocs: React.FC = () => {
     subscriptionType: null,
     requestsRemaining: 0
   });
+  const [pricingPlans, setPricingPlans] = useState<PricingTier[]>([]);
+  const [loadingPricing, setLoadingPricing] = useState(true);
   const { toast } = useToast();
   
   useEffect(() => {
     checkUserAccess();
+    loadPricingPlans();
   }, []);
 
   const checkUserAccess = async () => {
     const accessStatus = await AdvertisementService.checkApiAccess();
     setApiAccess(accessStatus);
+  };
+
+  const loadPricingPlans = async () => {
+    setLoadingPricing(true);
+    const plans = await PricingService.getPricingTiers();
+    setPricingPlans(plans);
+    setLoadingPricing(false);
   };
   
   const copyToClipboard = (text: string) => {
@@ -46,63 +57,38 @@ const ApiDocs: React.FC = () => {
     });
   };
 
-  const pricingPlans = [
-    {
-      name: "Free Tier",
-      price: "KES 0",
-      period: "/month",
-      requests: "1,000",
-      features: ["Basic API access", "Community support", "Standard rate limits"],
-      popular: false,
-      accessible: true
-    },
-    {
-      name: "Developer",
-      price: "KES 2,500",
-      period: "/month", 
-      requests: "50,000",
-      features: ["Advanced API access", "Email support", "Higher rate limits", "Analytics dashboard"],
-      popular: true,
-      accessible: apiAccess.subscriptionType === 'developer' || apiAccess.subscriptionType === 'enterprise'
-    },
-    {
-      name: "Enterprise",
-      price: "KES 15,000",
-      period: "/month",
-      requests: "500,000",
-      features: ["Full API access", "Priority support", "Custom rate limits", "Dedicated account manager", "Custom integrations"],
-      popular: false,
-      accessible: apiAccess.subscriptionType === 'enterprise'
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       {/* Single Main Header */}
       <header className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">AgriConnect API Documentation</h1>
-          <p className="text-muted-foreground max-w-3xl">
-            Production-ready API access to Kenya's agricultural data, market information, and supply chain intelligence
-          </p>
-          
-          {/* API Access Status */}
-          <div className="mt-4 flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              {apiAccess.hasAccess ? (
-                <Unlock className="h-4 w-4 text-green-600" />
-              ) : (
-                <Lock className="h-4 w-4 text-red-600" />
-              )}
-              <span className="text-sm">
-                Current Plan: <Badge variant={apiAccess.subscriptionType === 'free' ? 'outline' : 'default'}>
-                  {apiAccess.subscriptionType || 'None'}
-                </Badge>
-              </span>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-2">AgriConnect API Documentation</h1>
+              <p className="text-muted-foreground max-w-3xl">
+                Production-ready API access to Kenya's agricultural data, market information, and supply chain intelligence
+              </p>
+              
+              {/* API Access Status */}
+              <div className="mt-4 flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  {apiAccess.hasAccess ? (
+                    <Unlock className="h-4 w-4 text-green-600" />
+                  ) : (
+                    <Lock className="h-4 w-4 text-red-600" />
+                  )}
+                  <span className="text-sm">
+                    Current Plan: <Badge variant={apiAccess.subscriptionType === 'free' ? 'outline' : 'default'}>
+                      {apiAccess.subscriptionType || 'None'}
+                    </Badge>
+                  </span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Requests Remaining: {apiAccess.requestsRemaining.toLocaleString()}
+                </div>
+              </div>
             </div>
-            <div className="text-sm text-muted-foreground">
-              Requests Remaining: {apiAccess.requestsRemaining.toLocaleString()}
-            </div>
+            <NotificationCenter />
           </div>
         </div>
       </header>
@@ -118,56 +104,7 @@ const ApiDocs: React.FC = () => {
           </TabsList>
 
           <TabsContent value="overview">
-            <Card>
-              <CardHeader>
-                <CardTitle>Production API Overview</CardTitle>
-                <p className="text-muted-foreground">
-                  Real, authenticated API endpoints with rate limiting and subscription-based access control
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Base URL</h3>
-                  <code className="bg-muted p-2 rounded-md block text-sm">
-                    https://cwcduhvwkihpnuaoflps.supabase.co/functions/v1
-                  </code>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">✅ Production Features</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2 text-sm">
-                        <li>• Real API key authentication</li>
-                        <li>• Rate limiting by subscription tier</li>
-                        <li>• Usage tracking and analytics</li>
-                        <li>• Subscription-based access control</li>
-                        <li>• Live agricultural data from Kenya</li>
-                        <li>• CORS-enabled for web applications</li>
-                      </ul>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">🔒 Security Features</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2 text-sm">
-                        <li>• API keys with SHA-256 hashing</li>
-                        <li>• Row-level security policies</li>
-                        <li>• Request logging and monitoring</li>
-                        <li>• IP address tracking</li>
-                        <li>• Automatic key expiration</li>
-                        <li>• User-specific data access</li>
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CardContent>
-            </Card>
+            <ApiOverview />
           </TabsContent>
 
           <TabsContent value="authentication">
@@ -308,45 +245,58 @@ const ApiDocs: React.FC = () => {
                 </p>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {pricingPlans.map((plan, index) => (
-                    <div key={index} className={`border rounded-lg p-6 ${plan.popular ? 'border-primary shadow-lg' : ''} ${plan.accessible ? 'bg-green-50' : 'bg-gray-50'}`}>
-                      {plan.popular && (
-                        <Badge className="mb-4">Most Popular</Badge>
-                      )}
-                      {plan.accessible && (
-                        <Badge variant="outline" className="mb-4 bg-green-100 text-green-800">
-                          Active
-                        </Badge>
-                      )}
-                      <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                      <div className="mb-4">
-                        <span className="text-3xl font-bold">{plan.price}</span>
-                        <span className="text-muted-foreground">{plan.period}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Up to {plan.requests} API requests per month
-                      </p>
-                      <ul className="space-y-2 mb-6">
-                        {plan.features.map((feature, i) => (
-                          <li key={i} className="flex items-center gap-2 text-sm">
-                            <Check className="h-4 w-4 text-green-500" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                      <Button 
-                        className="w-full" 
-                        variant={plan.popular ? "default" : "outline"}
-                        disabled={plan.accessible || plan.name === "Free Tier"}
-                        onClick={() => handleSubscribe(plan.name)}
-                      >
-                        {plan.accessible ? "Current Plan" : 
-                         plan.name === "Free Tier" ? "Active" : "Subscribe"}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
+                {loadingPricing ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {pricingPlans.map((plan, index) => {
+                      const isAccessible = 
+                        (plan.name === 'Free Tier') ||
+                        (plan.name === 'Developer' && (apiAccess.subscriptionType === 'developer' || apiAccess.subscriptionType === 'enterprise')) ||
+                        (plan.name === 'Enterprise' && apiAccess.subscriptionType === 'enterprise');
+
+                      return (
+                        <div key={plan.id} className={`border rounded-lg p-6 ${plan.is_popular ? 'border-primary shadow-lg' : ''} ${isAccessible ? 'bg-green-50' : 'bg-gray-50'}`}>
+                          {plan.is_popular && (
+                            <Badge className="mb-4">Most Popular</Badge>
+                          )}
+                          {isAccessible && (
+                            <Badge variant="outline" className="mb-4 bg-green-100 text-green-800">
+                              Active
+                            </Badge>
+                          )}
+                          <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                          <div className="mb-4">
+                            <span className="text-3xl font-bold">{plan.currency} {plan.price.toLocaleString()}</span>
+                            <span className="text-muted-foreground">{plan.period}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Up to {plan.requests.toLocaleString()} API requests per month
+                          </p>
+                          <ul className="space-y-2 mb-6">
+                            {plan.features.map((feature, i) => (
+                              <li key={i} className="flex items-center gap-2 text-sm">
+                                <Check className="h-4 w-4 text-green-500" />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                          <Button 
+                            className="w-full" 
+                            variant={plan.is_popular ? "default" : "outline"}
+                            disabled={isAccessible || plan.name === "Free Tier"}
+                            onClick={() => handleSubscribe(plan.name)}
+                          >
+                            {isAccessible ? "Current Plan" : 
+                             plan.name === "Free Tier" ? "Active" : "Subscribe"}
+                          </Button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
                 
                 <div className="mt-8 p-4 bg-blue-50 rounded-lg">
                   <h4 className="font-medium mb-2">How API Access Works:</h4>
