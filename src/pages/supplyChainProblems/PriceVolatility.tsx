@@ -1,17 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { fetchKilimoStats } from '@/services/kilimoAPI';
 import { KilimoStats } from '@/types';
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { useNavigate } from 'react-router-dom';
-import { BarChart2, TrendingDown, TrendingUp } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TrendingUp, TrendingDown, AlertTriangle, DollarSign } from 'lucide-react';
 
 const PriceVolatility: React.FC = () => {
   const [kilimoData, setKilimoData] = useState<KilimoStats[]>([]);
@@ -35,118 +33,77 @@ const PriceVolatility: React.FC = () => {
     fetchData();
   }, []);
 
-  // Generate price volatility data based on real county statistics
-  const generateMonthlyPriceData = () => {
-    // Monthly price data for key commodities (simulated)
+  const generatePriceVolatilityData = () => {
     return [
-      { month: 'Jan', maize: 50, beans: 120, potatoes: 45, onions: 60 },
-      { month: 'Feb', maize: 48, beans: 125, potatoes: 43, onions: 55 },
-      { month: 'Mar', maize: 45, beans: 130, potatoes: 40, onions: 50 },
-      { month: 'Apr', maize: 47, beans: 128, potatoes: 42, onions: 53 },
-      { month: 'May', maize: 52, beans: 125, potatoes: 46, onions: 65 },
-      { month: 'Jun', maize: 55, beans: 120, potatoes: 48, onions: 70 },
-      { month: 'Jul', maize: 58, beans: 118, potatoes: 50, onions: 68 },
-      { month: 'Aug', maize: 60, beans: 115, potatoes: 52, onions: 65 },
-      { month: 'Sep', maize: 57, beans: 120, potatoes: 49, onions: 62 },
-      { month: 'Oct', maize: 54, beans: 122, potatoes: 47, onions: 58 },
-      { month: 'Nov', maize: 52, beans: 125, potatoes: 45, onions: 55 },
-      { month: 'Dec', maize: 51, beans: 127, potatoes: 44, onions: 52 },
+      { month: 'Jan', maize: 45, volatility: 12, beans: 120, potatoes: 35 },
+      { month: 'Feb', maize: 52, volatility: 18, beans: 135, potatoes: 42 },
+      { month: 'Mar', maize: 38, volatility: 25, beans: 110, potatoes: 28 },
+      { month: 'Apr', maize: 65, volatility: 35, beans: 150, potatoes: 55 },
+      { month: 'May', maize: 48, volatility: 15, beans: 125, potatoes: 38 },
+      { month: 'Jun', maize: 55, volatility: 20, beans: 140, potatoes: 45 },
     ];
   };
 
-  const generateVolatilityByCounty = () => {
-    // County-level price volatility data (simulated)
+  const generateVolatilityCauses = () => {
     return [
-      { county: 'Nairobi', volatilityIndex: 15 },
-      { county: 'Nakuru', volatilityIndex: 35 },
-      { county: 'Kiambu', volatilityIndex: 20 },
-      { county: 'Meru', volatilityIndex: 40 },
-      { county: 'Machakos', volatilityIndex: 25 },
-      { county: 'Kisumu', volatilityIndex: 30 },
-      { county: 'Trans Nzoia', volatilityIndex: 45 },
-      { county: 'Uasin Gishu', volatilityIndex: 38 },
-    ].sort((a, b) => b.volatilityIndex - a.volatilityIndex);
+      { name: 'Weather Variations', impact: 40, color: '#0088FE' },
+      { name: 'Market Speculation', impact: 25, color: '#00C49F' },
+      { name: 'Supply Chain Disruptions', impact: 20, color: '#FFBB28' },
+      { name: 'Seasonal Demand', impact: 15, color: '#FF8042' },
+    ];
   };
 
-  // Key price volatility drivers and impacts
-  const volatilityImpacts = [
+  const volatilityChallenges = [
     {
-      group: 'Farmers',
-      positive: [
-        'Occasional windfall profits during price spikes',
-        'Incentives to diversify crops and income sources',
-      ],
-      negative: [
-        'Income uncertainty making financial planning difficult',
-        'Challenges in loan repayment during price drops',
-        'Difficulty in making investment decisions',
-        'Reduced willingness to adopt new technologies',
-      ],
+      title: 'Unpredictable Income',
+      description: 'Farmers cannot predict their income from season to season due to price fluctuations.',
+      impact: 'Difficulty in planning investments, inability to secure loans, and reduced quality of life.',
+      solution: 'Forward contracts, price stabilization mechanisms, and diversified income sources.',
     },
     {
-      group: 'Consumers',
-      positive: [
-        'Occasional price drops for food items',
-        'Incentives to diversify food consumption patterns',
-      ],
-      negative: [
-        'Food insecurity when prices rise suddenly',
-        'Household budget disruptions',
-        'Reduced nutritional diversity during price spikes',
-        'Vulnerability for low-income households',
-      ],
+      title: 'Market Timing Challenges',
+      description: 'Farmers struggle to time their sales optimally due to rapid price changes.',
+      impact: 'Selling at suboptimal prices, increased storage costs, and post-harvest losses.',
+      solution: 'Real-time market information, storage solutions, and market intelligence systems.',
     },
     {
-      group: 'Processors',
-      positive: [
-        'Opportunities for strategic purchasing during price drops',
-        'Potential for value addition to stabilize prices',
-      ],
-      negative: [
-        'Unreliable input costs affecting production planning',
-        'Challenges in maintaining consistent product pricing',
-        'Difficulties in long-term contracting with buyers',
-        'Reduced capacity utilization during high-price periods',
-      ],
+      title: 'Investment Planning',
+      description: 'High price volatility makes it difficult to plan for farm investments and expansion.',
+      impact: 'Delayed modernization, reduced productivity, and missed growth opportunities.',
+      solution: 'Risk management tools, crop insurance, and government support programs.',
+    },
+    {
+      title: 'Credit Access',
+      description: 'Volatile income streams make farmers appear risky to financial institutions.',
+      impact: 'Limited access to credit, high interest rates, and reliance on informal lending.',
+      solution: 'Income smoothing mechanisms, collateral alternatives, and financial literacy programs.',
     },
   ];
 
-  // Price volatility mitigation strategies
-  const mitigation = [
+  const mitigationStrategies = [
     {
-      title: 'Storage & Warehousing',
-      description: 'Strategic storage to sell when prices are favorable and buffer against shortages',
-      stakeholders: 'Farmers, Cooperatives, Governments',
-      implementation: 'Warehouse receipt systems, community storage facilities, cold chain infrastructure',
-      challenges: 'High initial investment costs, management expertise requirements',
+      title: 'Contract Farming',
+      description: 'Pre-agreed prices and volumes with buyers to reduce price risk.',
+      benefits: ['Guaranteed income', 'Reduced market risk', 'Access to inputs and technical support'],
+      implementation: 'Partner with processors, exporters, or large retailers for direct contracts.',
     },
     {
-      title: 'Forward Contracts',
-      description: 'Pre-agreed prices for future delivery, protecting against price fluctuations',
-      stakeholders: 'Farmers, Processors, Traders',
-      implementation: 'Contract farming arrangements, formal and informal forward agreements',
-      challenges: 'Contract enforcement, quality specification disputes',
+      title: 'Cooperative Marketing',
+      description: 'Farmers pool resources to achieve better market power and price negotiation.',
+      benefits: ['Collective bargaining power', 'Shared storage costs', 'Market information sharing'],
+      implementation: 'Form or join existing farmer cooperatives for collective selling.',
     },
     {
-      title: 'Price Hedging',
-      description: 'Using futures and options markets to lock in prices or establish price floors',
-      stakeholders: 'Large Producers, Exporters, Cooperatives',
-      implementation: 'Commodity exchanges, over-the-counter derivatives',
-      challenges: 'Limited availability for African commodities, knowledge barriers',
+      title: 'Value Addition',
+      description: 'Processing raw products to create value-added products with stable demand.',
+      benefits: ['Higher profit margins', 'Reduced perishability', 'Market differentiation'],
+      implementation: 'Invest in simple processing equipment or partner with processors.',
     },
     {
       title: 'Diversification',
-      description: 'Growing multiple crops or engaging in varied agricultural activities to spread risk',
-      stakeholders: 'Farmers, Farm Households',
-      implementation: 'Crop rotation, mixed farming, on-farm and off-farm income sources',
-      challenges: 'Resource constraints, market access for diverse products',
-    },
-    {
-      title: 'Market Information Systems',
-      description: 'Improving access to price information across markets to make informed decisions',
-      stakeholders: 'All Supply Chain Actors, Government',
-      implementation: 'Mobile price information services, radio broadcasts, digital marketplaces',
-      challenges: 'Data accuracy, timely dissemination, rural connectivity',
+      description: 'Growing multiple crops or combining farming with other income sources.',
+      benefits: ['Risk spreading', 'Stable income streams', 'Reduced dependency on single commodity'],
+      implementation: 'Plan crop rotation and explore complementary income activities.',
     },
   ];
 
@@ -155,103 +112,40 @@ const PriceVolatility: React.FC = () => {
       <Header />
       <main className="py-12 px-6 max-w-7xl mx-auto">
         <div className="mb-10 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Price Volatility Issues</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Price Volatility</h1>
           <p className="text-muted-foreground max-w-3xl mx-auto">
-            Understanding and mitigating agricultural price fluctuations in Kenyan markets
+            Understanding and managing agricultural price fluctuations that impact farmer incomes and market stability
           </p>
         </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full grid grid-cols-1 sm:grid-cols-3 gap-2 mb-8">
             <TabsTrigger value="overview" className="flex items-center gap-2">
-              <BarChart2 className="h-4 w-4" />
-              <span>Overview & Drivers</span>
-            </TabsTrigger>
-            <TabsTrigger value="impacts" className="flex items-center gap-2">
-              <TrendingDown className="h-4 w-4" />
-              <span>Impacts & Costs</span>
-            </TabsTrigger>
-            <TabsTrigger value="mitigation" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
-              <span>Mitigation Strategies</span>
+              <span>Price Trends</span>
+            </TabsTrigger>
+            <TabsTrigger value="challenges" className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              <span>Impact Analysis</span>
+            </TabsTrigger>
+            <TabsTrigger value="solutions" className="flex items-center gap-2">
+              <DollarSign className="h-4 w-4" />
+              <span>Risk Management</span>
             </TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview">
             <Card className="mb-8">
               <CardHeader>
-                <CardTitle>Price Volatility Challenges</CardTitle>
+                <CardTitle>Price Volatility Analysis</CardTitle>
                 <CardDescription>
-                  Impact of price fluctuations on farmers and the supply chain
+                  Historical price trends and volatility patterns for major agricultural commodities in Kenya
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Badge variant="outline" className="mb-6 bg-blue-50">
-                  Based on analysis of Kilimo statistics and agricultural price data
+                  Based on Kilimo statistics and market data analysis
                 </Badge>
-                
-                <div className="mb-8">
-                  <h3 className="text-lg font-medium mb-4">Understanding Agricultural Price Volatility</h3>
-                  <p className="mb-4">
-                    Price volatility refers to the rate and degree at which agricultural commodity prices rise and fall. 
-                    High volatility creates uncertainty for all actors in the supply chain, from farmers to consumers.
-                  </p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Key Drivers of Price Volatility</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="list-disc pl-6 space-y-2">
-                          <li>
-                            <span className="font-medium">Seasonal Production Cycles:</span> Concentrated harvest periods followed by scarcity
-                          </li>
-                          <li>
-                            <span className="font-medium">Weather Variability:</span> Droughts, floods, and unpredictable rainfall patterns
-                          </li>
-                          <li>
-                            <span className="font-medium">Limited Storage Infrastructure:</span> Forcing immediate post-harvest sales
-                          </li>
-                          <li>
-                            <span className="font-medium">Market Information Gaps:</span> Asymmetric information among market participants
-                          </li>
-                          <li>
-                            <span className="font-medium">Supply Chain Fragmentation:</span> Multiple intermediaries amplifying price signals
-                          </li>
-                          <li>
-                            <span className="font-medium">Government Interventions:</span> Sudden policy changes affecting markets
-                          </li>
-                        </ul>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">Measuring Price Volatility</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="mb-4">
-                          Price volatility is typically measured using these indicators:
-                        </p>
-                        <ul className="list-disc pl-6 space-y-2">
-                          <li>
-                            <span className="font-medium">Coefficient of Variation:</span> Standard deviation divided by mean price
-                          </li>
-                          <li>
-                            <span className="font-medium">Month-to-Month Price Changes:</span> Percentage changes between consecutive months
-                          </li>
-                          <li>
-                            <span className="font-medium">Seasonal Price Index:</span> Comparing prices across seasons relative to annual average
-                          </li>
-                          <li>
-                            <span className="font-medium">Price Trend Deviations:</span> Measuring variations from long-term price trends
-                          </li>
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
                 
                 {isLoading ? (
                   <div className="flex justify-center py-12">
@@ -260,348 +154,167 @@ const PriceVolatility: React.FC = () => {
                 ) : (
                   <>
                     <div className="mb-8">
-                      <h3 className="text-lg font-medium mb-4">Monthly Price Trends for Key Commodities (KES/kg)</h3>
+                      <h3 className="text-lg font-medium mb-4">Price Trends and Volatility (KES/kg)</h3>
                       <ResponsiveContainer width="100%" height={400}>
-                        <LineChart
-                          data={generateMonthlyPriceData()}
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
+                        <LineChart data={generatePriceVolatilityData()}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="month" />
                           <YAxis />
                           <Tooltip />
                           <Legend />
-                          <Line type="monotone" dataKey="maize" stroke="#8884d8" activeDot={{ r: 8 }} />
-                          <Line type="monotone" dataKey="beans" stroke="#82ca9d" />
-                          <Line type="monotone" dataKey="potatoes" stroke="#ffc658" />
-                          <Line type="monotone" dataKey="onions" stroke="#ff8042" />
+                          <Line type="monotone" dataKey="maize" stroke="#8884d8" strokeWidth={2} />
+                          <Line type="monotone" dataKey="beans" stroke="#82ca9d" strokeWidth={2} />
+                          <Line type="monotone" dataKey="potatoes" stroke="#ffc658" strokeWidth={2} />
+                          <Line type="monotone" dataKey="volatility" stroke="#ff7300" strokeDasharray="5 5" name="Volatility Index" />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
                     
-                    <div className="mb-8">
-                      <h3 className="text-lg font-medium mb-4">Price Volatility Index by County</h3>
-                      <ResponsiveContainer width="100%" height={400}>
-                        <BarChart
-                          data={generateVolatilityByCounty()}
-                          layout="vertical"
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis type="number" />
-                          <YAxis dataKey="county" type="category" />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="volatilityIndex" name="Price Volatility Index" fill="#8884d8" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        Price Volatility Index represents the coefficient of variation in monthly prices across major agricultural commodities
-                      </p>
-                    </div>
-                    
-                    <div className="p-4 border rounded-lg bg-muted/30">
-                      <h3 className="text-lg font-medium mb-4">Spotlight: Seasonal Price Patterns</h3>
-                      <p className="mb-4">
-                        Agricultural prices in Kenya follow distinct seasonal patterns, creating predictable periods of price highs and lows:
-                      </p>
-                      
-                      <div className="overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Commodity</TableHead>
-                              <TableHead>Low Price Period</TableHead>
-                              <TableHead>High Price Period</TableHead>
-                              <TableHead>Seasonal Price Difference</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell>Maize</TableCell>
-                              <TableCell>August-September</TableCell>
-                              <TableCell>January-March</TableCell>
-                              <TableCell>30-45%</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>Beans</TableCell>
-                              <TableCell>July-August</TableCell>
-                              <TableCell>November-January</TableCell>
-                              <TableCell>25-35%</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>Potatoes</TableCell>
-                              <TableCell>May-June</TableCell>
-                              <TableCell>December-February</TableCell>
-                              <TableCell>50-70%</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>Onions</TableCell>
-                              <TableCell>December-January</TableCell>
-                              <TableCell>May-July</TableCell>
-                              <TableCell>60-80%</TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div>
+                        <h3 className="text-lg font-medium mb-4">Volatility Causes</h3>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <PieChart>
+                            <Pie
+                              data={generateVolatilityCauses()}
+                              cx="50%"
+                              cy="50%"
+                              labelLine={false}
+                              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                              outerRadius={100}
+                              fill="#8884d8"
+                              dataKey="impact"
+                            >
+                              {generateVolatilityCauses().map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                          </PieChart>
+                        </ResponsiveContainer>
                       </div>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-              <CardFooter>
-                <Button 
-                  onClick={() => setActiveTab('impacts')}
-                  className="ml-auto"
-                >
-                  Explore Price Volatility Impacts
-                </Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="impacts">
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle>Impacts & Economic Costs</CardTitle>
-                <CardDescription>
-                  Understanding how price volatility affects different actors in the agricultural supply chain
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="flex justify-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="mb-10">
-                      <h3 className="text-lg font-medium mb-6">Price Variability: Impacts on Supply Chain Actors</h3>
                       
-                      {volatilityImpacts.map((impact, index) => (
-                        <div key={index} className="mb-8">
-                          <h4 className="font-medium text-lg mb-4">Impact on {impact.group}</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Card className="border-l-4 border-l-red-500">
-                              <CardHeader className="pb-2">
-                                <CardTitle className="text-base">Negative Impacts</CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <ul className="list-disc pl-6 space-y-2">
-                                  {impact.negative.map((item, idx) => (
-                                    <li key={idx}>{item}</li>
-                                  ))}
-                                </ul>
-                              </CardContent>
-                            </Card>
-                            
-                            <Card className="border-l-4 border-l-green-500">
-                              <CardHeader className="pb-2">
-                                <CardTitle className="text-base">Positive Impacts</CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <ul className="list-disc pl-6 space-y-2">
-                                  {impact.positive.map((item, idx) => (
-                                    <li key={idx}>{item}</li>
-                                  ))}
-                                </ul>
-                              </CardContent>
-                            </Card>
+                      <div className="p-4 border rounded-lg">
+                        <h3 className="text-lg font-medium mb-4">Key Statistics</h3>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Average Price Volatility</span>
+                            <Badge variant="outline">±25%</Badge>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Seasonal Price Variation</span>
+                            <Badge variant="outline">±40%</Badge>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Highest Volatility Crop</span>
+                            <Badge variant="destructive">Vegetables</Badge>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Most Stable Crop</span>
+                            <Badge variant="default">Cereals</Badge>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                    
-                    <Separator className="my-8" />
-                    
-                    <div className="mb-10">
-                      <h3 className="text-lg font-medium mb-6">Economic Costs of Price Volatility</h3>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-4">
-                          <h4 className="font-medium">Household Level Costs</h4>
-                          <ul className="list-disc pl-6 space-y-2">
-                            <li>Average farm household income loss due to suboptimal selling: 15-25%</li>
-                            <li>Consumption reduction during price spikes: 10-20% for vulnerable households</li>
-                            <li>Increased borrowing at high interest rates during price drops</li>
-                            <li>Reduced investment in farming inputs and technology</li>
-                            <li>Diversion of resources to less productive but more stable activities</li>
-                          </ul>
-                        </div>
-                        
-                        <div className="space-y-4">
-                          <h4 className="font-medium">Macroeconomic Costs</h4>
-                          <ul className="list-disc pl-6 space-y-2">
-                            <li>Estimated national productivity loss: 3-5% of agricultural GDP</li>
-                            <li>Emergency food security interventions: KES 5-10 billion annually</li>
-                            <li>Reduced agricultural investment: Est. KES 15-20 billion annually</li>
-                            <li>Reduced export competitiveness in international markets</li>
-                            <li>Increased government expenditure on price stabilization measures</li>
-                          </ul>
-                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="mb-8">
-                      <h3 className="text-lg font-medium mb-4">Price Variability Visualization: Maize Monthly Prices</h3>
-                      <ResponsiveContainer width="100%" height={400}>
-                        <AreaChart
-                          data={generateMonthlyPriceData()}
-                          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="month" />
-                          <YAxis />
-                          <Tooltip />
-                          <Area type="monotone" dataKey="maize" stroke="#8884d8" fill="#8884d8" />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        Monthly maize prices (KES/kg) showing seasonal patterns and price volatility
-                      </p>
-                    </div>
-                    
-                    <div className="p-6 border rounded-lg bg-blue-50">
-                      <h3 className="text-lg font-medium mb-4">Case Study: Potato Price Volatility in Nyandarua</h3>
-                      <p className="mb-4">
-                        Nyandarua County, a major potato producing region, experiences some of the highest price 
-                        volatility for potatoes in Kenya. In a typical year:
-                      </p>
-                      <ul className="list-disc pl-6 space-y-2 mb-4">
-                        <li>Farm-gate prices fluctuate between KES 800 and KES 3,500 per 110kg bag</li>
-                        <li>Price can drop by 60% within a month during peak harvest</li>
-                        <li>Farmers who sell immediately after harvest receive only 30% of what they could earn by storing for 2-3 months</li>
-                        <li>Limited storage infrastructure forces 85% of farmers to sell within two weeks of harvest</li>
-                        <li>Potato farmer income variability: 70% annual coefficient of variation</li>
-                      </ul>
-                      <p>
-                        The implementation of community storage facilities in six locations has helped 1,200 farmers 
-                        reduce their exposure to price volatility, increasing average income by 40%.
-                      </p>
                     </div>
                   </>
                 )}
               </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="challenges">
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle>Impact of Price Volatility</CardTitle>
+                <CardDescription>
+                  How price fluctuations affect farmers and the agricultural sector
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {volatilityChallenges.map((challenge, index) => (
+                    <Card key={index} className="border-l-4 border-l-red-500">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg">{challenge.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <p>{challenge.description}</p>
+                        <p><span className="font-medium">Impact:</span> {challenge.impact}</p>
+                        <p><span className="font-medium">Solutions:</span> {challenge.solution}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                
+                <div className="mt-10 p-4 border rounded-lg bg-muted/30">
+                  <h3 className="text-lg font-medium mb-4">Economic Impact of Price Volatility</h3>
+                  <ul className="list-disc pl-6 space-y-2">
+                    <li>Smallholder farmers lose an estimated 15-30% of potential income due to poor market timing</li>
+                    <li>Price volatility increases the cost of agricultural credit by 2-5 percentage points</li>
+                    <li>High volatility discourages investment in productivity-enhancing technologies</li>
+                    <li>Food security is threatened as farmers shift to subsistence farming to avoid market risks</li>
+                  </ul>
+                </div>
+              </CardContent>
               <CardFooter>
-                <Button 
-                  onClick={() => setActiveTab('mitigation')}
-                  className="ml-auto"
-                >
-                  Explore Mitigation Strategies
+                <Button onClick={() => setActiveTab('solutions')} className="ml-auto">
+                  Explore Risk Management Solutions
                 </Button>
               </CardFooter>
             </Card>
           </TabsContent>
           
-          <TabsContent value="mitigation">
+          <TabsContent value="solutions">
             <Card className="mb-8">
               <CardHeader>
-                <CardTitle>Price Volatility Mitigation Strategies</CardTitle>
+                <CardTitle>Price Risk Management Strategies</CardTitle>
                 <CardDescription>
-                  Approaches and tools to manage and reduce agricultural price fluctuations
+                  Proven approaches to reduce exposure to price volatility
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="mb-8">
-                  <h3 className="text-lg font-medium mb-6">Strategies to Mitigate Price Volatility</h3>
-                  
-                  <div className="space-y-6">
-                    {mitigation.map((strategy, index) => (
-                      <Card key={index}>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-lg">{strategy.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                          <p>{strategy.description}</p>
-                          <p><span className="font-medium">Key Stakeholders:</span> {strategy.stakeholders}</p>
-                          <p><span className="font-medium">Implementation:</span> {strategy.implementation}</p>
-                          <p><span className="font-medium">Challenges:</span> {strategy.challenges}</p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {mitigationStrategies.map((strategy, index) => (
+                    <Card key={index}>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg">{strategy.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <p className="text-sm">{strategy.description}</p>
+                        <div>
+                          <h4 className="font-medium text-sm mb-2">Benefits:</h4>
+                          <ul className="list-disc pl-5 text-sm space-y-1">
+                            {strategy.benefits.map((benefit, idx) => (
+                              <li key={idx}>{benefit}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-sm mb-2">Implementation:</h4>
+                          <p className="text-sm text-muted-foreground">{strategy.implementation}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
                 
-                <Separator className="my-8" />
-                
-                <div className="mb-8">
-                  <h3 className="text-lg font-medium mb-6">Success Stories: Effective Price Risk Management</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card className="border-l-4 border-l-green-500">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">Warehouse Receipt System in Meru</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        <p>
-                          A warehouse receipt system implemented for maize farmers in Meru County allowed 5,000 farmers
-                          to store grain during harvest and sell when prices improved.
-                        </p>
-                        <p><span className="font-medium">Results:</span> 35% average price improvement, with farmers
-                        receiving loans against stored grain while waiting for better prices.</p>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card className="border-l-4 border-l-green-500">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">Contract Farming for French Beans</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        <p>
-                          Export companies in Kirinyaga County established fixed-price contracts with 2,500 smallholder
-                          farmers for French bean production.
-                        </p>
-                        <p><span className="font-medium">Results:</span> Price stability throughout the season, increased
-                        farmer willingness to invest in quality inputs, and 40% higher average incomes.</p>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card className="border-l-4 border-l-green-500">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">Cooperative Storage for Potatoes</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        <p>
-                          Nyandarua Potato Farmers Cooperative built climate-controlled storage facilities allowing 
-                          members to extend potato shelf life from 2 weeks to 3 months.
-                        </p>
-                        <p><span className="font-medium">Results:</span> Price volatility reduced by 60%, off-season
-                        premium prices captured, and more stable market supply.</p>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card className="border-l-4 border-l-green-500">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base">Price Information System for Smallholders</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        <p>
-                          M-Farm SMS price information service providing daily market prices to 100,000+ smallholder
-                          farmers across Kenya.
-                        </p>
-                        <p><span className="font-medium">Results:</span> Better informed selling decisions, 15-20% 
-                        price improvements, and increased farmer bargaining power with traders.</p>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-                
-                <div className="p-6 border rounded-lg bg-muted/30">
-                  <h3 className="text-lg font-medium mb-4">AgriTender Connect Solutions for Price Volatility</h3>
-                  <p className="mb-6">
-                    Our platform offers several tools and services to help farmers manage price volatility:
+                <div className="mt-10 p-6 border rounded-lg bg-green-50">
+                  <h3 className="text-xl font-medium mb-4">AgriTender Connect Price Risk Tools</h3>
+                  <p className="mb-4">
+                    Our platform offers several tools to help farmers manage price volatility:
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <Card>
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-base">Price Trend Analytics</CardTitle>
+                        <CardTitle className="text-base">Price Alerts</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm">Access historical price data and predictive analysis for major commodities</p>
+                        <p className="text-sm">Get notified when prices reach your target levels</p>
                       </CardContent>
                       <CardFooter>
-                        <Button variant="outline" size="sm" className="w-full" onClick={() => navigate('/commodity-trading/price-trends')}>
-                          Access Price Trends
+                        <Button variant="outline" size="sm" className="w-full" onClick={() => navigate('/market-information')}>
+                          Set Price Alerts
                         </Button>
                       </CardFooter>
                     </Card>
@@ -611,32 +324,32 @@ const PriceVolatility: React.FC = () => {
                         <CardTitle className="text-base">Forward Contracts</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm">Connect with buyers offering forward contracts with fixed or minimum prices</p>
+                        <p className="text-sm">Lock in prices for future delivery to reduce risk</p>
                       </CardContent>
                       <CardFooter>
-                        <Button variant="outline" size="sm" className="w-full" onClick={() => navigate('/commodity-trading/marketplace')}>
-                          Find Contract Opportunities
+                        <Button variant="outline" size="sm" className="w-full" onClick={() => navigate('/commodity-trading')}>
+                          Explore Contracts
                         </Button>
                       </CardFooter>
                     </Card>
                     
                     <Card>
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-base">Storage Solutions</CardTitle>
+                        <CardTitle className="text-base">Market Intelligence</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm">Find warehousing and storage options to help time market sales</p>
+                        <p className="text-sm">Access forecasts and trend analysis for better timing</p>
                       </CardContent>
                       <CardFooter>
-                        <Button variant="outline" size="sm" className="w-full" onClick={() => navigate('/supply-chain-api')}>
-                          Find Storage Services
+                        <Button variant="outline" size="sm" className="w-full" onClick={() => navigate('/market-information')}>
+                          View Forecasts
                         </Button>
                       </CardFooter>
                     </Card>
                   </div>
                   
                   <Button className="w-full" onClick={() => navigate('/commodity-trading')}>
-                    Explore All Price Management Tools
+                    Start Managing Price Risk Today
                   </Button>
                 </div>
               </CardContent>

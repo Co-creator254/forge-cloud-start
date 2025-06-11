@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/ThemeProvider';
@@ -50,6 +51,7 @@ function App() {
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/commodity-trading" element={<CommodityTrading />} />
                   <Route path="/logistics" element={<Logistics />} />
+                  <Route path="/logistics-solutions-map" element={<Logistics />} />
                   <Route path="/service-providers" element={<ServiceProviders />} />
                   <Route path="/market-information" element={<MarketInformation />} />
                   <Route path="/community-forum" element={<CommunityForum />} />
