@@ -63,10 +63,84 @@ export {
   getAllCommodityPrices
 } from './cronJobs';
 
-// Service Provider Registration
+// Authentication Services
+export {
+  signUp,
+  signIn,
+  signOut,
+  getCurrentUser,
+  getCurrentUserProfile,
+  updateUserProfile
+} from './authService';
+
+// Service Provider Services
+export {
+  createServiceProvider,
+  getServiceProviders,
+  updateServiceProvider
+} from './serviceProviderService';
+
+// Warehouse Services
+export {
+  createWarehouse,
+  getWarehouses,
+  createWarehouseBooking,
+  getUserWarehouseBookings
+} from './warehouseService';
+
+// Transport Services
+export {
+  createTransportRequest,
+  getTransportRequests,
+  updateTransportRequest,
+  getUserTransportRequests
+} from './transportService';
+
+// Produce Services
+export {
+  createProduceListing,
+  getProduceListings,
+  updateProduceListing,
+  getUserProduceListings
+} from './produceService';
+
+// Training Services
+export {
+  createTrainingEvent,
+  getTrainingEvents,
+  registerForTraining
+} from './trainingService';
+
+// Market Linkage Services
+export {
+  createMarketLinkage,
+  getMarketLinkages,
+  applyToMarketLinkage
+} from './marketLinkageService';
+
+// Service Provider Registration (legacy compatibility)
 export const registerServiceProvider = async (serviceProvider: any) => {
-  // This would connect to Supabase in a real implementation
   console.log('Registering service provider:', serviceProvider);
-  await simulateDelay(1000);
-  return { success: true, id: crypto.randomUUID() };
+  
+  try {
+    const result = await createServiceProvider({
+      businessName: serviceProvider.businessName || serviceProvider.name,
+      serviceType: serviceProvider.serviceType || serviceProvider.businessType,
+      description: serviceProvider.description,
+      location: serviceProvider.location?.specificLocation || serviceProvider.location,
+      contactPhone: serviceProvider.contactInfo?.phone || serviceProvider.phone,
+      contactEmail: serviceProvider.contactInfo?.email || serviceProvider.email,
+      websiteUrl: serviceProvider.website,
+      countiesServed: serviceProvider.counties || [],
+      servicesOffered: serviceProvider.services || [],
+      certifications: serviceProvider.certifications || [],
+      experienceYears: serviceProvider.experienceYears || 0,
+      hourlyRate: serviceProvider.rates ? parseFloat(serviceProvider.rates) : undefined,
+    });
+    
+    return { success: true, id: result.id, data: result };
+  } catch (error) {
+    console.error('Error registering service provider:', error);
+    throw error;
+  }
 };
