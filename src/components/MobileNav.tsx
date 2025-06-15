@@ -1,73 +1,115 @@
 
-import * as React from "react";
-import { Link } from "react-router-dom";
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { 
+  Menu, 
+  Home, 
+  TrendingUp, 
+  Truck, 
+  Users, 
+  MessageCircle, 
+  BarChart3,
+  DollarSign,
+  Megaphone
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-const items = [
+const navigationItems = [
   {
-    title: "Home",
-    href: "/",
+    name: 'Home',
+    href: '/',
+    icon: Home,
   },
   {
-    title: "Commodity Trading",
-    href: "/commodity-trading",
+    name: 'Market Data',
+    href: '/kilimo-ams-data',
+    icon: TrendingUp,
   },
   {
-    title: "Supply Chain",
-    href: "/supply-chain-problems",
+    name: 'Logistics',
+    href: '/logistics',
+    icon: Truck,
   },
   {
-    title: "Data",
-    href: "/kilimo-ams-data",
+    name: 'Service Providers',
+    href: '/service-providers',
+    icon: Users,
   },
   {
-    title: "APIs",
-    href: "/api-docs",
+    name: 'Advertise Business',
+    href: '/business-marketing',
+    icon: Megaphone,
+    highlight: true,
+  },
+  {
+    name: 'Trading',
+    href: '/commodity-trading',
+    icon: DollarSign,
+  },
+  {
+    name: 'Community',
+    href: '/community-forum',
+    icon: MessageCircle,
+  },
+  {
+    name: 'Analytics',
+    href: '/sentiment-analysis',
+    icon: BarChart3,
   },
 ];
 
-export function MobileNav() {
-  const [open, setOpen] = React.useState(false);
+export const MobileNav: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button
-          variant="ghost"
-          className="mr-2 px-0 text-base sm:hidden"
-          aria-label="Toggle Menu"
-        >
-          <Menu className="h-6 w-6" />
-          <span className="sr-only">Toggle menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="pr-0">
-        <Link
-          to="/"
-          className="flex items-center"
-          onClick={() => setOpen(false)}
-        >
-          <span className="font-bold">AgriConnect</span>
-        </Link>
-        <div className="flex flex-col space-y-3 mt-4">
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className="text-sm font-medium transition-colors hover:text-primary"
-              onClick={() => setOpen(false)}
-            >
-              {item.title}
+    <div className="md:hidden">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon">
+            <Menu className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-80">
+          <div className="flex flex-col space-y-4 mt-4">
+            <Link to="/" className="flex items-center space-x-2 mb-6" onClick={() => setOpen(false)}>
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground font-bold">A</span>
+              </div>
+              <span className="font-bold text-lg">AgriConnect</span>
             </Link>
-          ))}
-        </div>
-      </SheetContent>
-    </Sheet>
+            
+            {navigationItems.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors",
+                    isActive 
+                      ? "bg-primary text-primary-foreground" 
+                      : item.highlight
+                      ? "bg-green-50 text-green-700 hover:bg-green-100"
+                      : "hover:bg-muted"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.name}</span>
+                  {item.highlight && (
+                    <span className="ml-auto text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">
+                      New
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
   );
-}
+};
