@@ -123,6 +123,7 @@ export const registerServiceProvider = async (serviceProvider: any) => {
   console.log('Registering service provider:', serviceProvider);
   
   try {
+    const { createServiceProvider } = await import('./serviceProviderService');
     const result = await createServiceProvider({
       businessName: serviceProvider.businessName || serviceProvider.name,
       serviceType: serviceProvider.serviceType || serviceProvider.businessType,

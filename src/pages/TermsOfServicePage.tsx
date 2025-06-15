@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Scale, AlertTriangle, Shield, Users, Gavel, FileText } from 'lucide-react';
+import { Scale, AlertTriangle, Shield, Users, Gavel, FileText, Database } from 'lucide-react';
 
 const TermsOfServicePage: React.FC = () => {
   return (
@@ -17,7 +16,7 @@ const TermsOfServicePage: React.FC = () => {
           <div className="flex flex-wrap gap-2">
             <Badge variant="outline">Effective: January 1, 2024</Badge>
             <Badge variant="outline">Last Updated: {new Date().toLocaleDateString()}</Badge>
-            <Badge variant="outline">Version 2.1</Badge>
+            <Badge variant="outline">Version 2.2</Badge>
           </div>
           <div className="p-4 bg-red-50 rounded-lg border border-red-200">
             <div className="flex items-start space-x-2">
@@ -74,8 +73,59 @@ const TermsOfServicePage: React.FC = () => {
 
           <section>
             <h2 className="text-2xl font-semibold mb-4 flex items-center">
+              <Database className="mr-2 h-6 w-6 text-blue-600" />
+              2. Open Data Policy Compliance
+            </h2>
+            
+            <div className="space-y-4">
+              <div className="p-4 border rounded-lg bg-green-50">
+                <h3 className="font-semibold mb-2">Kenya Ministry of Agriculture Open Data Adherence</h3>
+                <p className="text-sm mb-3">
+                  AgriConnect fully adheres to the Kenya Ministry of Agriculture and Livestock Development's 
+                  Open Data Policy, ensuring transparent, accessible, and responsible agricultural data sharing.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <h4 className="font-medium text-green-700 mb-2">Data Quality Standards</h4>
+                    <ul className="list-disc list-inside space-y-1 text-sm">
+                      <li>Complete data without privacy violations</li>
+                      <li>Primary data traceable to source</li>
+                      <li>Timely updates preserving data value</li>
+                      <li>Accessible to widest user range</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-green-700 mb-2">Technical Standards</h4>
+                    <ul className="list-disc list-inside space-y-1 text-sm">
+                      <li>Machine-processable structured data</li>
+                      <li>Non-discriminatory access policies</li>
+                      <li>License-free, non-proprietary formats</li>
+                      <li>Reviewable with designated contacts</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold mb-2">Our Data Commitments</h3>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li><strong>Open by Default:</strong> Non-sensitive agricultural data freely available</li>
+                  <li><strong>High-Quality APIs:</strong> Free, reliable application programming interfaces</li>
+                  <li><strong>Government Partnerships:</strong> Collaboration with MoA&LD and counties</li>
+                  <li><strong>Security Standards:</strong> Highest privacy and security protections</li>
+                  <li><strong>Systematic Renewal:</strong> Regular data updates and historical preservation</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <Separator />
+
+          <section>
+            <h2 className="text-2xl font-semibold mb-4 flex items-center">
               <Users className="mr-2 h-6 w-6 text-blue-600" />
-              2. User Responsibilities and Conduct
+              3. User Responsibilities and Conduct
             </h2>
             
             <div className="space-y-6">
@@ -144,7 +194,7 @@ const TermsOfServicePage: React.FC = () => {
           <section>
             <h2 className="text-2xl font-semibold mb-4 flex items-center">
               <Shield className="mr-2 h-6 w-6 text-blue-600" />
-              3. Platform Disclaimers and Limitations
+              4. Platform Disclaimers and Limitations
             </h2>
             
             <div className="space-y-4">
@@ -191,7 +241,7 @@ const TermsOfServicePage: React.FC = () => {
           <section>
             <h2 className="text-2xl font-semibold mb-4 flex items-center">
               <Gavel className="mr-2 h-6 w-6 text-blue-600" />
-              4. Limitation of Liability
+              5. Limitation of Liability
             </h2>
             
             <div className="space-y-4">
@@ -236,7 +286,7 @@ const TermsOfServicePage: React.FC = () => {
           <Separator />
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">5. Intellectual Property Rights</h2>
+            <h2 className="text-2xl font-semibold mb-4">6. Intellectual Property Rights</h2>
             
             <div className="space-y-4">
               <div className="p-4 border rounded-lg">
@@ -266,7 +316,7 @@ const TermsOfServicePage: React.FC = () => {
           <Separator />
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">6. Payment and Financial Terms</h2>
+            <h2 className="text-2xl font-semibold mb-4">7. Payment and Financial Terms</h2>
             
             <div className="space-y-4">
               <div className="p-4 border rounded-lg">
@@ -302,7 +352,7 @@ const TermsOfServicePage: React.FC = () => {
           <Separator />
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">7. Dispute Resolution</h2>
+            <h2 className="text-2xl font-semibold mb-4">8. Dispute Resolution</h2>
             
             <div className="space-y-4">
               <div className="p-4 border rounded-lg">
@@ -336,7 +386,7 @@ const TermsOfServicePage: React.FC = () => {
           <Separator />
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">8. Termination</h2>
+            <h2 className="text-2xl font-semibold mb-4">9. Termination</h2>
             
             <div className="space-y-4">
               <div className="p-4 border rounded-lg">
@@ -365,7 +415,7 @@ const TermsOfServicePage: React.FC = () => {
           <Separator />
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">9. Contact Information</h2>
+            <h2 className="text-2xl font-semibold mb-4">10. Contact Information</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
