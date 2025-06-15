@@ -29,6 +29,7 @@ import SupplyChainProblems from './pages/SupplyChainProblems';
 import DataManagement from './pages/DataManagement';
 import BusinessMarketing from './pages/BusinessMarketing';
 import DataStatus from './pages/DataStatus';
+import Profile from './pages/Profile';
 
 // Supply Chain Problem Pages
 import PostHarvestLosses from './pages/supplyChainProblems/PostHarvestLosses';
@@ -67,6 +68,7 @@ function App() {
                   <Route path="/data-management" element={<DataManagement />} />
                   <Route path="/business-marketing" element={<BusinessMarketing />} />
                   <Route path="/data-status" element={<DataStatus />} />
+                  <Route path="/profile" element={<Profile />} />
                   
                   {/* Supply Chain Problem Routes */}
                   <Route path="/supply-chain-problems/post-harvest-losses" element={<PostHarvestLosses />} />
