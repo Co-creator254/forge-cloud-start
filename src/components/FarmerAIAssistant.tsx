@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { useAssistantData } from '@/hooks/use-assistant-data';
 import AssistantCard from '@/components/ai-assistant/AssistantCard';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Loader2, WifiOff } from 'lucide-react';
+import { AlertCircle, Loader2, WifiOff, Globe } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Message } from '@/features/ai-assistant/types';
 import { detectLanguageAdvanced, generateMultilingualResponse } from '@/services/ai/multilingualAssistant';
 import { EnhancedMessageInput } from '@/components/ai-assistant/EnhancedMessageInput';
+import { detectLanguage } from '@/features/ai-assistant/utils/languageSupport';
+import { generateResponse } from '@/features/ai-assistant/responseGenerator';
 
 const FarmerAIAssistant: React.FC = () => {
   // Fetch all agricultural data from Supabase
@@ -25,6 +27,7 @@ const FarmerAIAssistant: React.FC = () => {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [lastDetectedLanguage, setLastDetectedLanguage] = useState<string>('english');
 
   // Show toast notification when there's an error with data loading
   useEffect(() => {
@@ -41,6 +44,10 @@ const FarmerAIAssistant: React.FC = () => {
   const handleSendMessage = async (input: string, detectedLanguage?: string) => {
     // Don't allow empty messages
     if (!input.trim()) return;
+
+    // Detect language from the message
+    const messageLanguage = detectedLanguage || detectLanguage(input);
+    setLastDetectedLanguage(messageLanguage);
 
     // Check if data is available before proceeding
     if (data.markets.length === 0 && data.forecasts.length === 0 && data.warehouses.length === 0) {
@@ -63,15 +70,15 @@ const FarmerAIAssistant: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Detect language if not provided
-      const language = detectedLanguage || await detectLanguageAdvanced(input);
-      console.log(`Detected language: ${language}`);
-
-      // Generate AI response using Hugging Face models
-      const responseContent = await generateMultilingualResponse(
+      // Generate response using the enhanced response generator
+      console.log(`Processing message in ${messageLanguage}: "${input}"`);
+      
+      const responseContent = generateResponse(
         input,
-        data,
-        language
+        data.markets,
+        data.forecasts,
+        data.warehouses,
+        data.transporters
       );
       
       const aiResponse: Message = {
@@ -83,11 +90,11 @@ const FarmerAIAssistant: React.FC = () => {
       
       setMessages(prev => [...prev, aiResponse]);
       
-      // Show success toast for multilingual detection
-      if (language !== 'english') {
+      // Show language detection feedback
+      if (messageLanguage !== 'english') {
         toast({
           title: "Language Detected",
-          description: `Responding in ${language}`,
+          description: `Responding in ${messageLanguage.charAt(0).toUpperCase() + messageLanguage.slice(1)}`,
           duration: 3000,
         });
       }
@@ -95,10 +102,18 @@ const FarmerAIAssistant: React.FC = () => {
     } catch (error) {
       console.error('Error generating AI response:', error);
       
-      // Fallback response
+      // Fallback response in detected language
+      const fallbackResponses = {
+        swahili: "Samahani, nimepata tatizo katika kuchakata ombi lako. Tafadhali jaribu tena kwa njia tofauti.",
+        kikuyu: "Nĩndagũthima, no ndiragwerire na matatĩko. Tafadhali geria rĩngĩ.",
+        luo: "Akwayo tweyo, agoyo kod chandruok. Tem kendo.",
+        kalenjin: "Sabarei, kokolto alokisyek. Saayi kaite.",
+        english: "I apologize, but I encountered an error processing your request. Could you try asking in a different way?"
+      };
+      
       const errorResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: "Samahani, nimepata tatizo katika kuchakata ombi lako. Tafadhali jaribu tena kwa njia tofauti.\n\nI apologize, but I encountered an error processing your request. Could you try asking in a different way?",
+        content: fallbackResponses[messageLanguage as keyof typeof fallbackResponses] || fallbackResponses.english,
         role: 'assistant',
         timestamp: new Date()
       };
@@ -116,30 +131,31 @@ const FarmerAIAssistant: React.FC = () => {
 
   return (
     <div className="relative">
-      {dataLoading ? (
-        <Badge 
-          className="absolute top-0 right-0 mr-4 mt-4 z-10"
-          variant="outline"
-        >
-          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-          Loading live data...
-        </Badge>
-      ) : isRealData ? (
-        <Badge 
-          className="absolute top-0 right-0 mr-4 mt-4 z-10"
-          variant="secondary"
-        >
-          Using Live Market Data
-        </Badge>
-      ) : (
-        <Badge 
-          className="absolute top-0 right-0 mr-4 mt-4 z-10 bg-amber-200 text-amber-800 border-amber-300"
-          variant="outline"
-        >
-          <WifiOff className="h-3 w-3 mr-1" /> 
-          Connection Issue - Retry
-        </Badge>
-      )}
+      {/* Status badges */}
+      <div className="absolute top-0 right-0 mr-4 mt-4 z-10 flex gap-2">
+        {dataLoading ? (
+          <Badge variant="outline">
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Loading live data...
+          </Badge>
+        ) : isRealData ? (
+          <Badge variant="secondary">
+            Using Live Market Data
+          </Badge>
+        ) : (
+          <Badge className="bg-amber-200 text-amber-800 border-amber-300" variant="outline">
+            <WifiOff className="h-3 w-3 mr-1" /> 
+            Connection Issue - Retry
+          </Badge>
+        )}
+        
+        {lastDetectedLanguage !== 'english' && (
+          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            <Globe className="h-3 w-3 mr-1" />
+            {lastDetectedLanguage.charAt(0).toUpperCase() + lastDetectedLanguage.slice(1)}
+          </Badge>
+        )}
+      </div>
       
       {error && !dataLoading && (
         <Alert variant="destructive" className="mb-4">
@@ -227,11 +243,11 @@ const FarmerAIAssistant: React.FC = () => {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <h3 className="font-medium text-blue-900 mb-2">Language Support / Lugha Zinazotumika</h3>
           <p className="text-sm text-blue-800">
-            🗣️ <strong>Voice & Text Support:</strong> English, Kiswahili, Kikuyu, Dholuo, Kalenjin, Kikamba, Maa, Kimeru
+            🗣️ <strong>Supported Languages:</strong> English, Kiswahili, Kikuyu, Dholuo, Kalenjin, Kikamba, Maa, Kimeru
             <br />
-            🎤 <strong>Audio Upload:</strong> Supports all major audio formats (MP3, WAV, WebM, M4A)
+            🤖 <strong>AI Features:</strong> Automatic language detection, contextual responses, market data integration
             <br />
-            📱 <strong>Offline Capable:</strong> Voice transcription works without internet after initial load
+            🎤 <strong>Voice Input:</strong> Speak in any supported language for transcription and response
           </p>
         </div>
       </div>
