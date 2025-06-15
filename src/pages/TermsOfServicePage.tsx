@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Scale, AlertTriangle, Shield, Users, Gavel, FileText, Database } from 'lucide-react';
+import SocialShare from '@/components/common/SocialShare';
 
 const TermsOfServicePage: React.FC = () => {
   return (
@@ -18,6 +19,24 @@ const TermsOfServicePage: React.FC = () => {
             <Badge variant="outline">Last Updated: {new Date().toLocaleDateString()}</Badge>
             <Badge variant="outline">Version 2.2</Badge>
           </div>
+          
+          {/* Social Sharing Section */}
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-1">Share Our Terms</h3>
+                <p className="text-sm text-blue-800">
+                  Help other farmers understand AgriConnect's commitment to transparency and data protection.
+                </p>
+              </div>
+              <SocialShare
+                title="AgriConnect Terms of Service"
+                text="AgriConnect is committed to transparent agricultural technology. Our Terms of Service outline our commitment to farmers, data protection, and open agriculture policies in Kenya."
+                size="sm"
+              />
+            </div>
+          </div>
+
           <div className="p-4 bg-red-50 rounded-lg border border-red-200">
             <div className="flex items-start space-x-2">
               <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />

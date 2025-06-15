@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Heart, MessageCircle, Share2, MoreHorizontal, MapPin, Calendar } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import SocialShare from '@/components/common/SocialShare';
 
 interface PollData {
   id: string;
@@ -50,6 +51,7 @@ const PostCard: React.FC<PostCardProps> = ({
   onVote 
 }) => {
   const [isLiked, setIsLiked] = useState(false);
+  const [showShareOptions, setShowShareOptions] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -64,6 +66,11 @@ const PostCard: React.FC<PostCardProps> = ({
 
   const getVotePercentage = (votes: number, total: number) => {
     return total > 0 ? (votes / total) * 100 : 0;
+  };
+
+  const handleShare = () => {
+    setShowShareOptions(!showShareOptions);
+    onShare?.(post.id);
   };
 
   return (
@@ -172,10 +179,22 @@ const PostCard: React.FC<PostCardProps> = ({
               {post.comments}
             </Button>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => onShare?.(post.id)}>
-            <Share2 className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={handleShare}>
+              <Share2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
+
+        {showShareOptions && (
+          <div className="pt-2 border-t">
+            <SocialShare
+              title={`${post.title} by ${post.author.name}`}
+              text={`${post.content}\n\nShared from AgriConnect Community Forum`}
+              size="sm"
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
