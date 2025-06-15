@@ -93,11 +93,23 @@ export const getTrainingEvents = async (filters?: {
 };
 
 export const registerForTraining = async (eventId: string) => {
-  // This would typically involve creating a registration record
-  // For now, we'll just increment the participant count
-  const { data, error } = await supabase.rpc('increment_training_participants', {
-    event_id: eventId
-  });
+  // For now, just increment the participant count
+  const { data: currentEvent, error: fetchError } = await supabase
+    .from('training_events')
+    .select('current_participants')
+    .eq('id', eventId)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  const { data, error } = await supabase
+    .from('training_events')
+    .update({ 
+      current_participants: (currentEvent.current_participants || 0) + 1 
+    })
+    .eq('id', eventId)
+    .select()
+    .single();
 
   if (error) throw error;
   return data;

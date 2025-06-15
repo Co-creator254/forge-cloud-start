@@ -84,11 +84,23 @@ export const getMarketLinkages = async (filters?: {
 };
 
 export const applyToMarketLinkage = async (linkageId: string) => {
-  // This would typically involve creating an application record
-  // For now, we'll just increment the participant count
-  const { data, error } = await supabase.rpc('increment_linkage_participants', {
-    linkage_id: linkageId
-  });
+  // For now, just increment the participant count
+  const { data: currentLinkage, error: fetchError } = await supabase
+    .from('market_linkages')
+    .select('participants_count')
+    .eq('id', linkageId)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  const { data, error } = await supabase
+    .from('market_linkages')
+    .update({ 
+      participants_count: (currentLinkage.participants_count || 0) + 1 
+    })
+    .eq('id', linkageId)
+    .select()
+    .single();
 
   if (error) throw error;
   return data;
