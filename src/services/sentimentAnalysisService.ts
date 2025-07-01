@@ -1,5 +1,6 @@
 
 import { MarketSentimentRecord } from "@/types";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Analyzes market reports and comments for sentiment
@@ -18,8 +19,8 @@ export const analyzeMarketSentiment = async (
     // Combine reports into a single text
     const reportText = reports.join("\n\n");
     
-    // Send to Perplexity API for analysis
-    const result = await sendToPerplexityForAnalysis(commodity, county, reportText);
+    // Send to Supabase Edge Function for analysis
+    const result = await sendToSupabaseForAnalysis(commodity, county, reportText);
     
     if (!result) {
       console.error('Failed to get sentiment analysis result');
@@ -34,33 +35,33 @@ export const analyzeMarketSentiment = async (
 };
 
 /**
- * Send data to Perplexity AI for analysis
+ * Send data to Supabase Edge Function for analysis
  */
-async function sendToPerplexityForAnalysis(
+async function sendToSupabaseForAnalysis(
   commodity: string, 
   county: string, 
   text: string
 ): Promise<MarketSentimentRecord | null> {
   try {
-    // Call Perplexity through Edge Function
-    const response = await fetch('/api/analyze-sentiment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    // Call Supabase Edge Function
+    const { data, error } = await supabase.functions.invoke('analyze-sentiment', {
+      body: {
         commodity,
         county,
         text
-      }),
+      }
     });
 
-    if (!response.ok) {
-      throw new Error(`Error from sentiment analysis API: ${response.statusText}`);
+    if (error) {
+      console.error('Error from sentiment analysis function:', error);
+      return null;
     }
 
-    const data = await response.json();
-    
+    if (!data) {
+      console.error('No data returned from sentiment analysis');
+      return null;
+    }
+
     // Structure the response into our expected format
     return {
       id: crypto.randomUUID(),
@@ -74,7 +75,47 @@ async function sendToPerplexityForAnalysis(
       updated_at: new Date().toISOString()
     };
   } catch (error) {
-    console.error('Failed to call sentiment analysis API:', error);
+    console.error('Failed to call sentiment analysis function:', error);
     return null;
   }
 }
+
+/**
+ * Fetch sentiment data from database
+ */
+export const fetchMarketSentiment = async (): Promise<MarketSentimentRecord[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('market_sentiment')
+      .select('*')
+      .order('updated_at', { ascending: false })
+      .limit(50);
+    
+    if (error) {
+      console.error('Error fetching market sentiment:', error);
+      return [];
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error('Unexpected error fetching market sentiment:', error);
+    return [];
+  }
+};
+
+/**
+ * Submit new market report for sentiment analysis
+ */
+export const submitMarketReport = async (
+  commodity: string,
+  county: string,
+  report: string
+): Promise<boolean> => {
+  try {
+    const result = await analyzeMarketSentiment(commodity, county, [report]);
+    return result !== null;
+  } catch (error) {
+    console.error('Error submitting market report:', error);
+    return false;
+  }
+};

@@ -1,205 +1,151 @@
 
-import React, { useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Star, MessageCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Search, Filter, Plus } from 'lucide-react';
 import BarterListing from '../components/BarterListing';
-import BarterDetails from '../components/BarterDetails';
-import { mockBarterListings, mockBarterHistory, mockCommunityPosts } from '../data/barterData';
+import { fetchBarterListings, BarterListing as BarterListingType } from '../services/barterService';
+import { useToast } from '@/hooks/use-toast';
 
-interface BarterExchangeTabProps {
-  searchTerm: string;
-  selectedCategory: string;
-  selectedLocation: string;
-  isLoading: boolean;
-}
+const BarterExchangeTab: React.FC = () => {
+  const [listings, setListings] = useState<BarterListingType[]>([]);
+  const [filteredListings, setFilteredListings] = useState<BarterListingType[]>([]);
+  const [selectedListing, setSelectedListing] = useState<BarterListingType | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-const BarterExchangeTab: React.FC<BarterExchangeTabProps> = ({ searchTerm, selectedCategory, selectedLocation, isLoading }) => {
-  const [activeBarterTab, setActiveBarterTab] = useState('listings');
-  const [selectedListing, setSelectedListing] = useState<any>(null);
+  useEffect(() => {
+    loadListings();
+  }, []);
 
-  // Enhanced filtering for barter listings
-  const filteredBarterListings = mockBarterListings.filter(listing => {
-    const matchesSearch = searchTerm === '' || 
-      listing.commodity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      listing.seekingCommodities.some(c => c.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    const matchesCategory = selectedCategory === '' || selectedCategory === 'All Categories' || 
-      listing.commodity.toLowerCase() === selectedCategory.toLowerCase();
+  useEffect(() => {
+    filterListings();
+  }, [listings, searchTerm, filterCategory]);
 
-    const matchesLocation = selectedLocation === '' || selectedLocation === 'All Locations' ||
-      listing.location === selectedLocation;
-    
-    return matchesSearch && matchesCategory && matchesLocation;
-  });
-
-  // Handle selecting a barter listing
-  const handleSelectListing = (listing: any) => {
-    setSelectedListing(listing);
+  const loadListings = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchBarterListings();
+      setListings(data);
+    } catch (error) {
+      console.error('Error loading barter listings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load barter listings",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const closeDetail = () => {
-    setSelectedListing(null);
+  const filterListings = () => {
+    let filtered = listings;
+
+    if (searchTerm) {
+      filtered = filtered.filter(listing => 
+        listing.commodity.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        listing.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        listing.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (filterCategory !== 'all') {
+      filtered = filtered.filter(listing => 
+        listing.commodity.toLowerCase().includes(filterCategory.toLowerCase())
+      );
+    }
+
+    setFilteredListings(filtered);
   };
 
-  // Render rating stars
-  const renderRating = (rating: number) => {
+  const categories = ['all', 'cereals', 'vegetables', 'fruits', 'livestock', 'seeds'];
+
+  if (loading) {
     return (
-      <div className="flex items-center">
-        {[...Array(5)].map((_, i) => (
-          <Star 
-            key={i} 
-            className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-yellow-500 fill-yellow-500' : i < rating ? 'text-yellow-500 fill-yellow-500 opacity-50' : 'text-gray-300'}`} 
-          />
-        ))}
-        <span className="ml-1 text-sm font-medium">{rating.toFixed(1)}</span>
-      </div>
-    );
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="p-6 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+        <p>Loading barter listings...</p>
       </div>
     );
   }
 
   return (
-    <Tabs value={activeBarterTab} onValueChange={setActiveBarterTab} className="w-full">
-      <TabsList className="w-full mb-6 grid grid-cols-1 sm:grid-cols-4 gap-2">
-        <TabsTrigger value="listings">Available Listings</TabsTrigger>
-        <TabsTrigger value="my-listings">My Listings</TabsTrigger>
-        <TabsTrigger value="history">Trade History</TabsTrigger>
-        <TabsTrigger value="community">Community</TabsTrigger>
-      </TabsList>
-
-      {/* Available Listings Subtab */}
-      <TabsContent value="listings">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Listings Grid */}
-          <div className={`grid grid-cols-1 ${selectedListing ? 'lg:w-2/3' : 'w-full'} gap-4`}>
-            {filteredBarterListings.length > 0 ? (
-              filteredBarterListings.map((listing) => (
-                <BarterListing
-                  key={listing.id}
-                  listing={listing}
-                  isSelected={selectedListing?.id === listing.id}
-                  onSelect={handleSelectListing}
-                />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-8">
-                <p>No listings found. Try a different search or category.</p>
-              </div>
-            )}
-          </div>
-          
-          {/* Selected Listing Details */}
-          {selectedListing && (
-            <div className="lg:w-1/3">
-              <BarterDetails listing={selectedListing} onClose={closeDetail} />
+    <div className="space-y-6">
+      {/* Search and Filter Controls */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>Browse Barter Listings</span>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Create Listing
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search by commodity, location, or description..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
-          )}
-        </div>
-      </TabsContent>
-
-      {/* My Listings Subtab */}
-      <TabsContent value="my-listings">
-        <div className="text-center py-8">
-          <p className="mb-4">You haven't created any barter listings yet.</p>
-          <Button>Create New Listing</Button>
-        </div>
-      </TabsContent>
-
-      {/* Trade History Subtab */}
-      <TabsContent value="history">
-        {mockBarterHistory.length > 0 ? (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>You Gave</TableHead>
-                  <TableHead>You Received</TableHead>
-                  <TableHead>Trading Partner</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockBarterHistory.map((trade) => (
-                  <TableRow key={trade.id}>
-                    <TableCell>{trade.date}</TableCell>
-                    <TableCell>{trade.gaveQuantity} {trade.gaveUnit} {trade.gaveItem}</TableCell>
-                    <TableCell>{trade.receivedQuantity} {trade.receivedUnit} {trade.receivedItem}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span>{trade.partner}</span>
-                        {renderRating(trade.partnerRating)}
-                      </div>
-                    </TableCell>
-                    <TableCell>{trade.locationMet}</TableCell>
-                    <TableCell>
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        {trade.status}
-                      </span>
-                    </TableCell>
-                  </TableRow>
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <Badge
+                    key={category}
+                    variant={filterCategory === category ? "default" : "outline"}
+                    className="cursor-pointer capitalize"
+                    onClick={() => setFilterCategory(category)}
+                  >
+                    {category}
+                  </Badge>
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="text-center py-8">
-            <p>No trade history found. Complete a barter to see your history.</p>
-          </div>
-        )}
-      </TabsContent>
+        </CardContent>
+      </Card>
 
-      {/* Community Subtab */}
-      <TabsContent value="community">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {mockCommunityPosts.map((post) => (
-            <Card key={post.id}>
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{post.title}</CardTitle>
-                  <Badge variant="outline">{post.commodity}</Badge>
-                </div>
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <div className="flex items-center mr-4">
-                    <Avatar className="h-6 w-6 mr-2">
-                      <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <span>{post.author}</span>
-                    <div className="ml-2">
-                      {renderRating(post.authorRating)}
-                    </div>
-                  </div>
-                  <span>Region: {post.region}</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm mb-4">{post.content}</p>
-                <div className="flex justify-between items-center text-sm text-muted-foreground">
-                  <span>{post.date}</span>
-                  <Button size="sm" variant="ghost" className="flex items-center gap-1">
-                    <MessageCircle className="h-4 w-4" />
-                    {post.replies} replies
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+      {/* Listings Grid */}
+      {filteredListings.length === 0 ? (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <h3 className="text-lg font-medium mb-2">No listings found</h3>
+            <p className="text-muted-foreground mb-4">
+              {searchTerm || filterCategory !== 'all' 
+                ? 'Try adjusting your search or filters' 
+                : 'Be the first to create a barter listing!'}
+            </p>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Create First Listing
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-6">
+          {filteredListings.map((listing) => (
+            <BarterListing
+              key={listing.id}
+              listing={listing}
+              isSelected={selectedListing?.id === listing.id}
+              onSelect={setSelectedListing}
+            />
           ))}
         </div>
-      </TabsContent>
-    </Tabs>
+      )}
+    </div>
   );
 };
 

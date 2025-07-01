@@ -98,6 +98,60 @@ export type Database = {
           },
         ]
       }
+      barter_listings: {
+        Row: {
+          commodity: string
+          county: string
+          created_at: string
+          description: string | null
+          expires_at: string | null
+          id: string
+          image_urls: string[] | null
+          is_active: boolean | null
+          location: string
+          quantity: number
+          seeking_commodities: string[]
+          status: string
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          commodity: string
+          county: string
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_active?: boolean | null
+          location: string
+          quantity: number
+          seeking_commodities: string[]
+          status?: string
+          unit?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          commodity?: string
+          county?: string
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_active?: boolean | null
+          location?: string
+          quantity?: number
+          seeking_commodities?: string[]
+          status?: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       business_advertisements: {
         Row: {
           ad_content: string
@@ -259,6 +313,83 @@ export type Database = {
         }
         Relationships: []
       }
+      crop_tracking: {
+        Row: {
+          actual_harvest_date: string | null
+          actual_yield: number | null
+          created_at: string
+          crop_name: string
+          estimated_yield: number | null
+          expected_harvest_date: string | null
+          fertilizer_applied: Json | null
+          growth_stage: string | null
+          id: string
+          irrigation_schedule: Json | null
+          notes: string | null
+          parcel_id: string | null
+          pesticides_applied: Json | null
+          planted_area: number
+          planting_date: string
+          quality_grade: string | null
+          seeds_used: number | null
+          updated_at: string
+          user_id: string
+          variety: string | null
+        }
+        Insert: {
+          actual_harvest_date?: string | null
+          actual_yield?: number | null
+          created_at?: string
+          crop_name: string
+          estimated_yield?: number | null
+          expected_harvest_date?: string | null
+          fertilizer_applied?: Json | null
+          growth_stage?: string | null
+          id?: string
+          irrigation_schedule?: Json | null
+          notes?: string | null
+          parcel_id?: string | null
+          pesticides_applied?: Json | null
+          planted_area: number
+          planting_date: string
+          quality_grade?: string | null
+          seeds_used?: number | null
+          updated_at?: string
+          user_id: string
+          variety?: string | null
+        }
+        Update: {
+          actual_harvest_date?: string | null
+          actual_yield?: number | null
+          created_at?: string
+          crop_name?: string
+          estimated_yield?: number | null
+          expected_harvest_date?: string | null
+          fertilizer_applied?: Json | null
+          growth_stage?: string | null
+          id?: string
+          irrigation_schedule?: Json | null
+          notes?: string | null
+          parcel_id?: string | null
+          pesticides_applied?: Json | null
+          planted_area?: number
+          planting_date?: string
+          quality_grade?: string | null
+          seeds_used?: number | null
+          updated_at?: string
+          user_id?: string
+          variety?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_tracking_parcel_id_fkey"
+            columns: ["parcel_id"]
+            isOneToOne: false
+            referencedRelation: "farm_parcels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       data_fetch_logs: {
         Row: {
           created_at: string | null
@@ -286,6 +417,63 @@ export type Database = {
           records_count?: number | null
           source?: string
           status?: string
+        }
+        Relationships: []
+      }
+      farm_parcels: {
+        Row: {
+          coordinates: Json | null
+          created_at: string
+          current_crop: string | null
+          expected_harvest: string | null
+          id: string
+          irrigation_system: string | null
+          is_active: boolean | null
+          notes: string | null
+          parcel_name: string
+          planting_date: string | null
+          size_acres: number
+          slope_type: string | null
+          soil_type: string | null
+          updated_at: string
+          user_id: string
+          water_source: string | null
+        }
+        Insert: {
+          coordinates?: Json | null
+          created_at?: string
+          current_crop?: string | null
+          expected_harvest?: string | null
+          id?: string
+          irrigation_system?: string | null
+          is_active?: boolean | null
+          notes?: string | null
+          parcel_name: string
+          planting_date?: string | null
+          size_acres: number
+          slope_type?: string | null
+          soil_type?: string | null
+          updated_at?: string
+          user_id: string
+          water_source?: string | null
+        }
+        Update: {
+          coordinates?: Json | null
+          created_at?: string
+          current_crop?: string | null
+          expected_harvest?: string | null
+          id?: string
+          irrigation_system?: string | null
+          is_active?: boolean | null
+          notes?: string | null
+          parcel_name?: string
+          planting_date?: string | null
+          size_acres?: number
+          slope_type?: string | null
+          soil_type?: string | null
+          updated_at?: string
+          user_id?: string
+          water_source?: string | null
         }
         Relationships: []
       }
@@ -447,6 +635,62 @@ export type Database = {
           valid_until?: string
         }
         Relationships: []
+      }
+      market_linkage_applications: {
+        Row: {
+          application_status: string | null
+          applied_at: string
+          contact_phone: string
+          crops_to_supply: string[]
+          estimated_quantity: number | null
+          farm_size: number | null
+          farmer_name: string
+          id: string
+          linkage_id: string
+          notes: string | null
+          reviewed_at: string | null
+          reviewer_notes: string | null
+          user_id: string
+        }
+        Insert: {
+          application_status?: string | null
+          applied_at?: string
+          contact_phone: string
+          crops_to_supply: string[]
+          estimated_quantity?: number | null
+          farm_size?: number | null
+          farmer_name: string
+          id?: string
+          linkage_id: string
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewer_notes?: string | null
+          user_id: string
+        }
+        Update: {
+          application_status?: string | null
+          applied_at?: string
+          contact_phone?: string
+          crops_to_supply?: string[]
+          estimated_quantity?: number | null
+          farm_size?: number | null
+          farmer_name?: string
+          id?: string
+          linkage_id?: string
+          notes?: string | null
+          reviewed_at?: string | null
+          reviewer_notes?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_linkage_applications_linkage_id_fkey"
+            columns: ["linkage_id"]
+            isOneToOne: false
+            referencedRelation: "market_linkages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       market_linkages: {
         Row: {
@@ -947,6 +1191,101 @@ export type Database = {
         }
         Relationships: []
       }
+      quality_control_discussions: {
+        Row: {
+          attendees: number | null
+          author_name: string
+          author_type: string
+          county: string
+          created_at: string
+          date: string
+          description: string
+          id: string
+          is_active: boolean | null
+          location: string
+          organizer: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attendees?: number | null
+          author_name: string
+          author_type: string
+          county: string
+          created_at?: string
+          date: string
+          description: string
+          id?: string
+          is_active?: boolean | null
+          location: string
+          organizer: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attendees?: number | null
+          author_name?: string
+          author_type?: string
+          county?: string
+          created_at?: string
+          date?: string
+          description?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string
+          organizer?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      service_provider_reviews: {
+        Row: {
+          created_at: string
+          id: string
+          provider_id: string
+          rating: number
+          review_text: string | null
+          service_used: string
+          user_id: string
+          would_recommend: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          provider_id: string
+          rating: number
+          review_text?: string | null
+          service_used: string
+          user_id: string
+          would_recommend?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          provider_id?: string
+          rating?: number
+          review_text?: string | null
+          service_used?: string
+          user_id?: string
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_provider_reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_providers: {
         Row: {
           availability: string | null
@@ -1102,6 +1441,62 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      training_registrations: {
+        Row: {
+          attended: boolean | null
+          contact_phone: string
+          experience_level: string | null
+          feedback_comments: string | null
+          feedback_rating: number | null
+          id: string
+          organization: string | null
+          participant_name: string
+          registered_at: string
+          registration_status: string | null
+          specific_interests: string | null
+          training_id: string
+          user_id: string
+        }
+        Insert: {
+          attended?: boolean | null
+          contact_phone: string
+          experience_level?: string | null
+          feedback_comments?: string | null
+          feedback_rating?: number | null
+          id?: string
+          organization?: string | null
+          participant_name: string
+          registered_at?: string
+          registration_status?: string | null
+          specific_interests?: string | null
+          training_id: string
+          user_id: string
+        }
+        Update: {
+          attended?: boolean | null
+          contact_phone?: string
+          experience_level?: string | null
+          feedback_comments?: string | null
+          feedback_rating?: number | null
+          id?: string
+          organization?: string | null
+          participant_name?: string
+          registered_at?: string
+          registration_status?: string | null
+          specific_interests?: string | null
+          training_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_registrations_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "training_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transport_requests: {
         Row: {
@@ -1395,6 +1790,51 @@ export type Database = {
           severity?: string
           start_date?: string
           type?: string
+        }
+        Relationships: []
+      }
+      weather_data: {
+        Row: {
+          county: string
+          created_at: string
+          date: string
+          forecast_data: Json | null
+          humidity: number | null
+          id: string
+          rainfall: number | null
+          source: string | null
+          temperature_max: number | null
+          temperature_min: number | null
+          weather_condition: string | null
+          wind_speed: number | null
+        }
+        Insert: {
+          county: string
+          created_at?: string
+          date: string
+          forecast_data?: Json | null
+          humidity?: number | null
+          id?: string
+          rainfall?: number | null
+          source?: string | null
+          temperature_max?: number | null
+          temperature_min?: number | null
+          weather_condition?: string | null
+          wind_speed?: number | null
+        }
+        Update: {
+          county?: string
+          created_at?: string
+          date?: string
+          forecast_data?: Json | null
+          humidity?: number | null
+          id?: string
+          rainfall?: number | null
+          source?: string | null
+          temperature_max?: number | null
+          temperature_min?: number | null
+          weather_condition?: string | null
+          wind_speed?: number | null
         }
         Relationships: []
       }
