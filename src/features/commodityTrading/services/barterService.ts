@@ -22,13 +22,7 @@ export const fetchBarterListings = async (): Promise<BarterListing[]> => {
   try {
     const { data, error } = await supabase
       .from('barter_listings')
-      .select(`
-        *,
-        profiles (
-          full_name,
-          avatar_url
-        )
-      `)
+      .select('*')
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
@@ -37,22 +31,32 @@ export const fetchBarterListings = async (): Promise<BarterListing[]> => {
       return [];
     }
 
-    return data?.map(listing => ({
-      id: listing.id,
-      commodity: listing.commodity,
-      quantity: Number(listing.quantity),
-      unit: listing.unit,
-      description: listing.description || '',
-      imageUrl: listing.image_urls?.[0] || '/placeholder.svg',
-      location: listing.location,
-      county: listing.county,
-      seekingCommodities: listing.seeking_commodities || [],
-      owner: listing.profiles?.full_name || 'Anonymous User',
-      ownerRating: 4.5, // Default rating, can be improved with reviews
-      listedDate: new Date(listing.created_at).toLocaleDateString(),
-      status: listing.status,
-      userId: listing.user_id
-    })) || [];
+    // Get user profiles separately to avoid relation issues
+    const userIds = data?.map(listing => listing.user_id) || [];
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, full_name, avatar_url')
+      .in('id', userIds);
+
+    return data?.map(listing => {
+      const profile = profiles?.find(p => p.id === listing.user_id);
+      return {
+        id: listing.id,
+        commodity: listing.commodity,
+        quantity: Number(listing.quantity),
+        unit: listing.unit,
+        description: listing.description || '',
+        imageUrl: listing.image_urls?.[0] || '/placeholder.svg',
+        location: listing.location,
+        county: listing.county,
+        seekingCommodities: listing.seeking_commodities || [],
+        owner: profile?.full_name || 'Anonymous User',
+        ownerRating: 4.5, // Default rating, can be improved with reviews
+        listedDate: new Date(listing.created_at).toLocaleDateString(),
+        status: listing.status,
+        userId: listing.user_id
+      };
+    }) || [];
   } catch (error) {
     console.error('Error fetching barter listings:', error);
     return [];

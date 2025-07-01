@@ -10,12 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { 
   AlertTriangle, 
-  BarChart3, 
-  Bug, 
-  FileText, 
   Lightbulb, 
-  MapPin, 
-  MessageSquare, 
   Settings,
   Send
 } from 'lucide-react';
@@ -321,7 +316,7 @@ const SentimentInsights: React.FC = () => {
                 <SelectValue placeholder="All Crops" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Crops</SelectItem>
+                <SelectItem value="">All Crops</SelectItem>
                 <SelectItem value="maize">Maize</SelectItem>
                 <SelectItem value="potato">Potato</SelectItem>
                 <SelectItem value="tomato">Tomato</SelectItem>
@@ -337,7 +332,7 @@ const SentimentInsights: React.FC = () => {
                 <SelectValue placeholder="All Locations" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Locations</SelectItem>
+                <SelectItem value="">All Locations</SelectItem>
                 <SelectItem value="nakuru">Nakuru</SelectItem>
                 <SelectItem value="kisumu">Kisumu</SelectItem>
                 <SelectItem value="kiambu">Kiambu</SelectItem>
