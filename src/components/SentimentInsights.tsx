@@ -321,7 +321,7 @@ const SentimentInsights: React.FC = () => {
                 <SelectValue placeholder="All Crops" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Crops</SelectItem>
+                <SelectItem value="all">All Crops</SelectItem>
                 <SelectItem value="maize">Maize</SelectItem>
                 <SelectItem value="potato">Potato</SelectItem>
                 <SelectItem value="tomato">Tomato</SelectItem>
@@ -337,7 +337,7 @@ const SentimentInsights: React.FC = () => {
                 <SelectValue placeholder="All Locations" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Locations</SelectItem>
+                <SelectItem value="all">All Locations</SelectItem>
                 <SelectItem value="nakuru">Nakuru</SelectItem>
                 <SelectItem value="kisumu">Kisumu</SelectItem>
                 <SelectItem value="kiambu">Kiambu</SelectItem>

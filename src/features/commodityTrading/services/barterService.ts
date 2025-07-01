@@ -24,7 +24,7 @@ export const fetchBarterListings = async (): Promise<BarterListing[]> => {
       .from('barter_listings')
       .select(`
         *,
-        profiles!barter_listings_user_id_fkey (
+        profiles (
           full_name,
           avatar_url
         )

@@ -9,12 +9,24 @@ import BarterListing from '../components/BarterListing';
 import { fetchBarterListings, BarterListing as BarterListingType } from '../services/barterService';
 import { useToast } from '@/hooks/use-toast';
 
-const BarterExchangeTab: React.FC = () => {
+interface BarterExchangeTabProps {
+  searchTerm?: string;
+  selectedCategory?: string;
+  selectedLocation?: string;
+  isLoading?: boolean;
+}
+
+const BarterExchangeTab: React.FC<BarterExchangeTabProps> = ({
+  searchTerm: initialSearchTerm = '',
+  selectedCategory: initialCategory = '',
+  selectedLocation: initialLocation = '',
+  isLoading: parentLoading = false
+}) => {
   const [listings, setListings] = useState<BarterListingType[]>([]);
   const [filteredListings, setFilteredListings] = useState<BarterListingType[]>([]);
   const [selectedListing, setSelectedListing] = useState<BarterListingType | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const [filterCategory, setFilterCategory] = useState(initialCategory);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -54,7 +66,7 @@ const BarterExchangeTab: React.FC = () => {
       );
     }
 
-    if (filterCategory !== 'all') {
+    if (filterCategory !== 'all' && filterCategory) {
       filtered = filtered.filter(listing => 
         listing.commodity.toLowerCase().includes(filterCategory.toLowerCase())
       );
@@ -65,7 +77,7 @@ const BarterExchangeTab: React.FC = () => {
 
   const categories = ['all', 'cereals', 'vegetables', 'fruits', 'livestock', 'seeds'];
 
-  if (loading) {
+  if (loading || parentLoading) {
     return (
       <div className="p-6 text-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
