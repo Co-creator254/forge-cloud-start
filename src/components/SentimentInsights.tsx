@@ -20,8 +20,8 @@ import { useToast } from '@/hooks/use-toast';
 
 const SentimentInsights: React.FC = () => {
   const [activeTab, setActiveTab] = useState('alerts');
-  const [selectedCrop, setSelectedCrop] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedCrop, setSelectedCrop] = useState('all');
+  const [selectedLocation, setSelectedLocation] = useState('all');
   const [sentimentData, setSentimentData] = useState<MarketSentimentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [reportForm, setReportForm] = useState({
@@ -96,8 +96,8 @@ const SentimentInsights: React.FC = () => {
 
   const getFilteredData = () => {
     return sentimentData.filter(item => 
-      (!selectedCrop || item.commodity_name.toLowerCase().includes(selectedCrop.toLowerCase())) &&
-      (!selectedLocation || item.county.toLowerCase().includes(selectedLocation.toLowerCase()))
+      (selectedCrop === 'all' || item.commodity_name.toLowerCase().includes(selectedCrop.toLowerCase())) &&
+      (selectedLocation === 'all' || item.county.toLowerCase().includes(selectedLocation.toLowerCase()))
     );
   };
 
@@ -316,7 +316,7 @@ const SentimentInsights: React.FC = () => {
                 <SelectValue placeholder="All Crops" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Crops</SelectItem>
+                <SelectItem value="all">All Crops</SelectItem>
                 <SelectItem value="maize">Maize</SelectItem>
                 <SelectItem value="potato">Potato</SelectItem>
                 <SelectItem value="tomato">Tomato</SelectItem>
@@ -332,7 +332,7 @@ const SentimentInsights: React.FC = () => {
                 <SelectValue placeholder="All Locations" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Locations</SelectItem>
+                <SelectItem value="all">All Locations</SelectItem>
                 <SelectItem value="nakuru">Nakuru</SelectItem>
                 <SelectItem value="kisumu">Kisumu</SelectItem>
                 <SelectItem value="kiambu">Kiambu</SelectItem>
