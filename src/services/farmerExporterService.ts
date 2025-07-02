@@ -10,7 +10,7 @@ export interface FarmerExporterCollaboration {
   farmer_email?: string;
   farmer_location: string;
   farmer_county: string;
-  farmer_coordinates?: { lat: number; lng: number };
+  farmer_coordinates?: { lat: number; lng: number } | null;
   farm_size_acres?: number;
   commodity_name: string;
   commodity_variety?: string;
@@ -49,7 +49,7 @@ export interface ExporterProfile {
   contact_email: string;
   office_location: string;
   office_county: string;
-  office_coordinates?: { lat: number; lng: number };
+  office_coordinates?: { lat: number; lng: number } | null;
   website_url?: string;
   years_in_business?: number;
   export_markets: string[];
@@ -114,7 +114,13 @@ export const getFarmerCollaborations = async (): Promise<FarmerExporterCollabora
       return [];
     }
 
-    return data || [];
+    // Transform the data to match our interface, handling JSONB coordinates
+    const transformedData: FarmerExporterCollaboration[] = (data || []).map(item => ({
+      ...item,
+      farmer_coordinates: item.farmer_coordinates as { lat: number; lng: number } | null,
+    }));
+
+    return transformedData;
   } catch (error) {
     console.error('Error fetching farmer collaborations:', error);
     return [];
@@ -163,7 +169,13 @@ export const getExporterProfiles = async (): Promise<ExporterProfile[]> => {
       return [];
     }
 
-    return data || [];
+    // Transform the data to match our interface, handling JSONB coordinates
+    const transformedData: ExporterProfile[] = (data || []).map(item => ({
+      ...item,
+      office_coordinates: item.office_coordinates as { lat: number; lng: number } | null,
+    }));
+
+    return transformedData;
   } catch (error) {
     console.error('Error fetching exporter profiles:', error);
     return [];

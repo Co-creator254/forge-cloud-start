@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,14 +9,15 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { createFarmerCollaboration, getFarmerCollaborations, getExporterProfiles, FarmerExporterCollaboration, ExporterProfile } from '@/services/farmerExporterService';
+import { createFarmerCollaboration, getFarmerCollaborations, getExporterProfiles } from '@/services/farmerExporterService';
+import type { FarmerExporterCollaboration as FarmerExporterCollaborationType, ExporterProfile } from '@/services/farmerExporterService';
 import { Globe, MapPin, Phone, Mail, Package, Calendar, User, Building2 } from 'lucide-react';
 import { useEffect } from 'react';
 
 const FarmerExporterCollaboration = () => {
   const [activeTab, setActiveTab] = useState('create');
   const [loading, setLoading] = useState(false);
-  const [collaborations, setCollaborations] = useState<FarmerExporterCollaboration[]>([]);
+  const [collaborations, setCollaborations] = useState<FarmerExporterCollaborationType[]>([]);
   const [exporters, setExporters] = useState<ExporterProfile[]>([]);
   const { toast } = useToast();
 
