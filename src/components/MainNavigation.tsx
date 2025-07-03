@@ -118,11 +118,21 @@ const MainNavigation = () => {
               </li>
               <li>
                 <NavigationMenuLink asChild>
-                  <Link to="/logistics-solutions-map" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                  <Link to="/logistics" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                     <Truck className="h-4 w-4 mb-1" />
-                    <div className="text-sm font-medium leading-none">Logistics Solutions</div>
+                    <div className="text-sm font-medium leading-none">Logistics Hub</div>
                     <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                      Transportation and warehousing services
+                      Transportation and supply chain solutions
+                    </p>
+                  </Link>
+                </NavigationMenuLink>
+              </li>
+              <li>
+                <NavigationMenuLink asChild>
+                  <Link to="/logistics-solutions-map" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Solutions Map</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Find logistics providers on interactive map
                     </p>
                   </Link>
                 </NavigationMenuLink>

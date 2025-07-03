@@ -6,8 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider } from "@/components/AuthProvider";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -23,6 +21,7 @@ import SearchResultsPage from "./pages/SearchResultsPage";
 import ServiceProviders from "./pages/ServiceProviders";
 import ServiceProviderRegistration from "./pages/ServiceProviderRegistration";
 import TransporterSignUp from "./pages/TransporterSignUp";
+import Logistics from "./pages/Logistics";
 import LogisticsSolutionsMap from "./pages/LogisticsSolutionsMap";
 import TrainingEvents from "./pages/TrainingEvents";
 import MarketLinkages from "./pages/MarketLinkages";
@@ -69,7 +68,6 @@ function App() {
             <Sonner />
             <BrowserRouter>
               <div className="min-h-screen bg-background flex flex-col">
-                <Header />
                 <main className="flex-1">
                   <Routes>
                     <Route path="/" element={<Index />} />
@@ -91,10 +89,11 @@ function App() {
                     {/* Search */}
                     <Route path="/search" element={<SearchResultsPage />} />
                     
-                    {/* Service Providers */}
+                    {/* Service Providers & Logistics */}
                     <Route path="/service-providers" element={<ServiceProviders />} />
                     <Route path="/service-provider-registration" element={<ServiceProviderRegistration />} />
                     <Route path="/transporter-signup" element={<TransporterSignUp />} />
+                    <Route path="/logistics" element={<Logistics />} />
                     <Route path="/logistics-solutions-map" element={<LogisticsSolutionsMap />} />
                     
                     {/* Training & Market Linkages */}
@@ -148,7 +147,6 @@ function App() {
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>
-                <Footer />
               </div>
             </BrowserRouter>
           </TooltipProvider>
