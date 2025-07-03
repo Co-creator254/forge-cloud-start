@@ -7,7 +7,7 @@ import UserAvatar from '@/components/UserAvatar';
 import { MainNav } from '@/components/MainNav';
 import { MobileNav } from '@/components/MobileNav';
 import NotificationCenter from '@/components/NotificationCenter';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/components/AuthProvider';
 
 const Header: React.FC = () => {
   const { user } = useAuth();
