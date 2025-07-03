@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -7,10 +8,10 @@ import { Check, Copy, ExternalLink, Lock, Unlock } from 'lucide-react';
 import ApiOverview from '@/components/api-docs/ApiOverview';
 import ApiAuthentication from '@/components/api-docs/ApiAuthentication';
 import ApiKeyManager from '@/components/api-management/ApiKeyManager';
-import NotificationCenter from '@/components/NotificationCenter';
 import { AdvertisementService, type ApiAccessStatus } from '@/services/business/advertisementService';
 import { PricingService, type PricingTier } from '@/services/pricingService';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/components/AuthProvider';
 
 const ApiDocs: React.FC = () => {
   const [copied, setCopied] = useState(false);
@@ -22,6 +23,7 @@ const ApiDocs: React.FC = () => {
   const [pricingPlans, setPricingPlans] = useState<PricingTier[]>([]);
   const [loadingPricing, setLoadingPricing] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
   
   useEffect(() => {
     checkUserAccess();
@@ -88,7 +90,11 @@ const ApiDocs: React.FC = () => {
                 </div>
               </div>
             </div>
-            <NotificationCenter />
+            {user && (
+              <div className="text-sm text-muted-foreground">
+                Welcome, {user.email}
+              </div>
+            )}
           </div>
         </div>
       </header>
