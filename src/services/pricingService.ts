@@ -24,7 +24,7 @@ export class PricingService {
 
       if (error) {
         console.error('Error fetching pricing tiers:', error);
-        // Fallback to default pricing if database fails
+        // Updated fallback pricing with your requested limits
         return [
           {
             id: 'free',
@@ -32,8 +32,8 @@ export class PricingService {
             price: 0,
             currency: 'KES',
             period: '/month',
-            requests: 1000,
-            features: ['Basic API access', 'Community support', 'Standard rate limits'],
+            requests: 30, // Updated to 30 requests
+            features: ['Basic API access', 'Community support', 'Standard rate limits', '30 API calls per month'],
             is_popular: false,
             is_active: true
           },
@@ -43,8 +43,8 @@ export class PricingService {
             price: 2500,
             currency: 'KES',
             period: '/month',
-            requests: 50000,
-            features: ['Advanced API access', 'Email support', 'Higher rate limits', 'Analytics dashboard'],
+            requests: 10000, // Updated to 10,000 requests
+            features: ['Advanced API access', 'Email support', 'Higher rate limits', 'Analytics dashboard', '10,000 API calls per month'],
             is_popular: true,
             is_active: true
           },
@@ -54,8 +54,8 @@ export class PricingService {
             price: 15000,
             currency: 'KES',
             period: '/month',
-            requests: 500000,
-            features: ['Full API access', 'Priority support', 'Custom rate limits', 'Dedicated account manager', 'Custom integrations'],
+            requests: 100000, // 100k requests for enterprise
+            features: ['Full API access', 'Priority support', 'Custom rate limits', 'Dedicated account manager', 'Custom integrations', '100,000 API calls per month'],
             is_popular: false,
             is_active: true
           }

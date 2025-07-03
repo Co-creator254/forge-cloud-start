@@ -1,6 +1,4 @@
-
 import React, { useState } from 'react';
-import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -19,10 +17,12 @@ import {
   Truck,
   Database
 } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
 
 const SupplyChainAPI: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('developer');
+  const { user } = useAuth();
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -33,11 +33,11 @@ const SupplyChainAPI: React.FC = () => {
   const apiPlans = [
     {
       id: 'starter',
-      name: 'Starter',
+      name: 'Free Tier',
       price: 0,
       currency: 'KES',
       period: 'month',
-      requests: '1,000',
+      requests: '30',
       features: [
         'Basic market data access',
         'County-level statistics',
@@ -53,7 +53,7 @@ const SupplyChainAPI: React.FC = () => {
       price: 2500,
       currency: 'KES',
       period: 'month',
-      requests: '50,000',
+      requests: '10,000',
       features: [
         'Full market data access',
         'Real-time price feeds',
@@ -70,7 +70,7 @@ const SupplyChainAPI: React.FC = () => {
       price: 15000,
       currency: 'KES',
       period: 'month',
-      requests: '500,000+',
+      requests: '100,000+',
       features: [
         'Unlimited API access',
         'Custom integrations',
@@ -140,22 +140,55 @@ const SupplyChainAPI: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      <main className="py-8 px-4 md:px-6 max-w-7xl mx-auto">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            Supply Chain API Platform
-          </h1>
-          <p className="text-muted-foreground max-w-3xl mx-auto mb-4">
-            Monetized access to Kenya's most comprehensive agricultural supply chain data and analytics
-          </p>
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <Badge className="bg-green-100 text-green-800">Live API</Badge>
-            <Badge className="bg-blue-100 text-blue-800">99.9% Uptime</Badge>
-            <Badge className="bg-purple-100 text-purple-800">Enterprise Ready</Badge>
-          </div>
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          Supply Chain API Platform
+        </h1>
+        <p className="text-muted-foreground max-w-3xl mx-auto mb-4">
+          Monetized access to Kenya's most comprehensive agricultural supply chain data and analytics
+        </p>
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <Badge className="bg-green-100 text-green-800">Live API ✅</Badge>
+          <Badge className="bg-blue-100 text-blue-800">99.9% Uptime</Badge>
+          <Badge className="bg-purple-100 text-purple-800">Enterprise Ready</Badge>
+          <Badge className="bg-orange-100 text-orange-800">
+            Hosted: Supabase Edge Functions
+          </Badge>
         </div>
+        {user && (
+          <div className="text-sm text-muted-foreground mb-4">
+            Signed in as: {user.email}
+          </div>
+        )}
+      </div>
 
+      {/* API Security Status */}
+      <div className="mb-8 max-w-4xl mx-auto">
+        <Card className="border-green-200 bg-green-50">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Shield className="h-6 w-6 text-green-600" />
+              <h3 className="text-lg font-semibold text-green-800">API Security Status</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div>
+                <div className="font-medium text-green-700">✅ Authentication</div>
+                <div className="text-green-600">API Key validation active</div>
+              </div>
+              <div>
+                <div className="font-medium text-green-700">✅ Rate Limiting</div>
+                <div className="text-green-600">Per-tier limits enforced</div>
+              </div>
+              <div>
+                <div className="font-medium text-green-700">✅ Monitoring</div>
+                <div className="text-green-600">Usage tracking enabled</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <main className="py-8 px-4 md:px-6 max-w-7xl mx-auto">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid grid-cols-4 w-full max-w-2xl mx-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -224,7 +257,7 @@ const SupplyChainAPI: React.FC = () => {
           <TabsContent value="pricing" className="space-y-6">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">Choose Your API Plan</h2>
-              <p className="text-muted-foreground">Flexible pricing for developers and enterprises</p>
+              <p className="text-muted-foreground">Updated pricing with new request limits</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
