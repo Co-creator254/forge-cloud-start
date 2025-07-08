@@ -7,11 +7,42 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Truck, Package, MapPin, AlertTriangle, Users, BarChart3 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { getLogisticsStats, LogisticsStats } from '@/services/logisticsService';
+import { useToast } from '@/hooks/use-toast';
 
 const Logistics: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
+  const [stats, setStats] = useState<LogisticsStats>({
+    activeTransporters: 0,
+    storageFacilities: 0,
+    countiesCovered: 0,
+    monthlyDeliveries: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        const logisticsStats = await getLogisticsStats();
+        setStats(logisticsStats);
+      } catch (error) {
+        console.error('Error fetching logistics stats:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load logistics statistics",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [toast]);
 
   const logisticsServices = [
     {
@@ -19,14 +50,14 @@ const Logistics: React.FC = () => {
       description: 'Connect with reliable transporters for your agricultural products',
       icon: <Truck className="h-8 w-8 text-blue-600" />,
       link: '/logistics-solutions-map',
-      count: '150+ Providers'
+      count: `${stats.activeTransporters}+ Providers`
     },
     {
       title: 'Warehouse Solutions',
       description: 'Find storage facilities and cold chain solutions',
       icon: <Package className="h-8 w-8 text-green-600" />,
       link: '/logistics-solutions-map',
-      count: '80+ Facilities'
+      count: `${stats.storageFacilities}+ Facilities`
     },
     {
       title: 'Supply Chain Issues',
@@ -40,15 +71,31 @@ const Logistics: React.FC = () => {
       description: 'Browse all agricultural service providers',
       icon: <Users className="h-8 w-8 text-purple-600" />,
       link: '/service-providers',
-      count: '200+ Services'
+      count: `${stats.activeTransporters + stats.storageFacilities}+ Services`
     }
   ];
 
   const quickStats = [
-    { label: 'Active Transporters', value: '150+', icon: <Truck className="h-5 w-5" /> },
-    { label: 'Storage Facilities', value: '80+', icon: <Package className="h-5 w-5" /> },
-    { label: 'Counties Covered', value: '47', icon: <MapPin className="h-5 w-5" /> },
-    { label: 'Monthly Deliveries', value: '2,500+', icon: <BarChart3 className="h-5 w-5" /> }
+    { 
+      label: 'Active Transporters', 
+      value: loading ? 'Loading...' : `${stats.activeTransporters}`, 
+      icon: <Truck className="h-5 w-5" /> 
+    },
+    { 
+      label: 'Storage Facilities', 
+      value: loading ? 'Loading...' : `${stats.storageFacilities}`, 
+      icon: <Package className="h-5 w-5" /> 
+    },
+    { 
+      label: 'Counties Covered', 
+      value: loading ? 'Loading...' : `${stats.countiesCovered}`, 
+      icon: <MapPin className="h-5 w-5" /> 
+    },
+    { 
+      label: 'Monthly Deliveries', 
+      value: loading ? 'Loading...' : `${stats.monthlyDeliveries}`, 
+      icon: <BarChart3 className="h-5 w-5" /> 
+    }
   ];
 
   return (
