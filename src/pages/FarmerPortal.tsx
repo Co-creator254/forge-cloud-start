@@ -1,5 +1,8 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/components/AuthProvider';
+import Header from '@/components/Header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FarmDashboard from '@/components/farm/FarmDashboard';
 import ProduceManagement from '@/components/farm/ProduceManagement';
@@ -12,6 +15,8 @@ import FarmerProductForm from '@/components/FarmerProductForm';
 import { Produce } from '@/types/farmer';
 
 const FarmerPortal: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [userProduce, setUserProduce] = useState<Produce[]>([
     {
       id: '1',
@@ -47,8 +52,20 @@ const FarmerPortal: React.FC = () => {
     console.log('Editing produce:', produce);
   };
 
+  // Redirect to auth if not logged in
+  React.useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+    }
+  }, [user, navigate]);
+
+  if (!user) {
+    return null; // Will redirect
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       <div className="container mx-auto py-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">Farmer Portal</h1>

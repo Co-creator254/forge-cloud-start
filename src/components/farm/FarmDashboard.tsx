@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -189,7 +188,7 @@ const FarmDashboard: React.FC = () => {
       {/* Welcome Section */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-2">
-          Welcome back, {profile?.full_name || 'Farmer'}!
+          Welcome back, {profile?.full_name || user?.email?.split('@')[0] || 'Farmer'}!
         </h2>
         <p className="text-muted-foreground">
           Here's what's happening on your farm today.
@@ -209,7 +208,7 @@ const FarmDashboard: React.FC = () => {
             </div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="inline h-3 w-3 mr-1" />
-              +12% from last month
+              Track your earnings
             </p>
           </CardContent>
         </Card>
@@ -222,7 +221,7 @@ const FarmDashboard: React.FC = () => {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalArea} acres</div>
             <p className="text-xs text-muted-foreground">
-              {profile?.farm_type || 'Mixed farming'}
+              Your farmland
             </p>
           </CardContent>
         </Card>
@@ -235,8 +234,7 @@ const FarmDashboard: React.FC = () => {
           <CardContent>
             <div className="text-2xl font-bold">{stats.averageYield} kg/acre</div>
             <p className="text-xs text-muted-foreground">
-              <TrendingUp className="inline h-3 w-3 mr-1" />
-              Above regional average
+              Production efficiency
             </p>
           </CardContent>
         </Card>
