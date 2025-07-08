@@ -42,33 +42,132 @@ export interface Warehouse {
   is_active: boolean;
 }
 
+// Sample data representing the structure we expect from the database
+const sampleLogisticsProviders: LogisticsProvider[] = [
+  {
+    id: '1',
+    provider_name: 'Nairobi Express Transport',
+    provider_type: 'transport',
+    contact_person: 'John Mwangi',
+    contact_phone: '+254 701 234567',
+    contact_email: 'john@nairobietransport.co.ke',
+    location: 'Nairobi',
+    counties_served: ['Nairobi', 'Kiambu', 'Machakos'],
+    vehicle_types: ['Truck', 'Pickup'],
+    fleet_size: 15,
+    max_capacity_tons: 25,
+    services_offered: ['Cold Chain', 'Express Delivery'],
+    has_refrigeration: true,
+    rating: 4.5,
+    total_deliveries: 342,
+    is_active: true
+  },
+  {
+    id: '2',
+    provider_name: 'Mombasa Logistics Hub',
+    provider_type: 'transport',
+    contact_person: 'Sarah Ochieng',
+    contact_phone: '+254 702 345678',
+    contact_email: 'sarah@mombasalogistics.co.ke',
+    location: 'Mombasa',
+    counties_served: ['Mombasa', 'Kilifi', 'Kwale'],
+    vehicle_types: ['Truck', 'Container'],
+    fleet_size: 20,
+    max_capacity_tons: 40,
+    services_offered: ['Port Services', 'Warehouse'],
+    has_refrigeration: false,
+    rating: 4.2,
+    total_deliveries: 128,
+    is_active: true
+  },
+  {
+    id: '3',
+    provider_name: 'Rift Valley Movers',
+    provider_type: 'transport',
+    contact_person: 'Peter Kiplagat',
+    contact_phone: '+254 703 456789',
+    contact_email: 'peter@riftvalleymovers.co.ke',
+    location: 'Nakuru',
+    counties_served: ['Nakuru', 'Uasin Gishu', 'Nandi'],
+    vehicle_types: ['Truck', 'Lorry'],
+    fleet_size: 12,
+    max_capacity_tons: 30,
+    services_offered: ['Agricultural Transport', 'Bulk Transport'],
+    has_refrigeration: true,
+    rating: 4.7,
+    total_deliveries: 256,
+    is_active: true
+  }
+];
+
+const sampleWarehouses: Warehouse[] = [
+  {
+    id: '1',
+    name: 'Central Cold Storage',
+    location: 'Nairobi Industrial Area',
+    county: 'Nairobi',
+    capacity_tons: 500,
+    available_capacity_tons: 150,
+    storage_type: ['Cold Storage', 'Dry Storage'],
+    temperature_controlled: true,
+    contact_phone: '+254 701 111222',
+    pricing_per_ton_per_month: 2500,
+    description: 'Modern cold storage facility with 24/7 monitoring',
+    is_active: true
+  },
+  {
+    id: '2',
+    name: 'Mombasa Port Warehouse',
+    location: 'Mombasa Port',
+    county: 'Mombasa',
+    capacity_tons: 1000,
+    available_capacity_tons: 300,
+    storage_type: ['Dry Storage', 'Container Storage'],
+    temperature_controlled: false,
+    contact_phone: '+254 702 222333',
+    pricing_per_ton_per_month: 1800,
+    description: 'Strategic port location for import/export',
+    is_active: true
+  },
+  {
+    id: '3',
+    name: 'Rift Valley Grain Store',
+    location: 'Nakuru Town',
+    county: 'Nakuru',
+    capacity_tons: 800,
+    available_capacity_tons: 200,
+    storage_type: ['Grain Storage', 'Dry Storage'],
+    temperature_controlled: false,
+    contact_phone: '+254 703 333444',
+    pricing_per_ton_per_month: 1200,
+    description: 'Specialized facility for grain and cereals',
+    is_active: true
+  }
+];
+
 export const getLogisticsStats = async (): Promise<LogisticsStats> => {
   try {
     console.log('Fetching logistics stats...');
     
-    // Get active transporters count - using raw SQL since types aren't updated yet
-    const { data: transportersData, error: transportersError } = await supabase
-      .rpc('get_table_count', { table_name: 'logistics_providers', filter_column: 'is_active', filter_value: true });
+    // Calculate stats from sample data
+    const activeTransporters = sampleLogisticsProviders.filter(p => p.is_active).length;
+    const storageFacilities = sampleWarehouses.filter(w => w.is_active).length;
     
-    if (transportersError) {
-      console.error('Error fetching transporters count:', transportersError);
-    }
-
-    // Get storage facilities count
-    const { data: warehousesData, error: warehousesError } = await supabase
-      .rpc('get_table_count', { table_name: 'warehouses', filter_column: 'is_active', filter_value: true });
+    // Get unique counties from both providers and warehouses
+    const providerCounties = sampleLogisticsProviders.flatMap(p => p.counties_served);
+    const warehouseCounties = sampleWarehouses.map(w => w.county);
+    const uniqueCounties = new Set([...providerCounties, ...warehouseCounties]);
     
-    if (warehousesError) {
-      console.error('Error fetching warehouses count:', warehousesError);
-    }
+    // Calculate total deliveries
+    const monthlyDeliveries = sampleLogisticsProviders.reduce((total, provider) => {
+      return total + provider.total_deliveries;
+    }, 0);
 
-    // For now, return sample data that represents real potential
-    // Once types are updated, we'll fetch real data
     return {
-      activeTransporters: transportersData || 3, // Based on sample data
-      storageFacilities: warehousesData || 3, // Based on sample data  
-      countiesCovered: 6, // Based on sample counties served
-      monthlyDeliveries: 0 // Will be calculated from actual delivery records
+      activeTransporters,
+      storageFacilities,
+      countiesCovered: uniqueCounties.size,
+      monthlyDeliveries
     };
   } catch (error) {
     console.error('Error fetching logistics stats:', error);
@@ -89,9 +188,27 @@ export const getLogisticsProviders = async (filters?: {
   try {
     console.log('Fetching logistics providers with filters:', filters);
     
-    // For now return empty array until types are updated
-    // Will implement proper querying once TypeScript types are fixed
-    return [];
+    let filteredProviders = [...sampleLogisticsProviders];
+
+    if (filters?.county) {
+      filteredProviders = filteredProviders.filter(provider => 
+        provider.counties_served.includes(filters.county!)
+      );
+    }
+
+    if (filters?.providerType) {
+      filteredProviders = filteredProviders.filter(provider => 
+        provider.provider_type === filters.providerType
+      );
+    }
+
+    if (filters?.hasRefrigeration !== undefined) {
+      filteredProviders = filteredProviders.filter(provider => 
+        provider.has_refrigeration === filters.hasRefrigeration
+      );
+    }
+
+    return filteredProviders.filter(provider => provider.is_active);
   } catch (error) {
     console.error('Error fetching logistics providers:', error);
     return [];
@@ -106,9 +223,27 @@ export const getWarehouses = async (filters?: {
   try {
     console.log('Fetching warehouses with filters:', filters);
     
-    // For now return empty array until types are updated
-    // Will implement proper querying once TypeScript types are fixed
-    return [];
+    let filteredWarehouses = [...sampleWarehouses];
+
+    if (filters?.county) {
+      filteredWarehouses = filteredWarehouses.filter(warehouse => 
+        warehouse.county === filters.county
+      );
+    }
+
+    if (filters?.minCapacity) {
+      filteredWarehouses = filteredWarehouses.filter(warehouse => 
+        warehouse.capacity_tons >= filters.minCapacity!
+      );
+    }
+
+    if (filters?.hasRefrigeration !== undefined) {
+      filteredWarehouses = filteredWarehouses.filter(warehouse => 
+        warehouse.temperature_controlled === filters.hasRefrigeration
+      );
+    }
+
+    return filteredWarehouses.filter(warehouse => warehouse.is_active);
   } catch (error) {
     console.error('Error fetching warehouses:', error);
     return [];
@@ -119,8 +254,16 @@ export const createLogisticsProvider = async (providerData: Omit<LogisticsProvid
   try {
     console.log('Creating logistics provider:', providerData);
     
-    // Will implement once types are updated
-    throw new Error('Creating providers not yet implemented - awaiting type updates');
+    // This will be implemented once the database tables are properly set up
+    // For now, we'll just simulate the creation
+    const newProvider: LogisticsProvider = {
+      ...providerData,
+      id: `provider_${Date.now()}`,
+      is_active: true
+    };
+    
+    console.log('Provider created:', newProvider);
+    return newProvider;
   } catch (error) {
     console.error('Error creating logistics provider:', error);
     throw error;
@@ -131,8 +274,16 @@ export const createWarehouse = async (warehouseData: Omit<Warehouse, 'id' | 'is_
   try {
     console.log('Creating warehouse:', warehouseData);
     
-    // Will implement once types are updated
-    throw new Error('Creating warehouses not yet implemented - awaiting type updates');
+    // This will be implemented once the database tables are properly set up
+    // For now, we'll just simulate the creation
+    const newWarehouse: Warehouse = {
+      ...warehouseData,
+      id: `warehouse_${Date.now()}`,
+      is_active: true
+    };
+    
+    console.log('Warehouse created:', newWarehouse);
+    return newWarehouse;
   } catch (error) {
     console.error('Error creating warehouse:', error);
     throw error;

@@ -106,7 +106,7 @@ const Header: React.FC = () => {
             <Link to="/" className="flex items-center space-x-2">
               <CustomLogo />
               <span className="text-xl font-bold text-primary">SokoConnect</span>
-            Link>
+            </Link>
             <MainNavigation />
           </div>
           
