@@ -1,39 +1,167 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { ModeToggle } from '@/components/ModeToggle';
-import UserAvatar from '@/components/UserAvatar';
-import { MainNav } from '@/components/MainNav';
-import { MobileNav } from '@/components/MobileNav';
-import NotificationCenter from '@/components/NotificationCenter';
-import { useAuth } from '@/components/AuthProvider';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthProvider';
+import { Button } from './ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { User, LogOut, Settings } from 'lucide-react';
+import { ModeToggle } from './ModeToggle';
+import { MainNavigation } from './MainNavigation';
 
 const Header: React.FC = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  const CustomLogo = () => (
+    <div className="w-8 h-8 flex items-center justify-center">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        {/* Dynamic Growth Arrow with Agricultural Elements */}
+        <g transform="translate(50, 50)">
+          {/* Main upward arrow/growth symbol */}
+          <path d="M-15 15 L0 -25 L15 15 L8 10 L0 -10 L-8 10 Z" fill="url(#dynamicGradient)" />
+          
+          {/* Sprouting leaves */}
+          <path d="M-12 5 Q-20 0 -18 8 Q-12 12 -8 8 Q-6 2 -12 5 Z" fill="#22c55e" opacity="0.9"/>
+          <path d="M12 5 Q20 0 18 8 Q12 12 8 8 Q6 2 12 5 Z" fill="#22c55e" opacity="0.9"/>
+          
+          {/* Digital network burst */}
+          <g opacity="0.7">
+            <line x1="0" y1="-25" x2="8" y2="-32" stroke="#4ade80" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="0" y1="-25" x2="-8" y2="-32" stroke="#4ade80" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="0" y1="-25" x2="0" y2="-35" stroke="#4ade80" strokeWidth="2" strokeLinecap="round"/>
+            
+            {/* Network nodes */}
+            <circle cx="8" cy="-32" r="2" fill="#4ade80"/>
+            <circle cx="-8" cy="-32" r="2" fill="#4ade80"/>
+            <circle cx="0" cy="-35" r="2" fill="#4ade80"/>
+          </g>
+          
+          {/* Root system */}
+          <g opacity="0.6">
+            <path d="M-5 15 Q-10 20 -15 18 Q-12 22 -8 20 Q-5 18 -5 15" stroke="#16a34a" strokeWidth="2" fill="none"/>
+            <path d="M5 15 Q10 20 15 18 Q12 22 8 20 Q5 18 5 15" stroke="#16a34a" strokeWidth="2" fill="none"/>
+            <path d="M0 15 Q0 22 -3 25 Q3 25 0 15" stroke="#16a34a" strokeWidth="2" fill="none"/>
+          </g>
+          
+          {/* Energy pulse rings */}
+          <circle cx="0" cy="0" r="25" fill="none" stroke="#4ade80" strokeWidth="1" opacity="0.3" className="pulse-ring"/>
+          <circle cx="0" cy="0" r="35" fill="none" stroke="#22c55e" strokeWidth="1" opacity="0.2" className="pulse-ring-2"/>
+        </g>
+        
+        {/* Gradients */}
+        <defs>
+          <linearGradient id="dynamicGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" style={{stopColor:"#16a34a", stopOpacity:1}} />
+            <stop offset="50%" style={{stopColor:"#22c55e", stopOpacity:1}} />
+            <stop offset="100%" style={{stopColor:"#4ade80", stopOpacity:1}} />
+          </linearGradient>
+        </defs>
+      </svg>
+      
+      <style jsx>{`
+        .pulse-ring {
+          animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .pulse-ring-2 {
+          animation: pulse 2s ease-in-out infinite 0.5s;
+        }
+        
+        @keyframes pulse {
+          0%, 100% { 
+            opacity: 0.1; 
+            transform: scale(0.8);
+          }
+          50% { 
+            opacity: 0.4; 
+            transform: scale(1.1);
+          }
+        }
+      `}</style>
+    </div>
+  );
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center">
-        <MainNav />
-        <MobileNav />
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Search functionality could go here */}
+    <header className="bg-background border-b">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="flex items-center space-x-2">
+              <CustomLogo />
+              <span className="text-xl font-bold text-primary">SokoConnect</span>
+            Link>
+            <MainNavigation />
           </div>
-          <nav className="flex items-center space-x-2">
-            {user && <NotificationCenter />}
+          
+          <div className="flex items-center space-x-4">
             <ModeToggle />
+            
             {user ? (
-              <UserAvatar />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user.user_metadata?.avatar_url} alt="Profile" />
+                      <AvatarFallback>
+                        <User className="h-4 w-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.user_metadata?.full_name || user.email}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings" className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-              <Link to="/auth">
-                <Button variant="default" size="sm">
-                  Sign In
-                </Button>
-              </Link>
+              <Button asChild>
+                <Link to="/auth">Sign In</Link>
+              </Button>
             )}
-          </nav>
+          </div>
         </div>
       </div>
     </header>

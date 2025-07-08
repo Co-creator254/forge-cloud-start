@@ -25,6 +25,26 @@
   filter: drop-shadow(0 0 2em #607c60aa);
 }
 
+/* Pulsing logo animations */
+.pulse-ring {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.pulse-ring-2 {
+  animation: pulse 2s ease-in-out infinite 0.5s;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 0.1; 
+    transform: scale(0.8);
+  }
+  50% { 
+    opacity: 0.4; 
+    transform: scale(1.1);
+  }
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

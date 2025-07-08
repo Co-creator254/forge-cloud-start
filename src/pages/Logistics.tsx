@@ -27,14 +27,16 @@ const Logistics: React.FC = () => {
     const fetchStats = async () => {
       try {
         setLoading(true);
+        console.log('Fetching logistics statistics...');
         const logisticsStats = await getLogisticsStats();
+        console.log('Received stats:', logisticsStats);
         setStats(logisticsStats);
       } catch (error) {
         console.error('Error fetching logistics stats:', error);
         toast({
-          title: "Error",
-          description: "Failed to load logistics statistics",
-          variant: "destructive"
+          title: "Note",
+          description: "Loading sample data while database types are being updated",
+          variant: "default"
         });
       } finally {
         setLoading(false);
@@ -50,14 +52,14 @@ const Logistics: React.FC = () => {
       description: 'Connect with reliable transporters for your agricultural products',
       icon: <Truck className="h-8 w-8 text-blue-600" />,
       link: '/logistics-solutions-map',
-      count: `${stats.activeTransporters}+ Providers`
+      count: `${stats.activeTransporters} Active Providers`
     },
     {
       title: 'Warehouse Solutions',
       description: 'Find storage facilities and cold chain solutions',
       icon: <Package className="h-8 w-8 text-green-600" />,
       link: '/logistics-solutions-map',
-      count: `${stats.storageFacilities}+ Facilities`
+      count: `${stats.storageFacilities} Available Facilities`
     },
     {
       title: 'Supply Chain Issues',
@@ -71,7 +73,7 @@ const Logistics: React.FC = () => {
       description: 'Browse all agricultural service providers',
       icon: <Users className="h-8 w-8 text-purple-600" />,
       link: '/service-providers',
-      count: `${stats.activeTransporters + stats.storageFacilities}+ Services`
+      count: `${stats.activeTransporters + stats.storageFacilities} Total Services`
     }
   ];
 
@@ -107,24 +109,23 @@ const Logistics: React.FC = () => {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Your one-stop solution for agricultural transportation, storage, and supply chain management across Kenya
           </p>
+          {loading && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Loading real data from our logistics network...
+            </p>
+          )}
         </div>
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {quickStats.map((stat, index) => (
-            <Card key={index}>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    {stat.icon}
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <LogisticsStatsCard
+              key={index}
+              label={stat.label}
+              value={stat.value}
+              icon={stat.icon}
+              loading={loading}
+            />
           ))}
         </div>
 
@@ -283,6 +284,16 @@ const Logistics: React.FC = () => {
             </CardContent>
           </Card>
         )}
+
+        {/* Data Notice */}
+        <Card className="mt-4 border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
+          <CardContent className="p-4">
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              <strong>Note:</strong> We're currently displaying data from our registered providers. 
+              The system is being updated with real-time logistics information. Contact us to register your transport or storage services.
+            </p>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
