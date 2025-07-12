@@ -1,231 +1,197 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from '@/components/Header';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Market } from '@/types';
-import { SearchIcon, TrendingUp, ArrowRight } from 'lucide-react';
-import { fetchKilimoMarkets } from '@/services/kilimoAPI';
-import PriceTrendsTab from '@/features/commodityTrading/tabs/PriceTrendsTab';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 
-const PriceTrendsView: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [markets, setMarkets] = useState<Market[]>([]);
-  const [filteredMarkets, setFilteredMarkets] = useState<Market[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCounty, setSelectedCounty] = useState('');
-  const [selectedCommodity, setSelectedCommodity] = useState('');
-  const [counties, setCounties] = useState<string[]>([]);
-  const [commodities, setCommodities] = useState<string[]>([]);
+const PriceTrends: React.FC = () => {
+  const [selectedCommodity, setSelectedCommodity] = useState('maize');
+  const [selectedPeriod, setSelectedPeriod] = useState('6months');
 
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      try {
-        const marketsData = await fetchKilimoMarkets();
-        setMarkets(marketsData);
-        setFilteredMarkets(marketsData);
-        
-        // Extract unique counties and commodities for filters
-        const uniqueCounties = Array.from(new Set(marketsData.map(market => market.county)));
-        setCounties(uniqueCounties);
-        
-        const allCommodities = marketsData.flatMap(market => 
-          market.producePrices.map(price => price.produceName)
-        );
-        const uniqueCommodities = Array.from(new Set(allCommodities));
-        setCommodities(uniqueCommodities);
-      } catch (error) {
-        console.error('Error loading price trends data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadData();
-  }, []);
-
-  // Filter markets based on search term, county, and commodity
-  useEffect(() => {
-    let filtered = [...markets];
-    
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(market => 
-        market.name.toLowerCase().includes(term) ||
-        market.county.toLowerCase().includes(term) ||
-        market.producePrices.some(price => price.produceName.toLowerCase().includes(term))
-      );
-    }
-    
-    if (selectedCounty) {
-      filtered = filtered.filter(market => market.county === selectedCounty);
-    }
-    
-    if (selectedCommodity) {
-      filtered = filtered.filter(market => 
-        market.producePrices.some(price => price.produceName === selectedCommodity)
-      );
-    }
-    
-    setFilteredMarkets(filtered);
-  }, [searchTerm, selectedCounty, selectedCommodity, markets]);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Already filtered through the useEffect
+  const priceData = {
+    maize: [
+      { month: 'Jul 2023', price: 4200, market: 'Average' },
+      { month: 'Aug 2023', price: 4350, market: 'Average' },
+      { month: 'Sep 2023', price: 4100, market: 'Average' },
+      { month: 'Oct 2023', price: 4500, market: 'Average' },
+      { month: 'Nov 2023', price: 4800, market: 'Average' },
+      { month: 'Dec 2023', price: 4650, market: 'Average' },
+      { month: 'Jan 2024', price: 4400, market: 'Average' }
+    ],
+    beans: [
+      { month: 'Jul 2023', price: 8500, market: 'Average' },
+      { month: 'Aug 2023', price: 9200, market: 'Average' },
+      { month: 'Sep 2023', price: 8800, market: 'Average' },
+      { month: 'Oct 2023', price: 9500, market: 'Average' },
+      { month: 'Nov 2023', price: 10200, market: 'Average' },
+      { month: 'Dec 2023', price: 9800, market: 'Average' },
+      { month: 'Jan 2024', price: 9400, market: 'Average' }
+    ]
   };
 
-  const handleReset = () => {
-    setSearchTerm('');
-    setSelectedCounty('');
-    setSelectedCommodity('');
-    setFilteredMarkets(markets);
-  };
-
-  // Find the highest and lowest prices for a specific commodity
-  const getPriceExtremes = (commodity: string) => {
-    const priceData = markets
-      .flatMap(market => market.producePrices)
-      .filter(price => price.produceName === commodity);
-    
-    if (priceData.length === 0) return { min: 0, max: 0, avg: 0 };
-    
-    const prices = priceData.map(p => p.price);
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    const avg = prices.reduce((sum, price) => sum + price, 0) / prices.length;
-    
-    return { min, max, avg: Math.round(avg) };
-  };
+  const currentData = priceData[selectedCommodity as keyof typeof priceData] || priceData.maize;
+  const latestPrice = currentData[currentData.length - 1]?.price || 0;
+  const previousPrice = currentData[currentData.length - 2]?.price || 0;
+  const priceChange = latestPrice - previousPrice;
+  const percentageChange = previousPrice ? ((priceChange / previousPrice) * 100).toFixed(1) : '0';
 
   return (
     <div className="min-h-screen">
       <Header />
       <main className="py-12 px-6 max-w-7xl mx-auto">
-        <div className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Agricultural Price Trends</h1>
-          <p className="text-lg text-muted-foreground">
-            Track commodity prices across different markets in Kenya to make informed decisions
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Price Trends Analysis</h1>
+          <p className="text-lg text-muted-foreground mb-6">
+            Track historical price movements and market trends for agricultural commodities
           </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <Select value={selectedCommodity} onValueChange={setSelectedCommodity}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Select Commodity" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="maize">Maize</SelectItem>
+                <SelectItem value="beans">Beans</SelectItem>
+                <SelectItem value="wheat">Wheat</SelectItem>
+                <SelectItem value="rice">Rice</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Select Period" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="3months">Last 3 Months</SelectItem>
+                <SelectItem value="6months">Last 6 Months</SelectItem>
+                <SelectItem value="1year">Last Year</SelectItem>
+                <SelectItem value="2years">Last 2 Years</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Current Price</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">KES {latestPrice.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">per 90kg bag</p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Price Change</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className={`text-2xl font-bold flex items-center gap-2 ${priceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {priceChange >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />}
+                {priceChange >= 0 ? '+' : ''}KES {priceChange.toLocaleString()}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {priceChange >= 0 ? '+' : ''}{percentageChange}% from last month
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Market Outlook</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-blue-600">Stable</div>
+              <p className="text-xs text-muted-foreground">Based on seasonal trends</p>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Search Market Prices</CardTitle>
-            <CardDescription>
-              Find the best prices for your agricultural produce across different markets
-            </CardDescription>
+            <CardTitle>Price Trend Chart</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <Label htmlFor="search">Search</Label>
-                <div className="relative">
-                  <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="search"
-                    placeholder="Search markets or produce..."
-                    className="pl-8"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="county">County</Label>
-                <Select value={selectedCounty} onValueChange={setSelectedCounty}>
-                  <SelectTrigger id="county">
-                    <SelectValue placeholder="All Counties" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Counties</SelectItem>
-                    {counties.map(county => (
-                      <SelectItem key={county} value={county}>{county}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <Label htmlFor="commodity">Commodity</Label>
-                <Select value={selectedCommodity} onValueChange={setSelectedCommodity}>
-                  <SelectTrigger id="commodity">
-                    <SelectValue placeholder="All Commodities" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Commodities</SelectItem>
-                    {commodities.map(commodity => (
-                      <SelectItem key={commodity} value={commodity}>{commodity}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="flex items-end space-x-2">
-                <Button type="submit" className="flex-1">Search</Button>
-                <Button type="button" variant="outline" onClick={handleReset}>Reset</Button>
-              </div>
-            </form>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={currentData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip formatter={(value) => [`KES ${value.toLocaleString()}`, 'Price']} />
+                <Legend />
+                <Line 
+                  type="monotone" 
+                  dataKey="price" 
+                  stroke="#2563eb" 
+                  strokeWidth={2}
+                  dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }}
+                  name="Price (KES per 90kg bag)"
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
-        
-        {selectedCommodity && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            {['Tomatoes', 'Potatoes', 'Maize'].includes(selectedCommodity) && (
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">{selectedCommodity} Price Insights</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="text-sm text-muted-foreground">Price Range</div>
-                      <div className="flex justify-between items-center mt-1">
-                        <div>
-                          <div className="text-2xl font-bold">
-                            KES {getPriceExtremes(selectedCommodity).min}
-                          </div>
-                          <div className="text-xs text-muted-foreground">Lowest</div>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <div className="text-2xl font-bold">
-                            KES {getPriceExtremes(selectedCommodity).max}
-                          </div>
-                          <div className="text-xs text-muted-foreground">Highest</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <div className="text-sm text-muted-foreground">Average Price</div>
-                      <div className="text-2xl font-bold mt-1">
-                        KES {getPriceExtremes(selectedCommodity).avg}
-                      </div>
-                    </div>
-                    
-                    <div className="pt-2">
-                      <div className="flex items-center text-sm text-primary">
-                        <TrendingUp className="h-4 w-4 mr-1" />
-                        Price trend: {Math.random() > 0.5 ? 'Rising' : 'Falling'}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        )}
-        
-        <PriceTrendsTab isLoading={isLoading} markets={filteredMarkets} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Market Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Key Factors Affecting Prices:</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Seasonal demand patterns</li>
+                    <li>• Weather conditions and rainfall</li>
+                    <li>• Input costs (fertilizer, fuel)</li>
+                    <li>• Regional supply and demand</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Price Forecast:</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Prices expected to remain stable over the next month, with potential 
+                    increase during dry season (March-May).
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Regional Price Comparison</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center p-2 border rounded">
+                  <span className="text-sm">Nairobi Market</span>
+                  <span className="font-medium">KES 4,600</span>
+                </div>
+                <div className="flex justify-between items-center p-2 border rounded">
+                  <span className="text-sm">Nakuru Market</span>
+                  <span className="font-medium">KES 4,200</span>
+                </div>
+                <div className="flex justify-between items-center p-2 border rounded">
+                  <span className="text-sm">Kitale Market</span>
+                  <span className="font-medium">KES 3,900</span>
+                </div>
+                <div className="flex justify-between items-center p-2 border rounded">
+                  <span className="text-sm">Mombasa Market</span>
+                  <span className="font-medium">KES 4,800</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   );
 };
 
-export default PriceTrendsView;
+export default PriceTrends;

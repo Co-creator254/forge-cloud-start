@@ -7,9 +7,8 @@ import {
   Users, 
   TrendingUp, 
   MessageSquare,
-  Search,
   Building2,
-  ChevronDown
+  ShoppingCart
 } from 'lucide-react';
 import {
   NavigationMenu,
@@ -37,7 +36,7 @@ const MainNavigation: React.FC = () => {
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                     to="/farm-input-marketplace"
                   >
-                    <Store className="h-6 w-6" />
+                    <ShoppingCart className="h-6 w-6" />
                     <div className="mb-2 mt-4 text-lg font-medium">
                       Farm Input Marketplace
                     </div>
@@ -59,10 +58,20 @@ const MainNavigation: React.FC = () => {
               </li>
               <li>
                 <NavigationMenuLink asChild>
-                  <Link to="/market-linkages" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                    <div className="text-sm font-medium leading-none">Market Linkages</div>
+                  <Link to="/marketplace" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Agricultural Marketplace</div>
                     <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                      Connect with buyers and market opportunities
+                      Buy fresh produce directly from farmers
+                    </p>
+                  </Link>
+                </NavigationMenuLink>
+              </li>
+              <li>
+                <NavigationMenuLink asChild>
+                  <Link to="/city-markets" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">City Markets</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Find agricultural markets across Kenya
                     </p>
                   </Link>
                 </NavigationMenuLink>
@@ -132,9 +141,18 @@ const MainNavigation: React.FC = () => {
 
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
-            <Link to="/community-forum" className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+            <Link to="/community-forums" className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
               <MessageSquare className="w-4 h-4 mr-2" />
               Community
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link to="/city-markets" className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+              <Building2 className="w-4 h-4 mr-2" />
+              Markets
             </Link>
           </NavigationMenuLink>
         </NavigationMenuItem>

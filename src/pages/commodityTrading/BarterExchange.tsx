@@ -1,189 +1,142 @@
 
-import React, { useState, useEffect } from 'react';
-import BarterExchangeTab from '@/features/commodityTrading/tabs/BarterExchangeTab';
-import PrivacyLegalNotice from '@/features/commodityTrading/components/PrivacyLegalNotice';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from 'react';
+import Header from '@/components/Header';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FarmerGroup } from '@/types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Search, Users, MapPin, Calendar } from 'lucide-react';
 
-const BarterExchangeView: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const BarterExchange: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const { toast } = useToast();
-  const [farmerGroups, setFarmerGroups] = useState<FarmerGroup[]>([]);
-  const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
-  const [privacyAcknowledged, setPrivacyAcknowledged] = useState(false);
 
-  useEffect(() => {
-    // Check if user has acknowledged privacy notice
-    const hasAcknowledged = localStorage.getItem('barterPrivacyAcknowledged');
-    if (!hasAcknowledged) {
-      setShowPrivacyDialog(true);
-    } else {
-      setPrivacyAcknowledged(true);
+  const sampleBarterListings = [
+    {
+      id: '1',
+      title: 'Trade Maize for Fertilizer',
+      offeredItem: 'Maize - 10 bags (90kg each)',
+      requestedItem: 'NPK Fertilizer - 5 bags (50kg each)',
+      location: 'Nakuru County',
+      farmerName: 'John Maina',
+      contact: '+254 700 123456',
+      postedDate: '2024-01-15',
+      category: 'Grains'
+    },
+    {
+      id: '2',
+      title: 'Beans for Transport Services',
+      offeredItem: 'Green Beans - 20 bags (50kg each)',
+      requestedItem: 'Transport to Nairobi Market',
+      location: 'Meru County',
+      farmerName: 'Mary Wanjiku',
+      contact: '+254 701 234567',
+      postedDate: '2024-01-14',
+      category: 'Legumes'
+    },
+    {
+      id: '3',
+      title: 'Equipment Exchange',
+      offeredItem: 'Tractor Use - 2 days per month',
+      requestedItem: 'Harvester Use - 1 day',
+      location: 'Uasin Gishu County',
+      farmerName: 'Peter Kiprotich',
+      contact: '+254 702 345678',
+      postedDate: '2024-01-13',
+      category: 'Equipment'
     }
+  ];
 
-    // Simulate fetching farmer groups
-    const fetchGroups = async () => {
-      setIsLoading(true);
-      try {
-        // This would be replaced with an actual API call
-        setTimeout(() => {
-          const groups: FarmerGroup[] = [
-            {
-              id: 'fg001',
-              name: 'Nyeri Coffee Growers Association',
-              region: 'Central',
-              cropFocus: ['Coffee'],
-              memberCount: 124,
-              description: 'A cooperative of small-scale coffee farmers in Nyeri County',
-              established: '2010-05-12',
-              isCooperative: true,
-              contactPerson: 'James Mwangi',
-              contactInfo: '+254722000000'
-            },
-            {
-              id: 'fg002',
-              name: 'Meru Potato Farmers',
-              region: 'Eastern',
-              cropFocus: ['Potatoes'],
-              memberCount: 78,
-              description: 'Group of potato farmers focused on improving market access',
-              established: '2015-08-23',
-              isCooperative: false,
-              contactPerson: 'Sarah Kinyua',
-              contactInfo: '+254733000000'
-            }
-          ];
-          setFarmerGroups(groups);
-          setIsLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error('Error fetching farmer groups:', error);
-        toast({
-          title: 'Error',
-          description: 'Failed to load farmer groups',
-          variant: 'destructive'
-        });
-        setIsLoading(false);
-      }
-    };
-
-    fetchGroups();
-  }, [toast]);
-
-  const handleCreateGroup = () => {
-    toast({
-      title: 'Feature Coming Soon',
-      description: 'Farmer group creation will be available in the next update.',
-      variant: 'default'
-    });
-  };
-
-  const handlePrivacyAcknowledge = () => {
-    localStorage.setItem('barterPrivacyAcknowledged', 'true');
-    setPrivacyAcknowledged(true);
-    setShowPrivacyDialog(false);
-    toast({
-      title: 'Privacy Policy Acknowledged',
-      description: 'Thank you for reviewing our privacy and legal information.'
-    });
-  };
+  const filteredListings = sampleBarterListings.filter(listing =>
+    listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    listing.offeredItem.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    listing.requestedItem.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <>
-      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-        <div>
-          <h2 className="text-2xl font-bold mb-2">Barter Exchange</h2>
-          <p className="text-muted-foreground">Exchange goods and services with other farmers</p>
-        </div>
-        <Button 
-          onClick={handleCreateGroup} 
-          className="mt-4 sm:mt-0"
-        >
-          Create Farmer Group
-        </Button>
-      </div>
-      
-      {/* Display compact notice at the top for all users */}
-      <PrivacyLegalNotice variant="compact" />
-      
-      <BarterExchangeTab 
-        searchTerm={searchTerm}
-        selectedCategory={selectedCategory}
-        selectedLocation={selectedLocation}
-        isLoading={isLoading}
-      />
-
-      {/* Display full notice for first-time users */}
-      <Dialog open={showPrivacyDialog} onOpenChange={setShowPrivacyDialog}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Important Legal Information</DialogTitle>
-            <DialogDescription>
-              Please review the following information regarding data privacy, taxation, and consumer protection.
-            </DialogDescription>
-          </DialogHeader>
+    <div className="min-h-screen">
+      <Header />
+      <main className="py-12 px-6 max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Barter Exchange</h1>
+          <p className="text-lg text-muted-foreground mb-6">
+            Trade agricultural goods and services directly with other farmers without using money
+          </p>
           
-          <PrivacyLegalNotice />
-          
-          <div className="flex items-start space-x-2 mb-4">
-            <Checkbox 
-              id="privacy-acknowledge" 
-              checked={privacyAcknowledged} 
-              onCheckedChange={(checked) => setPrivacyAcknowledged(checked === true)}
-            />
-            <Label htmlFor="privacy-acknowledge" className="text-sm font-normal leading-tight">
-              I acknowledge that I have read and understood the information regarding data privacy, taxation implications,
-              and consumer protection measures for using the Barter Exchange platform.
-            </Label>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search barter opportunities..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button>Post Barter Offer</Button>
           </div>
-          
-          <DialogFooter>
-            <Button 
-              onClick={handlePrivacyAcknowledge} 
-              disabled={!privacyAcknowledged}
-            >
-              Acknowledge and Continue
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </div>
 
-      {farmerGroups.length > 0 && (
-        <div className="mt-8 border rounded-lg p-4">
-          <h3 className="text-xl font-bold mb-4">Farmer Groups in Your Area</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {farmerGroups.map(group => (
-              <div key={group.id} className="border rounded-lg p-4 hover:bg-accent transition-colors">
+        <div className="grid gap-6">
+          {filteredListings.map((listing) => (
+            <Card key={listing.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
                 <div className="flex justify-between items-start">
-                  <h4 className="font-semibold text-lg">{group.name}</h4>
-                  <span className="text-sm px-2 py-1 bg-primary/10 rounded-full">
-                    {group.isCooperative ? 'Cooperative' : 'Group'}
-                  </span>
+                  <div>
+                    <CardTitle className="text-xl mb-2">{listing.title}</CardTitle>
+                    <Badge variant="secondary">{listing.category}</Badge>
+                  </div>
+                  <div className="text-right text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      {new Date(listing.postedDate).toLocaleDateString()}
+                    </div>
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">{group.description}</p>
-                <div className="mt-3 grid grid-cols-2 gap-y-1 text-sm">
-                  <span className="font-medium">Region:</span> <span>{group.region}</span>
-                  <span className="font-medium">Members:</span> <span>{group.memberCount}</span>
-                  <span className="font-medium">Focus:</span> <span>{group.cropFocus?.join(', ')}</span>
-                  <span className="font-medium">Since:</span> <span>{new Date(group.established || '').getFullYear()}</span>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                  <div className="p-4 border rounded-lg bg-green-50">
+                    <h4 className="font-semibold text-green-800 mb-2">Offering:</h4>
+                    <p className="text-green-700">{listing.offeredItem}</p>
+                  </div>
+                  <div className="p-4 border rounded-lg bg-blue-50">
+                    <h4 className="font-semibold text-blue-800 mb-2">Looking for:</h4>
+                    <p className="text-blue-700">{listing.requestedItem}</p>
+                  </div>
                 </div>
-                <Button variant="outline" size="sm" className="mt-3 w-full">
-                  Join Group
-                </Button>
-              </div>
-            ))}
-          </div>
+                
+                <div className="flex justify-between items-center pt-4 border-t">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{listing.farmerName}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4" />
+                      <span>{listing.location}</span>
+                    </div>
+                  </div>
+                  <Button>Contact Farmer</Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      )}
-    </>
+
+        {filteredListings.length === 0 && (
+          <Card className="text-center py-12">
+            <CardContent>
+              <h3 className="text-lg font-semibold mb-2">No barter opportunities found</h3>
+              <p className="text-muted-foreground mb-4">
+                Try adjusting your search terms or be the first to post a barter offer!
+              </p>
+              <Button>Post Your First Barter Offer</Button>
+            </CardContent>
+          </Card>
+        )}
+      </main>
+    </div>
   );
 };
 
-export default BarterExchangeView;
+export default BarterExchange;
