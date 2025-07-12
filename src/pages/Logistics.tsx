@@ -1,300 +1,340 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/components/AuthProvider';
-import Header from '@/components/Header';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Truck, Package, MapPin, AlertTriangle, Users, BarChart3 } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { getLogisticsStats, LogisticsStats } from '@/services/logisticsService';
-import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MapPin, Phone, Star, Filter, Truck, Warehouse, Users, Package } from 'lucide-react';
+import { getLogisticsStats, getTransportProviders, getWarehouseOptions } from '@/services/logisticsService';
+import LogisticsStatsCard from '@/components/logistics/LogisticsStatsCard';
+
+interface LogisticsStats {
+  totalProviders: number;
+  totalCapacity: string;
+  averageRating: number;
+  completedDeliveries: number;
+}
 
 const Logistics: React.FC = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('overview');
   const [stats, setStats] = useState<LogisticsStats>({
-    activeTransporters: 0,
-    storageFacilities: 0,
-    countiesCovered: 0,
-    monthlyDeliveries: 0
+    totalProviders: 0,
+    totalCapacity: '0 tons',
+    averageRating: 0,
+    completedDeliveries: 0
   });
+  const [transportProviders, setTransportProviders] = useState<any[]>([]);
+  const [warehouses, setWarehouses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCounty, setSelectedCounty] = useState('');
+  const [selectedServiceType, setSelectedServiceType] = useState('');
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        console.log('Fetching logistics statistics...');
-        const logisticsStats = await getLogisticsStats();
-        console.log('Received stats:', logisticsStats);
-        setStats(logisticsStats);
+        console.log('Fetching logistics data...');
+        
+        const [statsData, transportData, warehouseData] = await Promise.all([
+          getLogisticsStats(),
+          getTransportProviders(),
+          getWarehouseOptions()
+        ]);
+
+        console.log('Stats data:', statsData);
+        console.log('Transport data:', transportData);
+        console.log('Warehouse data:', warehouseData);
+
+        setStats(statsData);
+        setTransportProviders(transportData);
+        setWarehouses(warehouseData);
       } catch (error) {
-        console.error('Error fetching logistics stats:', error);
-        toast({
-          title: "Note",
-          description: "Loading sample data while database types are being updated",
-          variant: "default"
-        });
+        console.error('Error fetching logistics data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStats();
-  }, [toast]);
+    fetchData();
+  }, []);
 
-  const logisticsServices = [
-    {
-      title: 'Transportation Services',
-      description: 'Connect with reliable transporters for your agricultural products',
-      icon: <Truck className="h-8 w-8 text-blue-600" />,
-      link: '/logistics-solutions-map',
-      count: `${stats.activeTransporters} Active Providers`
-    },
-    {
-      title: 'Warehouse Solutions',
-      description: 'Find storage facilities and cold chain solutions',
-      icon: <Package className="h-8 w-8 text-green-600" />,
-      link: '/logistics-solutions-map',
-      count: `${stats.storageFacilities} Available Facilities`
-    },
-    {
-      title: 'Supply Chain Issues',
-      description: 'Identify and solve logistics challenges',
-      icon: <AlertTriangle className="h-8 w-8 text-orange-600" />,
-      link: '/supply-chain-problems/logistics-issues',
-      count: 'Solutions Available'
-    },
-    {
-      title: 'Service Providers',
-      description: 'Browse all agricultural service providers',
-      icon: <Users className="h-8 w-8 text-purple-600" />,
-      link: '/service-providers',
-      count: `${stats.activeTransporters + stats.storageFacilities} Total Services`
-    }
+  const counties = [
+    'Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret', 'Thika',
+    'Kiambu', 'Machakos', 'Meru', 'Embu', 'Nyeri', 'Muranga'
   ];
 
-  const quickStats = [
-    { 
-      label: 'Active Transporters', 
-      value: loading ? 'Loading...' : `${stats.activeTransporters}`, 
-      icon: <Truck className="h-5 w-5" /> 
-    },
-    { 
-      label: 'Storage Facilities', 
-      value: loading ? 'Loading...' : `${stats.storageFacilities}`, 
-      icon: <Package className="h-5 w-5" /> 
-    },
-    { 
-      label: 'Counties Covered', 
-      value: loading ? 'Loading...' : `${stats.countiesCovered}`, 
-      icon: <MapPin className="h-5 w-5" /> 
-    },
-    { 
-      label: 'Monthly Deliveries', 
-      value: loading ? 'Loading...' : `${stats.monthlyDeliveries}`, 
-      icon: <BarChart3 className="h-5 w-5" /> 
-    }
-  ];
+  const filteredTransportProviders = transportProviders.filter(provider => {
+    const matchesSearch = provider.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCounty = !selectedCounty || provider.counties?.includes(selectedCounty);
+    const matchesService = !selectedServiceType || provider.serviceType === selectedServiceType;
+    return matchesSearch && matchesCounty && matchesService;
+  });
+
+  const filteredWarehouses = warehouses.filter(warehouse => {
+    const matchesSearch = warehouse.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCounty = !selectedCounty || warehouse.county === selectedCounty;
+    return matchesSearch && matchesCounty;
+  });
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <div className="text-lg">Loading logistics data from database...</div>
+          <div className="text-sm text-muted-foreground mt-2">Fetching real providers and facilities</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto py-8 px-4">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4">Agricultural Logistics Hub</h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Your one-stop solution for agricultural transportation, storage, and supply chain management across Kenya
-          </p>
-          {loading && (
-            <p className="text-sm text-muted-foreground mt-2">
-              Loading real data from our logistics network...
-            </p>
-          )}
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-4">Smart Logistics Network</h1>
+        <p className="text-lg text-muted-foreground">
+          Connect with verified transport providers, storage facilities, and logistics solutions across Kenya
+        </p>
+      </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {quickStats.map((stat, index) => (
-            <LogisticsStatsCard
-              key={index}
-              label={stat.label}
-              value={stat.value}
-              icon={stat.icon}
-              loading={loading}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <LogisticsStatsCard
+          label="Active Providers"
+          value={stats.totalProviders}
+          icon={<Truck className="h-5 w-5 text-primary" />}
+        />
+        <LogisticsStatsCard
+          label="Total Capacity"
+          value={stats.totalCapacity}
+          icon={<Package className="h-5 w-5 text-primary" />}
+        />
+        <LogisticsStatsCard
+          label="Average Rating"
+          value={`${stats.averageRating}/5`}
+          icon={<Star className="h-5 w-5 text-primary" />}
+        />
+        <LogisticsStatsCard
+          label="Completed Deliveries"
+          value={stats.completedDeliveries}
+          icon={<Users className="h-5 w-5 text-primary" />}
+        />
+      </div>
+
+      {/* Filters */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Filter Services
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Input
+              placeholder="Search providers..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-          ))}
-        </div>
+            <Select value={selectedCounty} onValueChange={setSelectedCounty}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select County" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Counties</SelectItem>
+                {counties.map((county) => (
+                  <SelectItem key={county} value={county}>
+                    {county}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={selectedServiceType} onValueChange={setSelectedServiceType}>
+              <SelectTrigger>
+                <SelectValue placeholder="Service Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Services</SelectItem>
+                <SelectItem value="transport">Transport</SelectItem>
+                <SelectItem value="storage">Storage</SelectItem>
+                <SelectItem value="cold_chain">Cold Chain</SelectItem>
+                <SelectItem value="packaging">Packaging</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" onClick={() => {
+              setSearchTerm('');
+              setSelectedCounty('');
+              setSelectedServiceType('');
+            }}>
+              Clear Filters
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-8">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="transportation">Transportation</TabsTrigger>
-            <TabsTrigger value="storage">Storage</TabsTrigger>
-            <TabsTrigger value="solutions">Solutions</TabsTrigger>
-          </TabsList>
+      {/* Main Content Tabs */}
+      <Tabs defaultValue="transport" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="transport">Transport Providers</TabsTrigger>
+          <TabsTrigger value="storage">Storage Facilities</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="overview">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {logisticsServices.map((service, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(service.link)}>
+        <TabsContent value="transport" className="space-y-6">
+          <div className="grid gap-6">
+            {filteredTransportProviders.length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Truck className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold mb-2">No Transport Providers Found</h3>
+                  <p className="text-muted-foreground">
+                    {searchTerm || selectedCounty || selectedServiceType 
+                      ? 'Try adjusting your filters to see more results.'
+                      : 'Transport providers will appear here once they register on the platform.'
+                    }
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              filteredTransportProviders.map((provider) => (
+                <Card key={provider.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-primary/10 rounded-lg">
-                        {service.icon}
-                      </div>
+                    <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle className="text-xl">{service.title}</CardTitle>
-                        <div className="text-sm text-primary font-medium">{service.count}</div>
+                        <CardTitle className="flex items-center gap-2">
+                          <Truck className="h-5 w-5" />
+                          {provider.name}
+                        </CardTitle>
+                        <div className="flex items-center gap-2 mt-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">
+                            {provider.counties?.join(', ') || 'Multiple Counties'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="ml-1 text-sm">{provider.rating || '4.5'}</span>
+                        </div>
+                        <Badge variant="secondary">{provider.serviceType}</Badge>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-base">
-                      {service.description}
-                    </CardDescription>
-                    <Button className="w-full mt-4" onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(service.link);
-                    }}>
-                      Explore Service
-                    </Button>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <h4 className="font-semibold mb-2">Capacity</h4>
+                        <p className="text-sm text-muted-foreground">{provider.capacity}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Vehicle Type</h4>
+                        <p className="text-sm text-muted-foreground">{provider.vehicleType}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Refrigeration</h4>
+                        <Badge variant={provider.hasRefrigeration ? "default" : "secondary"}>
+                          {provider.hasRefrigeration ? "Available" : "Not Available"}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4" />
+                          <span className="text-sm">{provider.contactInfo}</span>
+                        </div>
+                        <Button size="sm">
+                          Book Transport
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          </TabsContent>
+              ))
+            )}
+          </div>
+        </TabsContent>
 
-          <TabsContent value="transportation">
-            <Card>
-              <CardHeader>
-                <CardTitle>Transportation Services</CardTitle>
-                <CardDescription>
-                  Find reliable transporters for your agricultural products
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 border rounded-lg">
-                      <h3 className="font-semibold">Truck Transport</h3>
-                      <p className="text-sm text-muted-foreground">Large capacity for bulk goods</p>
+        <TabsContent value="storage" className="space-y-6">
+          <div className="grid gap-6">
+            {filteredWarehouses.length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Warehouse className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold mb-2">No Storage Facilities Found</h3>
+                  <p className="text-muted-foreground">
+                    {searchTerm || selectedCounty 
+                      ? 'Try adjusting your filters to see more results.'
+                      : 'Storage facilities will appear here once they register on the platform.'
+                    }
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              filteredWarehouses.map((warehouse) => (
+                <Card key={warehouse.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          <Warehouse className="h-5 w-5" />
+                          {warehouse.name}
+                        </CardTitle>
+                        <div className="flex items-center gap-2 mt-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">
+                            {warehouse.location || warehouse.county}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="ml-1 text-sm">{warehouse.rating || '4.3'}</span>
+                        </div>
+                        <Badge variant="secondary">Storage</Badge>
+                      </div>
                     </div>
-                    <div className="p-4 border rounded-lg">
-                      <h3 className="font-semibold">Refrigerated Transport</h3>
-                      <p className="text-sm text-muted-foreground">Cold chain for perishables</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <h4 className="font-semibold mb-2">Capacity</h4>
+                        <p className="text-sm text-muted-foreground">{warehouse.capacity}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Storage Type</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {warehouse.goodsTypes?.join(', ') || 'General Storage'}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Refrigeration</h4>
+                        <Badge variant={warehouse.hasRefrigeration ? "default" : "secondary"}>
+                          {warehouse.hasRefrigeration ? "Available" : "Not Available"}
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="p-4 border rounded-lg">
-                      <h3 className="font-semibold">Express Delivery</h3>
-                      <p className="text-sm text-muted-foreground">Fast delivery for urgent goods</p>
+                    <div className="mt-4 pt-4 border-t">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4" />
+                          <span className="text-sm">{warehouse.contactInfo}</span>
+                        </div>
+                        <Button size="sm">
+                          Book Storage
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  <Button onClick={() => navigate('/logistics-solutions-map')} className="w-full">
-                    Find Transporters
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="storage">
-            <Card>
-              <CardHeader>
-                <CardTitle>Storage Solutions</CardTitle>
-                <CardDescription>
-                  Secure storage facilities across Kenya
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 border rounded-lg">
-                      <h3 className="font-semibold">Warehouses</h3>
-                      <p className="text-sm text-muted-foreground">Dry storage for grains and processed goods</p>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <h3 className="font-semibold">Cold Storage</h3>
-                      <p className="text-sm text-muted-foreground">Temperature-controlled for fresh produce</p>
-                    </div>
-                  </div>
-                  <Button onClick={() => navigate('/logistics-solutions-map')} className="w-full">
-                    Find Storage Facilities
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="solutions">
-            <Card>
-              <CardHeader>
-                <CardTitle>Logistics Solutions</CardTitle>
-                <CardDescription>
-                  Comprehensive solutions for supply chain challenges
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="space-y-3">
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start"
-                      onClick={() => navigate('/supply-chain-problems/logistics-issues')}
-                    >
-                      <AlertTriangle className="h-4 w-4 mr-2" />
-                      Identify Logistics Issues
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start"
-                      onClick={() => navigate('/transporter-signup')}
-                    >
-                      <Truck className="h-4 w-4 mr-2" />
-                      Register as Transporter
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start"
-                      onClick={() => navigate('/service-provider-registration')}
-                    >
-                      <Users className="h-4 w-4 mr-2" />
-                      Register Service Provider
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-
-        {/* Call to Action */}
-        {!user && (
-          <Card className="mt-8">
-            <CardContent className="p-6 text-center">
-              <h3 className="text-xl font-semibold mb-2">Join Our Logistics Network</h3>
-              <p className="text-muted-foreground mb-4">
-                Sign up to access premium logistics services and connect with verified providers
-              </p>
-              <Button onClick={() => navigate('/auth')} size="lg">
-                Sign Up Now
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Data Notice */}
-        <Card className="mt-4 border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
-          <CardContent className="p-4">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
-              <strong>Note:</strong> We're currently displaying data from our registered providers. 
-              The system is being updated with real-time logistics information. Contact us to register your transport or storage services.
-            </p>
-          </CardContent>
-        </Card>
-      </main>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

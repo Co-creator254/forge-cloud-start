@@ -14,6 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
+      aggregators: {
+        Row: {
+          aggregator_name: string
+          business_type: string
+          certifications: string[] | null
+          collection_points: string[] | null
+          commission_rate_percent: number | null
+          commodities_handled: string[]
+          contact_email: string
+          contact_person: string
+          contact_phone: string
+          coordinates: Json | null
+          county: string
+          created_at: string
+          farmers_network_size: number | null
+          has_cold_storage: boolean | null
+          has_drying_facilities: boolean | null
+          has_packaging_facilities: boolean | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          minimum_quantity_tons: number | null
+          payment_terms: string[] | null
+          physical_address: string
+          pricing_model: string | null
+          rating: number | null
+          registration_number: string | null
+          service_radius_km: number | null
+          storage_capacity_tons: number | null
+          sub_county: string | null
+          total_transactions: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aggregator_name: string
+          business_type?: string
+          certifications?: string[] | null
+          collection_points?: string[] | null
+          commission_rate_percent?: number | null
+          commodities_handled: string[]
+          contact_email: string
+          contact_person: string
+          contact_phone: string
+          coordinates?: Json | null
+          county: string
+          created_at?: string
+          farmers_network_size?: number | null
+          has_cold_storage?: boolean | null
+          has_drying_facilities?: boolean | null
+          has_packaging_facilities?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          minimum_quantity_tons?: number | null
+          payment_terms?: string[] | null
+          physical_address: string
+          pricing_model?: string | null
+          rating?: number | null
+          registration_number?: string | null
+          service_radius_km?: number | null
+          storage_capacity_tons?: number | null
+          sub_county?: string | null
+          total_transactions?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aggregator_name?: string
+          business_type?: string
+          certifications?: string[] | null
+          collection_points?: string[] | null
+          commission_rate_percent?: number | null
+          commodities_handled?: string[]
+          contact_email?: string
+          contact_person?: string
+          contact_phone?: string
+          coordinates?: Json | null
+          county?: string
+          created_at?: string
+          farmers_network_size?: number | null
+          has_cold_storage?: boolean | null
+          has_drying_facilities?: boolean | null
+          has_packaging_facilities?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          minimum_quantity_tons?: number | null
+          payment_terms?: string[] | null
+          physical_address?: string
+          pricing_model?: string | null
+          rating?: number | null
+          registration_number?: string | null
+          service_radius_km?: number | null
+          storage_capacity_tons?: number | null
+          sub_county?: string | null
+          total_transactions?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       api_keys: {
         Row: {
           created_at: string
@@ -225,6 +327,87 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           views_count?: number | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      city_markets: {
+        Row: {
+          average_daily_buyers: number | null
+          average_daily_traders: number | null
+          city: string
+          commodities_traded: string[]
+          contact_email: string | null
+          contact_phone: string | null
+          coordinates: Json
+          county: string
+          created_at: string
+          established_year: number | null
+          facilities: string[] | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          market_authority: string | null
+          market_fee_structure: Json | null
+          market_name: string
+          market_type: string
+          operating_days: string[]
+          operating_hours: string
+          physical_address: string
+          social_media: Json | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          average_daily_buyers?: number | null
+          average_daily_traders?: number | null
+          city: string
+          commodities_traded: string[]
+          contact_email?: string | null
+          contact_phone?: string | null
+          coordinates: Json
+          county: string
+          created_at?: string
+          established_year?: number | null
+          facilities?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          market_authority?: string | null
+          market_fee_structure?: Json | null
+          market_name: string
+          market_type: string
+          operating_days: string[]
+          operating_hours: string
+          physical_address: string
+          social_media?: Json | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          average_daily_buyers?: number | null
+          average_daily_traders?: number | null
+          city?: string
+          commodities_traded?: string[]
+          contact_email?: string | null
+          contact_phone?: string | null
+          coordinates?: Json
+          county?: string
+          created_at?: string
+          established_year?: number | null
+          facilities?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          market_authority?: string | null
+          market_fee_structure?: Json | null
+          market_name?: string
+          market_type?: string
+          operating_days?: string[]
+          operating_hours?: string
+          physical_address?: string
+          social_media?: Json | null
+          updated_at?: string
           website_url?: string | null
         }
         Relationships: []
@@ -719,6 +902,292 @@ export type Database = {
           },
         ]
       }
+      farm_input_order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string
+          quantity: number
+          total_price: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id: string
+          quantity: number
+          total_price: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string
+          quantity?: number
+          total_price?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_input_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "farm_input_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "farm_input_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "farm_input_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farm_input_orders: {
+        Row: {
+          actual_delivery_date: string | null
+          buyer_email: string | null
+          buyer_id: string
+          buyer_name: string
+          buyer_phone: string
+          created_at: string
+          delivery_address: string | null
+          delivery_coordinates: Json | null
+          delivery_county: string | null
+          delivery_method: string
+          id: string
+          order_notes: string | null
+          order_number: string
+          order_status: string
+          payment_method: string | null
+          payment_status: string
+          requested_delivery_date: string | null
+          special_instructions: string | null
+          supplier_id: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          actual_delivery_date?: string | null
+          buyer_email?: string | null
+          buyer_id: string
+          buyer_name: string
+          buyer_phone: string
+          created_at?: string
+          delivery_address?: string | null
+          delivery_coordinates?: Json | null
+          delivery_county?: string | null
+          delivery_method: string
+          id?: string
+          order_notes?: string | null
+          order_number?: string
+          order_status?: string
+          payment_method?: string | null
+          payment_status?: string
+          requested_delivery_date?: string | null
+          special_instructions?: string | null
+          supplier_id: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          actual_delivery_date?: string | null
+          buyer_email?: string | null
+          buyer_id?: string
+          buyer_name?: string
+          buyer_phone?: string
+          created_at?: string
+          delivery_address?: string | null
+          delivery_coordinates?: Json | null
+          delivery_county?: string | null
+          delivery_method?: string
+          id?: string
+          order_notes?: string | null
+          order_number?: string
+          order_status?: string
+          payment_method?: string | null
+          payment_status?: string
+          requested_delivery_date?: string | null
+          special_instructions?: string | null
+          supplier_id?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_input_orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "farm_input_suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farm_input_products: {
+        Row: {
+          batch_number: string | null
+          brand_name: string | null
+          country_of_origin: string | null
+          created_at: string
+          expiry_date: string | null
+          id: string
+          image_urls: string[] | null
+          is_active: boolean | null
+          is_available: boolean | null
+          manufacturer: string | null
+          minimum_order_quantity: number | null
+          organic_certified: boolean | null
+          price_per_unit: number
+          product_category: string
+          product_description: string | null
+          product_name: string
+          product_subcategory: string | null
+          restock_level: number | null
+          specifications: Json | null
+          stock_quantity: number | null
+          supplier_id: string
+          unit_of_measure: string
+          updated_at: string
+        }
+        Insert: {
+          batch_number?: string | null
+          brand_name?: string | null
+          country_of_origin?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_active?: boolean | null
+          is_available?: boolean | null
+          manufacturer?: string | null
+          minimum_order_quantity?: number | null
+          organic_certified?: boolean | null
+          price_per_unit: number
+          product_category: string
+          product_description?: string | null
+          product_name: string
+          product_subcategory?: string | null
+          restock_level?: number | null
+          specifications?: Json | null
+          stock_quantity?: number | null
+          supplier_id: string
+          unit_of_measure: string
+          updated_at?: string
+        }
+        Update: {
+          batch_number?: string | null
+          brand_name?: string | null
+          country_of_origin?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_active?: boolean | null
+          is_available?: boolean | null
+          manufacturer?: string | null
+          minimum_order_quantity?: number | null
+          organic_certified?: boolean | null
+          price_per_unit?: number
+          product_category?: string
+          product_description?: string | null
+          product_name?: string
+          product_subcategory?: string | null
+          restock_level?: number | null
+          specifications?: Json | null
+          stock_quantity?: number | null
+          supplier_id?: string
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_input_products_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "farm_input_suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farm_input_suppliers: {
+        Row: {
+          business_registration_number: string | null
+          certifications: string[] | null
+          contact_email: string
+          contact_person: string
+          contact_phone: string
+          county: string
+          created_at: string
+          delivery_radius_km: number | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          minimum_order_value: number | null
+          payment_terms: string[] | null
+          physical_address: string
+          rating: number | null
+          specialization: string[]
+          sub_county: string | null
+          supplier_name: string
+          total_orders: number | null
+          updated_at: string
+          user_id: string
+          years_in_business: number | null
+        }
+        Insert: {
+          business_registration_number?: string | null
+          certifications?: string[] | null
+          contact_email: string
+          contact_person: string
+          contact_phone: string
+          county: string
+          created_at?: string
+          delivery_radius_km?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          minimum_order_value?: number | null
+          payment_terms?: string[] | null
+          physical_address: string
+          rating?: number | null
+          specialization: string[]
+          sub_county?: string | null
+          supplier_name: string
+          total_orders?: number | null
+          updated_at?: string
+          user_id: string
+          years_in_business?: number | null
+        }
+        Update: {
+          business_registration_number?: string | null
+          certifications?: string[] | null
+          contact_email?: string
+          contact_person?: string
+          contact_phone?: string
+          county?: string
+          created_at?: string
+          delivery_radius_km?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          minimum_order_value?: number | null
+          payment_terms?: string[] | null
+          physical_address?: string
+          rating?: number | null
+          specialization?: string[]
+          sub_county?: string | null
+          supplier_name?: string
+          total_orders?: number | null
+          updated_at?: string
+          user_id?: string
+          years_in_business?: number | null
+        }
+        Relationships: []
+      }
       farm_parcels: {
         Row: {
           coordinates: Json | null
@@ -1001,6 +1470,150 @@ export type Database = {
         }
         Relationships: []
       }
+      market_agents: {
+        Row: {
+          agent_email: string | null
+          agent_name: string
+          agent_phone: string
+          agent_type: string
+          commission_structure: Json | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          languages_spoken: string[] | null
+          markets_covered: string[]
+          network_size: number | null
+          rating: number | null
+          services_offered: string[]
+          success_rate_percent: number | null
+          total_transactions: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_email?: string | null
+          agent_name: string
+          agent_phone: string
+          agent_type: string
+          commission_structure?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          languages_spoken?: string[] | null
+          markets_covered: string[]
+          network_size?: number | null
+          rating?: number | null
+          services_offered: string[]
+          success_rate_percent?: number | null
+          total_transactions?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_email?: string | null
+          agent_name?: string
+          agent_phone?: string
+          agent_type?: string
+          commission_structure?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          languages_spoken?: string[] | null
+          markets_covered?: string[]
+          network_size?: number | null
+          rating?: number | null
+          services_offered?: string[]
+          success_rate_percent?: number | null
+          total_transactions?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      market_demand_supply: {
+        Row: {
+          additional_notes: string | null
+          commodity_name: string
+          contact_person: string
+          contact_phone: string
+          created_at: string
+          entry_type: string
+          id: string
+          is_active: boolean | null
+          market_id: string
+          participant_id: string | null
+          price_range_max: number | null
+          price_range_min: number | null
+          quality_requirements: string[] | null
+          quantity_available: number | null
+          quantity_needed: number | null
+          unit_of_measure: string
+          updated_at: string
+          urgency_level: string | null
+          valid_until: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          commodity_name: string
+          contact_person: string
+          contact_phone: string
+          created_at?: string
+          entry_type: string
+          id?: string
+          is_active?: boolean | null
+          market_id: string
+          participant_id?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          quality_requirements?: string[] | null
+          quantity_available?: number | null
+          quantity_needed?: number | null
+          unit_of_measure: string
+          updated_at?: string
+          urgency_level?: string | null
+          valid_until: string
+        }
+        Update: {
+          additional_notes?: string | null
+          commodity_name?: string
+          contact_person?: string
+          contact_phone?: string
+          created_at?: string
+          entry_type?: string
+          id?: string
+          is_active?: boolean | null
+          market_id?: string
+          participant_id?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          quality_requirements?: string[] | null
+          quantity_available?: number | null
+          quantity_needed?: number | null
+          unit_of_measure?: string
+          updated_at?: string
+          urgency_level?: string | null
+          valid_until?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_demand_supply_market_id_fkey"
+            columns: ["market_id"]
+            isOneToOne: false
+            referencedRelation: "city_markets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "market_demand_supply_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "market_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       market_forecasts: {
         Row: {
           commodity_name: string
@@ -1165,6 +1778,99 @@ export type Database = {
         }
         Relationships: []
       }
+      market_participants: {
+        Row: {
+          agent_id: string | null
+          business_name: string | null
+          capacity_description: string | null
+          contact_email: string | null
+          contact_phone: string
+          coordinates: Json | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          last_active_at: string | null
+          location_details: string | null
+          market_id: string
+          onboarded_at: string
+          operating_schedule: string | null
+          participant_name: string
+          participant_type: string
+          payment_methods: string[]
+          price_range: string | null
+          quality_standards: string[] | null
+          rating: number | null
+          specialization: string[]
+          total_transactions: number | null
+          user_id: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          business_name?: string | null
+          capacity_description?: string | null
+          contact_email?: string | null
+          contact_phone: string
+          coordinates?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          last_active_at?: string | null
+          location_details?: string | null
+          market_id: string
+          onboarded_at?: string
+          operating_schedule?: string | null
+          participant_name: string
+          participant_type: string
+          payment_methods: string[]
+          price_range?: string | null
+          quality_standards?: string[] | null
+          rating?: number | null
+          specialization: string[]
+          total_transactions?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          business_name?: string | null
+          capacity_description?: string | null
+          contact_email?: string | null
+          contact_phone?: string
+          coordinates?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          last_active_at?: string | null
+          location_details?: string | null
+          market_id?: string
+          onboarded_at?: string
+          operating_schedule?: string | null
+          participant_name?: string
+          participant_type?: string
+          payment_methods?: string[]
+          price_range?: string | null
+          quality_standards?: string[] | null
+          rating?: number | null
+          specialization?: string[]
+          total_transactions?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_participants_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "market_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "market_participants_market_id_fkey"
+            columns: ["market_id"]
+            isOneToOne: false
+            referencedRelation: "city_markets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       market_prices: {
         Row: {
           commodity_name: string
@@ -1273,6 +1979,99 @@ export type Database = {
         }
         Relationships: []
       }
+      micro_creditors: {
+        Row: {
+          active_borrowers: number | null
+          collateral_requirements: string[] | null
+          contact_email: string
+          contact_person: string
+          contact_phone: string
+          coordinates: Json | null
+          county: string
+          created_at: string
+          default_rate_percent: number | null
+          id: string
+          institution_name: string
+          institution_type: string
+          interest_rate_range: string
+          is_active: boolean | null
+          is_licensed: boolean | null
+          license_number: string | null
+          loan_processing_time_days: number | null
+          loan_products: Json
+          maximum_loan_amount: number
+          minimum_loan_amount: number
+          physical_address: string
+          rating: number | null
+          service_counties: string[]
+          sub_county: string | null
+          target_sectors: string[]
+          total_disbursed_amount: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_borrowers?: number | null
+          collateral_requirements?: string[] | null
+          contact_email: string
+          contact_person: string
+          contact_phone: string
+          coordinates?: Json | null
+          county: string
+          created_at?: string
+          default_rate_percent?: number | null
+          id?: string
+          institution_name: string
+          institution_type: string
+          interest_rate_range: string
+          is_active?: boolean | null
+          is_licensed?: boolean | null
+          license_number?: string | null
+          loan_processing_time_days?: number | null
+          loan_products: Json
+          maximum_loan_amount: number
+          minimum_loan_amount: number
+          physical_address: string
+          rating?: number | null
+          service_counties: string[]
+          sub_county?: string | null
+          target_sectors: string[]
+          total_disbursed_amount?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_borrowers?: number | null
+          collateral_requirements?: string[] | null
+          contact_email?: string
+          contact_person?: string
+          contact_phone?: string
+          coordinates?: Json | null
+          county?: string
+          created_at?: string
+          default_rate_percent?: number | null
+          id?: string
+          institution_name?: string
+          institution_type?: string
+          interest_rate_range?: string
+          is_active?: boolean | null
+          is_licensed?: boolean | null
+          license_number?: string | null
+          loan_processing_time_days?: number | null
+          loan_products?: Json
+          maximum_loan_amount?: number
+          minimum_loan_amount?: number
+          physical_address?: string
+          rating?: number | null
+          service_counties?: string[]
+          sub_county?: string | null
+          target_sectors?: string[]
+          total_disbursed_amount?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           action_url: string | null
@@ -1303,6 +2102,81 @@ export type Database = {
           title?: string
           type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      p2p_lending_offers: {
+        Row: {
+          application_deadline: string | null
+          borrower_requirements: string[] | null
+          collateral_description: string | null
+          collateral_required: boolean | null
+          counties_served: string[]
+          created_at: string
+          funding_status: string
+          id: string
+          interest_rate_percent: number
+          is_active: boolean | null
+          lender_email: string
+          lender_id: string
+          lender_name: string
+          lender_phone: string
+          loan_amount: number
+          loan_term_months: number
+          minimum_borrower_rating: number | null
+          offer_title: string
+          purpose_category: string
+          risk_level: string
+          specific_purpose: string | null
+          updated_at: string
+        }
+        Insert: {
+          application_deadline?: string | null
+          borrower_requirements?: string[] | null
+          collateral_description?: string | null
+          collateral_required?: boolean | null
+          counties_served: string[]
+          created_at?: string
+          funding_status?: string
+          id?: string
+          interest_rate_percent: number
+          is_active?: boolean | null
+          lender_email: string
+          lender_id: string
+          lender_name: string
+          lender_phone: string
+          loan_amount: number
+          loan_term_months: number
+          minimum_borrower_rating?: number | null
+          offer_title: string
+          purpose_category: string
+          risk_level: string
+          specific_purpose?: string | null
+          updated_at?: string
+        }
+        Update: {
+          application_deadline?: string | null
+          borrower_requirements?: string[] | null
+          collateral_description?: string | null
+          collateral_required?: boolean | null
+          counties_served?: string[]
+          created_at?: string
+          funding_status?: string
+          id?: string
+          interest_rate_percent?: number
+          is_active?: boolean | null
+          lender_email?: string
+          lender_id?: string
+          lender_name?: string
+          lender_phone?: string
+          loan_amount?: number
+          loan_term_months?: number
+          minimum_borrower_rating?: number | null
+          offer_title?: string
+          purpose_category?: string
+          risk_level?: string
+          specific_purpose?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1475,6 +2349,102 @@ export type Database = {
           period?: string
           price?: number
           requests?: number
+        }
+        Relationships: []
+      }
+      processors: {
+        Row: {
+          business_type: string
+          certifications: string[] | null
+          contact_email: string
+          contact_person: string
+          contact_phone: string
+          coordinates: Json | null
+          county: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          minimum_quantity_tons: number | null
+          payment_terms: string[] | null
+          physical_address: string
+          pricing_model: string | null
+          processed_products: string[]
+          processing_capacity_tons_per_day: number
+          processing_fee_per_ton: number | null
+          processing_methods: string[] | null
+          processor_name: string
+          quality_standards: string[] | null
+          rating: number | null
+          raw_materials_needed: string[]
+          registration_number: string | null
+          service_radius_km: number | null
+          sub_county: string | null
+          total_orders: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          business_type?: string
+          certifications?: string[] | null
+          contact_email: string
+          contact_person: string
+          contact_phone: string
+          coordinates?: Json | null
+          county: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          minimum_quantity_tons?: number | null
+          payment_terms?: string[] | null
+          physical_address: string
+          pricing_model?: string | null
+          processed_products: string[]
+          processing_capacity_tons_per_day: number
+          processing_fee_per_ton?: number | null
+          processing_methods?: string[] | null
+          processor_name: string
+          quality_standards?: string[] | null
+          rating?: number | null
+          raw_materials_needed: string[]
+          registration_number?: string | null
+          service_radius_km?: number | null
+          sub_county?: string | null
+          total_orders?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          business_type?: string
+          certifications?: string[] | null
+          contact_email?: string
+          contact_person?: string
+          contact_phone?: string
+          coordinates?: Json | null
+          county?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          minimum_quantity_tons?: number | null
+          payment_terms?: string[] | null
+          physical_address?: string
+          pricing_model?: string | null
+          processed_products?: string[]
+          processing_capacity_tons_per_day?: number
+          processing_fee_per_ton?: number | null
+          processing_methods?: string[] | null
+          processor_name?: string
+          quality_standards?: string[] | null
+          rating?: number | null
+          raw_materials_needed?: string[]
+          registration_number?: string | null
+          service_radius_km?: number | null
+          sub_county?: string | null
+          total_orders?: number | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
