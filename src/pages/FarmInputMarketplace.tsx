@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,7 +38,7 @@ const FarmInputMarketplace: React.FC = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('farm_inputs')
+        .from('farm_input_products')
         .select(`
           *,
           supplier:farm_input_suppliers (
@@ -64,12 +65,12 @@ const FarmInputMarketplace: React.FC = () => {
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || product.category === selectedCategory;
+                         product.product_description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = !selectedCategory || product.product_category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const categories = Array.from(new Set(products.map(p => p.category)));
+  const categories = Array.from(new Set(products.map(p => p.product_category)));
 
   const addToCart = (product: any, quantity: number) => {
     const cartItem: CartItem = {
@@ -108,6 +109,17 @@ const FarmInputMarketplace: React.FC = () => {
     try {
       setLoading(true);
       
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: 'Authentication Required',
+          description: 'Please log in to place orders.',
+          variant: 'destructive'
+        });
+        return;
+      }
+
       // Group cart items by supplier
       const ordersBySupplier = cart.reduce((acc, item) => {
         const supplierId = item.supplier.id;
@@ -128,11 +140,12 @@ const FarmInputMarketplace: React.FC = () => {
         const { data: order, error: orderError } = await supabase
           .from('farm_input_orders')
           .insert({
+            buyer_id: user.id,
             supplier_id: supplierId,
             total_amount: orderData.total,
             delivery_method: 'pickup',
-            buyer_name: 'John Farmer', // This would come from auth context
-            buyer_phone: '+254700000000', // This would come from auth context
+            buyer_name: user.user_metadata?.full_name || 'John Farmer',
+            buyer_phone: user.user_metadata?.phone || '+254700000000',
             delivery_county: 'Nairobi'
           })
           .select()
@@ -233,9 +246,9 @@ const FarmInputMarketplace: React.FC = () => {
                   <div>
                     <CardTitle className="text-xl mb-2">{product.product_name}</CardTitle>
                     <div className="flex gap-2 mb-2">
-                      <Badge variant="secondary">{product.category}</Badge>
+                      <Badge variant="secondary">{product.product_category}</Badge>
                       <Badge variant="default">
-                        {product.unit_price} KES / {product.unit_of_measure}
+                        {product.price_per_unit} KES / {product.unit_of_measure}
                       </Badge>
                     </div>
                   </div>
@@ -250,16 +263,16 @@ const FarmInputMarketplace: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground mb-4">{product.description}</p>
+                <p className="text-muted-foreground mb-4">{product.product_description}</p>
                 
                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <div className="text-sm text-muted-foreground mb-1">Available Stock:</div>
-                    <div className="text-sm font-medium">{product.available_stock}</div>
+                    <div className="text-sm font-medium">{product.stock_quantity}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-muted-foreground mb-1">Delivery Options:</div>
-                    <div className="text-sm font-medium">Pickup, Courier</div>
+                    <div className="text-sm text-muted-foreground mb-1">Brand:</div>
+                    <div className="text-sm font-medium">{product.brand_name || 'N/A'}</div>
                   </div>
                 </div>
                 
