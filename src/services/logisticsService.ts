@@ -6,168 +6,85 @@ export interface LogisticsStats {
   storageFacilities: number;
   countiesCovered: number;
   monthlyDeliveries: number;
+  aggregators: number;
+  processors: number;
+  microCreditors: number;
+  p2pLenders: number;
 }
 
 export interface LogisticsProvider {
   id: string;
-  provider_name: string;
-  provider_type: string;
-  contact_person: string;
-  contact_phone: string;
-  contact_email: string;
-  location: string;
-  counties_served: string[];
-  vehicle_types: string[];
-  fleet_size: number;
-  max_capacity_tons: number;
-  services_offered: string[];
-  has_refrigeration: boolean;
-  rating: number;
-  total_deliveries: number;
-  is_active: boolean;
-}
-
-export interface Warehouse {
-  id: string;
   name: string;
+  type: 'transport' | 'storage' | 'aggregator' | 'processor' | 'microcredit' | 'p2p_lending';
+  description: string;
   location: string;
   county: string;
-  capacity_tons: number;
-  available_capacity_tons: number;
-  storage_type: string[];
-  temperature_controlled: boolean;
   contact_phone: string;
-  pricing_per_ton_per_month: number;
-  description: string;
-  is_active: boolean;
+  contact_email: string;
+  is_verified: boolean;
+  rating: number;
+  services: string[];
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
 }
-
-// Sample data representing the structure we expect from the database
-const sampleLogisticsProviders: LogisticsProvider[] = [
-  {
-    id: '1',
-    provider_name: 'Nairobi Express Transport',
-    provider_type: 'transport',
-    contact_person: 'John Mwangi',
-    contact_phone: '+254 701 234567',
-    contact_email: 'john@nairobietransport.co.ke',
-    location: 'Nairobi',
-    counties_served: ['Nairobi', 'Kiambu', 'Machakos'],
-    vehicle_types: ['Truck', 'Pickup'],
-    fleet_size: 15,
-    max_capacity_tons: 25,
-    services_offered: ['Cold Chain', 'Express Delivery'],
-    has_refrigeration: true,
-    rating: 4.5,
-    total_deliveries: 342,
-    is_active: true
-  },
-  {
-    id: '2',
-    provider_name: 'Mombasa Logistics Hub',
-    provider_type: 'transport',
-    contact_person: 'Sarah Ochieng',
-    contact_phone: '+254 702 345678',
-    contact_email: 'sarah@mombasalogistics.co.ke',
-    location: 'Mombasa',
-    counties_served: ['Mombasa', 'Kilifi', 'Kwale'],
-    vehicle_types: ['Truck', 'Container'],
-    fleet_size: 20,
-    max_capacity_tons: 40,
-    services_offered: ['Port Services', 'Warehouse'],
-    has_refrigeration: false,
-    rating: 4.2,
-    total_deliveries: 128,
-    is_active: true
-  },
-  {
-    id: '3',
-    provider_name: 'Rift Valley Movers',
-    provider_type: 'transport',
-    contact_person: 'Peter Kiplagat',
-    contact_phone: '+254 703 456789',
-    contact_email: 'peter@riftvalleymovers.co.ke',
-    location: 'Nakuru',
-    counties_served: ['Nakuru', 'Uasin Gishu', 'Nandi'],
-    vehicle_types: ['Truck', 'Lorry'],
-    fleet_size: 12,
-    max_capacity_tons: 30,
-    services_offered: ['Agricultural Transport', 'Bulk Transport'],
-    has_refrigeration: true,
-    rating: 4.7,
-    total_deliveries: 256,
-    is_active: true
-  }
-];
-
-const sampleWarehouses: Warehouse[] = [
-  {
-    id: '1',
-    name: 'Central Cold Storage',
-    location: 'Nairobi Industrial Area',
-    county: 'Nairobi',
-    capacity_tons: 500,
-    available_capacity_tons: 150,
-    storage_type: ['Cold Storage', 'Dry Storage'],
-    temperature_controlled: true,
-    contact_phone: '+254 701 111222',
-    pricing_per_ton_per_month: 2500,
-    description: 'Modern cold storage facility with 24/7 monitoring',
-    is_active: true
-  },
-  {
-    id: '2',
-    name: 'Mombasa Port Warehouse',
-    location: 'Mombasa Port',
-    county: 'Mombasa',
-    capacity_tons: 1000,
-    available_capacity_tons: 300,
-    storage_type: ['Dry Storage', 'Container Storage'],
-    temperature_controlled: false,
-    contact_phone: '+254 702 222333',
-    pricing_per_ton_per_month: 1800,
-    description: 'Strategic port location for import/export',
-    is_active: true
-  },
-  {
-    id: '3',
-    name: 'Rift Valley Grain Store',
-    location: 'Nakuru Town',
-    county: 'Nakuru',
-    capacity_tons: 800,
-    available_capacity_tons: 200,
-    storage_type: ['Grain Storage', 'Dry Storage'],
-    temperature_controlled: false,
-    contact_phone: '+254 703 333444',
-    pricing_per_ton_per_month: 1200,
-    description: 'Specialized facility for grain and cereals',
-    is_active: true
-  }
-];
 
 export const getLogisticsStats = async (): Promise<LogisticsStats> => {
   try {
-    console.log('Fetching logistics stats...');
+    console.log('Fetching logistics stats from database...');
     
-    // Calculate stats from sample data
-    const activeTransporters = sampleLogisticsProviders.filter(p => p.is_active).length;
-    const storageFacilities = sampleWarehouses.filter(w => w.is_active).length;
-    
-    // Get unique counties from both providers and warehouses
-    const providerCounties = sampleLogisticsProviders.flatMap(p => p.counties_served);
-    const warehouseCounties = sampleWarehouses.map(w => w.county);
-    const uniqueCounties = new Set([...providerCounties, ...warehouseCounties]);
-    
-    // Calculate total deliveries
-    const monthlyDeliveries = sampleLogisticsProviders.reduce((total, provider) => {
-      return total + provider.total_deliveries;
-    }, 0);
+    // Get transporters count
+    const { count: transportersCount } = await supabase
+      .from('transporters')
+      .select('*', { count: 'exact', head: true });
+
+    // Get warehouses count  
+    const { count: warehousesCount } = await supabase
+      .from('warehouses')
+      .select('*', { count: 'exact', head: true });
+
+    // Get aggregators count
+    const { count: aggregatorsCount } = await supabase
+      .from('aggregators')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true);
+
+    // Get processors count
+    const { count: processorsCount } = await supabase
+      .from('processors')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true);
+
+    // Get micro creditors count
+    const { count: creditorsCount } = await supabase
+      .from('micro_creditors')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true);
+
+    // Get P2P lending offers count
+    const { count: p2pCount } = await supabase
+      .from('p2p_lending_offers')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true);
+
+    // Get unique counties
+    const { data: counties } = await supabase
+      .from('aggregators')
+      .select('county')
+      .eq('is_active', true);
+
+    const uniqueCounties = new Set(counties?.map(c => c.county) || []);
 
     return {
-      activeTransporters,
-      storageFacilities,
+      activeTransporters: transportersCount || 0,
+      storageFacilities: warehousesCount || 0,
       countiesCovered: uniqueCounties.size,
-      monthlyDeliveries
+      monthlyDeliveries: 1240, // Mock data for now
+      aggregators: aggregatorsCount || 0,
+      processors: processorsCount || 0,
+      microCreditors: creditorsCount || 0,
+      p2pLenders: p2pCount || 0
     };
   } catch (error) {
     console.error('Error fetching logistics stats:', error);
@@ -175,75 +92,161 @@ export const getLogisticsStats = async (): Promise<LogisticsStats> => {
       activeTransporters: 0,
       storageFacilities: 0,
       countiesCovered: 0,
-      monthlyDeliveries: 0
+      monthlyDeliveries: 0,
+      aggregators: 0,
+      processors: 0,
+      microCreditors: 0,
+      p2pLenders: 0
     };
   }
 };
 
-export const getLogisticsProviders = async (filters?: {
-  county?: string;
-  providerType?: string;
-  hasRefrigeration?: boolean;
-}): Promise<LogisticsProvider[]> => {
+export const getLogisticsProviders = async (): Promise<LogisticsProvider[]> => {
   try {
-    console.log('Fetching logistics providers with filters:', filters);
+    console.log('Fetching all logistics providers...');
     
-    let filteredProviders = [...sampleLogisticsProviders];
+    const providers: LogisticsProvider[] = [];
 
-    if (filters?.county) {
-      filteredProviders = filteredProviders.filter(provider => 
-        provider.counties_served.includes(filters.county!)
-      );
+    // Fetch transporters
+    const { data: transporters } = await supabase
+      .from('transporters')
+      .select('*');
+
+    if (transporters) {
+      transporters.forEach(t => {
+        providers.push({
+          id: t.id,
+          name: t.name,
+          type: 'transport',
+          description: `${t.service_type} - ${t.capacity}`,
+          location: t.counties.join(', '),
+          county: t.counties[0] || '',
+          contact_phone: t.contact_info,
+          contact_email: '',
+          is_verified: true,
+          rating: 4.2,
+          services: [t.service_type],
+          coordinates: { latitude: -1.2921, longitude: 36.8219 }
+        });
+      });
     }
 
-    if (filters?.providerType) {
-      filteredProviders = filteredProviders.filter(provider => 
-        provider.provider_type === filters.providerType
-      );
+    // Fetch aggregators
+    const { data: aggregators } = await supabase
+      .from('aggregators')
+      .select('*')
+      .eq('is_active', true);
+
+    if (aggregators) {
+      aggregators.forEach(a => {
+        providers.push({
+          id: a.id,
+          name: a.aggregator_name,
+          type: 'aggregator',
+          description: `Handles: ${a.commodities_handled.join(', ')}`,
+          location: `${a.county}, ${a.sub_county || ''}`,
+          county: a.county,
+          contact_phone: a.contact_phone,
+          contact_email: a.contact_email,
+          is_verified: a.is_verified,
+          rating: a.rating,
+          services: a.commodities_handled,
+          coordinates: a.coordinates as any
+        });
+      });
     }
 
-    if (filters?.hasRefrigeration !== undefined) {
-      filteredProviders = filteredProviders.filter(provider => 
-        provider.has_refrigeration === filters.hasRefrigeration
-      );
+    // Fetch processors
+    const { data: processors } = await supabase
+      .from('processors')
+      .select('*')
+      .eq('is_active', true);
+
+    if (processors) {
+      processors.forEach(p => {
+        providers.push({
+          id: p.id,
+          name: p.processor_name,
+          type: 'processor',
+          description: `Processes: ${p.raw_materials_needed.join(', ')}`,
+          location: `${p.county}, ${p.sub_county || ''}`,
+          county: p.county,
+          contact_phone: p.contact_phone,
+          contact_email: p.contact_email,
+          is_verified: p.is_verified,
+          rating: p.rating,
+          services: p.processed_products,
+          coordinates: p.coordinates as any
+        });
+      });
     }
 
-    return filteredProviders.filter(provider => provider.is_active);
+    // Fetch micro creditors
+    const { data: creditors } = await supabase
+      .from('micro_creditors')
+      .select('*')
+      .eq('is_active', true);
+
+    if (creditors) {
+      creditors.forEach(c => {
+        providers.push({
+          id: c.id,
+          name: c.institution_name,
+          type: 'microcredit',
+          description: `${c.institution_type} - ${c.interest_rate_range}`,
+          location: `${c.county}, ${c.sub_county || ''}`,
+          county: c.county,
+          contact_phone: c.contact_phone,
+          contact_email: c.contact_email,
+          is_verified: c.is_licensed,
+          rating: c.rating,
+          services: c.target_sectors,
+          coordinates: c.coordinates as any
+        });
+      });
+    }
+
+    // Fetch P2P lending offers
+    const { data: p2pOffers } = await supabase
+      .from('p2p_lending_offers')
+      .select('*')
+      .eq('is_active', true);
+
+    if (p2pOffers) {
+      p2pOffers.forEach(p => {
+        providers.push({
+          id: p.id,
+          name: p.lender_name,
+          type: 'p2p_lending',
+          description: `${p.offer_title} - ${p.interest_rate_percent}% interest`,
+          location: p.counties_served.join(', '),
+          county: p.counties_served[0] || '',
+          contact_phone: p.lender_phone,
+          contact_email: p.lender_email,
+          is_verified: true,
+          rating: 4.0,
+          services: [p.purpose_category],
+          coordinates: { latitude: -1.2921, longitude: 36.8219 }
+        });
+      });
+    }
+
+    console.log(`Found ${providers.length} total providers`);
+    return providers;
   } catch (error) {
     console.error('Error fetching logistics providers:', error);
     return [];
   }
 };
 
-export const getWarehouses = async (filters?: {
-  county?: string;
-  minCapacity?: number;
-  hasRefrigeration?: boolean;
-}): Promise<Warehouse[]> => {
+export const getWarehouses = async () => {
   try {
-    console.log('Fetching warehouses with filters:', filters);
-    
-    let filteredWarehouses = [...sampleWarehouses];
+    const { data, error } = await supabase
+      .from('warehouses')
+      .select('*');
 
-    if (filters?.county) {
-      filteredWarehouses = filteredWarehouses.filter(warehouse => 
-        warehouse.county === filters.county
-      );
-    }
-
-    if (filters?.minCapacity) {
-      filteredWarehouses = filteredWarehouses.filter(warehouse => 
-        warehouse.capacity_tons >= filters.minCapacity!
-      );
-    }
-
-    if (filters?.hasRefrigeration !== undefined) {
-      filteredWarehouses = filteredWarehouses.filter(warehouse => 
-        warehouse.temperature_controlled === filters.hasRefrigeration
-      );
-    }
-
-    return filteredWarehouses.filter(warehouse => warehouse.is_active);
+    if (error) throw error;
+    return data || [];
   } catch (error) {
     console.error('Error fetching warehouses:', error);
     return [];

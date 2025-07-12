@@ -4,39 +4,42 @@ import { supabase } from '@/integrations/supabase/client';
 export interface MarketLinkageFormData {
   title: string;
   description: string;
-  linkageType: 'buyer_seller' | 'contract_farming' | 'cooperative' | 'export_opportunity' | 'processing_partnership';
-  cropsInvolved: string[];
+  linkage_type: 'buyer_seller' | 'contract_farming' | 'cooperative' | 'export_opportunity' | 'processing_partnership';
+  crops_involved: string[];
   counties: string[];
   requirements: string[];
   benefits: string[];
-  contactInfo: string;
-  applicationDeadline?: string;
-  startDate?: string;
-  durationMonths?: number;
-  minimumQuantity?: number;
-  priceRange?: string;
-  maxParticipants?: number;
+  contact_info: string;
+  application_deadline?: string;
+  start_date?: string;
+  duration_months?: number;
+  minimum_quantity?: number;
+  price_range?: string;
+  max_participants?: number;
 }
 
 export const createMarketLinkage = async (data: MarketLinkageFormData) => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('User not authenticated');
+
   const { data: result, error } = await supabase
     .from('market_linkages')
     .insert({
-      created_by: (await supabase.auth.getUser()).data.user?.id,
+      created_by: user.id,
       title: data.title,
       description: data.description,
-      linkage_type: data.linkageType,
-      crops_involved: data.cropsInvolved,
+      linkage_type: data.linkage_type,
+      crops_involved: data.crops_involved,
       counties: data.counties,
       requirements: data.requirements,
       benefits: data.benefits,
-      contact_info: data.contactInfo,
-      application_deadline: data.applicationDeadline,
-      start_date: data.startDate,
-      duration_months: data.durationMonths,
-      minimum_quantity: data.minimumQuantity,
-      price_range: data.priceRange,
-      max_participants: data.maxParticipants,
+      contact_info: data.contact_info,
+      application_deadline: data.application_deadline,
+      start_date: data.start_date,
+      duration_months: data.duration_months,
+      minimum_quantity: data.minimum_quantity,
+      price_range: data.price_range,
+      max_participants: data.max_participants,
     })
     .select()
     .single();
@@ -46,7 +49,7 @@ export const createMarketLinkage = async (data: MarketLinkageFormData) => {
 };
 
 export const getMarketLinkages = async (filters?: {
-  linkageType?: string;
+  linkage_type?: string;
   county?: string;
   crop?: string;
   activeOnly?: boolean;
@@ -61,8 +64,8 @@ export const getMarketLinkages = async (filters?: {
       )
     `);
 
-  if (filters?.linkageType) {
-    query = query.eq('linkage_type', filters.linkageType);
+  if (filters?.linkage_type) {
+    query = query.eq('linkage_type', filters.linkage_type);
   }
 
   if (filters?.county) {
@@ -84,7 +87,6 @@ export const getMarketLinkages = async (filters?: {
 };
 
 export const applyToMarketLinkage = async (linkageId: string) => {
-  // For now, just increment the participant count
   const { data: currentLinkage, error: fetchError } = await supabase
     .from('market_linkages')
     .select('participants_count')

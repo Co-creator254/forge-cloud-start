@@ -7,53 +7,52 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Store, Users, Link, CheckCheck } from "lucide-react";
-import { MarketLinkage } from "@/types";
-import { fetchMarketLinkages } from "@/services/serviceProvidersAPI";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Store, Users, Link, CheckCheck, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getMarketLinkages } from "@/services/marketLinkageService";
+import MarketLinkageRegistrationForm from "@/components/MarketLinkageRegistrationForm";
 
 const MarketLinkages = () => {
   const { toast } = useToast();
-  const [linkages, setLinkages] = useState<MarketLinkage[]>([]);
+  const [linkages, setLinkages] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"vertical" | "horizontal" | "all">("all");
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   
   useEffect(() => {
-    const loadLinkages = async () => {
-      try {
-        setIsLoading(true);
-        const data = await fetchMarketLinkages();
-        setLinkages(data);
-      } catch (error) {
-        console.error("Error fetching market linkages:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load market linkages. Please try again later.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     loadLinkages();
-  }, [toast]);
+  }, []);
+
+  const loadLinkages = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getMarketLinkages();
+      setLinkages(data || []);
+    } catch (error) {
+      console.error("Error fetching market linkages:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load market linkages. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredLinkages = linkages.filter(linkage => {
-    // Filter by search term
     const matchesSearch = searchTerm === "" || 
-      linkage.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      linkage.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       linkage.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      linkage.providerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      linkage.crops.some(crop => crop.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      linkage.markets.some(market => market.toLowerCase().includes(searchTerm.toLowerCase()));
+      linkage.crops_involved?.some((crop: string) => crop.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      linkage.counties?.some((county: string) => county.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    // Filter by tab
     if (activeTab === "vertical") {
-      return matchesSearch && linkage.type === "vertical";
+      return matchesSearch && (linkage.linkage_type === "buyer_seller" || linkage.linkage_type === "export_opportunity");
     } else if (activeTab === "horizontal") {
-      return matchesSearch && linkage.type === "horizontal";
+      return matchesSearch && (linkage.linkage_type === "cooperative" || linkage.linkage_type === "contract_farming");
     }
     
     return matchesSearch;
@@ -81,7 +80,22 @@ const MarketLinkages = () => {
             </p>
           </div>
           <div className="mt-4 md:mt-0">
-            <Button>Register New Market Linkage</Button>
+            <Dialog open={showRegistrationForm} onOpenChange={setShowRegistrationForm}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Register New Market Linkage
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <MarketLinkageRegistrationForm 
+                  onSuccess={() => {
+                    setShowRegistrationForm(false);
+                    loadLinkages();
+                  }} 
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
@@ -125,7 +139,7 @@ const MarketLinkages = () => {
 
         <div className="mb-8">
           <Input
-            placeholder="Search by name, crops, markets..."
+            placeholder="Search by title, crops, counties..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full md:w-2/3 lg:w-1/2"
@@ -173,48 +187,64 @@ const MarketLinkages = () => {
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
-                      <CardTitle className="text-xl">{linkage.name}</CardTitle>
-                      <CardDescription>{linkage.providerName}</CardDescription>
+                      <CardTitle className="text-xl">{linkage.title}</CardTitle>
+                      <CardDescription>Contact: {linkage.contact_info}</CardDescription>
                     </div>
-                    <Badge variant={linkage.type === "vertical" ? "default" : "secondary"}>
-                      {linkage.type === "vertical" ? "Vertical" : "Horizontal"}
+                    <Badge variant={linkage.linkage_type === "buyer_seller" || linkage.linkage_type === "export_opportunity" ? "default" : "secondary"}>
+                      {linkage.linkage_type.replace('_', ' ').toUpperCase()}
                     </Badge>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">{linkage.description}</p>
                   
-                  <div>
-                    <h4 className="text-sm font-medium mb-1">Markets:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {linkage.markets.map(market => (
-                        <Badge key={market} variant="outline">{market}</Badge>
-                      ))}
+                  {linkage.counties && linkage.counties.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium mb-1">Counties:</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {linkage.counties.map((county: string) => (
+                          <Badge key={county} variant="outline">{county}</Badge>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                   
-                  <div>
-                    <h4 className="text-sm font-medium mb-1">Crops:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {linkage.crops.map(crop => (
-                        <Badge key={crop} variant="outline">{crop}</Badge>
-                      ))}
+                  {linkage.crops_involved && linkage.crops_involved.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium mb-1">Crops:</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {linkage.crops_involved.map((crop: string) => (
+                          <Badge key={crop} variant="outline">{crop}</Badge>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                   
-                  <div>
-                    <h4 className="text-sm font-medium mb-1">Requirements:</h4>
-                    <p className="text-sm text-muted-foreground">{linkage.requirements}</p>
-                  </div>
+                  {linkage.requirements && linkage.requirements.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium mb-1">Requirements:</h4>
+                      <ul className="text-sm text-muted-foreground list-disc list-inside">
+                        {linkage.requirements.slice(0, 3).map((req: string, index: number) => (
+                          <li key={index}>{req}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-                  <div>
-                    <h4 className="text-sm font-medium mb-1">Benefits:</h4>
-                    <p className="text-sm text-muted-foreground">{linkage.benefits}</p>
-                  </div>
+                  {linkage.benefits && linkage.benefits.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium mb-1">Benefits:</h4>
+                      <ul className="text-sm text-muted-foreground list-disc list-inside">
+                        {linkage.benefits.slice(0, 3).map((benefit: string, index: number) => (
+                          <li key={index}>{benefit}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter className="flex justify-between items-center">
                   <div className="text-sm text-muted-foreground">
-                    Contact: {linkage.contactInfo}
+                    {linkage.price_range && `Price: ${linkage.price_range}`}
                   </div>
                   <Button size="sm">
                     <Link className="h-4 w-4 mr-2" />

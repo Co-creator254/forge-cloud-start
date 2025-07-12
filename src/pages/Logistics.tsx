@@ -7,26 +7,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Phone, Star, Filter, Truck, Warehouse, Users, Package } from 'lucide-react';
-import { getLogisticsStats, getLogisticsProviders, getWarehouses } from '@/services/logisticsService';
+import { MapPin, Phone, Star, Filter, Truck, Warehouse, Users, Package, Building, DollarSign, Factory } from 'lucide-react';
+import { getLogisticsStats, getLogisticsProviders, LogisticsStats, LogisticsProvider } from '@/services/logisticsService';
 import LogisticsStatsCard from '@/components/LogisticsStatsCard';
-
-interface LogisticsStats {
-  activeTransporters: number;
-  storageFacilities: number;
-  countiesCovered: number;
-  monthlyDeliveries: number;
-}
 
 const Logistics: React.FC = () => {
   const [stats, setStats] = useState<LogisticsStats>({
     activeTransporters: 0,
     storageFacilities: 0,
     countiesCovered: 0,
-    monthlyDeliveries: 0
+    monthlyDeliveries: 0,
+    aggregators: 0,
+    processors: 0,
+    microCreditors: 0,
+    p2pLenders: 0
   });
-  const [transportProviders, setTransportProviders] = useState<any[]>([]);
-  const [warehouses, setWarehouses] = useState<any[]>([]);
+  const [providers, setProviders] = useState<LogisticsProvider[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCounty, setSelectedCounty] = useState('');
@@ -38,19 +34,16 @@ const Logistics: React.FC = () => {
         setLoading(true);
         console.log('Fetching logistics data...');
         
-        const [statsData, transportData, warehouseData] = await Promise.all([
+        const [statsData, providersData] = await Promise.all([
           getLogisticsStats(),
-          getLogisticsProviders(),
-          getWarehouses()
+          getLogisticsProviders()
         ]);
 
         console.log('Stats data:', statsData);
-        console.log('Transport data:', transportData);
-        console.log('Warehouse data:', warehouseData);
+        console.log('Providers data:', providersData);
 
         setStats(statsData);
-        setTransportProviders(transportData);
-        setWarehouses(warehouseData);
+        setProviders(providersData);
       } catch (error) {
         console.error('Error fetching logistics data:', error);
       } finally {
@@ -66,18 +59,36 @@ const Logistics: React.FC = () => {
     'Kiambu', 'Machakos', 'Meru', 'Embu', 'Nyeri', 'Muranga'
   ];
 
-  const filteredTransportProviders = transportProviders.filter(provider => {
-    const matchesSearch = provider.provider_name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCounty = !selectedCounty || provider.counties_served?.includes(selectedCounty);
-    const matchesService = !selectedServiceType || provider.provider_type === selectedServiceType;
+  const filteredProviders = providers.filter(provider => {
+    const matchesSearch = provider.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCounty = !selectedCounty || provider.county === selectedCounty;
+    const matchesService = !selectedServiceType || provider.type === selectedServiceType;
     return matchesSearch && matchesCounty && matchesService;
   });
 
-  const filteredWarehouses = warehouses.filter(warehouse => {
-    const matchesSearch = warehouse.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCounty = !selectedCounty || warehouse.county === selectedCounty;
-    return matchesSearch && matchesCounty;
-  });
+  const getProviderIcon = (type: string) => {
+    switch (type) {
+      case 'transport': return <Truck className="h-5 w-5" />;
+      case 'storage': return <Warehouse className="h-5 w-5" />;
+      case 'aggregator': return <Package className="h-5 w-5" />;
+      case 'processor': return <Factory className="h-5 w-5" />;
+      case 'microcredit': return <Building className="h-5 w-5" />;
+      case 'p2p_lending': return <DollarSign className="h-5 w-5" />;
+      default: return <Users className="h-5 w-5" />;
+    }
+  };
+
+  const getProviderTypeLabel = (type: string) => {
+    switch (type) {
+      case 'transport': return 'Transport';
+      case 'storage': return 'Storage';
+      case 'aggregator': return 'Aggregator';
+      case 'processor': return 'Processor';
+      case 'microcredit': return 'Micro Credit';
+      case 'p2p_lending': return 'P2P Lending';
+      default: return type;
+    }
+  };
 
   if (loading) {
     return (
@@ -101,29 +112,49 @@ const Logistics: React.FC = () => {
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4">Smart Logistics Network</h1>
           <p className="text-lg text-muted-foreground">
-            Connect with verified transport providers, storage facilities, and logistics solutions across Kenya
+            Connect with verified transport providers, storage facilities, aggregators, processors, and financial services across Kenya
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-8">
           <LogisticsStatsCard
-            label="Active Providers"
+            label="Transporters"
             value={stats.activeTransporters}
-            icon={<Truck className="h-5 w-5 text-primary" />}
+            icon={<Truck className="h-4 w-4 text-primary" />}
           />
           <LogisticsStatsCard
-            label="Storage Facilities"
+            label="Storage"
             value={stats.storageFacilities}
-            icon={<Package className="h-5 w-5 text-primary" />}
+            icon={<Warehouse className="h-4 w-4 text-primary" />}
           />
           <LogisticsStatsCard
-            label="Counties Covered"
+            label="Aggregators"
+            value={stats.aggregators}
+            icon={<Package className="h-4 w-4 text-primary" />}
+          />
+          <LogisticsStatsCard
+            label="Processors"
+            value={stats.processors}
+            icon={<Factory className="h-4 w-4 text-primary" />}
+          />
+          <LogisticsStatsCard
+            label="Micro Credit"
+            value={stats.microCreditors}
+            icon={<Building className="h-4 w-4 text-primary" />}
+          />
+          <LogisticsStatsCard
+            label="P2P Lending"
+            value={stats.p2pLenders}
+            icon={<DollarSign className="h-4 w-4 text-primary" />}
+          />
+          <LogisticsStatsCard
+            label="Counties"
             value={stats.countiesCovered}
             icon={<Star className="h-5 w-5 text-primary" />}
           />
           <LogisticsStatsCard
-            label="Monthly Deliveries"
+            label="Monthly"
             value={stats.monthlyDeliveries}
             icon={<Users className="h-5 w-5 text-primary" />}
           />
@@ -165,8 +196,10 @@ const Logistics: React.FC = () => {
                   <SelectItem value="">All Services</SelectItem>
                   <SelectItem value="transport">Transport</SelectItem>
                   <SelectItem value="storage">Storage</SelectItem>
-                  <SelectItem value="cold_chain">Cold Chain</SelectItem>
-                  <SelectItem value="packaging">Packaging</SelectItem>
+                  <SelectItem value="aggregator">Aggregators</SelectItem>
+                  <SelectItem value="processor">Processors</SelectItem>
+                  <SelectItem value="microcredit">Micro Credit</SelectItem>
+                  <SelectItem value="p2p_lending">P2P Lending</SelectItem>
                 </SelectContent>
               </Select>
               <Button variant="outline" onClick={() => {
@@ -180,167 +213,76 @@ const Logistics: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="transport" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="transport">Transport Providers</TabsTrigger>
-            <TabsTrigger value="storage">Storage Facilities</TabsTrigger>
-          </TabsList>
+        {/* Providers List */}
+        <div className="grid gap-6">
+          {filteredProviders.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Package className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No Providers Found</h3>
+                <p className="text-muted-foreground">
+                  {searchTerm || selectedCounty || selectedServiceType 
+                    ? 'Try adjusting your filters to see more results.'
+                    : 'Providers will appear here once they register on the platform.'
+                  }
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            filteredProviders.map((provider) => (
+              <Card key={provider.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        {getProviderIcon(provider.type)}
+                        {provider.name}
+                      </CardTitle>
+                      <div className="flex items-center gap-2 mt-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {provider.location}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="ml-1 text-sm">{provider.rating}</span>
+                      </div>
+                      <Badge variant="secondary">{getProviderTypeLabel(provider.type)}</Badge>
+                      {provider.is_verified && (
+                        <Badge variant="default">Verified</Badge>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">{provider.description}</p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {provider.services.slice(0, 3).map(service => (
+                      <Badge key={service} variant="outline">{service}</Badge>
+                    ))}
+                    {provider.services.length > 3 && (
+                      <Badge variant="outline">+{provider.services.length - 3} more</Badge>
+                    )}
+                  </div>
 
-          <TabsContent value="transport" className="space-y-6">
-            <div className="grid gap-6">
-              {filteredTransportProviders.length === 0 ? (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <Truck className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-lg font-semibold mb-2">No Transport Providers Found</h3>
-                    <p className="text-muted-foreground">
-                      {searchTerm || selectedCounty || selectedServiceType 
-                        ? 'Try adjusting your filters to see more results.'
-                        : 'Transport providers will appear here once they register on the platform.'
-                      }
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                filteredTransportProviders.map((provider) => (
-                  <Card key={provider.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle className="flex items-center gap-2">
-                            <Truck className="h-5 w-5" />
-                            {provider.provider_name}
-                          </CardTitle>
-                          <div className="flex items-center gap-2 mt-2">
-                            <MapPin className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">
-                              {provider.counties_served?.join(', ') || provider.location}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center">
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            <span className="ml-1 text-sm">{provider.rating || '4.5'}</span>
-                          </div>
-                          <Badge variant="secondary">{provider.provider_type}</Badge>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <h4 className="font-semibold mb-2">Capacity</h4>
-                          <p className="text-sm text-muted-foreground">{provider.max_capacity_tons} tons</p>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold mb-2">Fleet Size</h4>
-                          <p className="text-sm text-muted-foreground">{provider.fleet_size} vehicles</p>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold mb-2">Refrigeration</h4>
-                          <Badge variant={provider.has_refrigeration ? "default" : "secondary"}>
-                            {provider.has_refrigeration ? "Available" : "Not Available"}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="mt-4 pt-4 border-t">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-4 w-4" />
-                            <span className="text-sm">{provider.contact_phone}</span>
-                          </div>
-                          <Button size="sm">
-                            Book Transport
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="storage" className="space-y-6">
-            <div className="grid gap-6">
-              {filteredWarehouses.length === 0 ? (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <Warehouse className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-lg font-semibold mb-2">No Storage Facilities Found</h3>
-                    <p className="text-muted-foreground">
-                      {searchTerm || selectedCounty 
-                        ? 'Try adjusting your filters to see more results.'
-                        : 'Storage facilities will appear here once they register on the platform.'
-                      }
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                filteredWarehouses.map((warehouse) => (
-                  <Card key={warehouse.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle className="flex items-center gap-2">
-                            <Warehouse className="h-5 w-5" />
-                            {warehouse.name}
-                          </CardTitle>
-                          <div className="flex items-center gap-2 mt-2">
-                            <MapPin className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">
-                              {warehouse.location || warehouse.county}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center">
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            <span className="ml-1 text-sm">4.3</span>
-                          </div>
-                          <Badge variant="secondary">Storage</Badge>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <h4 className="font-semibold mb-2">Capacity</h4>
-                          <p className="text-sm text-muted-foreground">{warehouse.capacity_tons} tons</p>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold mb-2">Storage Type</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {warehouse.storage_type?.join(', ') || 'General Storage'}
-                          </p>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold mb-2">Refrigeration</h4>
-                          <Badge variant={warehouse.temperature_controlled ? "default" : "secondary"}>
-                            {warehouse.temperature_controlled ? "Available" : "Not Available"}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="mt-4 pt-4 border-t">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-4 w-4" />
-                            <span className="text-sm">{warehouse.contact_phone}</span>
-                          </div>
-                          <Button size="sm">
-                            Book Storage
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
+                  <div className="flex justify-between items-center pt-4 border-t">
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4" />
+                      <span className="text-sm">{provider.contact_phone}</span>
+                    </div>
+                    <Button size="sm">
+                      Connect
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
