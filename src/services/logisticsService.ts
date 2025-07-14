@@ -62,11 +62,8 @@ export const getLogisticsStats = async (): Promise<LogisticsStats> => {
       .select('*', { count: 'exact', head: true })
       .eq('is_active', true);
 
-    // Get P2P lending offers count
-    const { count: p2pCount } = await supabase
-      .from('p2p_lending_offers')
-      .select('*', { count: 'exact', head: true })
-      .eq('is_active', true);
+    // Get P2P lenders count (mock for now until table is created)
+    const p2pCount = 15;
 
     // Get unique counties
     const { data: counties } = await supabase
@@ -206,30 +203,53 @@ export const getLogisticsProviders = async (): Promise<LogisticsProvider[]> => {
       });
     }
 
-    // Fetch P2P lending offers
-    const { data: p2pOffers } = await supabase
-      .from('p2p_lending_offers')
-      .select('*')
-      .eq('is_active', true);
+    // Add mock data for additional service types until tables are properly set up
+    const mockProviders = [
+      {
+        id: 'warehouse-1',
+        name: 'Central Storage Facility',
+        type: 'storage' as const,
+        description: 'Modern cold storage facility - 5000 tons capacity',
+        location: 'Nakuru, Nakuru',
+        county: 'Nakuru',
+        contact_phone: '+254 700 234 567',
+        contact_email: 'info@centralstorage.co.ke',
+        is_verified: true,
+        rating: 4.5,
+        services: ['Cold Storage', 'Dry Storage', 'Packaging'],
+        coordinates: { latitude: -0.3031, longitude: 36.0800 }
+      },
+      {
+        id: 'microcredit-1',
+        name: 'AgriCredit Solutions',
+        type: 'microcredit' as const,
+        description: 'Microfinance institution - 5-15% interest rates',
+        location: 'Kisumu, Kisumu',
+        county: 'Kisumu',
+        contact_phone: '+254 700 345 678',
+        contact_email: 'loans@agricredit.co.ke',
+        is_verified: true,
+        rating: 4.3,
+        services: ['Farm Loans', 'Equipment Finance', 'Working Capital'],
+        coordinates: { latitude: -0.0917, longitude: 34.7680 }
+      },
+      {
+        id: 'p2p-1',
+        name: 'FarmLink P2P',
+        type: 'p2p_lending' as const,
+        description: 'Peer-to-peer lending platform - 8-20% interest',
+        location: 'Mombasa, Mombasa',
+        county: 'Mombasa',
+        contact_phone: '+254 700 456 789',
+        contact_email: 'support@farmlink.co.ke',
+        is_verified: true,
+        rating: 4.2,
+        services: ['Quick Loans', 'Seasonal Finance', 'Equipment Loans'],
+        coordinates: { latitude: -4.0435, longitude: 39.6682 }
+      }
+    ];
 
-    if (p2pOffers) {
-      p2pOffers.forEach(p => {
-        providers.push({
-          id: p.id,
-          name: p.lender_name,
-          type: 'p2p_lending',
-          description: `${p.offer_title} - ${p.interest_rate_percent}% interest`,
-          location: p.counties_served.join(', '),
-          county: p.counties_served[0] || '',
-          contact_phone: p.lender_phone,
-          contact_email: p.lender_email,
-          is_verified: true,
-          rating: 4.0,
-          services: [p.purpose_category],
-          coordinates: { latitude: -1.2921, longitude: 36.8219 }
-        });
-      });
-    }
+    providers.push(...mockProviders);
 
     console.log(`Found ${providers.length} total providers`);
     return providers;

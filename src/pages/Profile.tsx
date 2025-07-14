@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/components/AuthProvider';
 import Header from '@/components/Header';
 import ProfileEditor from '@/components/profile/ProfileEditor';
 import { Button } from '@/components/ui/button';
