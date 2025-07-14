@@ -61,8 +61,8 @@ const Logistics: React.FC = () => {
 
   const filteredProviders = providers.filter(provider => {
     const matchesSearch = provider.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCounty = !selectedCounty || provider.county === selectedCounty;
-    const matchesService = !selectedServiceType || provider.type === selectedServiceType;
+    const matchesCounty = !selectedCounty || selectedCounty === 'all' || provider.county === selectedCounty;
+    const matchesService = !selectedServiceType || selectedServiceType === 'all' || provider.type === selectedServiceType;
     return matchesSearch && matchesCounty && matchesService;
   });
 
@@ -180,7 +180,7 @@ const Logistics: React.FC = () => {
                   <SelectValue placeholder="Select County" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Counties</SelectItem>
+                  <SelectItem value="all">All Counties</SelectItem>
                   {counties.map((county) => (
                     <SelectItem key={county} value={county}>
                       {county}
@@ -193,7 +193,7 @@ const Logistics: React.FC = () => {
                   <SelectValue placeholder="Service Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Services</SelectItem>
+                  <SelectItem value="all">All Services</SelectItem>
                   <SelectItem value="transport">Transport</SelectItem>
                   <SelectItem value="storage">Storage</SelectItem>
                   <SelectItem value="aggregator">Aggregators</SelectItem>
@@ -204,8 +204,8 @@ const Logistics: React.FC = () => {
               </Select>
               <Button variant="outline" onClick={() => {
                 setSearchTerm('');
-                setSelectedCounty('');
-                setSelectedServiceType('');
+                setSelectedCounty('all');
+                setSelectedServiceType('all');
               }}>
                 Clear Filters
               </Button>
