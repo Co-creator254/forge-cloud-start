@@ -24,7 +24,7 @@ interface CartItem {
 
 const FarmInputMarketplace: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [products, setProducts] = useState<any[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +66,7 @@ const FarmInputMarketplace: React.FC = () => {
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.product_description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || product.product_category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || !selectedCategory || product.product_category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -225,7 +225,7 @@ const FarmInputMarketplace: React.FC = () => {
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
                 {categories.map(category => (
                   <SelectItem key={category} value={category}>{category}</SelectItem>
                 ))}
