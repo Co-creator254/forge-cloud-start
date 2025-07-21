@@ -1,8 +1,36 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import AmisKeApiHandler from '@/services/amis-ke/api-handler';
 
 const Footer: React.FC = () => {
+  const [showFeatureModal, setShowFeatureModal] = useState(false);
+  const [featureForm, setFeatureForm] = useState({ title: '', description: '', email: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const handleFeatureSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await AmisKeApiHandler.post('/api/feature-request', featureForm);
+      toast({ title: 'Feature Request Submitted', description: 'Thank you for your feedback!' });
+      setShowFeatureModal(false);
+      setFeatureForm({ title: '', description: '', email: '' });
+    } catch (err: any) {
+      toast({ title: 'Submission Failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <footer className="bg-background border-t mt-auto">
       <div className="container mx-auto py-8">
@@ -45,6 +73,34 @@ const Footer: React.FC = () => {
           <p>&copy; 2024 AgriConnect. All rights reserved.</p>
         </div>
       </div>
+      <Dialog open={showFeatureModal} onOpenChange={setShowFeatureModal}>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="mt-6">Submit Feature Request</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Submit a Feature Request</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleFeatureSubmit} className="space-y-4">
+            <div>
+              <Label>Title</Label>
+              <Input value={featureForm.title} onChange={e => setFeatureForm(f => ({ ...f, title: e.target.value }))} required />
+            </div>
+            <div>
+              <Label>Description</Label>
+              <Textarea value={featureForm.description} onChange={e => setFeatureForm(f => ({ ...f, description: e.target.value }))} required />
+            </div>
+            <div>
+              <Label>Email (optional)</Label>
+              <Input type="email" value={featureForm.email} onChange={e => setFeatureForm(f => ({ ...f, email: e.target.value }))} />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setShowFeatureModal(false)}>Cancel</Button>
+              <Button type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit'}</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </footer>
   );
 };

@@ -11,7 +11,8 @@ import {
   MessageCircle, 
   BarChart3,
   DollarSign,
-  Megaphone
+  Megaphone,
+  Globe
 } from 'lucide-react';
 
 const navigationItems = [
@@ -29,6 +30,11 @@ const navigationItems = [
     name: 'Logistics',
     href: '/logistics',
     icon: Truck,
+  },
+  {
+    name: 'Equipment Marketplace',
+    href: '/EquipmentMarketplace',
+    icon: Truck, // Use an existing icon for consistency
   },
   {
     name: 'Service Providers',
@@ -55,6 +61,11 @@ const navigationItems = [
     name: 'Analytics',
     href: '/sentiment-analysis',
     icon: BarChart3,
+  },
+  {
+    name: 'Export Opportunities',
+    href: '/ExportMarketOpportunities',
+    icon: Globe, // Use an existing icon for consistency
   },
 ];
 

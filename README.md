@@ -1,4 +1,3 @@
-
 # Soko-Connect: Agricultural Platform for Kenya
 
 ## Project info
@@ -68,3 +67,39 @@ Simply open [Lovable](https://lovable.dev/projects/6b3ca5f2-afd0-4a58-abcc-9d116
 ## I want to use a custom domain - is that possible?
 
 We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+
+## App Cache and Size Optimization Strategy
+
+### Bundle Size
+
+- Vite build uses code splitting and tree shaking.
+- Vendor chunking for node_modules.
+- CSS code split enabled.
+- Assets inline limit set to 4KB.
+- Minification via esbuild.
+
+### Offline Capability
+
+- Service worker caches key assets and API responses.
+- IndexedDB/localStorage recommended for user data.
+- Service worker auto-updates on new deploys.
+
+### Image/Asset Compression
+
+- Use compressed images (WebP, PNG, SVG).
+- Optimize assets before upload.
+
+### Lazy Loading
+
+- Non-critical pages/components should use React.lazy and Suspense.
+
+### Cache Management
+
+- Limit cache size in service worker.
+- Remove old caches on activate.
+
+### Recommendations
+
+- Audit bundle with Vite plugin (e.g., rollup-plugin-visualizer).
+- Regularly review dependencies and remove unused packages.
+- Document cache strategy for contributors.

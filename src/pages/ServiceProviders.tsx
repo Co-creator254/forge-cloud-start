@@ -12,9 +12,11 @@ import { ProviderFilters } from "@/components/service-providers/ProviderFilters"
 import { ProviderCard } from "@/components/service-providers/ProviderCard";
 import { ProviderTabs } from "@/components/service-providers/ProviderTabs";
 import { TrainingEventsSection } from "@/components/service-providers/TrainingEventsSection";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tag } from "lucide-react";
+import { Tag, Badge } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/lib/supabaseClient";
 
 const ServiceProviders = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,6 +28,9 @@ const ServiceProviders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState<ServiceProviderType | "all">("all");
   const [selectedCounty, setSelectedCounty] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState('All Providers');
+  const [bookings, setBookings] = useState([]);
+  const [tracking, setTracking] = useState([]);
   
   const typeFilter = searchParams.get("type") as ServiceProviderType | null;
   const activeTab = (typeFilter || "all") as ServiceProviderType | "all";
@@ -38,7 +43,13 @@ const ServiceProviders = () => {
     { value: "training", label: "Training Providers" },
     { value: "input-supplier", label: "Input Suppliers" },
     { value: "inspector", label: "Inspectors" },
-    { value: "market-linkage", label: "Market Linkage" }
+    { value: "market-linkage", label: "Market Linkage" },
+    { value: "insurance-provider", label: "Insurance Providers" },
+    { value: "soil-testing-provider", label: "Soil Testing Providers" },
+    { value: "drone-satellite-imagery-provider", label: "Drone and Satellite Imagery Providers" },
+    { value: "iot-sensor-data-provider", label: "IoT Sensor Data Providers" },
+    { value: "export-transporters", label: "Export Transporters" },
+    { value: "shippers", label: "Shippers" },
   ];
 
   const counties = [
@@ -54,6 +65,23 @@ const ServiceProviders = () => {
     { value: "uasin-gishu", label: "Uasin Gishu" },
     { value: "nyeri", label: "Nyeri" },
     { value: "kilifi", label: "Kilifi" }
+  ];
+
+  const providerCategories = [
+    'All Providers',
+    'Storage Facilities',
+    'Transport Services',
+    'Quality Control',
+    'Training Providers',
+    'Input Suppliers',
+    'Inspectors',
+    'Market Linkage',
+    'Insurance Providers',
+    'Soil Testing Providers',
+    'Drone and Satellite Imagery Providers',
+    'IoT Sensor Data Providers',
+    'Export Transporters',
+    'Shippers',
   ];
 
   useEffect(() => {
@@ -88,6 +116,10 @@ const ServiceProviders = () => {
     if (selectedCounty !== "all") {
       filtered = filtered.filter(provider => provider.location.county.toLowerCase() === selectedCounty.toLowerCase());
     }
+
+    if (selectedCategory !== 'All Providers') {
+      filtered = filtered.filter(provider => provider.provider_category === selectedCategory);
+    }
     
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
@@ -101,7 +133,7 @@ const ServiceProviders = () => {
     }
     
     setFilteredProviders(filtered);
-  }, [providers, selectedType, selectedCounty, searchTerm]);
+  }, [providers, selectedType, selectedCounty, searchTerm, selectedCategory]);
 
   const handleTabChange = (value: string) => {
     if (value === "all") {
@@ -112,6 +144,23 @@ const ServiceProviders = () => {
     setSearchParams(searchParams);
     setSelectedType(value as ServiceProviderType | "all");
   };
+
+  async function fetchBookings(transporterId) {
+    const { data } = await supabase
+      .from('transporter_bookings')
+      .select('*')
+      .eq('transporter_id', transporterId);
+    setBookings(data || []);
+  }
+
+  async function fetchTracking(exportOrderId) {
+    const { data } = await supabase
+      .from('tracking_events')
+      .select('*')
+      .eq('export_order_id', exportOrderId)
+      .order('event_time');
+    setTracking(data || []);
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -147,6 +196,9 @@ const ServiceProviders = () => {
           filteredCount={filteredProviders.length}
           counties={counties}
           providerTypes={providerTypes}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          providerCategories={providerCategories}
         />
 
         {isLoading ? (
@@ -178,13 +230,57 @@ const ServiceProviders = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProviders.map((provider) => (
-              <ProviderCard 
-                key={provider.id} 
-                provider={provider}
-                providerTypes={providerTypes}
-              />
-            ))}
+            {filteredProviders.map(provider => {
+              // Assume recommendations are fetched and averaged
+              const recommendations = { rating: 4.5, total: 25 }; // Placeholder
+              return (
+                <Card key={provider.id}>
+                  <CardHeader>
+                    <CardTitle>{provider.business_name}</CardTitle>
+                    <Badge>{provider.provider_category}</Badge>
+                  </CardHeader>
+                  <CardContent>
+                    <div>{provider.description}</div>
+                    <div>Location: {provider.location}</div>
+                    {provider.provider_category === 'Export Transporters' && (
+                      <div>
+                        <div>Licenses: {provider.licenses?.join(', ')}</div>
+                        <div>Insurance: {provider.insurance_details}</div>
+                        <div>Rating: {recommendations.rating} ({recommendations.total} reviews)</div>
+                        <Button onClick={() => fetchBookings(provider.id)}>
+                          View Bookings
+                        </Button>
+                        {bookings.length > 0 && (
+                          <div className="mt-4">
+                            <h4 className="font-semibold mb-2">Bookings</h4>
+                            <ul>
+                              {bookings.map(b => (
+                                <li key={b.id} className="mb-1">
+                                  {b.booking_date}: {b.cargo_type} - {b.status} (KES {b.price})
+                                  <Button size="xs" onClick={() => fetchTracking(b.export_order_id)} className="ml-2">Track</Button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {tracking.length > 0 && (
+                          <div className="mt-4">
+                            <h4 className="font-semibold mb-2">Tracking History</h4>
+                            <ul>
+                              {tracking.map(t => (
+                                <li key={t.id} className="mb-1">
+                                  {t.event_time}: {t.location} {t.status && `- ${t.status}`}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
 

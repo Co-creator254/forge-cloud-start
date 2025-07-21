@@ -1,5 +1,39 @@
 
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+
+export type NotificationType =
+  | 'bulk_order_new'
+  | 'bulk_order_status'
+  | 'match_new'
+  | 'match_status'
+  | 'negotiation_update'
+  | 'rescue_listing_new'
+  | 'rescue_match_new'
+  | 'rescue_status'
+  | 'input_pricing_new'
+  | 'input_pricing_verified'
+  | 'review_new'
+  | 'review_verified'
+  | 'surplus_new'
+  | 'surplus_status'
+  | 'recipe_new'
+  | 'resource_new'
+  | 'workshop_new'
+  | 'workshop_update'
+  | 'rsvp_new';
+
+export interface InAppNotification {
+  type: NotificationType;
+  title: string;
+  description: string;
+}
+
+export function notify({ type, title, description }: InAppNotification) {
+  const { toast } = useToast();
+  // Here you could check user preferences for notification type
+  toast({ title, description });
+}
 
 export interface Notification {
   id: string;

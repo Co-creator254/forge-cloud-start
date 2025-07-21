@@ -100,7 +100,7 @@ BEGIN
     'current_usage', request_count
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql;
 
 -- Create function to validate API key and get user info
 CREATE OR REPLACE FUNCTION validate_api_key(p_key_hash text)
@@ -154,4 +154,4 @@ BEGIN
   
   RETURN result;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql;
