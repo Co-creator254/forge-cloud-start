@@ -12,52 +12,36 @@ import {
   MessageCircle, 
   BarChart3,
   DollarSign,
-  Megaphone
+  Megaphone,
+  AlertTriangle,
+  MapPin,
+  Sprout,
+  CheckCircle,
+  Calendar,
+  Clock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigationItems = [
-  {
-    name: 'Home',
-    href: '/',
-    icon: Home,
-  },
-  {
-    name: 'Market Data',
-    href: '/kilimo-ams-data',
-    icon: TrendingUp,
-  },
-  {
-    name: 'Logistics',
-    href: '/logistics',
-    icon: Truck,
-  },
-  {
-    name: 'Service Providers',
-    href: '/service-providers',
-    icon: Users,
-  },
-  {
-    name: 'Advertise Business',
-    href: '/business-marketing',
-    icon: Megaphone,
-    highlight: true,
-  },
-  {
-    name: 'Trading',
-    href: '/commodity-trading',
-    icon: DollarSign,
-  },
-  {
-    name: 'Community',
-    href: '/community-forum',
-    icon: MessageCircle,
-  },
-  {
-    name: 'Analytics',
-    href: '/sentiment-analysis',
-    icon: BarChart3,
-  },
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'Market Data', href: '/kilimo-ams-data', icon: TrendingUp },
+  { name: 'Logistics', href: '/logistics', icon: Truck },
+  { name: 'Service Providers', href: '/service-providers', icon: Users },
+  { name: 'Advertise Business', href: '/business-marketing', icon: Megaphone, highlight: true },
+  { name: 'Trading', href: '/commodity-trading', icon: DollarSign },
+  { name: 'Community', href: '/community-forum', icon: MessageCircle },
+  { name: 'Analytics', href: '/sentiment-analysis', icon: BarChart3 },
+  { name: 'Donations', href: '/donation-list', icon: DollarSign },
+  { name: 'Food Rescue', href: '/food-rescue-dashboard', icon: AlertTriangle },
+  { name: 'Auctions', href: '/agent-product-auction-dashboard', icon: TrendingUp },
+  { name: 'Marketplace', href: '/farm-input-marketplace', icon: BarChart3 },
+  { name: 'City Markets', href: '/city-markets', icon: MapPin },
+  { name: 'Animals', href: '/farmer-portal#animals', icon: Sprout },
+  { name: 'Veterinary', href: '/veterinary-services', icon: CheckCircle },
+  { name: 'Feed & Nutrition', href: '/feed-nutrition', icon: Calendar },
+  { name: 'Genetics & Breeding', href: '/genetics-breeding', icon: Clock },
+  { name: 'Farm Construction', href: '/farm-construction', icon: MapPin },
+  { name: 'Consultancies', href: '/consultancies', icon: Users },
 ];
 
 export const MobileNav: React.FC = () => {

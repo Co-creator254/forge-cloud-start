@@ -13,6 +13,7 @@ import FinancialManagement from '@/components/farm/FinancialManagement';
 import AnalyticsDashboard from '@/components/farm/AnalyticsDashboard';
 import FarmerProductForm from '@/components/FarmerProductForm';
 import { Produce } from '@/types/farmer';
+import AnimalManagement from '@/components/farm/AnimalManagement';
 
 const FarmerPortal: React.FC = () => {
   const navigate = useNavigate();
@@ -69,20 +70,23 @@ const FarmerPortal: React.FC = () => {
       <div className="container mx-auto py-6">
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">Farmer Portal</h1>
-          <p className="text-muted-foreground">Manage your farm operations and produce</p>
+          <p className="text-muted-foreground">Manage your farm operations, crops, and animals</p>
         </div>
-        
+        {/* Mobile-optimized horizontal scroll tabs */}
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="parcels">Land Parcels</TabsTrigger>
-            <TabsTrigger value="crops">Crops</TabsTrigger>
-            <TabsTrigger value="inventory">Inventory</TabsTrigger>
-            <TabsTrigger value="finances">Finances</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="products">My Products</TabsTrigger>
-            <TabsTrigger value="add-product">Add Product</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto scrollbar-hide">
+            <TabsList className="flex w-max min-w-full space-x-2 px-1">
+              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+              <TabsTrigger value="parcels">Land Parcels</TabsTrigger>
+              <TabsTrigger value="crops">Crops</TabsTrigger>
+              <TabsTrigger value="animals">Animals</TabsTrigger>
+              <TabsTrigger value="inventory">Inventory</TabsTrigger>
+              <TabsTrigger value="finances">Finances</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="products">My Products</TabsTrigger>
+              <TabsTrigger value="add-product">Add Product</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="dashboard">
             <FarmDashboard />
@@ -94,6 +98,11 @@ const FarmerPortal: React.FC = () => {
 
           <TabsContent value="crops">
             <CropTracking />
+          </TabsContent>
+
+          <TabsContent value="animals">
+            {/* Animal management CRUD UI */}
+            <AnimalManagement userId={user?.id} />
           </TabsContent>
 
           <TabsContent value="inventory">

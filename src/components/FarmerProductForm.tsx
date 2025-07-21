@@ -39,12 +39,36 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
   const [qualityDetails, setQualityDetails] = useState({
     sizeUniformity: '',
     colorUniformity: '',
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
     defects: '',
     cleanlinessLevel: '',
     packagingType: ''
   });
 
   const categories = [
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      toast({ title: 'Invalid file type', description: 'Only JPEG, PNG, or WebP images are allowed.' });
+      return;
+    }
+    // Validate file size (max 1MB)
+    if (file.size > 1024 * 1024) {
+      toast({ title: 'File too large', description: 'Image must be less than 1MB.' });
+      return;
+    }
+    setImageFile(file);
+    // Upload to Supabase Storage
+    const { data, error } = await supabase.storage.from('product-images').upload(`products/${Date.now()}_${file.name}`, file);
+    if (data?.path) {
+      const url = supabase.storage.from('product-images').getPublicUrl(data.path).publicUrl;
+      setImageUrl(url);
+    }
+  };
     'Cereals',
     'Legumes',
     'Cash Crops',
@@ -54,6 +78,7 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
     'Meat'
   ];
 
+      imageUrl // Include imageUrl in the product data
   const qualities = [
     'Grade A (Premium)',
     'Grade B (Standard)',
@@ -224,6 +249,11 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
               
               <div className="space-y-2">
                 <Label htmlFor="price">Price (KES per unit)</Label>
+            <div className="mb-4">
+              <label htmlFor="product-image" className="block text-sm font-medium text-gray-700">Product Image (max 1MB, JPEG/PNG/WebP)</label>
+              <input type="file" id="product-image" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} />
+              {imageUrl && <img src={imageUrl} alt="Product" className="mt-2 h-24 rounded" />}
+            </div>
                 <Input 
                   id="price" 
                   name="price" 

@@ -25,9 +25,12 @@ export const ProviderFilters = ({
   filteredCount,
   counties,
   providerTypes,
-}: ProviderFiltersProps) => {
+  selectedCategory,
+  setSelectedCategory,
+  providerCategories,
+}: any) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
       <div className="relative">
         <Input
           placeholder="Search by name, service or tag..."
@@ -36,7 +39,6 @@ export const ProviderFilters = ({
           className="w-full"
         />
       </div>
-      
       <div>
         <Select
           value={selectedCounty}
@@ -54,7 +56,21 @@ export const ProviderFilters = ({
           </SelectContent>
         </Select>
       </div>
-      
+      <div>
+        <Select
+          value={selectedCategory}
+          onValueChange={setSelectedCategory}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Provider Category" />
+          </SelectTrigger>
+          <SelectContent>
+            {providerCategories.map((cat: string) => (
+              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       <div className="flex items-center justify-end">
         <span className="text-sm text-muted-foreground mr-2">
           {filteredCount} providers found

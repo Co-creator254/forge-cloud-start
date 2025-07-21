@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export type NotificationType =
   | 'bulk_order_new'
+  | 'push'
   | 'bulk_order_status'
   | 'match_new'
   | 'match_status'

@@ -44,56 +44,67 @@ import React from 'react';
  */
 
 const StakeholderOverview: React.FC = () => (
-  <div className="max-w-4xl mx-auto p-8 bg-white rounded shadow">
-    <h1 className="text-3xl font-bold mb-6 text-green-700">Agri-Tender Connect: Stakeholder Value & Feature Overview</h1>
-    <p className="mb-6 text-lg text-gray-700">Empowering every stakeholder in agriculture and social impact with a world-class, transparent, and engaging digital marketplace.</p>
-    <div className="grid grid-cols-2 gap-6 mb-8">
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Stakeholder Buy-In</h2>
-        <ul className="list-disc pl-6 mb-4">
-          <li><strong>Farmers:</strong> Maximize profits, reduce waste, access new markets, and join the carbon forum.</li>
-          <li><strong>Agents/Suppliers:</strong> Streamline operations, build reputation, and grow business.</li>
-          <li><strong>Buyers:</strong> Discover quality products, auctions, and support donations.</li>
-          <li><strong>Schools/CBOs/Hospitals/Churches/Hospices:</strong> Receive targeted support, provide feedback, and engage with the community.</li>
-          <li><strong>NGOs/Government:</strong> Monitor trends, support impact, and access analytics.</li>
-          <li><strong>General Public:</strong> Join food rescue, community forums, and climate action.</li>
-          <li><strong>Investors:</strong> Scalable, secure, and impact-driven platform with global reach and advanced reporting.</li>
-        </ul>
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Pages & Features</h2>
-        <ul className="list-disc pl-6 mb-4">
-          <li>Admin Dashboard</li>
-          <li>Agent Dashboard</li>
-          <li>Bulk Order Form & List</li>
-          <li>Input Pricing List & Verification</li>
-          <li>Donation Form & List (schools, CBOs, hospitals, churches, hospices)</li>
-          <li>Food Rescue Form & List</li>
-          <li>Product Auction Dashboard</li>
-          <li>Supplier Review & Verification</li>
-          <li>Carbon Forum & Community</li>
-          <li>Success Stories & Impact Reports</li>
-          <li>Push Notification Center</li>
-          <li>Offline/PWA Support</li>
-        </ul>
-      </div>
+  <div className="max-w-4xl mx-auto p-4 bg-white rounded shadow">
+    <h1 className="text-2xl font-bold mb-4 text-green-700">Agri-Tender Connect: Stakeholder Value & Feature Overview</h1>
+    <p className="mb-4 text-base text-gray-700">Empowering every stakeholder in agriculture and social impact with a world-class, transparent, and engaging digital marketplace.</p>
+    {/* Mobile-friendly feature grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      {[
+        { label: 'Admin Dashboard', route: '/admin-panel' },
+        { label: 'Agent Dashboard', route: '/agent-dashboard' },
+        { label: 'Bulk Order', route: '/bulk-order-dashboard' },
+        { label: 'Input Pricing', route: '/input-pricing-dashboard' },
+        { label: 'Donations', route: '/donation-form' },
+        { label: 'Donation List', route: '/donation-list' },
+        { label: 'Food Rescue', route: '/food-rescue-dashboard' },
+        { label: 'Product Auctions', route: '/agent-product-auction-dashboard' },
+        { label: 'Supplier Reviews', route: '/supplier-review-verification' },
+        { label: 'Carbon Forum', route: '/carbon-forum' },
+        { label: 'Success Stories', route: '/farmer-success-stories' },
+        { label: 'Impact Reports', route: '/stakeholder-overview' },
+        { label: 'Push Notifications', route: '/notification-settings' },
+        { label: 'Community Forums', route: '/community-forums' },
+        { label: 'Marketplace', route: '/farm-input-marketplace' },
+        { label: 'City Markets', route: '/city-markets' },
+        { label: 'Equipment Marketplace', route: '/equipment-marketplace' },
+        { label: 'Analytics', route: '/sentiment-analysis' },
+        { label: 'Logistics', route: '/logistics' },
+        { label: 'Service Providers', route: '/service-providers' },
+        { label: 'Profile', route: '/profile' },
+        { label: 'Farmer Portal', route: '/farmer-portal' },
+        { label: 'Offline Support', route: '/offline-banner' },
+      ].map((feature) => (
+        <a
+          key={feature.route}
+          href={feature.route}
+          className="block p-4 rounded-lg shadow hover:bg-green-50 border border-gray-200 text-green-800 font-semibold text-center text-base transition-all"
+        >
+          {feature.label}
+        </a>
+      ))}
     </div>
-    <h2 className="text-xl font-semibold mb-2 text-green-700">Engagement & Uptake</h2>
-    <ul className="list-disc pl-6 mb-4">
+    {/* Engagement & Uptake */}
+    <h2 className="text-lg font-semibold mb-2 text-green-700">Engagement & Uptake</h2>
+    <ul className="list-disc pl-6 mb-4 text-sm">
       <li>Push notifications for every key event (donations, reviews, auctions, food rescue, etc.)</li>
       <li>Gamified achievements, badges, and leaderboards for active users</li>
       <li>Community forums, Q&A, and support channels</li>
       <li>Impact dashboards and transparent reporting</li>
       <li>Seamless onboarding and user education</li>
     </ul>
-    <h2 className="text-xl font-semibold mb-2 text-green-700">Why Choose Agri-Tender Connect?</h2>
-    <ul className="list-disc pl-6 mb-4">
+    {/* Why Choose Section */}
+    <h2 className="text-lg font-semibold mb-2 text-green-700">Why Choose Agri-Tender Connect?</h2>
+    <ul className="list-disc pl-6 mb-4 text-sm">
       <li>Empowerment, engagement, and impact for every stakeholder</li>
       <li>World-class security, privacy, and verification</li>
       <li>Scalable, future-proof architecture for global growth</li>
       <li>Ready for integration with partners, funders, and investors</li>
     </ul>
-    <p className="text-gray-600">For more, see README, deployment guide, and impact reports.</p>
+    {/* Offline/blank page handling */}
+    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 text-yellow-800 rounded">
+      <strong>Offline or Blank Page?</strong> If you see a blank page, check your internet connection or try again later. All features are available online and offline (PWA support).
+    </div>
+    <p className="text-gray-600 text-xs">For more, see README, deployment guide, and impact reports.</p>
   </div>
 );
 
