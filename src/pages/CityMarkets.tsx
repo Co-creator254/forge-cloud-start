@@ -115,7 +115,11 @@ useEffect(() => {
       setCounties([]);
       return;
     }
-    setCounties((data as { name: string }[]).map((c) => c.name));
+    setCounties(
+      ((data as unknown) as any[])
+        .filter((c) => typeof c === 'object' && c !== null && 'name' in c)
+        .map((c) => (c as { name: string }).name)
+    );
   });
   // Fetch markets
   supabase.from('city_markets' as any).select('*').then(({ data, error }) => {
@@ -125,7 +129,7 @@ useEffect(() => {
       setLoading(false);
       return;
     }
-    setMarkets(data as CityMarket[]);
+    setMarkets(data as unknown as CityMarket[]);
     setLoading(false);
   });
   // Fetch participants
@@ -135,12 +139,12 @@ useEffect(() => {
       setParticipants([]);
       return;
     }
-    setParticipants(data as MarketParticipant[]);
+    setParticipants(data as unknown as MarketParticipant[]);
   });
   // Check admin status
   if (user) {
     supabase.from('users' as any).select('role').eq('id', user.id).single().then(({ data, error }) => {
-      if (error || !data || (typeof data === 'object' && 'error' in data)) {
+      if (error || !data || (typeof data === 'object' && data && 'error' in data)) {
         toast({ title: 'Error checking admin', description: error?.message || 'Invalid data' });
         setIsAdmin(false);
         return;

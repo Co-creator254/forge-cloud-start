@@ -78,6 +78,9 @@
 ### Batch Tracking System
 - Detailed farm-to-market journey mapping
 
+### Carbon Credit and Circular economy Forum
+- Detailed page for opportunities,events,monetization, success stories,organizations to connect with
+
 ### Networking & Partnership Features
 - Event networking platform (trade shows, conferences)
 - Cross-border partnership tools (EU-Africa collaboration)
@@ -85,6 +88,12 @@
 - Mentorship program integration
 - Research collaboration requests
 - Offline capability
+
+### offline capability
+- Usersshould beable touse app without data
+
+### app cache and size 
+- assess and suggest how theappwll not be heavy but light weight, not be a big size, willnot eat up user phone storage
 
 ### 15. Transparent Input Pricing and Quality Verification
 - Real-time, crowd-sourced input pricing database

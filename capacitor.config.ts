@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.agriconnect.app',
-  appName: 'agri-connect',
+  appId: 'com.agrihub.app',
+  appName: 'agrihub',
   webDir: 'dist'
 };
 

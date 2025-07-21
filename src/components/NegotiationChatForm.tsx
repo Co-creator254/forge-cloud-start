@@ -25,7 +25,7 @@ export default function NegotiationChatForm({ onSent }) {
       const logEntry = { sender_id: form.sender_id, message: form.message, timestamp: new Date().toISOString() };
       const result = await addNegotiationLog(form.order_id, logEntry);
       if ('error' in result && result.error) setError(result.error.message);
-      else {
+      else if ('data' in result) {
         setForm(initialState);
         notify({ type: 'negotiation_update', title: 'Negotiation Message Sent', description: `Message for order ${form.order_id}` });
         if (onSent) onSent(result.data);
