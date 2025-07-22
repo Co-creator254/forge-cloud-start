@@ -58,9 +58,14 @@ const ProduceManagement: React.FC<ProduceManagementProps> = ({
             {userProduce.map((produce) => (
               <div key={produce.id} className="p-4 border rounded-lg">
                 <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-semibold text-lg">{produce.name}</h3>
-                    <p className="text-muted-foreground">{produce.category}</p>
+                  <div className="flex items-center gap-3">
+                    {typeof (produce as any).image_url === 'string' && (produce as any).image_url && (
+                      <img src={(produce as any).image_url} alt={produce.name} className="h-16 w-16 object-cover rounded" />
+                    )}
+                    <div>
+                      <h3 className="font-semibold text-lg">{produce.name}</h3>
+                      <p className="text-muted-foreground">{produce.category}</p>
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <Badge className={getQualityColor(produce.qualityGrade)}>
@@ -102,6 +107,7 @@ const ProduceManagement: React.FC<ProduceManagementProps> = ({
                     <Edit className="h-4 w-4 mr-2" />
                     Modifier
                   </Button>
+                  {/* Contact Seller button can be implemented with actual contact info if available */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button size="sm" variant="destructive">

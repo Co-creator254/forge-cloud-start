@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ interface FarmerProductFormProps {
 
 const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
   const { toast } = useToast();
-  
+
   const [productData, setProductData] = useState({
     name: '',
     category: '',
@@ -39,36 +39,15 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
   const [qualityDetails, setQualityDetails] = useState({
     sizeUniformity: '',
     colorUniformity: '',
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>('');
     defects: '',
     cleanlinessLevel: '',
     packagingType: ''
   });
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
+
   const categories = [
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    // Validate file type
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      toast({ title: 'Invalid file type', description: 'Only JPEG, PNG, or WebP images are allowed.' });
-      return;
-    }
-    // Validate file size (max 1MB)
-    if (file.size > 1024 * 1024) {
-      toast({ title: 'File too large', description: 'Image must be less than 1MB.' });
-      return;
-    }
-    setImageFile(file);
-    // Upload to Supabase Storage
-    const { data, error } = await supabase.storage.from('product-images').upload(`products/${Date.now()}_${file.name}`, file);
-    if (data?.path) {
-      const url = supabase.storage.from('product-images').getPublicUrl(data.path).publicUrl;
-      setImageUrl(url);
-    }
-  };
     'Cereals',
     'Legumes',
     'Cash Crops',
@@ -78,7 +57,6 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
     'Meat'
   ];
 
-      imageUrl // Include imageUrl in the product data
   const qualities = [
     'Grade A (Premium)',
     'Grade B (Standard)',
@@ -117,29 +95,47 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
     });
   };
 
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      toast({ title: 'Invalid file type', description: 'Only JPEG, PNG, or WebP images are allowed.' });
+      return;
+    }
+    // Validate file size (max 1MB)
+    if (file.size > 1024 * 1024) {
+      toast({ title: 'File too large', description: 'Image must be less than 1MB.' });
+      return;
+    }
+    setImageFile(file);
+    // Upload to Supabase Storage
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { data, error } = await supabase.storage.from('product-images').upload(`products/${Date.now()}_${file.name}`, file);
+    if (data?.path) {
+      const { data: publicUrlData } = supabase.storage.from('product-images').getPublicUrl(data.path);
+      if (publicUrlData?.publicUrl) {
+        setImageUrl(publicUrlData.publicUrl);
+      }
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Combine product data with quality details
     const completeProductData = {
       ...productData,
       qualityDetails,
+      imageUrl,
       submittedAt: new Date()
     };
-    
-    // You would typically send this to an API
-    console.log('Product submission:', completeProductData);
-    
     if (onSubmit) {
       onSubmit(completeProductData);
     }
-    
     toast({
-      title: "Product Added Successfully",
-      description: "Your product has been added to the marketplace.",
+      title: 'Product Added Successfully',
+      description: 'Your product has been added to the marketplace.'
     });
-    
-    // Reset form
     setProductData({
       name: '',
       category: '',
@@ -158,7 +154,6 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
       availableFrom: '',
       availableTo: ''
     });
-    
     setQualityDetails({
       sizeUniformity: '',
       colorUniformity: '',
@@ -166,6 +161,8 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
       cleanlinessLevel: '',
       packagingType: ''
     });
+    setImageFile(null);
+    setImageUrl('');
   };
 
   return (
@@ -180,60 +177,33 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Basic Information</h3>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Product Name</Label>
-                <Input 
-                  id="name" 
-                  name="name" 
-                  value={productData.name} 
-                  onChange={handleChange} 
-                  placeholder="e.g., Fresh Tomatoes" 
-                  required 
-                />
+                <Input id="name" name="name" value={productData.name} onChange={handleChange} placeholder="e.g., Fresh Tomatoes" required />
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Select 
-                  value={productData.category} 
-                  onValueChange={(value) => handleSelectChange('category', value)}
-                >
+                <Select value={productData.category} onValueChange={(value) => handleSelectChange('category', value)}>
                   <SelectTrigger id="category">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="quantity">Quantity</Label>
-                <Input 
-                  id="quantity" 
-                  name="quantity" 
-                  type="number" 
-                  value={productData.quantity} 
-                  onChange={handleChange} 
-                  placeholder="Amount" 
-                  required 
-                />
+                <Input id="quantity" name="quantity" type="number" value={productData.quantity} onChange={handleChange} placeholder="Amount" required />
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="unit">Unit</Label>
-                <Select 
-                  value={productData.unit} 
-                  onValueChange={(value) => handleSelectChange('unit', value)}
-                >
+                <Select value={productData.unit} onValueChange={(value) => handleSelectChange('unit', value)}>
                   <SelectTrigger id="unit">
                     <SelectValue placeholder="Select unit" />
                   </SelectTrigger>
@@ -246,97 +216,51 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
                   </SelectContent>
                 </Select>
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="price">Price (KES per unit)</Label>
-            <div className="mb-4">
-              <label htmlFor="product-image" className="block text-sm font-medium text-gray-700">Product Image (max 1MB, JPEG/PNG/WebP)</label>
-              <input type="file" id="product-image" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} />
-              {imageUrl && <img src={imageUrl} alt="Product" className="mt-2 h-24 rounded" />}
-            </div>
-                <Input 
-                  id="price" 
-                  name="price" 
-                  type="number" 
-                  value={productData.price} 
-                  onChange={handleChange} 
-                  placeholder="e.g., 150" 
-                  required 
-                />
+                <div className="mb-4">
+                  <label htmlFor="product-image" className="block text-sm font-medium text-gray-700">Product Image (max 1MB, JPEG/PNG/WebP)</label>
+                  <input type="file" id="product-image" accept="image/jpeg,image/png,image/webp" onChange={handleImageChange} />
+                  {imageUrl && <img src={imageUrl} alt="Product" className="mt-2 h-24 rounded" />}
+                </div>
+                <Input id="price" name="price" type="number" value={productData.price} onChange={handleChange} placeholder="e.g., 150" required />
               </div>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="harvestDate">Harvest Date</Label>
-                <Input 
-                  id="harvestDate" 
-                  name="harvestDate" 
-                  type="date" 
-                  value={productData.harvestDate} 
-                  onChange={handleChange} 
-                  required 
-                />
+                <Input id="harvestDate" name="harvestDate" type="date" value={productData.harvestDate} onChange={handleChange} required />
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Input 
-                  id="location" 
-                  name="location" 
-                  value={productData.location} 
-                  onChange={handleChange} 
-                  placeholder="e.g., Nakuru County" 
-                  required 
-                />
+                <Input id="location" name="location" value={productData.location} onChange={handleChange} placeholder="e.g., Nakuru County" required />
               </div>
             </div>
-            
             <div className="space-y-2">
               <Label htmlFor="description">Product Description</Label>
-              <Textarea 
-                id="description" 
-                name="description" 
-                value={productData.description} 
-                onChange={handleChange} 
-                placeholder="Describe your product in detail" 
-                rows={3} 
-                required 
-              />
+              <Textarea id="description" name="description" value={productData.description} onChange={handleChange} placeholder="Describe your product in detail" rows={3} required />
             </div>
           </div>
-          
           <Separator />
-          
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Quality Information</h3>
-            
             <div className="space-y-2">
               <Label htmlFor="quality">Quality Grade</Label>
-              <Select 
-                value={productData.quality} 
-                onValueChange={(value) => handleSelectChange('quality', value)}
-              >
+              <Select value={productData.quality} onValueChange={(value) => handleSelectChange('quality', value)}>
                 <SelectTrigger id="quality">
                   <SelectValue placeholder="Select quality grade" />
                 </SelectTrigger>
                 <SelectContent>
                   {qualities.map((quality) => (
-                    <SelectItem key={quality} value={quality}>
-                      {quality}
-                    </SelectItem>
+                    <SelectItem key={quality} value={quality}>{quality}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="sizeUniformity">Size Uniformity</Label>
-                <Select 
-                  value={qualityDetails.sizeUniformity} 
-                  onValueChange={(value) => setQualityDetails(prev => ({ ...prev, sizeUniformity: value }))}
-                >
+                <Select value={qualityDetails.sizeUniformity} onValueChange={(value) => setQualityDetails(prev => ({ ...prev, sizeUniformity: value }))}>
                   <SelectTrigger id="sizeUniformity">
                     <SelectValue placeholder="Select uniformity" />
                   </SelectTrigger>
@@ -348,13 +272,9 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
                   </SelectContent>
                 </Select>
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="defects">Defects</Label>
-                <Select 
-                  value={qualityDetails.defects} 
-                  onValueChange={(value) => setQualityDetails(prev => ({ ...prev, defects: value }))}
-                >
+                <Select value={qualityDetails.defects} onValueChange={(value) => setQualityDetails(prev => ({ ...prev, defects: value }))}>
                   <SelectTrigger id="defects">
                     <SelectValue placeholder="Select defect level" />
                   </SelectTrigger>
@@ -367,52 +287,28 @@ const FarmerProductForm: React.FC<FarmerProductFormProps> = ({ onSubmit }) => {
                 </Select>
               </div>
             </div>
-            
             <div className="space-y-4">
               <Label>Certifications & Standards</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {certifications.map((certification) => (
                   <div className="flex items-center space-x-2" key={certification.id}>
-                    <Checkbox 
-                      id={certification.id} 
-                      checked={(productData.certifications as string[]).includes(certification.id)}
-                      onCheckedChange={() => handleCheckboxChange(certification.id)}
-                    />
-                    <Label htmlFor={certification.id} className="font-normal">
-                      {certification.label}
-                    </Label>
+                    <Checkbox id={certification.id} checked={(productData.certifications as string[]).includes(certification.id)} onCheckedChange={() => handleCheckboxChange(certification.id)} />
+                    <Label htmlFor={certification.id} className="font-normal">{certification.label}</Label>
                   </div>
                 ))}
               </div>
             </div>
-            
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="handlingPractices">Post-Harvest Handling Practices</Label>
-                <Textarea 
-                  id="handlingPractices" 
-                  name="handlingPractices" 
-                  value={productData.handlingPractices} 
-                  onChange={handleChange} 
-                  placeholder="Describe how the produce was handled after harvesting" 
-                  rows={2}
-                />
+                <Textarea id="handlingPractices" name="handlingPractices" value={productData.handlingPractices} onChange={handleChange} placeholder="Describe how the produce was handled after harvesting" rows={2} />
               </div>
-              
               <div className="space-y-2">
                 <Label htmlFor="storageConditions">Storage Conditions</Label>
-                <Textarea 
-                  id="storageConditions" 
-                  name="storageConditions" 
-                  value={productData.storageConditions} 
-                  onChange={handleChange} 
-                  placeholder="Describe current storage conditions" 
-                  rows={2}
-                />
+                <Textarea id="storageConditions" name="storageConditions" value={productData.storageConditions} onChange={handleChange} placeholder="Describe current storage conditions" rows={2} />
               </div>
             </div>
           </div>
-          
           <div className="pt-4">
             <Button type="submit" className="w-full">Submit Product</Button>
           </div>

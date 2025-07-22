@@ -14,6 +14,8 @@ import AnalyticsDashboard from '@/components/farm/AnalyticsDashboard';
 import FarmerProductForm from '@/components/FarmerProductForm';
 import { Produce } from '@/types/farmer';
 import AnimalManagement from '@/components/farm/AnimalManagement';
+import BuyRequestForm from '@/components/BuyRequestForm';
+import BuyRequestList from '@/components/BuyRequestList';
 
 const FarmerPortal: React.FC = () => {
   const navigate = useNavigate();
@@ -83,8 +85,10 @@ const FarmerPortal: React.FC = () => {
               <TabsTrigger value="inventory">Inventory</TabsTrigger>
               <TabsTrigger value="finances">Finances</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="products">My Products</TabsTrigger>
-              <TabsTrigger value="add-product">Add Product</TabsTrigger>
+            <TabsTrigger value="products">My Products</TabsTrigger>
+            <TabsTrigger value="buy-requests">Buy Requests</TabsTrigger>
+            <TabsTrigger value="add-buy-request">Post Buy Request</TabsTrigger>
+            <TabsTrigger value="add-product">Add Product</TabsTrigger>
             </TabsList>
           </div>
 
@@ -125,6 +129,14 @@ const FarmerPortal: React.FC = () => {
             />
           </TabsContent>
 
+          <TabsContent value="buy-requests">
+            <BuyRequestList />
+          </TabsContent>
+          <TabsContent value="add-buy-request">
+            <div className="max-w-2xl mx-auto">
+              <BuyRequestForm userId={user.id} />
+            </div>
+          </TabsContent>
           <TabsContent value="add-product">
             <div className="max-w-2xl mx-auto">
               <FarmerProductForm />

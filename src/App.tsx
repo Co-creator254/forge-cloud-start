@@ -53,12 +53,20 @@ import SystemStatus from './pages/SystemStatus';
 import FAQPage from './pages/FAQPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
-import NotFound from './pages/NotFound';
-import AdminPanel from './pages/AdminPanel';
-import FarmInputMarketplace from './pages/FarmInputMarketplace';
-import CityMarkets from './pages/CityMarkets';
+// import DonationListPage from './pages/DonationListPage';
+import PartnerWithUs from './pages/PartnerWithUs';
+import PartnerDashboard from './pages/PartnerDashboard';
 import { AuthProvider } from './components/AuthProvider';
 import { Toaster } from 'sonner';
+import FarmInputMarketplace from './pages/FarmInputMarketplace';
+import CityMarkets from './pages/CityMarkets';
+import EquipmentMarketplace from './pages/EquipmentMarketplace';
+import FoodRescueDashboard from './pages/FoodRescueDashboard';
+import ImperfectSurplusDashboard from './pages/ImperfectSurplusDashboard';
+import BulkOrderDashboard from './pages/BulkOrderDashboard';
+import DonationFormPage from './pages/DonationFormPage';
+import AdminPanel from './pages/AdminPanel';
+import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {
@@ -107,6 +115,14 @@ function App() {
                  <Route path="/community-forums" element={<CommunityForums />} />
                  <Route path="/city-markets" element={<CityMarkets />} />
                  <Route path="/farmer-portal" element={<FarmerPortal />} />
+                 <Route path="/equipment-marketplace" element={<EquipmentMarketplace />} />
+                 <Route path="/food-rescue-dashboard" element={<FoodRescueDashboard user={{}} />} />
+                 <Route path="/imperfect-surplus-dashboard" element={<ImperfectSurplusDashboard />} />
+                 <Route path="/bulk-order-dashboard" element={<BulkOrderDashboard user={{}} />} />
+                 <Route path="/donation-form" element={<DonationFormPage />} />
+                 {/* <Route path="/donation-list" element={<DonationListPage />} /> */}
+                 <Route path="/partner-with-us" element={<PartnerWithUs />} />
+                 <Route path="/partner-dashboard" element={<PartnerDashboard />} />
                  <Route path="/farmer-exporter-collaboration" element={<FarmerExporterCollaboration />} />
                  <Route path="/exporter-profile" element={<ExporterProfile />} />
                  <Route path="/farmer-success-stories" element={<FarmerSuccessStories />} />

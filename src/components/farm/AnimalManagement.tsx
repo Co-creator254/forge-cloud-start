@@ -11,12 +11,15 @@ interface Animal {
   birth_date?: string;
   acquisition_date?: string;
   status?: string;
+  image_url?: string;
 }
 
 const AnimalManagement: React.FC<{ userId: string }> = ({ userId }) => {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<Partial<Animal>>({});
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,12 +38,33 @@ const AnimalManagement: React.FC<{ userId: string }> = ({ userId }) => {
 
   async function handleSave() {
     setLoading(true);
+    let finalImageUrl = imageUrl;
+    if (imageFile) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(imageFile.type)) {
+        alert('Only JPEG, PNG, or WebP images are allowed.');
+        setLoading(false);
+        return;
+      }
+      if (imageFile.size > 1024 * 1024) {
+        alert('Image must be less than 1MB.');
+        setLoading(false);
+        return;
+      }
+      const { data } = await supabase.storage.from('animal-images').upload(`animals/${Date.now()}_${imageFile.name}`, imageFile);
+      if (data?.path) {
+        const { data: urlData } = supabase.storage.from('animal-images').getPublicUrl(data.path);
+        finalImageUrl = urlData.publicUrl;
+      }
+    }
     if (editingId) {
-      await supabase.from('animals').update(form).eq('id', editingId);
+      await supabase.from('animals').update({ ...form, image_url: finalImageUrl } as any).eq('id', editingId);
     } else {
-      await supabase.from('animals').insert({ ...form, user_id: userId });
+      await supabase.from('animals').insert({ ...form, user_id: userId, image_url: finalImageUrl } as any);
     }
     setForm({});
+    setImageFile(null);
+    setImageUrl('');
     setEditingId(null);
     fetchAnimals();
   }
@@ -53,6 +77,7 @@ const AnimalManagement: React.FC<{ userId: string }> = ({ userId }) => {
 
   function startEdit(animal: Animal) {
     setForm(animal);
+    setImageUrl(animal.image_url || '');
     setEditingId(animal.id);
   }
 
@@ -70,6 +95,17 @@ const AnimalManagement: React.FC<{ userId: string }> = ({ userId }) => {
           <option value="sold">Sold</option>
           <option value="deceased">Deceased</option>
         </select>
+        <div className="col-span-2">
+          <label htmlFor="animal-image" className="block text-sm font-medium text-gray-700">Animal Image (max 1MB, JPEG/PNG/WebP)</label>
+          <input type="file" id="animal-image" accept="image/jpeg,image/png,image/webp" onChange={e => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setImageFile(file);
+              setImageUrl('');
+            }
+          }} />
+          {imageUrl && <img src={imageUrl} alt="Animal" className="mt-2 h-24 rounded" />}
+        </div>
         <Button type="submit" className="col-span-2">{editingId ? 'Update' : 'Add'} Animal</Button>
       </form>
       {loading && <div>Loading...</div>}
@@ -77,7 +113,10 @@ const AnimalManagement: React.FC<{ userId: string }> = ({ userId }) => {
         {animals.map(animal => (
           <Card key={animal.id} className="p-2 flex justify-between items-center">
             <CardContent>
-              <div className="font-bold">{animal.name} ({animal.species})</div>
+              <div className="font-bold flex items-center gap-2">
+                {animal.image_url && <img src={animal.image_url} alt="Animal" className="h-10 w-10 rounded-full object-cover" />}
+                {animal.name} ({animal.species})
+              </div>
               <div className="text-xs text-gray-500">Breed: {animal.breed || 'N/A'} | Status: {animal.status}</div>
               <div className="text-xs text-gray-500">Birth: {animal.birth_date || 'N/A'} | Acquired: {animal.acquisition_date || 'N/A'}</div>
             </CardContent>
