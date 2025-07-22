@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
+    kotlinOptions {
+        jvmTarget = '21'
+    }
     namespace "com.agriconnect.app"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -15,6 +18,10 @@ android {
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
+
+        // Add Supabase configuration
+        buildConfigField "String", "SUPABASE_URL", "\"${getSupabaseProperty("SUPABASE_URL")}\""
+        buildConfigField "String", "SUPABASE_KEY", "\"${getSupabaseProperty("SUPABASE_KEY")}\""
     }
     buildTypes {
         debug {
@@ -45,6 +52,7 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 try {
     def servicesJSON = file('google-services.json')
@@ -53,4 +61,15 @@ try {
     }
 } catch(Exception e) {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
+
+// Add this function at the end of the file
+def getSupabaseProperty(String name) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+    def value = properties.getProperty(name)
+    if (value == null) {
+        throw new GradleException("Missing $name in local.properties. Please add it.")
+    }
+    return value
 }
