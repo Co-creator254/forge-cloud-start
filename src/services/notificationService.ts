@@ -22,7 +22,9 @@ export type NotificationType =
   | 'resource_new'
   | 'workshop_new'
   | 'workshop_update'
-  | 'rsvp_new';
+  | 'rsvp_new'
+  | 'success'
+  | 'donation_new';
 
 export interface InAppNotification {
   type: NotificationType;

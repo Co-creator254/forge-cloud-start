@@ -1,11 +1,13 @@
 
 // Service Provider related types
-export type ServiceProviderType = 'storage' | 'transport' | 'quality-control' | 'market-linkage' | 'training' | 'input-supplier' | 'inspector';
+export type ServiceProviderType = 'storage' | 'transport' | 'quality-control' | 'market-linkage' | 'training' | 'input-supplier' | 'inspector' | 'insurance-provider' | 'soil-testing-provider' | 'drone-satellite-imagery-provider' | 'iot-sensor-data-provider' | 'export-transporters' | 'shippers';
 
 export interface ServiceProvider {
   id: string;
   name: string;
+  business_name?: string;
   businessType: ServiceProviderType;
+  provider_category?: string;
   description: string;
   services: string[];
   location: {
@@ -26,6 +28,8 @@ export interface ServiceProvider {
   updatedAt: string;
   website?: string;
   capacity?: string;
+  licenses?: string[];
+  insurance_details?: string;
 }
 
 export interface QualityControlDiscussion {

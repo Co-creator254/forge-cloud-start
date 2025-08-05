@@ -21,19 +21,19 @@ export const createServiceProvider = async (data: ServiceProviderFormData) => {
   const { data: result, error } = await supabase
     .from('service_providers')
     .insert({
-      user_id: (await supabase.auth.getUser()).data.user?.id,
       business_name: data.businessName,
-      service_type: data.serviceType,
+      businesstype: data.serviceType,
+      provider_category: data.serviceType, // Required field
       description: data.description,
       location: data.location,
-      contact_phone: data.contactPhone,
-      contact_email: data.contactEmail,
-      website_url: data.websiteUrl,
-      counties_served: data.countiesServed,
-      services_offered: data.servicesOffered,
+      contact: {
+        phone: data.contactPhone,
+        email: data.contactEmail,
+        website: data.websiteUrl
+      },
       certifications: data.certifications,
-      experience_years: data.experienceYears,
-      hourly_rate: data.hourlyRate,
+      experience: data.experienceYears?.toString(),
+      pricing: data.hourlyRate?.toString(),
     })
     .select()
     .single();
@@ -50,14 +50,14 @@ export const getServiceProviders = async (filters?: {
   let query = supabase
     .from('service_providers')
     .select('*')
-    .eq('is_active', true);
+    .eq('verified', true);
 
   if (filters?.serviceType) {
-    query = query.eq('service_type', filters.serviceType);
+    query = query.eq('businesstype', filters.serviceType);
   }
 
   if (filters?.county) {
-    query = query.contains('counties_served', [filters.county]);
+    query = query.ilike('location', `%${filters.county}%`);
   }
 
   if (filters?.searchTerm) {
@@ -75,17 +75,18 @@ export const updateServiceProvider = async (id: string, updates: Partial<Service
     .from('service_providers')
     .update({
       business_name: updates.businessName,
-      service_type: updates.serviceType,
+      businesstype: updates.serviceType,
+      provider_category: updates.serviceType,
       description: updates.description,
       location: updates.location,
-      contact_phone: updates.contactPhone,
-      contact_email: updates.contactEmail,
-      website_url: updates.websiteUrl,
-      counties_served: updates.countiesServed,
-      services_offered: updates.servicesOffered,
+      contact: {
+        phone: updates.contactPhone,
+        email: updates.contactEmail,
+        website: updates.websiteUrl
+      },
       certifications: updates.certifications,
-      experience_years: updates.experienceYears,
-      hourly_rate: updates.hourlyRate,
+      experience: updates.experienceYears?.toString(),
+      pricing: updates.hourlyRate?.toString(),
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)

@@ -179,12 +179,11 @@ export const saveMarketDataToSupabase = async (data: KamisMarketData[]): Promise
       .upsert(data.map(item => ({
         id: item.id,
         commodity_name: item.product,
+        market_id: item.id, // Use id as market_id for now
         market_name: item.market,
         county: item.county,
-        price_date: item.date,
-        min_price: item.min_price,
-        max_price: item.max_price,
-        average_price: item.average_price,
+        price: item.average_price, // Map average_price to price
+        date_recorded: item.date,
         currency: item.currency,
         unit: item.unit,
         source: item.source,

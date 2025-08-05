@@ -118,7 +118,7 @@ const ServiceProviders = () => {
     }
 
     if (selectedCategory !== 'All Providers') {
-      filtered = filtered.filter(provider => provider.provider_category === selectedCategory);
+      filtered = filtered.filter(provider => (provider.provider_category || provider.businessType) === selectedCategory);
     }
     
     if (searchTerm) {
@@ -236,13 +236,13 @@ const ServiceProviders = () => {
               return (
                 <Card key={provider.id}>
                   <CardHeader>
-                    <CardTitle>{provider.business_name}</CardTitle>
-                    <Badge>{provider.provider_category}</Badge>
+                    <CardTitle>{provider.business_name || provider.name}</CardTitle>
+                    <Badge>{provider.provider_category || provider.businessType}</Badge>
                   </CardHeader>
                   <CardContent>
                     <div>{provider.description}</div>
-                    <div>Location: {provider.location}</div>
-                    {provider.provider_category === 'Export Transporters' && (
+                    <div>Location: {provider.location.county}, {provider.location.specificLocation}</div>
+                    {(provider.provider_category === 'Export Transporters' || provider.businessType === 'export-transporters') && (
                       <div>
                         <div>Licenses: {provider.licenses?.join(', ')}</div>
                         <div>Insurance: {provider.insurance_details}</div>
@@ -257,7 +257,7 @@ const ServiceProviders = () => {
                               {bookings.map(b => (
                                 <li key={b.id} className="mb-1">
                                   {b.booking_date}: {b.cargo_type} - {b.status} (KES {b.price})
-                                  <Button size="xs" onClick={() => fetchTracking(b.export_order_id)} className="ml-2">Track</Button>
+                                  <Button size="sm" onClick={() => fetchTracking(b.export_order_id)} className="ml-2">Track</Button>
                                 </li>
                               ))}
                             </ul>
