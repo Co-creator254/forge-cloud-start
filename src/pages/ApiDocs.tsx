@@ -11,7 +11,7 @@ import ApiKeyManager from '@/components/api-management/ApiKeyManager';
 import { AdvertisementService, type ApiAccessStatus } from '@/services/business/advertisementService';
 import { PricingService, type PricingTier } from '@/services/pricingService';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/components/AuthProvider';
+import { useAuth } from '@/hooks/useAuth';
 
 const ApiDocs: React.FC = () => {
   const [copied, setCopied] = useState(false);

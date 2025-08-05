@@ -56,7 +56,7 @@ import TermsOfServicePage from './pages/TermsOfServicePage';
 // import DonationListPage from './pages/DonationListPage';
 import PartnerWithUs from './pages/PartnerWithUs';
 import PartnerDashboard from './pages/PartnerDashboard';
-import { AuthProvider } from './components/AuthProvider';
+import { AuthProvider } from './hooks/useAuth';
 import { Toaster } from 'sonner';
 import FarmInputMarketplace from './pages/FarmInputMarketplace';
 import CityMarkets from './pages/CityMarkets';

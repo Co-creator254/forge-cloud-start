@@ -17,7 +17,7 @@ import {
   Truck,
   Database
 } from 'lucide-react';
-import { useAuth } from '@/components/AuthProvider';
+import { useAuth } from '@/hooks/useAuth';
 
 const SupplyChainAPI: React.FC = () => {
   const [copied, setCopied] = useState(false);
