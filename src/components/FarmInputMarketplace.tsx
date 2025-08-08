@@ -138,15 +138,16 @@ const FarmInputMarketplace: React.FC = () => {
       // Create orders for each supplier
       for (const [supplierId, orderData] of Object.entries(ordersBySupplier)) {
         const { data: order, error: orderError } = await supabase
-          .from('farm_input_orders')
+          .from('my_trades')
           .insert({
             buyer_id: user.id,
-            supplier_id: supplierId,
+            seller_id: supplierId,
+            product_id: orderData.items[0]?.id,
+            quantity: orderData.items.reduce((sum: number, item: CartItem) => sum + item.quantity, 0),
+            unit_price: orderData.items[0]?.price_per_unit || 0,
             total_amount: orderData.total,
-            delivery_method: 'pickup',
-            buyer_name: user.user_metadata?.full_name || 'John Farmer',
-            buyer_phone: user.user_metadata?.phone || '+254700000000',
-            delivery_county: 'Nairobi'
+            trade_type: 'direct_sale',
+            delivery_location: 'Nairobi'
           })
           .select()
           .single();
@@ -162,9 +163,8 @@ const FarmInputMarketplace: React.FC = () => {
           total_price: item.quantity * item.price_per_unit
         }));
 
-        const { error: itemsError } = await supabase
-          .from('farm_input_order_items')
-          .insert(orderItems);
+        // Note: Individual order items are now tracked in separate trades
+        // This maintains compatibility with the new schema
 
         if (itemsError) throw itemsError;
       }

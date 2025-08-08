@@ -109,9 +109,9 @@ const AmisKeDataView: React.FC = () => {
     setIsLoadingSupabase(true);
     try {
       const { data: marketPricesData, error } = await supabase
-        .from('market_prices')
+        .from('price_trends')
         .select('*')
-        .order('date_recorded', { ascending: false });
+        .order('recorded_date', { ascending: false });
       
       if (error) {
         console.error("Error fetching backup data from Supabase:", error);
