@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          created_at: string
+          currency_preference: string | null
+          data_sync_enabled: boolean | null
+          id: string
+          language_preference: string | null
+          location_sharing: boolean | null
+          marketing_communications: boolean | null
+          notification_preferences: Json | null
+          theme_preference: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency_preference?: string | null
+          data_sync_enabled?: boolean | null
+          id?: string
+          language_preference?: string | null
+          location_sharing?: boolean | null
+          marketing_communications?: boolean | null
+          notification_preferences?: Json | null
+          theme_preference?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          currency_preference?: string | null
+          data_sync_enabled?: boolean | null
+          id?: string
+          language_preference?: string | null
+          location_sharing?: boolean | null
+          marketing_communications?: boolean | null
+          notification_preferences?: Json | null
+          theme_preference?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_settings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       barter_listings: {
         Row: {
           created_at: string
@@ -77,6 +127,48 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      city_markets: {
+        Row: {
+          contact_info: Json | null
+          coordinates: Json | null
+          created_at: string
+          facilities: string[] | null
+          id: string
+          location: string
+          market_type: string | null
+          name: string
+          operating_hours: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact_info?: Json | null
+          coordinates?: Json | null
+          created_at?: string
+          facilities?: string[] | null
+          id?: string
+          location: string
+          market_type?: string | null
+          name: string
+          operating_hours?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact_info?: Json | null
+          coordinates?: Json | null
+          created_at?: string
+          facilities?: string[] | null
+          id?: string
+          location?: string
+          market_type?: string | null
+          name?: string
+          operating_hours?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       community_comments: {
         Row: {
@@ -192,6 +284,113 @@ export type Database = {
           },
         ]
       }
+      donation_requests: {
+        Row: {
+          created_at: string
+          deadline: string | null
+          description: string | null
+          id: string
+          items_needed: string
+          quantity_needed: string | null
+          recipient_id: string
+          request_type: string
+          status: string | null
+          updated_at: string
+          urgency_level: string | null
+        }
+        Insert: {
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          items_needed: string
+          quantity_needed?: string | null
+          recipient_id: string
+          request_type: string
+          status?: string | null
+          updated_at?: string
+          urgency_level?: string | null
+        }
+        Update: {
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          items_needed?: string
+          quantity_needed?: string | null
+          recipient_id?: string
+          request_type?: string
+          status?: string | null
+          updated_at?: string
+          urgency_level?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donation_requests_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "recipients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      donations: {
+        Row: {
+          amount: number | null
+          created_at: string
+          distribution_date: string | null
+          donation_type: string
+          donor_id: string
+          id: string
+          items_description: string | null
+          notes: string | null
+          recipient_id: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          distribution_date?: string | null
+          donation_type: string
+          donor_id: string
+          id?: string
+          items_description?: string | null
+          notes?: string | null
+          recipient_id?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          distribution_date?: string | null
+          donation_type?: string
+          donor_id?: string
+          id?: string
+          items_description?: string | null
+          notes?: string | null
+          recipient_id?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donations_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "donations_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "recipients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       farms: {
         Row: {
           certifications: string[] | null
@@ -299,6 +498,57 @@ export type Database = {
           },
         ]
       }
+      food_rescue_matches: {
+        Row: {
+          completion_notes: string | null
+          created_at: string
+          id: string
+          listing_id: string
+          matched_at: string
+          pickup_scheduled_at: string | null
+          recipient_id: string
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          completion_notes?: string | null
+          created_at?: string
+          id?: string
+          listing_id: string
+          matched_at?: string
+          pickup_scheduled_at?: string | null
+          recipient_id: string
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          completion_notes?: string | null
+          created_at?: string
+          id?: string
+          listing_id?: string
+          matched_at?: string
+          pickup_scheduled_at?: string | null
+          recipient_id?: string
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "food_rescue_matches_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "food_rescue_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "food_rescue_matches_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "recipients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_input_orders: {
         Row: {
           created_at: string
@@ -395,6 +645,116 @@ export type Database = {
           {
             foreignKeyName: "group_order_participants_participant_id_fkey"
             columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      input_pricing_verification: {
+        Row: {
+          created_at: string
+          id: string
+          location: string
+          product_name: string
+          reported_price: number
+          supplier_name: string
+          updated_at: string
+          user_id: string
+          verification_date: string | null
+          verified: boolean | null
+          verifier_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location: string
+          product_name: string
+          reported_price: number
+          supplier_name: string
+          updated_at?: string
+          user_id: string
+          verification_date?: string | null
+          verified?: boolean | null
+          verifier_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string
+          product_name?: string
+          reported_price?: number
+          supplier_name?: string
+          updated_at?: string
+          user_id?: string
+          verification_date?: string | null
+          verified?: boolean | null
+          verifier_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "input_pricing_verification_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "input_pricing_verification_verifier_id_fkey"
+            columns: ["verifier_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      input_supplier_reviews: {
+        Row: {
+          created_at: string
+          customer_service: number | null
+          delivery_timeliness: number | null
+          id: string
+          product_category: string | null
+          product_quality: number | null
+          rating: number
+          review_text: string | null
+          reviewer_id: string
+          supplier_name: string
+          updated_at: string
+          would_recommend: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          customer_service?: number | null
+          delivery_timeliness?: number | null
+          id?: string
+          product_category?: string | null
+          product_quality?: number | null
+          rating: number
+          review_text?: string | null
+          reviewer_id: string
+          supplier_name: string
+          updated_at?: string
+          would_recommend?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          customer_service?: number | null
+          delivery_timeliness?: number | null
+          id?: string
+          product_category?: string | null
+          product_quality?: number | null
+          rating?: number
+          review_text?: string | null
+          reviewer_id?: string
+          supplier_name?: string
+          updated_at?: string
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "input_supplier_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
@@ -731,6 +1091,151 @@ export type Database = {
         }
         Relationships: []
       }
+      recipients: {
+        Row: {
+          capacity_description: string | null
+          contact_person: string | null
+          created_at: string
+          email: string | null
+          id: string
+          location: string
+          name: string
+          organization_type: string
+          phone_number: string | null
+          requirements: string[] | null
+          updated_at: string
+          verification_status: string | null
+        }
+        Insert: {
+          capacity_description?: string | null
+          contact_person?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          location: string
+          name: string
+          organization_type: string
+          phone_number?: string | null
+          requirements?: string[] | null
+          updated_at?: string
+          verification_status?: string | null
+        }
+        Update: {
+          capacity_description?: string | null
+          contact_person?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          location?: string
+          name?: string
+          organization_type?: string
+          phone_number?: string | null
+          requirements?: string[] | null
+          updated_at?: string
+          verification_status?: string | null
+        }
+        Relationships: []
+      }
+      reverse_bulk_auctions: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          deadline: string
+          description: string | null
+          id: string
+          location: string
+          max_price: number
+          product_name: string
+          quantity: number
+          status: string | null
+          updated_at: string
+          winning_bid_id: string | null
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          deadline: string
+          description?: string | null
+          id?: string
+          location: string
+          max_price: number
+          product_name: string
+          quantity: number
+          status?: string | null
+          updated_at?: string
+          winning_bid_id?: string | null
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          deadline?: string
+          description?: string | null
+          id?: string
+          location?: string
+          max_price?: number
+          product_name?: string
+          quantity?: number
+          status?: string | null
+          updated_at?: string
+          winning_bid_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reverse_bulk_auctions_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          created_at: string
+          helpful_votes: number | null
+          id: string
+          rating: number
+          review_text: string | null
+          reviewed_entity_id: string
+          reviewed_entity_type: string
+          reviewer_id: string
+          updated_at: string
+          verified_purchase: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          helpful_votes?: number | null
+          id?: string
+          rating: number
+          review_text?: string | null
+          reviewed_entity_id: string
+          reviewed_entity_type: string
+          reviewer_id: string
+          updated_at?: string
+          verified_purchase?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          helpful_votes?: number | null
+          id?: string
+          rating?: number
+          review_text?: string | null
+          reviewed_entity_id?: string
+          reviewed_entity_type?: string
+          reviewer_id?: string
+          updated_at?: string
+          verified_purchase?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       service_providers: {
         Row: {
           business_name: string
@@ -778,6 +1283,59 @@ export type Database = {
           {
             foreignKeyName: "service_providers_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      success_stories: {
+        Row: {
+          author_id: string
+          category: string | null
+          created_at: string
+          featured_image_url: string | null
+          id: string
+          impact_metrics: Json | null
+          is_featured: boolean | null
+          is_published: boolean | null
+          published_at: string | null
+          story: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          category?: string | null
+          created_at?: string
+          featured_image_url?: string | null
+          id?: string
+          impact_metrics?: Json | null
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          published_at?: string | null
+          story: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          category?: string | null
+          created_at?: string
+          featured_image_url?: string | null
+          id?: string
+          impact_metrics?: Json | null
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          published_at?: string | null
+          story?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "success_stories_author_id_fkey"
+            columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
@@ -908,6 +1466,117 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      warehouse_bookings: {
+        Row: {
+          created_at: string
+          id: string
+          product_type: string
+          quantity_tons: number
+          special_requirements: string | null
+          status: string | null
+          storage_end_date: string
+          storage_start_date: string
+          total_cost: number | null
+          updated_at: string
+          user_id: string
+          warehouse_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_type: string
+          quantity_tons: number
+          special_requirements?: string | null
+          status?: string | null
+          storage_end_date: string
+          storage_start_date: string
+          total_cost?: number | null
+          updated_at?: string
+          user_id: string
+          warehouse_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_type?: string
+          quantity_tons?: number
+          special_requirements?: string | null
+          status?: string | null
+          storage_end_date?: string
+          storage_start_date?: string
+          total_cost?: number | null
+          updated_at?: string
+          user_id?: string
+          warehouse_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warehouse_bookings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "warehouse_bookings_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      warehouses: {
+        Row: {
+          capacity_tons: number | null
+          contact_info: Json | null
+          coordinates: Json | null
+          created_at: string
+          facilities: string[] | null
+          id: string
+          location: string
+          name: string
+          pricing_structure: Json | null
+          security_features: string[] | null
+          status: string | null
+          storage_types: string[] | null
+          temperature_controlled: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          capacity_tons?: number | null
+          contact_info?: Json | null
+          coordinates?: Json | null
+          created_at?: string
+          facilities?: string[] | null
+          id?: string
+          location: string
+          name: string
+          pricing_structure?: Json | null
+          security_features?: string[] | null
+          status?: string | null
+          storage_types?: string[] | null
+          temperature_controlled?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          capacity_tons?: number | null
+          contact_info?: Json | null
+          coordinates?: Json | null
+          created_at?: string
+          facilities?: string[] | null
+          id?: string
+          location?: string
+          name?: string
+          pricing_structure?: Json | null
+          security_features?: string[] | null
+          status?: string | null
+          storage_types?: string[] | null
+          temperature_controlled?: boolean | null
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {
