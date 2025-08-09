@@ -128,6 +128,54 @@ export type Database = {
           },
         ]
       }
+      bulk_orders: {
+        Row: {
+          created_at: string
+          current_participants: number
+          deadline: string
+          description: string | null
+          id: string
+          location: string
+          organizer_id: string
+          product_type: string
+          quantity: number
+          status: string
+          target_price: number | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_participants?: number
+          deadline: string
+          description?: string | null
+          id?: string
+          location: string
+          organizer_id: string
+          product_type: string
+          quantity: number
+          status?: string
+          target_price?: number | null
+          unit: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_participants?: number
+          deadline?: string
+          description?: string | null
+          id?: string
+          location?: string
+          organizer_id?: string
+          product_type?: string
+          quantity?: number
+          status?: string
+          target_price?: number | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       city_markets: {
         Row: {
           contact_info: Json | null
@@ -390,6 +438,190 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      farm_input_order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string
+          quantity: number
+          total_price: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id: string
+          quantity: number
+          total_price: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string
+          quantity?: number
+          total_price?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_farm_input_order_items_order"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "farm_input_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_farm_input_order_items_product"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "farm_input_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farm_input_orders: {
+        Row: {
+          buyer_id: string
+          buyer_name: string
+          buyer_phone: string
+          created_at: string
+          delivery_county: string
+          delivery_method: string
+          id: string
+          status: string
+          supplier_id: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          buyer_name: string
+          buyer_phone: string
+          created_at?: string
+          delivery_county: string
+          delivery_method: string
+          id?: string
+          status?: string
+          supplier_id: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          buyer_name?: string
+          buyer_phone?: string
+          created_at?: string
+          delivery_county?: string
+          delivery_method?: string
+          id?: string
+          status?: string
+          supplier_id?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_farm_input_orders_supplier"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "farm_input_suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farm_input_products: {
+        Row: {
+          brand_name: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          price_per_unit: number
+          product_category: string
+          product_description: string | null
+          product_name: string
+          stock_quantity: number
+          supplier_id: string
+          unit_of_measure: string
+          updated_at: string
+        }
+        Insert: {
+          brand_name?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          price_per_unit: number
+          product_category: string
+          product_description?: string | null
+          product_name: string
+          stock_quantity?: number
+          supplier_id: string
+          unit_of_measure: string
+          updated_at?: string
+        }
+        Update: {
+          brand_name?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          price_per_unit?: number
+          product_category?: string
+          product_description?: string | null
+          product_name?: string
+          stock_quantity?: number
+          supplier_id?: string
+          unit_of_measure?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_farm_input_products_supplier"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "farm_input_suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farm_input_suppliers: {
+        Row: {
+          business_registration: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          is_verified: boolean
+          location: string | null
+          supplier_name: string
+          updated_at: string
+        }
+        Insert: {
+          business_registration?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          is_verified?: boolean
+          location?: string | null
+          supplier_name: string
+          updated_at?: string
+        }
+        Update: {
+          business_registration?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          is_verified?: boolean
+          location?: string | null
+          supplier_name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       farms: {
         Row: {
@@ -1006,6 +1238,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      produce_inventory: {
+        Row: {
+          available_for_sale: boolean
+          created_at: string
+          description: string | null
+          expiry_date: string | null
+          farmer_id: string
+          harvest_date: string | null
+          id: string
+          images: string[] | null
+          location: string
+          organic_certified: boolean
+          price_per_unit: number | null
+          product_name: string
+          quality_grade: string
+          quantity: number
+          storage_conditions: string | null
+          unit: string
+          updated_at: string
+          variety: string | null
+        }
+        Insert: {
+          available_for_sale?: boolean
+          created_at?: string
+          description?: string | null
+          expiry_date?: string | null
+          farmer_id: string
+          harvest_date?: string | null
+          id?: string
+          images?: string[] | null
+          location: string
+          organic_certified?: boolean
+          price_per_unit?: number | null
+          product_name: string
+          quality_grade: string
+          quantity: number
+          storage_conditions?: string | null
+          unit: string
+          updated_at?: string
+          variety?: string | null
+        }
+        Update: {
+          available_for_sale?: boolean
+          created_at?: string
+          description?: string | null
+          expiry_date?: string | null
+          farmer_id?: string
+          harvest_date?: string | null
+          id?: string
+          images?: string[] | null
+          location?: string
+          organic_certified?: boolean
+          price_per_unit?: number | null
+          product_name?: string
+          quality_grade?: string
+          quantity?: number
+          storage_conditions?: string | null
+          unit?: string
+          updated_at?: string
+          variety?: string | null
+        }
+        Relationships: []
       }
       products: {
         Row: {

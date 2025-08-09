@@ -190,65 +190,41 @@ const About: React.FC = () => {
           </div>
         </section>
 
-        {/* Recognition */}
+        {/* Value Proposition */}
         <section className="mb-16">
-          <Card>
+          <Card className="bg-gradient-to-r from-primary/5 to-secondary/5">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-center">
                 <Award className="h-5 w-5 text-primary" />
-                Recognition & Achievements
+                Why Choose SokoConnect?
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-4">
-                {achievements.map((achievement, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span>{achievement}</span>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Shield className="h-8 w-8 text-primary" />
                   </div>
-                ))}
+                  <h3 className="font-semibold text-lg mb-2">Trusted Platform</h3>
+                  <p className="text-muted-foreground">Verified suppliers and secure transactions give you peace of mind</p>
+                </div>
+                <div className="text-center">
+                  <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <TrendingUp className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Better Prices</h3>
+                  <p className="text-muted-foreground">Cut out middlemen and get fair prices for your produce</p>
+                </div>
+                <div className="text-center">
+                  <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Heart className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Community First</h3>
+                  <p className="text-muted-foreground">Built by farmers, for farmers - we understand your challenges</p>
+                </div>
               </div>
             </CardContent>
           </Card>
-        </section>
-
-        {/* Team Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8">Leadership Team</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <Users className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="font-semibold text-lg">Sarah Mwangi</h3>
-                <p className="text-muted-foreground mb-2">CEO & Co-Founder</p>
-                <Badge variant="outline">MSc. Agriculture, University of Nairobi</Badge>
-              </CardContent>
-            </Card>
-            
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <Users className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="font-semibold text-lg">David Kipchoge</h3>
-                <p className="text-muted-foreground mb-2">CTO & Co-Founder</p>
-                <Badge variant="outline">BSc. Computer Science, JKUAT</Badge>
-              </CardContent>
-            </Card>
-            
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <Users className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="font-semibold text-lg">Grace Wanjiku</h3>
-                <p className="text-muted-foreground mb-2">Head of Operations</p>
-                <Badge variant="outline">MBA, Strathmore University</Badge>
-              </CardContent>
-            </Card>
-          </div>
         </section>
 
         {/* Contact CTA */}

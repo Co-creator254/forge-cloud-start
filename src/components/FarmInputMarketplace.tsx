@@ -154,19 +154,7 @@ const FarmInputMarketplace: React.FC = () => {
 
         if (orderError) throw orderError;
 
-        // Create order items
-        const orderItems = orderData.items.map((item: CartItem) => ({
-          order_id: order.id,
-          product_id: item.id,
-          quantity: item.quantity,
-          unit_price: item.price_per_unit,
-          total_price: item.quantity * item.price_per_unit
-        }));
-
-        // Note: Individual order items are now tracked in separate trades
-        // This maintains compatibility with the new schema
-
-        if (itemsError) throw itemsError;
+        // Order created successfully - items are consolidated in the trade record
       }
 
       setCart([]);

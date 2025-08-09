@@ -3,6 +3,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from './components/ThemeProvider';
 import Index from './pages/Index';
+import Marketplace from './pages/Marketplace';
+import BulkOrders from './pages/BulkOrders';
 import GroupInputOrders from './pages/GroupInputOrders';
 import InputPricingVerification from './pages/InputPricingVerification';
 import ReverseBulkAuctions from './pages/ReverseBulkAuctions';
@@ -108,9 +110,11 @@ function App() {
                  <Route path="/logistics-solutions-map" element={<LogisticsSolutionsMap />} />
                  <Route path="/market-demand-hotspot" element={<MarketDemandHotspot />} />
                  <Route path="/commodity-trading" element={<CommodityTrading />} />
-                 <Route path="/barter-exchange" element={<BarterExchange />} />
-                 <Route path="/marketplace" element={<MarketplaceView />} />
-                 <Route path="/price-trends" element={<PriceTrends />} />
+                  <Route path="/barter-exchange" element={<BarterExchange />} />
+                  <Route path="/marketplace" element={<Marketplace />} />
+                  <Route path="/agricultural-marketplace" element={<MarketplaceView />} />
+                  <Route path="/bulk-orders" element={<BulkOrders />} />
+                  <Route path="/price-trends" element={<PriceTrends />} />
                  <Route path="/my-trades" element={<MyTrades />} />
                  <Route path="/community-forums" element={<CommunityForums />} />
                  <Route path="/city-markets" element={<CityMarkets />} />
