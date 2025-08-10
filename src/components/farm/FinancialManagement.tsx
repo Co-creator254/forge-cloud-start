@@ -35,28 +35,28 @@ const FinancialManagement: React.FC = () => {
     setLoading(true);
     const fetchData = async () => {
       // Farm statistics
-      const { data: stats } = await supabase
+      const { data: stats } = await (supabase as any)
         .from('farm_statistics')
         .select('*')
         .eq('user_id', user.id)
         .single();
       setFarmStats(stats);
       // Market forecasts
-      const { data: forecasts } = await supabase
+      const { data: forecasts } = await (supabase as any)
         .from('market_forecasts')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(10);
       setMarketForecasts(forecasts || []);
       // Budgets
-      const { data: budgetRows } = await supabase
+      const { data: budgetRows } = await (supabase as any)
         .from('farm_budgets')
         .select('*')
         .eq('user_id', user.id)
         .order('year', { ascending: false });
       setBudgets(budgetRows || []);
       // Transactions
-      const { data: txs } = await supabase
+      const { data: txs } = await (supabase as any)
         .from('payment_transactions')
         .select('*')
         .eq('user_id', user.id)
@@ -76,7 +76,7 @@ const FinancialManagement: React.FC = () => {
   const handleAddBudget = async (e: React.FormEvent) => {
     e.preventDefault();
     setAddingBudget(true);
-    await supabase.from('farm_budgets').insert({
+    await (supabase as any).from('farm_budgets').insert({
       user_id: user.id,
       year: Number(budgetForm.year),
       category: budgetForm.category,
@@ -95,7 +95,7 @@ const FinancialManagement: React.FC = () => {
     });
     setAddingBudget(false);
     // Refresh budgets
-    const { data: budgetRows } = await supabase
+    const { data: budgetRows } = await (supabase as any)
       .from('farm_budgets')
       .select('*')
       .eq('user_id', user.id)
@@ -115,7 +115,7 @@ const FinancialManagement: React.FC = () => {
 
   const handleUpdateBudget = async (e: React.FormEvent) => {
     e.preventDefault();
-    await supabase.from('farm_budgets').update({
+    await (supabase as any).from('farm_budgets').update({
       year: Number(editForm.year),
       category: editForm.category,
       subcategory: editForm.subcategory,
@@ -127,7 +127,7 @@ const FinancialManagement: React.FC = () => {
     setEditingBudget(null);
     setEditForm(null);
     // Refresh budgets
-    const { data: budgetRows } = await supabase
+    const { data: budgetRows } = await (supabase as any)
       .from('farm_budgets')
       .select('*')
       .eq('user_id', user.id)
@@ -137,10 +137,10 @@ const FinancialManagement: React.FC = () => {
 
   const handleDeleteBudget = async (id: string) => {
     setDeletingId(id);
-    await supabase.from('farm_budgets').delete().eq('id', id);
+    await (supabase as any).from('farm_budgets').delete().eq('id', id);
     setDeletingId(null);
     // Refresh budgets
-    const { data: budgetRows } = await supabase
+    const { data: budgetRows } = await (supabase as any)
       .from('farm_budgets')
       .select('*')
       .eq('user_id', user.id)

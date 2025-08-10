@@ -22,10 +22,10 @@ const FarmInputOrderManager: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleStatusChange = async (orderId: string, order_status: string) => {
+  const handleStatusChange = async (orderId: string, status: string) => {
     setLoading(true);
     setError('');
-    const { error } = await updateOrder(orderId, { order_status });
+    const { error } = await updateOrder(orderId, { status });
     if (error) setError(error.message);
     fetchData();
     setLoading(false);

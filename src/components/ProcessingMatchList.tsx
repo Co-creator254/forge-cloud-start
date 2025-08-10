@@ -16,12 +16,14 @@ export default function ProcessingMatchList({ bulkOrderId }) {
       setLoading(false);
       // Notify on new matches or status changes
       if (prevMatches.length > 0 && data) {
-        data.forEach(match => {
-          const prev = prevMatches.find(m => m.id === match.id);
+        data.forEach((match: any) => {
+          const prev = prevMatches.find((m: any) => m.id === match.id);
+          const price = match?.offer_price ?? match?.price ?? '';
+          const status = match?.status ?? '';
           if (!prev) {
-            notify({ type: 'match_new', title: 'New Offer Received', description: `Offer: ${match.offer_price}` });
-          } else if (prev.status !== match.status) {
-            notify({ type: 'match_status', title: 'Offer Status Updated', description: `Offer: ${match.offer_price}, Status: ${match.status}` });
+            notify({ type: 'match_new', title: 'New Offer Received', description: `Offer: ${price}` });
+          } else if (prev.status !== status) {
+            notify({ type: 'match_status', title: 'Offer Status Updated', description: `Offer: ${price}, Status: ${status}` });
           }
         });
       }
@@ -45,11 +47,11 @@ export default function ProcessingMatchList({ bulkOrderId }) {
         <div className="text-gray-500">No matches found.</div>
       ) : (
         <ul className="divide-y divide-gray-200">
-          {matches.map(match => (
+          {matches.map((match: any) => (
             <li key={match.id} className="py-2 flex justify-between items-center">
               <div>
-                <span className="font-semibold">Offer:</span> {match.offer_price}
-                <span className="ml-2 text-xs text-gray-500">Status: {match.status}</span>
+                <span className="font-semibold">Offer:</span> {match?.offer_price ?? match?.price ?? 'N/A'}
+                <span className="ml-2 text-xs text-gray-500">Status: {match?.status ?? 'pending'}</span>
               </div>
             </li>
           ))}

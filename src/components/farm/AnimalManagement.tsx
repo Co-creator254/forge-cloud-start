@@ -28,11 +28,11 @@ const AnimalManagement: React.FC<{ userId: string }> = ({ userId }) => {
 
   async function fetchAnimals() {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('animals')
       .select('*')
       .eq('user_id', userId);
-    if (!error) setAnimals(data || []);
+    if (!error) setAnimals(((data as unknown) as Animal[]) || []);
     setLoading(false);
   }
 
@@ -58,9 +58,9 @@ const AnimalManagement: React.FC<{ userId: string }> = ({ userId }) => {
       }
     }
     if (editingId) {
-      await supabase.from('animals').update({ ...form, image_url: finalImageUrl } as any).eq('id', editingId);
+      await (supabase as any).from('animals').update({ ...form, image_url: finalImageUrl } as any).eq('id', editingId);
     } else {
-      await supabase.from('animals').insert({ ...form, user_id: userId, image_url: finalImageUrl } as any);
+      await (supabase as any).from('animals').insert({ ...form, user_id: userId, image_url: finalImageUrl } as any);
     }
     setForm({});
     setImageFile(null);
@@ -71,7 +71,7 @@ const AnimalManagement: React.FC<{ userId: string }> = ({ userId }) => {
 
   async function handleDelete(id: string) {
     setLoading(true);
-    await supabase.from('animals').delete().eq('id', id);
+    await (supabase as any).from('animals').delete().eq('id', id);
     fetchAnimals();
   }
 

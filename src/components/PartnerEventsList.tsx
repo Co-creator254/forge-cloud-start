@@ -16,14 +16,15 @@ const PartnerEventsList: React.FC = () => {
   useEffect(() => {
     getPartnerEvents().then(({ data }) => {
       if (Array.isArray(data)) {
-        setEvents(data.map(e => ({
+        const records = (data as any[]) || [];
+        setEvents(records.map((e: any) => ({
           id: e.id,
-          title: e.title,
-          description: e.description,
-          event_date: e.event_date,
-          location: e.location,
-          image_url: e.image_url,
-          partner_id: e.partner_id
+          title: e.title ?? e.name ?? 'Partner Event',
+          description: e.description ?? '',
+          event_date: e.event_date ?? e.date ?? e.created_at ?? '',
+          location: e.location ?? e.venue ?? '',
+          image_url: e.image_url ?? e.featured_image_url ?? undefined,
+          partner_id: e.partner_id ?? e.user_id ?? ''
         })));
       } else {
         setEvents([]);

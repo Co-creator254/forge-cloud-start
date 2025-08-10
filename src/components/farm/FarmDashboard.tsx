@@ -59,7 +59,7 @@ const FarmDashboard: React.FC = () => {
       setLoading(true);
       
       // Fetch farm statistics
-      const { data: farmStats, error: statsError } = await supabase
+      const { data: farmStats, error: statsError } = await (supabase as any)
         .from('farm_statistics')
         .select('*')
         .eq('user_id', user?.id)
@@ -79,7 +79,7 @@ const FarmDashboard: React.FC = () => {
       }
 
       // Fetch recent tasks
-      const { data: farmTasks, error: tasksError } = await supabase
+      const { data: farmTasks, error: tasksError } = await (supabase as any)
         .from('farm_tasks')
         .select('*')
         .eq('user_id', user?.id)
@@ -89,7 +89,7 @@ const FarmDashboard: React.FC = () => {
       if (tasksError) {
         console.error('Error fetching tasks:', tasksError);
       } else {
-        setTasks(farmTasks || []);
+        setTasks((farmTasks as unknown as Task[]) || []);
       }
 
       // Fetch user profile
@@ -121,7 +121,7 @@ const FarmDashboard: React.FC = () => {
 
   const updateTaskStatus = async (taskId: string, newStatus: string) => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('farm_tasks')
         .update({ status: newStatus })
         .eq('id', taskId)
