@@ -160,10 +160,9 @@ const ProfileEditor: React.FC = () => {
       const { error } = await supabase
         .from('profiles')
         .upsert({
-          id: user.id,
-          ...profile,
-          updated_at: new Date().toISOString()
-        });
+          user_id: user.id,
+          ...profile
+        }, { onConflict: 'user_id' });
 
       if (error) throw error;
 

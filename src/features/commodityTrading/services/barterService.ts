@@ -43,7 +43,7 @@ export const fetchBarterListings = async (): Promise<BarterListing[]> => {
       return {
         id: listing.id,
         commodity: listing.commodity,
-        quantity: Number(listing.quantity),
+        quantity: Number(listing.offering_quantity),
         unit: listing.unit,
         description: listing.description || '',
         imageUrl: listing.image_urls?.[0] || '/placeholder.svg',
@@ -76,7 +76,10 @@ export const createBarterListing = async (listing: Omit<BarterListing, 'id' | 'o
       .insert({
         user_id: user.id,
         commodity: listing.commodity,
-        quantity: listing.quantity,
+        offering_product_id: listing.commodity as any,
+        seeking_product_id: (listing.seekingCommodities?.[0] || listing.commodity) as any,
+        offering_quantity: listing.quantity,
+        seeking_quantity: listing.quantity,
         unit: listing.unit,
         description: listing.description,
         image_urls: listing.imageUrl ? [listing.imageUrl] : [],
@@ -85,8 +88,6 @@ export const createBarterListing = async (listing: Omit<BarterListing, 'id' | 'o
         seeking_commodities: listing.seekingCommodities,
         status: listing.status || 'active'
       })
-      .select()
-      .single();
 
     if (error) {
       console.error('Error creating barter listing:', error);
@@ -106,7 +107,7 @@ export const updateBarterListing = async (id: string, updates: Partial<BarterLis
       .from('barter_listings')
       .update({
         commodity: updates.commodity,
-        quantity: updates.quantity,
+        offering_quantity: updates.quantity as any,
         unit: updates.unit,
         description: updates.description,
         image_urls: updates.imageUrl ? [updates.imageUrl] : undefined,
@@ -135,7 +136,7 @@ export const deleteBarterListing = async (id: string) => {
   try {
     const { error } = await supabase
       .from('barter_listings')
-      .update({ is_active: false })
+      .update({ status: 'inactive' })
       .eq('id', id);
 
     if (error) {

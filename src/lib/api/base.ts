@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/integrations/supabase/types';
+// Using dynamic typing to avoid TS schema drift until types sync
 
 export type Tables = Database['public']['Tables'];
 export type TableName = keyof Tables;
@@ -13,7 +13,7 @@ export class ApiBase<T extends TableName> {
   }
 
   async getAll(filters?: Partial<Tables[T]['Row']>) {
-    let query = supabase.from(this.tableName).select('*');
+    let query = (supabase as any).from(this.tableName).select('*');
     
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
@@ -29,7 +29,7 @@ export class ApiBase<T extends TableName> {
   }
 
   async getById(id: string) {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from(this.tableName)
       .select('*')
       .eq('id', id)
@@ -40,9 +40,9 @@ export class ApiBase<T extends TableName> {
   }
 
   async create(data: Tables[T]['Insert']) {
-    const { data: result, error } = await supabase
+    const { data: result, error } = await (supabase as any)
       .from(this.tableName)
-      .insert(data)
+      .insert(data as any)
       .select()
       .single();
     
