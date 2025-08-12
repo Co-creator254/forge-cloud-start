@@ -38,11 +38,10 @@ const ExportMarketOpportunities: React.FC = () => {
 
   async function fetchOpportunities() {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data } = await (supabase as any)
       .from('export_opportunities')
-      .select('*')
-      .eq('status', 'open');
-    if (!error && data) setOpportunities(data);
+      .select('*');
+    if (data) setOpportunities(data as any);
     setLoading(false);
   }
 

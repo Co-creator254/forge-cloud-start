@@ -1,4 +1,3 @@
-
 import React from 'react';
 import RoleBasedLayout from '@/components/RoleBasedLayout';
 import AdminDashboard from '@/components/AdminDashboard';
@@ -18,37 +17,34 @@ const productFields = [
   { name: 'price', label: 'Price', type: 'number', required: true },
 ];
 
-
 const MainApp: React.FC = () => {
   const role = getUserRole();
-  // Provide a user object with id and market_id as required by RoleBasedLayout
-  const user = { id: 'user-uuid', market_id: 'market-uuid' };
+  const user = { id: 'user-uuid', market_id: 'market-uuid' } as const;
   return (
     <RoleBasedLayout
       role={role as 'admin' | 'agent' | 'user'}
-      user={user}
+      user={user as any}
       admin={<AdminDashboard isAdmin={role === 'admin'} />}
       agent={
         <ValidatedForm
           fields={productFields}
           onSubmit={async (values) => {
-            // Ensure all required fields are present and types match
             const product = {
               market_id: values.market_id,
               product_type: values.product_type,
               quantity: Number(values.quantity),
               price: Number(values.price),
               seller_user_id: user.id,
-              category: 'default', // or derive from context
-              auction_status: 'open', // or derive from context
-              status: 'active', // or derive from context
-            };
+              category: 'default',
+              auction_status: 'open',
+              status: 'active',
+            } as any;
             return await addCityMarketProduct(product);
           }}
           submitLabel="Add Product"
         />
       }
-      userView={<div>{/* Engagement features go here */}</div>}
+      userView={<div />}
     >
       {/* Common app content */}
     </RoleBasedLayout>

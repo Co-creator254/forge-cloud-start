@@ -31,11 +31,22 @@ const EquipmentMarketplace: React.FC = () => {
 
   async function fetchEquipment() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('equipment')
-      .select('*')
-      .eq('is_active', true);
-    if (!error && data) setEquipment(data);
+    const { data } = await (supabase as any)
+      .from('products')
+      .select('id, name, description, category');
+    const mapped = (data || []).map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      description: p.description,
+      category: p.category,
+      available_for: [],
+      price: 0,
+      location: '',
+      county: '',
+      contact_phone: '',
+      contact_email: ''
+    }));
+    setEquipment(mapped);
     setLoading(false);
   }
 

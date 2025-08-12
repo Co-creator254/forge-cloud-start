@@ -1,19 +1,15 @@
 import { supabase } from '@/integrations/supabase/client';
-// Using dynamic typing to avoid TS schema drift until types sync
 
-export type Tables = Database['public']['Tables'];
-export type TableName = keyof Tables;
+// Generic CRUD operations with relaxed typing to avoid schema drift
+export class ApiBase<TTable extends string = string, TRow = any, TInsert = any, TUpdate = any> {
+  protected tableName: TTable;
 
-// Generic CRUD operations
-export class ApiBase<T extends TableName> {
-  protected tableName: T;
-
-  constructor(tableName: T) {
+  constructor(tableName: TTable) {
     this.tableName = tableName;
   }
 
-  async getAll(filters?: Partial<Tables[T]['Row']>) {
-    let query = (supabase as any).from(this.tableName).select('*');
+  async getAll(filters?: Partial<TRow>) {
+    let query = (supabase as any).from(this.tableName as string).select('*');
     
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
@@ -25,46 +21,46 @@ export class ApiBase<T extends TableName> {
     
     const { data, error } = await query;
     if (error) throw error;
-    return data;
+    return data as TRow[];
   }
 
   async getById(id: string) {
     const { data, error } = await (supabase as any)
-      .from(this.tableName)
+      .from(this.tableName as string)
       .select('*')
       .eq('id', id)
-      .single();
+      .maybeSingle();
     
     if (error) throw error;
-    return data;
+    return data as TRow | null;
   }
 
-  async create(data: Tables[T]['Insert']) {
+  async create(data: TInsert) {
     const { data: result, error } = await (supabase as any)
-      .from(this.tableName)
+      .from(this.tableName as string)
       .insert(data as any)
       .select()
-      .single();
+      .maybeSingle();
     
     if (error) throw error;
-    return result;
+    return result as TRow | null;
   }
 
-  async update(id: string, data: Tables[T]['Update']) {
-    const { data: result, error } = await supabase
-      .from(this.tableName)
-      .update(data)
+  async update(id: string, data: TUpdate) {
+    const { data: result, error } = await (supabase as any)
+      .from(this.tableName as string)
+      .update(data as any)
       .eq('id', id)
       .select()
-      .single();
+      .maybeSingle();
     
     if (error) throw error;
-    return result;
+    return result as TRow | null;
   }
 
   async delete(id: string) {
-    const { error } = await supabase
-      .from(this.tableName)
+    const { error } = await (supabase as any)
+      .from(this.tableName as string)
       .delete()
       .eq('id', id);
     

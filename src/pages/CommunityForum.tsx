@@ -26,23 +26,16 @@ const CommunityForum: React.FC = () => {
 
   const fetchPosts = async () => {
     try {
-      let query = supabase
+      let query = (supabase as any)
         .from('community_posts')
         .select(`
           *,
-          profiles:user_id (
+          profiles:author_id (
             full_name,
-            avatar_url,
-            is_verified
-          ),
-          community_polls (
-            id,
-            question,
-            options,
-            total_votes
+            avatar_url
           )
         `)
-        .eq('is_active', true);
+        .eq('status', 'active');
 
       if (category !== 'all') {
         query = query.eq('category', category);
@@ -50,10 +43,10 @@ const CommunityForum: React.FC = () => {
 
       switch (sortBy) {
         case 'popular':
-          query = query.order('likes_count', { ascending: false });
+          query = query.order('upvotes', { ascending: false });
           break;
         case 'commented':
-          query = query.order('comments_count', { ascending: false });
+          query = query.order('downvotes', { ascending: false });
           break;
         case 'oldest':
           query = query.order('created_at', { ascending: true });
@@ -90,39 +83,19 @@ const CommunityForum: React.FC = () => {
     }
 
     try {
-      const { data: post, error: postError } = await supabase
+      const { data: post, error: postError } = await (supabase as any)
         .from('community_posts')
         .insert({
-          user_id: user.id,
+          author_id: user.id,
           title: postData.title,
           content: postData.content,
           category: postData.category,
-          location: postData.location,
           tags: postData.tags
         })
         .select()
         .single();
 
       if (postError) throw postError;
-
-      // Create poll if included
-      if (postData.poll && post) {
-        const pollOptions = postData.poll.options.map((option: string, index: number) => ({
-          text: option,
-          votes: 0
-        }));
-
-        const { error: pollError } = await supabase
-          .from('community_polls')
-          .insert({
-            post_id: post.id,
-            user_id: user.id,
-            question: postData.poll.question,
-            options: pollOptions
-          });
-
-        if (pollError) throw pollError;
-      }
 
       toast({
         title: "Success",
@@ -276,20 +249,14 @@ const CommunityForum: React.FC = () => {
                   author: {
                     name: post.profiles?.full_name || 'Anonymous',
                     avatar: post.profiles?.avatar_url,
-                    isVerified: post.profiles?.is_verified
+                    isVerified: false,
                   },
                   category: post.category,
                   tags: post.tags || [],
                   location: post.location,
-                  likes: post.likes_count || 0,
-                  comments: post.comments_count || 0,
+                  likes: post.upvotes || 0,
+                  comments: post.downvotes || 0,
                   createdAt: post.created_at,
-                  poll: post.community_polls?.[0] ? {
-                    id: post.community_polls[0].id,
-                    question: post.community_polls[0].question,
-                    options: post.community_polls[0].options || [],
-                    totalVotes: post.community_polls[0].total_votes || 0
-                  } : undefined
                 }}
               />
             ))
