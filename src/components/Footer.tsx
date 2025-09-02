@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
@@ -9,30 +8,43 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import AmisKeApiHandler from '@/services/amis-ke/api-handler';
-
 const Footer: React.FC = () => {
   const [showFeatureModal, setShowFeatureModal] = useState(false);
-  const [featureForm, setFeatureForm] = useState({ title: '', description: '', email: '' });
+  const [featureForm, setFeatureForm] = useState({
+    title: '',
+    description: '',
+    email: ''
+  });
   const [submitting, setSubmitting] = useState(false);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleFeatureSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
       await AmisKeApiHandler.post('/api/feature-request', featureForm);
-      toast({ title: 'Feature Request Submitted', description: 'Thank you for your feedback!' });
+      toast({
+        title: 'Feature Request Submitted',
+        description: 'Thank you for your feedback!'
+      });
       setShowFeatureModal(false);
-      setFeatureForm({ title: '', description: '', email: '' });
+      setFeatureForm({
+        title: '',
+        description: '',
+        email: ''
+      });
     } catch (err: any) {
-      toast({ title: 'Submission Failed', description: err.message, variant: 'destructive' });
+      toast({
+        title: 'Submission Failed',
+        description: err.message,
+        variant: 'destructive'
+      });
     } finally {
       setSubmitting(false);
     }
   };
-
-  return (
-    <footer className="bg-background border-t mt-auto">
+  return <footer className="bg-background border-t mt-auto">
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -70,7 +82,7 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 AgriConnect. All rights reserved.</p>
+          <p>© 2025 SokoConnect. All rights reserved.</p>
         </div>
       </div>
       <Dialog open={showFeatureModal} onOpenChange={setShowFeatureModal}>
@@ -84,15 +96,24 @@ const Footer: React.FC = () => {
           <form onSubmit={handleFeatureSubmit} className="space-y-4">
             <div>
               <Label>Title</Label>
-              <Input value={featureForm.title} onChange={e => setFeatureForm(f => ({ ...f, title: e.target.value }))} required />
+              <Input value={featureForm.title} onChange={e => setFeatureForm(f => ({
+              ...f,
+              title: e.target.value
+            }))} required />
             </div>
             <div>
               <Label>Description</Label>
-              <Textarea value={featureForm.description} onChange={e => setFeatureForm(f => ({ ...f, description: e.target.value }))} required />
+              <Textarea value={featureForm.description} onChange={e => setFeatureForm(f => ({
+              ...f,
+              description: e.target.value
+            }))} required />
             </div>
             <div>
               <Label>Email (optional)</Label>
-              <Input type="email" value={featureForm.email} onChange={e => setFeatureForm(f => ({ ...f, email: e.target.value }))} />
+              <Input type="email" value={featureForm.email} onChange={e => setFeatureForm(f => ({
+              ...f,
+              email: e.target.value
+            }))} />
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setShowFeatureModal(false)}>Cancel</Button>
@@ -101,8 +122,6 @@ const Footer: React.FC = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
