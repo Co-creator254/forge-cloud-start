@@ -39,14 +39,14 @@ const FarmInputSupplierManager: React.FC = () => {
 
   const handleLike = async (supplier_id: string) => {
     setLikeLoading(supplier_id);
-    await likeSupplier(supplier_id, demo_user_id);
+    await likeSupplier(supplier_id);
     await fetchSuppliers();
     setLikeLoading(null);
   };
 
   const handleRate = async (supplier_id: string, rating: number) => {
     setRateLoading(supplier_id);
-    await rateSupplier(supplier_id, demo_user_id, rating, comment);
+    await rateSupplier(supplier_id, rating, comment);
     setComment('');
     await fetchSuppliers();
     setRateLoading(null);
@@ -54,21 +54,21 @@ const FarmInputSupplierManager: React.FC = () => {
 
   const handleFlag = async (supplier_id: string) => {
     setFlagLoading(supplier_id);
-    await flagEntity('supplier', supplier_id, demo_user_id, flagReason);
+    await flagEntity('supplier', supplier_id, flagReason);
     setFlagReason('');
     setFlagLoading(null);
   };
 
   const handleBan = async (supplier_id: string) => {
     setBanLoading(supplier_id);
-    await recommendBan('supplier', supplier_id, demo_user_id, 'Recommended for ban');
+    await recommendBan('supplier', supplier_id, 'Recommended for ban');
     setBanLoading(null);
   };
 
   // Example: Bookmark a product (for demo, bookmarks first supplier's first product if exists)
   const handleBookmark = async (product_id: string) => {
     setBookmarkLoading(product_id);
-    await bookmarkProduct(product_id, demo_user_id);
+    await bookmarkProduct(product_id);
     setBookmarkLoading(null);
   };
 

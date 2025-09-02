@@ -10,14 +10,14 @@ const FarmInputProductManager: React.FC = () => {
   const user_id = 'demo-user-id';
   const handleLike = async (product_id: string) => {
     setLikeLoading(product_id);
-    await likeProduct(product_id, user_id);
+    await likeProduct(product_id);
     fetchData();
     setLikeLoading(null);
   };
 
   const handleRate = async (product_id: string, rating: number) => {
     setRateLoading(product_id);
-    await rateProduct(product_id, user_id, rating);
+    await rateProduct(product_id, rating);
     fetchData();
     setRateLoading(null);
   };
