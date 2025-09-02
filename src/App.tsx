@@ -67,6 +67,7 @@ import FoodRescueDashboard from './pages/FoodRescueDashboard';
 import ImperfectSurplusDashboard from './pages/ImperfectSurplusDashboard';
 import BulkOrderDashboard from './pages/BulkOrderDashboard';
 import DonationFormPage from './pages/DonationFormPage';
+import BuyRequestsPage from './pages/BuyRequestsPage';
 import AdminPanel from './pages/AdminPanel';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
@@ -123,7 +124,8 @@ function App() {
                  <Route path="/food-rescue-dashboard" element={<FoodRescueDashboard user={{}} />} />
                  <Route path="/imperfect-surplus-dashboard" element={<ImperfectSurplusDashboard />} />
                  <Route path="/bulk-order-dashboard" element={<BulkOrderDashboard user={{}} />} />
-                 <Route path="/donation-form" element={<DonationFormPage />} />
+                  <Route path="/donation-form" element={<DonationFormPage />} />
+                  <Route path="/buy-requests" element={<BuyRequestsPage />} />
                  {/* <Route path="/donation-list" element={<DonationListPage />} /> */}
                  <Route path="/partner-with-us" element={<PartnerWithUs />} />
                  <Route path="/partner-dashboard" element={<PartnerDashboard />} />
