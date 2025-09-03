@@ -21,7 +21,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: 'Home', href: '/', icon: Home },
-  { title: 'Marketplace', href: '/farm-input-marketplace', icon: ShoppingCart },
+  { title: 'Markets', href: '/road-markets', icon: ShoppingCart },
   { title: 'Trading', href: '/commodity-trading', icon: TrendingUp },
   { title: 'Community', href: '/community-forum', icon: MessageSquare },
 ];
