@@ -31,111 +31,174 @@ const Index: React.FC = () => {
       {/* Search Section */}
       <SearchSection />
       
-      {/* Quick Action Cards */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Get Started Today</h2>
-            <p className="text-lg text-muted-foreground">
-              Choose your path to agricultural success
-            </p>
+      {/* Mobile Top Navigation */}
+      <section className="lg:hidden bg-background border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="grid grid-cols-4 gap-3">
+            <Link to="/farm-input-marketplace" className="flex flex-col items-center gap-2 p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <BarChart3 className="h-5 w-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium text-center">Marketplace</span>
+            </Link>
+            <Link to="/service-providers" className="flex flex-col items-center gap-2 p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <Users className="h-5 w-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium text-center">Services</span>
+            </Link>
+            <Link to="/commodity-trading" className="flex flex-col items-center gap-2 p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <TrendingUp className="h-5 w-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium text-center">Trading</span>
+            </Link>
+            <Link to="/community-forum" className="flex flex-col items-center gap-2 p-3 rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <Users className="h-5 w-5 text-primary" />
+              </div>
+              <span className="text-xs font-medium text-center">Community</span>
+            </Link>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* City Markets Card */}
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <MapPin className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle>City Markets</CardTitle>
-                <CardDescription>
-                  View city market prices and trends
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link to="/city-markets">
-                  <Button className="w-full" size="lg">
-                    City Markets
-                  </Button>
-                </Link>
+        </div>
+      </section>
+
+      {/* Real-time Market Data Section */}
+      <section className="py-8 bg-gradient-to-r from-primary/5 to-primary/10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold mb-2">Real-time Market Data</h2>
+            <p className="text-muted-foreground">Live prices and trends</p>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="text-center bg-background/80 backdrop-blur">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-green-600">$2.40</div>
+                <div className="text-sm text-muted-foreground">Maize/kg</div>
+                <div className="text-xs text-green-600">+5.2%</div>
               </CardContent>
             </Card>
-            {/* Start Farming Card */}
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <Tractor className="h-8 w-8 text-primary" />
+            <Card className="text-center bg-background/80 backdrop-blur">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-green-600">$3.20</div>
+                <div className="text-sm text-muted-foreground">Beans/kg</div>
+                <div className="text-xs text-green-600">+2.1%</div>
+              </CardContent>
+            </Card>
+            <Card className="text-center bg-background/80 backdrop-blur">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-red-600">$1.80</div>
+                <div className="text-sm text-muted-foreground">Rice/kg</div>
+                <div className="text-xs text-red-600">-1.3%</div>
+              </CardContent>
+            </Card>
+            <Card className="text-center bg-background/80 backdrop-blur">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-green-600">$4.50</div>
+                <div className="text-sm text-muted-foreground">Coffee/kg</div>
+                <div className="text-xs text-green-600">+8.7%</div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="text-center mt-4">
+            <Link to="/kilimo-ams-data">
+              <Button variant="outline" size="sm">View All Markets</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Features Grid */}
+      <section className="py-12 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl lg:text-3xl font-bold mb-4">Platform Features</h2>
+            <p className="text-muted-foreground">Everything you need for agricultural success</p>
+          </div>
+          
+          {/* Mobile Grid Layout */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {/* Marketplace Features */}
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <BarChart3 className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Start Farming</CardTitle>
-                <CardDescription>
-                  Access farming tools, crop tracking, and agricultural resources
-                </CardDescription>
+                <CardTitle className="text-sm lg:text-base">Farm Inputs</CardTitle>
               </CardHeader>
-              <CardContent>
-                <Link to="/farmer-portal">
-                  <Button className="w-full" size="lg">
-                    Start Farming
-                  </Button>
+              <CardContent className="pt-0">
+                <Link to="/farm-input-marketplace">
+                  <Button size="sm" className="w-full text-xs">Shop Now</Button>
                 </Link>
               </CardContent>
             </Card>
 
-            {/* Farm Equipment Card */}
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <Warehouse className="h-8 w-8 text-primary" />
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <Warehouse className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Farm Equipment</CardTitle>
-                <CardDescription>
-                  Buy, sell, or rent farm equipment
-                </CardDescription>
+                <CardTitle className="text-sm lg:text-base">Equipment</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
                 <Link to="/equipment-marketplace">
-                  <Button className="w-full" size="lg">
-                    Equipment Marketplace
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-            {/* Farm to Market Integration Card */}
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <TrendingUp className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle>Farm to Market Integration</CardTitle>
-                <CardDescription>
-                  Connect with buyers, access market prices, and manage sales
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link to="/market-linkages">
-                  <Button className="w-full" size="lg">
-                    Complete Integration
-                  </Button>
+                  <Button size="sm" className="w-full text-xs">Browse</Button>
                 </Link>
               </CardContent>
             </Card>
 
-            {/* Financial Visibility Card */}
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <DollarSign className="h-8 w-8 text-primary" />
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <DollarSign className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Realtime Financial Visibility</CardTitle>
-                <CardDescription>
-                  Track expenses, revenue, and financial performance
-                </CardDescription>
+                <CardTitle className="text-sm lg:text-base">Trading</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
+                <Link to="/commodity-trading">
+                  <Button size="sm" className="w-full text-xs">Trade</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <Truck className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-sm lg:text-base">Logistics</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Link to="/logistics">
+                  <Button size="sm" className="w-full text-xs">Find Transport</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <MapPin className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-sm lg:text-base">City Markets</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Link to="/city-markets">
+                  <Button size="sm" className="w-full text-xs">View Markets</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <Tractor className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-sm lg:text-base">Farming Portal</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
                 <Link to="/farmer-portal">
-                  <Button className="w-full" size="lg">
-                    View Finances
-                  </Button>
+                  <Button size="sm" className="w-full text-xs">Start Farming</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -143,151 +206,139 @@ const Index: React.FC = () => {
         </div>
       </section>
 
-      {/* Additional Features Section */}
-      <section className="py-8">
+      {/* Service Providers Section */}
+      <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Donations Card */}
-            <Card className="text-center">
-              <CardHeader>
-                <Clock className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Donations</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link to="/donation-form">
-                  <Button variant="outline" size="sm" className="mt-3">Make a Donation</Button>
-                </Link>
-                <Link to="/donation-list">
-                  <Button variant="outline" size="sm" className="mt-3 ml-2">View Donations</Button>
-                </Link>
-              </CardContent>
-            </Card>
-            {/* Food Rescue Card */}
-            <Card className="text-center">
-              <CardHeader>
-                <Warehouse className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Food Rescue</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link to="/food-rescue-dashboard">
-                  <Button variant="outline" size="sm" className="mt-3">Food Rescue Dashboard</Button>
-                </Link>
-              </CardContent>
-            </Card>
-            {/* Bulk Orders Card */}
-            <Card className="text-center">
-              <CardHeader>
-                <Warehouse className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Bulk Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link to="/bulk-order-dashboard">
-                  <Button variant="outline" size="sm" className="mt-3">Bulk Order Dashboard</Button>
-                </Link>
-              </CardContent>
-            </Card>
-            {/* Imperfect Surplus Card */}
-            <Card className="text-center">
-              <CardHeader>
-                <Warehouse className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Imperfect Surplus</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link to="/imperfect-surplus-dashboard">
-                  <Button variant="outline" size="sm" className="mt-3">Imperfect Surplus Dashboard</Button>
-                </Link>
-              </CardContent>
-            </Card>
-            {/* Buy Requests Card */}
-            <Card className="text-center">
-              <CardHeader>
-                <Warehouse className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Buy Requests</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link to="/farmer-portal">
-                  <Button variant="outline" size="sm" className="mt-3">View Buy Requests</Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-      {/* Features Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Platform Features</h2>
-            <p className="text-lg text-muted-foreground">
-              Everything you need for agricultural success
-            </p>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold mb-4">Service Providers</h2>
+            <p className="text-muted-foreground">Professional agricultural services</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="text-center">
-              <CardHeader>
-                <Users className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Community</CardTitle>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
+                  <Users className="h-6 w-6 text-secondary" />
+                </div>
+                <CardTitle className="text-sm">Veterinary Services</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Connect with farmers and experts
-                </p>
-                <Link to="/community-forum">
-                  <Button variant="outline" size="sm" className="mt-3">
-                    Join Forum
-                  </Button>
+              <CardContent className="pt-0">
+                <Link to="/veterinary-services">
+                  <Button variant="outline" size="sm" className="w-full text-xs">Find Vets</Button>
                 </Link>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardHeader>
-                <MapPin className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Market Access</CardTitle>
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
+                  <Clock className="h-6 w-6 text-secondary" />
+                </div>
+                <CardTitle className="text-sm">Feed & Nutrition</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Find buyers and market opportunities
-                </p>
-                <Link to="/market-linkages">
-                  <Button variant="outline" size="sm" className="mt-3">
-                    Explore Markets
-                  </Button>
+              <CardContent className="pt-0">
+                <Link to="/feed-nutrition">
+                  <Button variant="outline" size="sm" className="w-full text-xs">Get Advice</Button>
                 </Link>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardHeader>
-                <Truck className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Logistics</CardTitle>
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
+                  <MapPin className="h-6 w-6 text-secondary" />
+                </div>
+                <CardTitle className="text-sm">Farm Construction</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Transport and storage solutions
-                </p>
-                <Link to="/logistics">
-                  <Button variant="outline" size="sm" className="mt-3">
-                    Find Transport
-                  </Button>
+              <CardContent className="pt-0">
+                <Link to="/farm-construction">
+                  <Button variant="outline" size="sm" className="w-full text-xs">Build</Button>
                 </Link>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
-              <CardHeader>
-                <BarChart3 className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">Analytics</CardTitle>
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
+                  <Users className="h-6 w-6 text-secondary" />
+                </div>
+                <CardTitle className="text-sm">Consultancies</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Market insights and trends
-                </p>
+              <CardContent className="pt-0">
+                <Link to="/consultancies">
+                  <Button variant="outline" size="sm" className="w-full text-xs">Consult</Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="text-center mt-6">
+            <Link to="/service-providers">
+              <Button>View All Service Providers</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+      {/* Additional Features Grid */}
+      <section className="py-8 bg-muted/20">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <Card className="text-center">
+              <CardHeader className="pb-3">
+                <Clock className="h-6 w-6 text-accent mx-auto mb-2" />
+                <CardTitle className="text-sm">Donations</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Link to="/donation-list">
+                  <Button variant="outline" size="sm" className="w-full text-xs">View</Button>
+                </Link>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center">
+              <CardHeader className="pb-3">
+                <Warehouse className="h-6 w-6 text-accent mx-auto mb-2" />
+                <CardTitle className="text-sm">Food Rescue</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Link to="/food-rescue-dashboard">
+                  <Button variant="outline" size="sm" className="w-full text-xs">Rescue</Button>
+                </Link>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center">
+              <CardHeader className="pb-3">
+                <TrendingUp className="h-6 w-6 text-accent mx-auto mb-2" />
+                <CardTitle className="text-sm">Auctions</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Link to="/agent-product-auction-dashboard">
+                  <Button variant="outline" size="sm" className="w-full text-xs">Bid</Button>
+                </Link>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center">
+              <CardHeader className="pb-3">
+                <BarChart3 className="h-6 w-6 text-accent mx-auto mb-2" />
+                <CardTitle className="text-sm">Analytics</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
                 <Link to="/sentiment-analysis">
-                  <Button variant="outline" size="sm" className="mt-3">
-                    View Analytics
-                  </Button>
+                  <Button variant="outline" size="sm" className="w-full text-xs">Analyze</Button>
+                </Link>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center">
+              <CardHeader className="pb-3">
+                <DollarSign className="h-6 w-6 text-accent mx-auto mb-2" />
+                <CardTitle className="text-sm">Buy Requests</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Link to="/buy-requests">
+                  <Button variant="outline" size="sm" className="w-full text-xs">Request</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -298,10 +349,65 @@ const Index: React.FC = () => {
       {/* Featured Content */}
       <FeaturedContent />
       
-      <Footer />
-      <div className="text-center py-4">
-        <Link to="/partner-with-us" className="text-primary underline font-semibold">Partner with us</Link>
-      </div>
+      {/* Professional Footer */}
+      <footer className="bg-background border-t">
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Platform */}
+            <div>
+              <h3 className="font-semibold mb-3 text-sm">Platform</h3>
+              <div className="space-y-2 text-xs">
+                <Link to="/commodity-trading" className="block text-muted-foreground hover:text-foreground">Commodity Trading</Link>
+                <Link to="/logistics" className="block text-muted-foreground hover:text-foreground">Logistics</Link>
+                <Link to="/service-providers" className="block text-muted-foreground hover:text-foreground">Service Providers</Link>
+                <Link to="/farm-input-marketplace" className="block text-muted-foreground hover:text-foreground">Farm Input Marketplace</Link>
+                <Link to="/equipment-marketplace" className="block text-muted-foreground hover:text-foreground">Equipment Marketplace</Link>
+                <Link to="/agricultural-marketplace" className="block text-muted-foreground hover:text-foreground">Agricultural Marketplace</Link>
+              </div>
+            </div>
+            
+            {/* Support */}
+            <div>
+              <h3 className="font-semibold mb-3 text-sm">Support</h3>
+              <div className="space-y-2 text-xs">
+                <Link to="/about" className="block text-muted-foreground hover:text-foreground">FAQ</Link>
+                <Link to="/contact" className="block text-muted-foreground hover:text-foreground">Contact</Link>
+                <Link to="/community-forum" className="block text-muted-foreground hover:text-foreground">Community Forum</Link>
+                <Link to="/partner-with-us" className="block text-muted-foreground hover:text-foreground">Partner with us</Link>
+              </div>
+            </div>
+            
+            {/* Features */}
+            <div>
+              <h3 className="font-semibold mb-3 text-sm">Features</h3>
+              <div className="space-y-2 text-xs">
+                <Link to="/kilimo-ams-data" className="block text-muted-foreground hover:text-foreground">Market Data</Link>
+                <Link to="/sentiment-analysis" className="block text-muted-foreground hover:text-foreground">Analytics</Link>
+                <Link to="/city-markets" className="block text-muted-foreground hover:text-foreground">City Markets</Link>
+                <Link to="/veterinary-services" className="block text-muted-foreground hover:text-foreground">Veterinary Services</Link>
+              </div>
+            </div>
+            
+            {/* Company */}
+            <div>
+              <h3 className="font-semibold mb-3 text-sm">AgriConnect</h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                Connecting farmers, traders, and service providers for a better agricultural ecosystem.
+              </p>
+              <div className="space-y-2 text-xs">
+                <Link to="/about" className="block text-muted-foreground hover:text-foreground">About Us</Link>
+                <Link to="/contact" className="block text-muted-foreground hover:text-foreground">Contact</Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t mt-6 pt-4 text-center">
+            <p className="text-xs text-muted-foreground">
+              © 2024 AgriConnect. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

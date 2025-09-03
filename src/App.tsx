@@ -112,8 +112,8 @@ function App() {
                  <Route path="/market-demand-hotspot" element={<MarketDemandHotspot />} />
                  <Route path="/commodity-trading" element={<CommodityTrading />} />
                   <Route path="/barter-exchange" element={<BarterExchange />} />
-                  <Route path="/marketplace" element={<Marketplace />} />
-                  <Route path="/agricultural-marketplace" element={<MarketplaceView />} />
+                   <Route path="/marketplace" element={<Marketplace />} />
+                   <Route path="/agricultural-marketplace" element={<MarketplaceView />} />
                   <Route path="/bulk-orders" element={<BulkOrders />} />
                   <Route path="/price-trends" element={<PriceTrends />} />
                  <Route path="/my-trades" element={<MyTrades />} />

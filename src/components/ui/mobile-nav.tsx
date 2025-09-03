@@ -21,10 +21,9 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: 'Home', href: '/', icon: Home },
-  { title: 'Marketplace', href: '/marketplace', icon: ShoppingCart },
-  { title: 'Community', href: '/community-forums', icon: MessageSquare },
-  { title: 'Trends', href: '/price-trends', icon: TrendingUp },
-  { title: 'Profile', href: '/profile', icon: User },
+  { title: 'Marketplace', href: '/farm-input-marketplace', icon: ShoppingCart },
+  { title: 'Trading', href: '/commodity-trading', icon: TrendingUp },
+  { title: 'Community', href: '/community-forum', icon: MessageSquare },
 ];
 
 export const MobileNav = () => {
