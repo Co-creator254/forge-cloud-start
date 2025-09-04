@@ -2,6 +2,9 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { AuthRateLimit } from '@/services/security/authRateLimit';
+import { SecurityAudit } from '@/services/security/securityAudit';
+import { InputValidator } from '@/services/security/inputValidation';
 
 interface AuthContextType {
   user: User | null;
@@ -79,20 +82,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Validate input
+      const emailValidation = InputValidator.validateEmail(email);
+      if (!emailValidation.valid) {
+        toast.error(emailValidation.error);
+        return { error: emailValidation.error };
+      }
+
+      // Check rate limiting
+      const rateLimitCheck = await AuthRateLimit.checkRateLimit(email);
+      if (!rateLimitCheck.allowed) {
+        const message = rateLimitCheck.blockedUntil 
+          ? `Too many failed attempts. Try again after ${rateLimitCheck.blockedUntil.toLocaleTimeString()}`
+          : 'Too many failed attempts. Please try again later.';
+        toast.error(message);
+        return { error: message };
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
+      // Record the attempt
+      await AuthRateLimit.recordAttempt(email, !error);
+
       if (error) {
+        await SecurityAudit.logEvent('failed_login', {
+          attemptedEmail: email,
+          error: error.message
+        });
         toast.error(error.message);
         return { error: error.message };
       }
 
+      await SecurityAudit.logEvent('successful_login', {
+        email: email
+      });
       toast.success('Welcome back!');
       return {};
     } catch (error) {
       const message = (error as Error).message;
+      await SecurityAudit.logEvent('failed_login', {
+        attemptedEmail: email,
+        error: message
+      });
       toast.error(message);
       return { error: message };
     }

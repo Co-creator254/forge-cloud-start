@@ -19,7 +19,7 @@ export interface PaymentData {
 }
 
 export class PayPalService {
-  private static CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID'; // Will be set via environment
+  private static CLIENT_ID = process.env.PAYPAL_CLIENT_ID || ''; // Secure environment variable
 
   static async createOrder(paymentData: PaymentData): Promise<string> {
     try {
