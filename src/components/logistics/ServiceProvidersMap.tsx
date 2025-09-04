@@ -1,9 +1,46 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { ServiceProvider, ServiceProviderType } from '@/types';
-import { Button } from "@/components/ui/button";
-import { Loader2, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+// Fix for default markers in Leaflet
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+// Custom marker icons for different provider types
+const createCustomIcon = (type: ServiceProviderType) => {
+  const colors = {
+    'storage': '#3b82f6',
+    'transport': '#f59e0b',
+    'quality-control': '#ef4444',
+    'market-linkage': '#8b5cf6',
+    'training': '#10b981',
+    'input-supplier': '#6366f1',
+    'inspector': '#f97316',
+    'insurance-provider': '#06b6d4',
+    'soil-testing-provider': '#84cc16',
+    'drone-satellite-imagery-provider': '#ec4899',
+    'iot-sensor-data-provider': '#14b8a6',
+    'export-transporters': '#f59e0b',
+    'shippers': '#8b5cf6'
+  };
+  
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `<div style="background-color: ${colors[type]}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
+      <div style="width: 8px; height: 8px; background-color: white; border-radius: 50%;"></div>
+    </div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -15],
+  });
+};
 
 interface ServiceProvidersMapProps {
   providers: ServiceProvider[];
@@ -12,158 +49,138 @@ interface ServiceProvidersMapProps {
 
 const ServiceProvidersMap: React.FC<ServiceProvidersMapProps> = ({ providers, selectedType }) => {
   const { toast } = useToast();
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [mapLoading, setMapLoading] = useState(true);
 
-  // Simulate map tiles loading for production appearance
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMapLoading(false);
-    }, 1000);
+  // Kenya bounds
+  const kenyaBounds: [number, number] = [-1.2921, 36.8219]; // Nairobi coordinates as center
+  
+  // Get provider coordinates or fallback to random Kenya location
+  const getProviderCoordinates = (provider: ServiceProvider): [number, number] => {
+    if (provider.location.coordinates?.latitude && provider.location.coordinates?.longitude) {
+      return [provider.location.coordinates.latitude, provider.location.coordinates.longitude];
+    }
     
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Group providers by location for clustering
-  const getProvidersByLocation = () => {
-    const locationGroups: Record<string, ServiceProvider[]> = {};
+    // Fallback coordinates for different counties in Kenya
+    const countyCoordinates: Record<string, [number, number]> = {
+      'Nairobi': [-1.2921, 36.8219],
+      'Mombasa': [-4.0435, 39.6682],
+      'Kisumu': [-0.0917, 34.7680],
+      'Nakuru': [-0.3031, 36.0800],
+      'Eldoret': [0.5143, 35.2698],
+      'Thika': [-1.0332, 37.0692],
+      'Malindi': [-3.2194, 40.1169],
+      'Kitale': [1.0153, 35.0006],
+      'Garissa': [-0.4536, 39.6401],
+      'Kakamega': [0.2827, 34.7519]
+    };
     
-    providers.forEach(provider => {
-      const lat = provider.location.coordinates?.latitude || 0;
-      const lng = provider.location.coordinates?.longitude || 0;
-      const locationKey = `${lat}-${lng}`;
-      
-      if (!locationGroups[locationKey]) {
-        locationGroups[locationKey] = [];
-      }
-      locationGroups[locationKey].push(provider);
-    });
-    
-    return locationGroups;
+    return countyCoordinates[provider.location.county] || [-1.2921, 36.8219];
   };
 
   return (
-    <div className="w-full h-[500px] bg-gray-50 rounded-lg relative overflow-hidden border">
-      {/* Map visualization with provider pins */}
-      <div className="absolute inset-0">
-        {mapLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="flex flex-col items-center">
-              <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
-              <p className="text-sm text-muted-foreground">Loading map...</p>
+    <div className="w-full h-[500px] rounded-lg overflow-hidden border">
+      <MapContainer
+        center={kenyaBounds}
+        zoom={6}
+        style={{ height: '100%', width: '100%' }}
+        zoomControl={true}
+        scrollWheelZoom={true}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        
+        {/* Major roads in Kenya (A1-A9) */}
+        {/* A1: Nairobi to Mombasa */}
+        <Marker position={[-1.2921, 36.8219]} icon={createCustomIcon('transport')}>
+          <Popup>
+            <div className="text-center">
+              <h3 className="font-semibold">A1 Highway Hub</h3>
+              <p className="text-sm">Nairobi - Mombasa Corridor</p>
             </div>
-          </div>
-        ) : (
-          <div className="absolute inset-0 opacity-25 pointer-events-none">
-            <img 
-              src="/kenya-map-outline.svg" 
-              alt="Kenya Map Outline" 
-              className="max-w-full max-h-full object-contain"
-              onLoad={() => setIsImageLoaded(true)}
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                // Fallback to a styled div if image fails to load
-                const parent = e.currentTarget.parentElement;
-                if (parent) {
-                  parent.classList.add('bg-gray-200');
-                  parent.classList.add("bg-[url('data:image/svg+xml,%3Csvg width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z%22 fill=%22%23bbb%22 fill-opacity=%220.25%22 fill-rule=%22evenodd%22/%3E%3C/svg%3E')");
-                }
-              }}
-            />
-          </div>
-        )}
-      </div>
-      
-      {/* Dynamic pins based on real provider data */}
-      <div className="absolute inset-0 z-10">
-        {providers.length > 0 ? (
-          <>
-            {/* Nairobi */}
-            <div 
-              className="absolute w-4 h-4 bg-blue-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 pulse-animation"
-              style={{ left: '50%', top: '60%' }}
+          </Popup>
+        </Marker>
+        
+        <Marker position={[-4.0435, 39.6682]} icon={createCustomIcon('transport')}>
+          <Popup>
+            <div className="text-center">
+              <h3 className="font-semibold">Port of Mombasa</h3>
+              <p className="text-sm">Major freight gateway</p>
+            </div>
+          </Popup>
+        </Marker>
+        
+        {/* A2: Nairobi to Nakuru */}
+        <Marker position={[-0.3031, 36.0800]} icon={createCustomIcon('storage')}>
+          <Popup>
+            <div className="text-center">
+              <h3 className="font-semibold">A2 Distribution Center</h3>
+              <p className="text-sm">Nakuru Agricultural Hub</p>
+            </div>
+          </Popup>
+        </Marker>
+        
+        {/* Service provider markers */}
+        {providers.map((provider, index) => {
+          const position = getProviderCoordinates(provider);
+          return (
+            <Marker
+              key={provider.id || index}
+              position={position}
+              icon={createCustomIcon(provider.businessType)}
             >
-              <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm">
-                Nairobi ({providers.filter(p => p.location.county === 'Nairobi').length})
-              </div>
-            </div>
-            
-            {/* Show other major locations as needed */}
-            <div 
-              className="absolute w-4 h-4 bg-green-500 rounded-full transform -translate-x-1/2 -translate-y-1/2"
-              style={{ left: '60%', top: '80%' }}
-            >
-              <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm">
-                Mombasa ({providers.filter(p => p.location.county === 'Mombasa').length})
-              </div>
-            </div>
-            
-            {/* Some dynamic pins based on provider data */}
-            {providers.slice(0, 5).map((provider, index) => (
-              <div
-                key={provider.id || index}
-                className="absolute w-3 h-3 bg-primary rounded-full transform -translate-x-1/2 -translate-y-1/2 hover:w-4 hover:h-4 transition-all cursor-pointer"
-                style={{ 
-                  left: `${30 + (index * 10)}%`, 
-                  top: `${40 + (index * 5)}%` 
-                }}
-                onClick={() => {
-                  toast({
-                    title: provider.name,
-                    description: provider.description,
-                  });
-                }}
-              >
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-white px-2 py-1 rounded text-xs shadow-sm opacity-0 group-hover:opacity-100">
-                  {provider.name}
+              <Popup maxWidth={300}>
+                <div className="space-y-2">
+                  <div>
+                    <h3 className="font-semibold text-lg">{provider.name}</h3>
+                    <p className="text-sm text-muted-foreground capitalize">
+                      {provider.businessType} • {provider.location.county}
+                    </p>
+                  </div>
+                  
+                  <p className="text-sm">{provider.description}</p>
+                  
+                  {provider.services && provider.services.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium">Services:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {provider.services.slice(0, 3).map((service, idx) => (
+                          <span
+                            key={idx}
+                            className="text-xs bg-primary/10 text-primary px-2 py-1 rounded"
+                          >
+                            {service}
+                          </span>
+                        ))}
+                        {provider.services.length > 3 && (
+                          <span className="text-xs text-muted-foreground">
+                            +{provider.services.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {provider.contactInfo && (
+                    <div className="text-sm">
+                      <p>📞 {provider.contactInfo}</p>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
-          </>
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center p-6 bg-white rounded-lg shadow-md max-w-md">
-              <h3 className="text-lg font-medium mb-2">Interactive Map Ready for Providers</h3>
-              <p className="text-muted-foreground mb-4">
-                Our service provider registry is growing. Connect with key agricultural service providers as they join the platform.
-              </p>
-              <Button className="gap-2" onClick={() => window.location.href = "/service-provider-registration"}>
-                Register as Provider
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
+              </Popup>
+            </Marker>
+          );
+        })}
+      </MapContainer>
       
       {providers.length > 0 && (
-        <div className="absolute top-4 right-4 bg-white p-3 rounded-md shadow-md">
+        <div className="absolute top-4 right-4 bg-white p-3 rounded-md shadow-md z-[1000]">
           <p className="font-medium text-sm">
             Showing {providers.length} providers
             {selectedType !== 'all' ? ` of type ${selectedType}` : ''}
           </p>
         </div>
       )}
-
-      <style>
-        {`
-        .pulse-animation {
-          box-shadow: 0 0 0 rgba(66, 153, 225, 0.6);
-          animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-          0% {
-            box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.6);
-          }
-          70% {
-            box-shadow: 0 0 0 10px rgba(66, 153, 225, 0);
-          }
-          100% {
-            box-shadow: 0 0 0 0 rgba(66, 153, 225, 0);
-          }
-        }
-        `}
-      </style>
     </div>
   );
 };
