@@ -74,6 +74,8 @@ import RoadMarkets from './pages/RoadMarkets';
 import AdminPanel from './pages/AdminPanel';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
+import BluetoothMarketplacePage from './pages/BluetoothMarketplacePage';
+import MorePage from './pages/MorePage';
 
 function App() {
   return (
@@ -149,10 +151,12 @@ function App() {
                  <Route path="/data-jobs" element={<DataJobs />} />
                  <Route path="/system-status" element={<SystemStatus />} />
                  <Route path="/admin" element={<AdminPanel />} />
-                 <Route path="/faq" element={<FAQPage />} />
-                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                 <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-                 <Route path="*" element={<NotFound />} />
+                  <Route path="/faq" element={<FAQPage />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                  <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+                  <Route path="/bluetooth-marketplace" element={<BluetoothMarketplacePage />} />
+                  <Route path="/more" element={<MorePage />} />
+                  <Route path="*" element={<NotFound />} />
                </Routes>
              </React.Suspense>
              <Toaster />
