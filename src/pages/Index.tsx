@@ -17,8 +17,10 @@ import {
   BarChart3,
   Truck,
   Warehouse,
-  Clock
+  Clock,
+  Bluetooth
 } from 'lucide-react';
+import { MobileNavigation } from '@/components/MobileNavigation';
 
 const Index: React.FC = () => {
   return (
@@ -408,6 +410,12 @@ const Index: React.FC = () => {
           </div>
         </div>
       </footer>
+      
+      {/* Mobile Navigation */}
+      <MobileNavigation />
+      
+      {/* Bottom padding for mobile navigation */}
+      <div className="pb-20 md:pb-0"></div>
     </div>
   );
 };

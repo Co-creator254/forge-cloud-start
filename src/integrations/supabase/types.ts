@@ -215,6 +215,192 @@ export type Database = {
           },
         ]
       }
+      bluetooth_alerts: {
+        Row: {
+          alert_by_device: string
+          alert_by_user: string | null
+          alert_type: string
+          commodity: string
+          contact_info: string | null
+          county: string
+          created_at: string
+          expires_at: string
+          id: string
+          location: string
+          message: string
+          threshold_value: number | null
+          timestamp: string
+        }
+        Insert: {
+          alert_by_device: string
+          alert_by_user?: string | null
+          alert_type: string
+          commodity: string
+          contact_info?: string | null
+          county: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          location: string
+          message: string
+          threshold_value?: number | null
+          timestamp?: string
+        }
+        Update: {
+          alert_by_device?: string
+          alert_by_user?: string | null
+          alert_type?: string
+          commodity?: string
+          contact_info?: string | null
+          county?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          location?: string
+          message?: string
+          threshold_value?: number | null
+          timestamp?: string
+        }
+        Relationships: []
+      }
+      bluetooth_devices: {
+        Row: {
+          created_at: string
+          device_id: string
+          device_name: string | null
+          id: string
+          is_active: boolean
+          last_seen: string
+          signal_strength: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          device_name?: string | null
+          id?: string
+          is_active?: boolean
+          last_seen?: string
+          signal_strength?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          device_name?: string | null
+          id?: string
+          is_active?: boolean
+          last_seen?: string
+          signal_strength?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      bluetooth_shared_prices: {
+        Row: {
+          commodity: string
+          contact_info: string | null
+          county: string
+          created_at: string
+          expires_at: string
+          id: string
+          location: string
+          market_name: string
+          price: number
+          quality_grade: string | null
+          shared_by_device: string
+          shared_by_user: string | null
+          source_type: string
+          timestamp: string
+          unit: string
+          verification_count: number | null
+        }
+        Insert: {
+          commodity: string
+          contact_info?: string | null
+          county: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          location: string
+          market_name: string
+          price: number
+          quality_grade?: string | null
+          shared_by_device: string
+          shared_by_user?: string | null
+          source_type?: string
+          timestamp?: string
+          unit: string
+          verification_count?: number | null
+        }
+        Update: {
+          commodity?: string
+          contact_info?: string | null
+          county?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          location?: string
+          market_name?: string
+          price?: number
+          quality_grade?: string | null
+          shared_by_device?: string
+          shared_by_user?: string | null
+          source_type?: string
+          timestamp?: string
+          unit?: string
+          verification_count?: number | null
+        }
+        Relationships: []
+      }
+      bluetooth_traders: {
+        Row: {
+          announced_by_user: string | null
+          commodities: string[] | null
+          contact_info: string | null
+          county: string
+          created_at: string
+          device_id: string
+          id: string
+          last_announced: string
+          location: string
+          rating: number | null
+          services: string[] | null
+          trader_name: string
+          trader_type: string
+        }
+        Insert: {
+          announced_by_user?: string | null
+          commodities?: string[] | null
+          contact_info?: string | null
+          county: string
+          created_at?: string
+          device_id: string
+          id?: string
+          last_announced?: string
+          location: string
+          rating?: number | null
+          services?: string[] | null
+          trader_name: string
+          trader_type: string
+        }
+        Update: {
+          announced_by_user?: string | null
+          commodities?: string[] | null
+          contact_info?: string | null
+          county?: string
+          created_at?: string
+          device_id?: string
+          id?: string
+          last_announced?: string
+          location?: string
+          rating?: number | null
+          services?: string[] | null
+          trader_name?: string
+          trader_type?: string
+        }
+        Relationships: []
+      }
       bulk_orders: {
         Row: {
           created_at: string
@@ -2513,6 +2699,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_expired_bluetooth_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       is_supplier_for_order: {
         Args: { order_supplier_id: string }
         Returns: boolean
