@@ -38,7 +38,7 @@ const moreFeatures = [
     title: 'Trading & Commerce',
     items: [
       { icon: Handshake, label: 'Barter Exchange', href: '/barter-exchange' },
-      { icon: Globe, label: 'Export Opportunities', href: '/export-market-opportunities' },
+      { icon: Globe, label: 'Export Opportunities', href: '/export-market-opportunities', badge: 'A1-A9' },
       { icon: Building2, label: 'Contract Farming', href: '/contract-farming' },
       { icon: MapPin, label: 'Road Markets', href: '/road-markets' }
     ]

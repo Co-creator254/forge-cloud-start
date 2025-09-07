@@ -76,6 +76,7 @@ import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
 import BluetoothMarketplacePage from './pages/BluetoothMarketplacePage';
 import MorePage from './pages/MorePage';
+import SupplyChainDashboardPage from './pages/SupplyChainDashboardPage';
 
 function App() {
   return (
@@ -154,9 +155,10 @@ function App() {
                   <Route path="/faq" element={<FAQPage />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                   <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-                  <Route path="/bluetooth-marketplace" element={<BluetoothMarketplacePage />} />
-                  <Route path="/more" element={<MorePage />} />
-                  <Route path="*" element={<NotFound />} />
+                   <Route path="/bluetooth-marketplace" element={<BluetoothMarketplacePage />} />
+                   <Route path="/more" element={<MorePage />} />
+                   <Route path="/supply-chain-dashboard" element={<SupplyChainDashboardPage />} />
+                   <Route path="*" element={<NotFound />} />
                </Routes>
              </React.Suspense>
              <Toaster />

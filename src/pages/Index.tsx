@@ -18,9 +18,11 @@ import {
   Truck,
   Warehouse,
   Clock,
-  Bluetooth
+  Bluetooth,
+  Package
 } from 'lucide-react';
 import { MobileNavigation } from '@/components/MobileNavigation';
+import { PWAInstallPrompt } from '@/components/pwa/PWAInstallPrompt';
 
 const Index: React.FC = () => {
   return (
@@ -119,7 +121,7 @@ const Index: React.FC = () => {
           </div>
           
           {/* Mobile Grid Layout */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {/* Marketplace Features */}
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
@@ -201,6 +203,34 @@ const Index: React.FC = () => {
               <CardContent className="pt-0">
                 <Link to="/farmer-portal">
                   <Button size="sm" className="w-full text-xs">Start Farming</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <Bluetooth className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-sm lg:text-base">Bluetooth Market</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Link to="/bluetooth-marketplace">
+                  <Button size="sm" className="w-full text-xs">Connect</Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <Package className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-sm lg:text-base">Supply Chain</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Link to="/supply-chain-dashboard">
+                  <Button size="sm" className="w-full text-xs">Track</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -350,6 +380,9 @@ const Index: React.FC = () => {
 
       {/* Featured Content */}
       <FeaturedContent />
+      
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
       
       {/* Professional Footer */}
       <footer className="bg-background border-t">
