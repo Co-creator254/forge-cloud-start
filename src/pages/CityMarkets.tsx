@@ -223,7 +223,13 @@ const CityMarkets: React.FC = () => {
               <p className="text-muted-foreground mb-4">
                 Try adjusting your search criteria or check back later for new markets.
               </p>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  // TODO: Implement market suggestion functionality
+                  alert('Market suggestion feature coming soon! Please contact us directly for now.');
+                }}
+              >
                 Suggest a Market
               </Button>
             </CardContent>

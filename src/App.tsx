@@ -77,6 +77,8 @@ import ScrollToTop from './components/ScrollToTop';
 import BluetoothMarketplacePage from './pages/BluetoothMarketplacePage';
 import MorePage from './pages/MorePage';
 import SupplyChainDashboardPage from './pages/SupplyChainDashboardPage';
+import MarketplacePage from './pages/MarketplacePage';
+import RoadMarketsPage from './pages/RoadMarketsPage';
 
 function App() {
   return (
@@ -118,8 +120,9 @@ function App() {
                  <Route path="/market-demand-hotspot" element={<MarketDemandHotspot />} />
                  <Route path="/commodity-trading" element={<CommodityTrading />} />
                   <Route path="/barter-exchange" element={<BarterExchange />} />
-                   <Route path="/marketplace" element={<Marketplace />} />
-                   <Route path="/agricultural-marketplace" element={<MarketplaceView />} />
+                   <Route path="/marketplace" element={<MarketplacePage />} />
+                   <Route path="/marketplace-old" element={<Marketplace />} />
+                    <Route path="/agricultural-marketplace" element={<MarketplaceView />} />
                   <Route path="/bulk-orders" element={<BulkOrders />} />
                   <Route path="/price-trends" element={<PriceTrends />} />
                  <Route path="/my-trades" element={<MyTrades />} />
@@ -134,7 +137,7 @@ function App() {
                    <Route path="/buy-requests" element={<BuyRequestsPage />} />
                    <Route path="/export-market-opportunities" element={<ExportMarketOpportunities />} />
                    <Route path="/contract-farming" element={<ContractFarming />} />
-                   <Route path="/road-markets" element={<RoadMarkets />} />
+                   <Route path="/road-markets" element={<RoadMarketsPage />} />
                   {/* <Route path="/donation-list" element={<DonationListPage />} /> */}
                  <Route path="/partner-with-us" element={<PartnerWithUs />} />
                  <Route path="/partner-dashboard" element={<PartnerDashboard />} />
