@@ -14,6 +14,159 @@ export type Database = {
   }
   public: {
     Tables: {
+      agricultural_events: {
+        Row: {
+          contact_info: Json
+          coordinates: Json | null
+          county: string
+          created_at: string
+          currency: string | null
+          current_participants: number | null
+          description: string
+          end_date: string
+          entry_fee: number | null
+          event_type: string
+          id: string
+          is_featured: boolean | null
+          location: string
+          max_participants: number | null
+          organizer_id: string
+          poster_url: string | null
+          registration_deadline: string | null
+          requirements: string | null
+          start_date: string
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          what_to_bring: string | null
+        }
+        Insert: {
+          contact_info: Json
+          coordinates?: Json | null
+          county: string
+          created_at?: string
+          currency?: string | null
+          current_participants?: number | null
+          description: string
+          end_date: string
+          entry_fee?: number | null
+          event_type: string
+          id?: string
+          is_featured?: boolean | null
+          location: string
+          max_participants?: number | null
+          organizer_id: string
+          poster_url?: string | null
+          registration_deadline?: string | null
+          requirements?: string | null
+          start_date: string
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          what_to_bring?: string | null
+        }
+        Update: {
+          contact_info?: Json
+          coordinates?: Json | null
+          county?: string
+          created_at?: string
+          currency?: string | null
+          current_participants?: number | null
+          description?: string
+          end_date?: string
+          entry_fee?: number | null
+          event_type?: string
+          id?: string
+          is_featured?: boolean | null
+          location?: string
+          max_participants?: number | null
+          organizer_id?: string
+          poster_url?: string | null
+          registration_deadline?: string | null
+          requirements?: string | null
+          start_date?: string
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          what_to_bring?: string | null
+        }
+        Relationships: []
+      }
+      agricultural_organizations: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          county: string | null
+          created_at: string
+          description: string
+          established_year: number | null
+          focus_areas: string[] | null
+          id: string
+          is_verified: boolean | null
+          location: string
+          logo_url: string | null
+          membership_info: Json | null
+          name: string
+          organization_type: string
+          rating: number | null
+          services: string[] | null
+          social_media: Json | null
+          target_audience: string[] | null
+          total_reviews: number | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          county?: string | null
+          created_at?: string
+          description: string
+          established_year?: number | null
+          focus_areas?: string[] | null
+          id?: string
+          is_verified?: boolean | null
+          location: string
+          logo_url?: string | null
+          membership_info?: Json | null
+          name: string
+          organization_type: string
+          rating?: number | null
+          services?: string[] | null
+          social_media?: Json | null
+          target_audience?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          county?: string | null
+          created_at?: string
+          description?: string
+          established_year?: number | null
+          focus_areas?: string[] | null
+          id?: string
+          is_verified?: boolean | null
+          location?: string
+          logo_url?: string | null
+          membership_info?: Json | null
+          name?: string
+          organization_type?: string
+          rating?: number | null
+          services?: string[] | null
+          social_media?: Json | null
+          target_audience?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       animals: {
         Row: {
           acquisition_date: string | null
@@ -650,6 +803,102 @@ export type Database = {
           },
         ]
       }
+      contract_farming: {
+        Row: {
+          application_deadline: string
+          benefits_offered: string
+          contact_email: string | null
+          contact_phone: string
+          contract_duration: string
+          contract_price: number
+          contractor_id: string
+          contractor_name: string
+          contractor_type: string
+          county: string
+          created_at: string
+          crop_type: string
+          currency: string | null
+          current_applications: number | null
+          delivery_terms: string
+          harvest_period: string
+          id: string
+          location: string
+          max_farmers: number | null
+          payment_terms: string
+          planting_season: string
+          quality_standards: string
+          required_quantity: number
+          requirements: string
+          status: string | null
+          support_provided: string[] | null
+          unit: string
+          updated_at: string
+          variety: string | null
+        }
+        Insert: {
+          application_deadline: string
+          benefits_offered: string
+          contact_email?: string | null
+          contact_phone: string
+          contract_duration: string
+          contract_price: number
+          contractor_id: string
+          contractor_name: string
+          contractor_type: string
+          county: string
+          created_at?: string
+          crop_type: string
+          currency?: string | null
+          current_applications?: number | null
+          delivery_terms: string
+          harvest_period: string
+          id?: string
+          location: string
+          max_farmers?: number | null
+          payment_terms: string
+          planting_season: string
+          quality_standards: string
+          required_quantity: number
+          requirements: string
+          status?: string | null
+          support_provided?: string[] | null
+          unit: string
+          updated_at?: string
+          variety?: string | null
+        }
+        Update: {
+          application_deadline?: string
+          benefits_offered?: string
+          contact_email?: string | null
+          contact_phone?: string
+          contract_duration?: string
+          contract_price?: number
+          contractor_id?: string
+          contractor_name?: string
+          contractor_type?: string
+          county?: string
+          created_at?: string
+          crop_type?: string
+          currency?: string | null
+          current_applications?: number | null
+          delivery_terms?: string
+          harvest_period?: string
+          id?: string
+          location?: string
+          max_farmers?: number | null
+          payment_terms?: string
+          planting_season?: string
+          quality_standards?: string
+          required_quantity?: number
+          requirements?: string
+          status?: string | null
+          support_provided?: string[] | null
+          unit?: string
+          updated_at?: string
+          variety?: string | null
+        }
+        Relationships: []
+      }
       donation_requests: {
         Row: {
           created_at: string
@@ -756,6 +1005,93 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      equipment_marketplace: {
+        Row: {
+          availability_status: string | null
+          brand: string | null
+          condition: string
+          contact_email: string | null
+          contact_phone: string | null
+          county: string
+          created_at: string
+          currency: string | null
+          description: string
+          equipment_name: string
+          equipment_type: string
+          id: string
+          images: string[] | null
+          is_featured: boolean | null
+          location: string
+          model: string | null
+          negotiable: boolean | null
+          price: number
+          rental_option: boolean | null
+          rental_price_per_day: number | null
+          seller_id: string
+          specifications: Json | null
+          tags: string[] | null
+          updated_at: string
+          view_count: number | null
+          year_manufactured: number | null
+        }
+        Insert: {
+          availability_status?: string | null
+          brand?: string | null
+          condition: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          county: string
+          created_at?: string
+          currency?: string | null
+          description: string
+          equipment_name: string
+          equipment_type: string
+          id?: string
+          images?: string[] | null
+          is_featured?: boolean | null
+          location: string
+          model?: string | null
+          negotiable?: boolean | null
+          price: number
+          rental_option?: boolean | null
+          rental_price_per_day?: number | null
+          seller_id: string
+          specifications?: Json | null
+          tags?: string[] | null
+          updated_at?: string
+          view_count?: number | null
+          year_manufactured?: number | null
+        }
+        Update: {
+          availability_status?: string | null
+          brand?: string | null
+          condition?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          county?: string
+          created_at?: string
+          currency?: string | null
+          description?: string
+          equipment_name?: string
+          equipment_type?: string
+          id?: string
+          images?: string[] | null
+          is_featured?: boolean | null
+          location?: string
+          model?: string | null
+          negotiable?: boolean | null
+          price?: number
+          rental_option?: boolean | null
+          rental_price_per_day?: number | null
+          seller_id?: string
+          specifications?: Json | null
+          tags?: string[] | null
+          updated_at?: string
+          view_count?: number | null
+          year_manufactured?: number | null
+        }
+        Relationships: []
       }
       farm_input_ban_recommendations: {
         Row: {
@@ -1163,6 +1499,84 @@ export type Database = {
           location?: string | null
           supplier_name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      farm_tourism_hosts: {
+        Row: {
+          amenities: string[] | null
+          availability: Json | null
+          business_type: string
+          contact_email: string | null
+          contact_phone: string | null
+          coordinates: Json | null
+          county: string
+          created_at: string
+          crops: string[] | null
+          description: string
+          farm_name: string
+          host_id: string
+          id: string
+          image_urls: string[] | null
+          is_verified: boolean | null
+          livestock: string[] | null
+          location: string
+          pricing: Json | null
+          rating: number | null
+          social_media: Json | null
+          total_reviews: number | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          amenities?: string[] | null
+          availability?: Json | null
+          business_type: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          coordinates?: Json | null
+          county: string
+          created_at?: string
+          crops?: string[] | null
+          description: string
+          farm_name: string
+          host_id: string
+          id?: string
+          image_urls?: string[] | null
+          is_verified?: boolean | null
+          livestock?: string[] | null
+          location: string
+          pricing?: Json | null
+          rating?: number | null
+          social_media?: Json | null
+          total_reviews?: number | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          amenities?: string[] | null
+          availability?: Json | null
+          business_type?: string
+          contact_email?: string | null
+          contact_phone?: string | null
+          coordinates?: Json | null
+          county?: string
+          created_at?: string
+          crops?: string[] | null
+          description?: string
+          farm_name?: string
+          host_id?: string
+          id?: string
+          image_urls?: string[] | null
+          is_verified?: boolean | null
+          livestock?: string[] | null
+          location?: string
+          pricing?: Json | null
+          rating?: number | null
+          social_media?: Json | null
+          total_reviews?: number | null
+          updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -2691,6 +3105,81 @@ export type Database = {
           storage_types?: string[] | null
           temperature_controlled?: boolean | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      weather_forecasts: {
+        Row: {
+          agricultural_advisory: string | null
+          coordinates: Json
+          county: string
+          created_at: string
+          forecast_date: string
+          harvesting_recommendation: string | null
+          humidity: number | null
+          id: string
+          location: string
+          pest_disease_alert: string | null
+          planting_recommendation: string | null
+          pressure: number | null
+          rainfall: number | null
+          temperature_max: number | null
+          temperature_min: number | null
+          updated_at: string
+          uv_index: number | null
+          visibility: number | null
+          weather_condition: string
+          weather_description: string | null
+          wind_direction: string | null
+          wind_speed: number | null
+        }
+        Insert: {
+          agricultural_advisory?: string | null
+          coordinates: Json
+          county: string
+          created_at?: string
+          forecast_date: string
+          harvesting_recommendation?: string | null
+          humidity?: number | null
+          id?: string
+          location: string
+          pest_disease_alert?: string | null
+          planting_recommendation?: string | null
+          pressure?: number | null
+          rainfall?: number | null
+          temperature_max?: number | null
+          temperature_min?: number | null
+          updated_at?: string
+          uv_index?: number | null
+          visibility?: number | null
+          weather_condition: string
+          weather_description?: string | null
+          wind_direction?: string | null
+          wind_speed?: number | null
+        }
+        Update: {
+          agricultural_advisory?: string | null
+          coordinates?: Json
+          county?: string
+          created_at?: string
+          forecast_date?: string
+          harvesting_recommendation?: string | null
+          humidity?: number | null
+          id?: string
+          location?: string
+          pest_disease_alert?: string | null
+          planting_recommendation?: string | null
+          pressure?: number | null
+          rainfall?: number | null
+          temperature_max?: number | null
+          temperature_min?: number | null
+          updated_at?: string
+          uv_index?: number | null
+          visibility?: number | null
+          weather_condition?: string
+          weather_description?: string | null
+          wind_direction?: string | null
+          wind_speed?: number | null
         }
         Relationships: []
       }

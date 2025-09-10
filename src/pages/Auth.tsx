@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,8 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { PhoneAuth } from '@/components/auth/PhoneAuth';
-import Header from '@/components/Header';
-import { Mail, Phone } from 'lucide-react';
+import { Mail, Phone, Leaf } from 'lucide-react';
+import heroImage from '@/assets/hero-farming-team.jpg';
 
 const Auth: React.FC = () => {
   const { toast } = useToast();
@@ -48,9 +47,14 @@ const Auth: React.FC = () => {
     setLoading(true);
     
     try {
+      const redirectUrl = `${window.location.origin}/`;
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
+        options: {
+          emailRedirectTo: redirectUrl
+        }
       });
       
       if (error) {
@@ -88,10 +92,13 @@ const Auth: React.FC = () => {
     setLoading(true);
     
     try {
+      const redirectUrl = `${window.location.origin}/`;
+      
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: redirectUrl,
           data: {
             full_name: fullName,
           },
@@ -129,136 +136,196 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="py-12 px-6 max-w-md mx-auto">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">Welcome to AgriConnect</CardTitle>
-            <CardDescription className="text-center">
-              Sign in or create an account to access all features
-              <br />
-              <span className="text-sm text-muted-foreground">
-                Karibu AgriConnect - Ingia au fungua akaunti
-              </span>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Authentication method selector */}
-            <div className="flex gap-2 mb-4">
-              <Button
-                variant={authMethod === 'email' ? 'default' : 'outline'}
-                onClick={() => setAuthMethod('email')}
-                className="flex-1"
-                size="sm"
-              >
-                <Mail className="h-4 w-4 mr-2" />
-                Email
-              </Button>
-              <Button
-                variant={authMethod === 'phone' ? 'default' : 'outline'}
-                onClick={() => setAuthMethod('phone')}
-                className="flex-1"
-                size="sm"
-              >
-                <Phone className="h-4 w-4 mr-2" />
-                Phone / Simu
-              </Button>
-            </div>
-
-            {authMethod === 'phone' ? (
-              <div className="mt-4">
-                <PhoneAuth onSuccess={handlePhoneAuthSuccess} />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background Image with Blur */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${heroImage})`,
+          filter: 'blur(8px)',
+          transform: 'scale(1.1)',
+        }}
+      />
+      
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/50" />
+      
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          {/* Logo and Branding */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center mb-4">
+              <div className="bg-gradient-to-r from-green-500 to-blue-600 p-3 rounded-full">
+                <Leaf className="h-8 w-8 text-white" />
               </div>
-            ) : (
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="signup">Create Account</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="login">
-                  <form onSubmit={handleLogin} className="space-y-4 mt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email-login">Email</Label>
-                      <Input
-                        id="email-login"
-                        type="email"
-                        placeholder="your.email@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password-login">Password</Label>
-                      <Input
-                        id="password-login"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={loading}>
-                      {loading ? "Logging in..." : "Login"}
-                    </Button>
-                  </form>
-                </TabsContent>
-                
-                <TabsContent value="signup">
-                  <form onSubmit={handleSignup} className="space-y-4 mt-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="fullname-signup">Full Name</Label>
-                      <Input
-                        id="fullname-signup"
-                        placeholder="Your Name"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email-signup">Email</Label>
-                      <Input
-                        id="email-signup"
-                        type="email"
-                        placeholder="your.email@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password-signup">Password</Label>
-                      <Input
-                        id="password-signup"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Password must be at least 6 characters long
-                      </p>
-                    </div>
-                    <Button type="submit" className="w-full" disabled={loading}>
-                      {loading ? "Creating account..." : "Create Account"}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
-            )}
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <p className="text-sm text-muted-foreground text-center">
-              By continuing, you agree to our Terms of Service and Privacy Policy.
-              <br />
-              <span className="text-xs">Kwa kuendelea, unakubali Sheria na Sera yetu ya Faragha.</span>
+            </div>
+            <h1 className="text-4xl font-bold text-white mb-2">
+              AGRI<span className="text-green-400">CONNECT</span>
+            </h1>
+            <p className="text-gray-200 text-lg">
+              MIS FARMRETAIL
             </p>
-          </CardFooter>
-        </Card>
-      </main>
+            <p className="text-gray-300 text-sm mt-2">
+              eCommerce platform for agri-inputs
+            </p>
+          </div>
+
+          <Card className="backdrop-blur-md bg-white/10 border-white/20 shadow-2xl">
+            <CardHeader className="text-center">
+              <CardTitle className="text-xl text-white">Welcome to AgriConnect</CardTitle>
+              <CardDescription className="text-gray-200">
+                Sign in or create an account to access all features
+                <br />
+                <span className="text-sm text-gray-300">
+                  Karibu AgriConnect - Ingia au fungua akaunti
+                </span>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Authentication method selector */}
+              <div className="flex gap-2 mb-4">
+                <Button
+                  variant={authMethod === 'email' ? 'default' : 'outline'}
+                  onClick={() => setAuthMethod('email')}
+                  className="flex-1 bg-white/20 border-white/30 text-white hover:bg-white/30"
+                  size="sm"
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Email
+                </Button>
+                <Button
+                  variant={authMethod === 'phone' ? 'default' : 'outline'}
+                  onClick={() => setAuthMethod('phone')}
+                  className="flex-1 bg-white/20 border-white/30 text-white hover:bg-white/30"
+                  size="sm"
+                >
+                  <Phone className="h-4 w-4 mr-2" />
+                  Phone / Simu
+                </Button>
+              </div>
+
+              {authMethod === 'phone' ? (
+                <div className="mt-4">
+                  <PhoneAuth onSuccess={handlePhoneAuthSuccess} />
+                </div>
+              ) : (
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 bg-white/20">
+                    <TabsTrigger value="login" className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900">
+                      Sign In
+                    </TabsTrigger>
+                    <TabsTrigger value="signup" className="text-white data-[state=active]:bg-white data-[state=active]:text-gray-900">
+                      Register Now
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="login">
+                    <form onSubmit={handleLogin} className="space-y-4 mt-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email-login" className="text-white">Email</Label>
+                        <Input
+                          id="email-login"
+                          type="email"
+                          placeholder="your.email@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="password-login" className="text-white">Password</Label>
+                        <Input
+                          id="password-login"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                          required
+                        />
+                      </div>
+                      <Button 
+                        type="submit" 
+                        className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold py-3" 
+                        disabled={loading}
+                      >
+                        {loading ? "Signing In..." : "Sign In"}
+                      </Button>
+                    </form>
+                  </TabsContent>
+                  
+                  <TabsContent value="signup">
+                    <form onSubmit={handleSignup} className="space-y-4 mt-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="fullname-signup" className="text-white">Full Name</Label>
+                        <Input
+                          id="fullname-signup"
+                          placeholder="Your Name"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email-signup" className="text-white">Email</Label>
+                        <Input
+                          id="email-signup"
+                          type="email"
+                          placeholder="your.email@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="password-signup" className="text-white">Password</Label>
+                        <Input
+                          id="password-signup"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="bg-white/20 border-white/30 text-white placeholder:text-gray-300"
+                          required
+                        />
+                        <p className="text-xs text-gray-300">
+                          Password must be at least 6 characters long
+                        </p>
+                      </div>
+                      <Button 
+                        type="submit" 
+                        className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold py-3" 
+                        disabled={loading}
+                      >
+                        {loading ? "Creating Account..." : "Register Now"}
+                      </Button>
+                    </form>
+                  </TabsContent>
+                </Tabs>
+              )}
+            </CardContent>
+            <CardFooter className="flex flex-col items-center space-y-4">
+              <p className="text-sm text-gray-300 text-center">
+                By continuing, you agree to our Terms of Service and Privacy Policy.
+                <br />
+                <span className="text-xs">Kwa kuendelea, unakubali Sheria na Sera yetu ya Faragha.</span>
+              </p>
+              
+              {/* Branding Footer */}
+              <div className="flex items-center text-white text-sm">
+                <div className="flex items-center">
+                  <span className="font-bold">KOLTIVA</span>
+                  <span className="mx-2">|</span>
+                  <span className="text-xs">BEYOND TRACEABILITY</span>
+                </div>
+              </div>
+              <p className="text-xs text-gray-400">Version 1.6.2.0*</p>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
