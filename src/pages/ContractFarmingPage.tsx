@@ -21,7 +21,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import Header from '@/components/Header';
-import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
+import { MobileNavigation } from '@/components/MobileNavigation';
 
 interface ContractFarming {
   id: string;
@@ -631,7 +631,7 @@ const ContractFarmingPage: React.FC = () => {
         )}
       </main>
 
-      <MobileBottomNav />
+      <MobileNavigation />
     </div>
   );
 };

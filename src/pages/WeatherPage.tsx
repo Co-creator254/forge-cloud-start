@@ -22,7 +22,7 @@ import {
   Leaf
 } from 'lucide-react';
 import Header from '@/components/Header';
-import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
+import { MobileNavigation } from '@/components/MobileNavigation';
 
 interface WeatherData {
   id: string;
@@ -430,7 +430,7 @@ const WeatherPage: React.FC = () => {
         </Card>
       </main>
 
-      <MobileBottomNav />
+      <MobileNavigation />
     </div>
   );
 };

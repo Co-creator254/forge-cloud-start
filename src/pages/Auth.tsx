@@ -47,14 +47,9 @@ const Auth: React.FC = () => {
     setLoading(true);
     
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-        options: {
-          emailRedirectTo: redirectUrl
-        }
       });
       
       if (error) {

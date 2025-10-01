@@ -899,6 +899,99 @@ export type Database = {
         }
         Relationships: []
       }
+      cooperative_groups: {
+        Row: {
+          activities: string[] | null
+          bank_account_info: Json | null
+          contact_email: string | null
+          contact_person: string
+          contact_phone: string
+          coordinates: Json | null
+          county: string
+          created_at: string
+          crops_traded: string[] | null
+          description: string | null
+          documents: Json | null
+          founded_date: string | null
+          group_leader_id: string | null
+          group_type: string
+          id: string
+          is_verified: boolean | null
+          location: string
+          logo_url: string | null
+          meeting_schedule: string | null
+          member_count: number | null
+          membership_fee: number | null
+          name: string
+          registration_number: string | null
+          services_offered: string[] | null
+          share_value: number | null
+          status: string | null
+          total_shares: number | null
+          updated_at: string
+        }
+        Insert: {
+          activities?: string[] | null
+          bank_account_info?: Json | null
+          contact_email?: string | null
+          contact_person: string
+          contact_phone: string
+          coordinates?: Json | null
+          county: string
+          created_at?: string
+          crops_traded?: string[] | null
+          description?: string | null
+          documents?: Json | null
+          founded_date?: string | null
+          group_leader_id?: string | null
+          group_type: string
+          id?: string
+          is_verified?: boolean | null
+          location: string
+          logo_url?: string | null
+          meeting_schedule?: string | null
+          member_count?: number | null
+          membership_fee?: number | null
+          name: string
+          registration_number?: string | null
+          services_offered?: string[] | null
+          share_value?: number | null
+          status?: string | null
+          total_shares?: number | null
+          updated_at?: string
+        }
+        Update: {
+          activities?: string[] | null
+          bank_account_info?: Json | null
+          contact_email?: string | null
+          contact_person?: string
+          contact_phone?: string
+          coordinates?: Json | null
+          county?: string
+          created_at?: string
+          crops_traded?: string[] | null
+          description?: string | null
+          documents?: Json | null
+          founded_date?: string | null
+          group_leader_id?: string | null
+          group_type?: string
+          id?: string
+          is_verified?: boolean | null
+          location?: string
+          logo_url?: string | null
+          meeting_schedule?: string | null
+          member_count?: number | null
+          membership_fee?: number | null
+          name?: string
+          registration_number?: string | null
+          services_offered?: string[] | null
+          share_value?: number | null
+          status?: string | null
+          total_shares?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       donation_requests: {
         Row: {
           created_at: string
@@ -1801,6 +1894,94 @@ export type Database = {
           },
         ]
       }
+      group_members: {
+        Row: {
+          contribution_balance: number | null
+          created_at: string
+          group_id: string
+          id: string
+          join_date: string | null
+          member_role: string | null
+          membership_status: string | null
+          shares_owned: number | null
+          user_id: string
+        }
+        Insert: {
+          contribution_balance?: number | null
+          created_at?: string
+          group_id: string
+          id?: string
+          join_date?: string | null
+          member_role?: string | null
+          membership_status?: string | null
+          shares_owned?: number | null
+          user_id: string
+        }
+        Update: {
+          contribution_balance?: number | null
+          created_at?: string
+          group_id?: string
+          id?: string
+          join_date?: string | null
+          member_role?: string | null
+          membership_status?: string | null
+          shares_owned?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_messages: {
+        Row: {
+          attachments: Json | null
+          created_at: string
+          group_id: string
+          id: string
+          is_priority: boolean | null
+          message_text: string
+          message_type: string | null
+          read_by: string[] | null
+          sender_id: string
+        }
+        Insert: {
+          attachments?: Json | null
+          created_at?: string
+          group_id: string
+          id?: string
+          is_priority?: boolean | null
+          message_text: string
+          message_type?: string | null
+          read_by?: string[] | null
+          sender_id: string
+        }
+        Update: {
+          attachments?: Json | null
+          created_at?: string
+          group_id?: string
+          id?: string
+          is_priority?: boolean | null
+          message_text?: string
+          message_type?: string | null
+          read_by?: string[] | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_messages_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_order_participants: {
         Row: {
           id: string
@@ -1837,6 +2018,59 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      group_transactions: {
+        Row: {
+          amount: number
+          approved_by: string | null
+          created_at: string
+          currency: string | null
+          description: string | null
+          group_id: string
+          id: string
+          member_id: string | null
+          reference_number: string | null
+          status: string | null
+          transaction_date: string | null
+          transaction_type: string
+        }
+        Insert: {
+          amount: number
+          approved_by?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          group_id: string
+          id?: string
+          member_id?: string | null
+          reference_number?: string | null
+          status?: string | null
+          transaction_date?: string | null
+          transaction_type: string
+        }
+        Update: {
+          amount?: number
+          approved_by?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          group_id?: string
+          id?: string
+          member_id?: string | null
+          reference_number?: string | null
+          status?: string | null
+          transaction_date?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_transactions_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_groups"
+            referencedColumns: ["id"]
           },
         ]
       }

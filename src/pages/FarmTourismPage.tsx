@@ -25,7 +25,7 @@ import {
   Camera
 } from 'lucide-react';
 import Header from '@/components/Header';
-import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
+import { MobileNavigation } from '@/components/MobileNavigation';
 
 interface FarmHost {
   id: string;
@@ -932,7 +932,7 @@ const FarmTourismPage: React.FC = () => {
         </Tabs>
       </main>
 
-      <MobileBottomNav />
+      <MobileNavigation />
     </div>
   );
 };

@@ -79,6 +79,11 @@ import MorePage from './pages/MorePage';
 import SupplyChainDashboardPage from './pages/SupplyChainDashboardPage';
 import MarketplacePage from './pages/MarketplacePage';
 import RoadMarketsPage from './pages/RoadMarketsPage';
+import CooperativeGroupsPage from './pages/CooperativeGroupsPage';
+import FarmTourismPage from './pages/FarmTourismPage';
+import WeatherPage from './pages/WeatherPage';
+import ContractFarmingPage from './pages/ContractFarmingPage';
+import EquipmentMarketplacePage from './pages/EquipmentMarketplacePage';
 
 function App() {
   return (
@@ -161,6 +166,11 @@ function App() {
                    <Route path="/bluetooth-marketplace" element={<BluetoothMarketplacePage />} />
                    <Route path="/more" element={<MorePage />} />
                    <Route path="/supply-chain-dashboard" element={<SupplyChainDashboardPage />} />
+                   <Route path="/cooperative-groups" element={<CooperativeGroupsPage />} />
+                   <Route path="/farm-tourism" element={<FarmTourismPage />} />
+                   <Route path="/weather" element={<WeatherPage />} />
+                   <Route path="/contract-farming-page" element={<ContractFarmingPage />} />
+                   <Route path="/equipment-marketplace-page" element={<EquipmentMarketplacePage />} />
                    <Route path="*" element={<NotFound />} />
                </Routes>
              </React.Suspense>

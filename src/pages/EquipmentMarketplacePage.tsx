@@ -21,7 +21,7 @@ import {
   Mail
 } from 'lucide-react';
 import Header from '@/components/Header';
-import { MobileBottomNav } from '@/components/navigation/MobileBottomNav';
+import { MobileNavigation } from '@/components/MobileNavigation';
 
 interface Equipment {
   id: string;
@@ -592,7 +592,7 @@ const EquipmentMarketplacePage: React.FC = () => {
         )}
       </main>
 
-      <MobileBottomNav />
+      <MobileNavigation />
     </div>
   );
 };

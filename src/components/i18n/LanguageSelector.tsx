@@ -26,7 +26,7 @@ const SUPPORTED_LANGUAGES: Language[] = [
 ];
 
 // Simple translations cache
-let translationsCache: Record<string, Record<string, string>> = {};
+let translationsCache: Record<string, string> = {};
 
 export const LanguageSelector: React.FC = () => {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(SUPPORTED_LANGUAGES[0]);
@@ -49,7 +49,7 @@ export const LanguageSelector: React.FC = () => {
     // Check cache first
     const cacheKey = `${text}-${targetLang}`;
     if (translationsCache[cacheKey]) {
-      return translationsCache[cacheKey];
+      return translationsCache[cacheKey] as string;
     }
 
     try {
