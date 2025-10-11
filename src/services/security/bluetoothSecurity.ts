@@ -47,7 +47,7 @@ export class BluetoothSecurity {
     const decrypted = await crypto.subtle.decrypt(
       {
         name: 'AES-GCM',
-        iv: iv,
+        iv: iv.buffer as ArrayBuffer,
       },
       key,
       encryptedData
