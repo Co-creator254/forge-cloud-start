@@ -425,7 +425,7 @@ const Index: React.FC = () => {
             
             {/* Company */}
             <div>
-              <h3 className="font-semibold mb-3 text-sm">AgriConnect</h3>
+              <h3 className="font-semibold mb-3 text-sm">SokoConnect</h3>
               <p className="text-xs text-muted-foreground mb-3">
                 Connecting farmers, traders, and service providers for a better agricultural ecosystem.
               </p>
@@ -438,7 +438,7 @@ const Index: React.FC = () => {
           
           <div className="border-t mt-6 pt-4 text-center">
             <p className="text-xs text-muted-foreground">
-              © 2024 AgriConnect. All rights reserved.
+              © 2024 SokoConnect. All rights reserved.
             </p>
           </div>
         </div>

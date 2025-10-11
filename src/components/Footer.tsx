@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-semibold mb-4">AgriConnect</h3>
+            <h3 className="font-semibold mb-4">SokoConnect</h3>
             <p className="text-sm text-muted-foreground">
               Connecting farmers, traders, and service providers for a better agricultural ecosystem.
             </p>

@@ -62,7 +62,7 @@ export const MobileNav: React.FC = () => {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-primary-foreground font-bold">A</span>
               </div>
-              <span className="font-bold text-lg">AgriConnect</span>
+              <span className="font-bold text-lg">SokoConnect</span>
             </Link>
             
             {navigationItems.map((item) => {

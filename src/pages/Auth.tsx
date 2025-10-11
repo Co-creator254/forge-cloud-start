@@ -168,12 +168,12 @@ const Auth: React.FC = () => {
 
           <Card className="backdrop-blur-md bg-white/10 border-white/20 shadow-2xl">
             <CardHeader className="text-center">
-              <CardTitle className="text-xl text-white">Welcome to AgriConnect</CardTitle>
+              <CardTitle className="text-xl text-white">Welcome to SokoConnect</CardTitle>
               <CardDescription className="text-gray-200">
                 Sign in or create an account to access all features
                 <br />
                 <span className="text-sm text-gray-300">
-                  Karibu AgriConnect - Ingia au fungua akaunti
+                  Karibu SokoConnect - Ingia au fungua akaunti
                 </span>
               </CardDescription>
             </CardHeader>
