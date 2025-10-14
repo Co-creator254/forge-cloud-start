@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
+import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,7 +63,7 @@ const TrainingEvents = () => {
   });
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <header className="sticky top-0 z-30 w-full border-b bg-background">
         <div className="container flex h-16 items-center">
           <div className="hidden md:block">
@@ -183,6 +184,7 @@ const TrainingEvents = () => {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 };

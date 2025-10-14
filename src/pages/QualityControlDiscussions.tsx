@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { MessageSquare } from "lucide-react";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
+import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { QualityControlDiscussion } from "@/types";
@@ -56,7 +57,7 @@ const QualityControlDiscussions = () => {
   });
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-20 md:pb-0">
       <header className="sticky top-0 z-30 w-full border-b bg-background">
         <div className="container flex h-16 items-center">
           <div className="hidden md:block">
@@ -119,6 +120,7 @@ const QualityControlDiscussions = () => {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 };

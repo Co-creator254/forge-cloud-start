@@ -747,6 +747,67 @@ export type Database = {
           },
         ]
       }
+      community_post_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_post_reports: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          reason: string
+          reporter_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          reason: string
+          reporter_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          reason?: string
+          reporter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_post_reports_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_posts: {
         Row: {
           author_id: string
@@ -3063,6 +3124,10 @@ export type Database = {
       }
       training_events: {
         Row: {
+          certificate_provided: boolean | null
+          contact_info: string | null
+          cost: number | null
+          county: string | null
           created_at: string
           current_participants: number | null
           description: string | null
@@ -3070,17 +3135,27 @@ export type Database = {
           event_type: string | null
           fee: number | null
           id: string
+          is_active: boolean | null
+          is_online: boolean | null
           location: string | null
           materials_provided: string[] | null
           max_participants: number | null
+          meeting_link: string | null
           organizer_id: string
+          registration_deadline: string | null
           requirements: string | null
           start_date: string
           status: string | null
+          target_audience: string[] | null
           title: string
+          topics: string[] | null
           updated_at: string
         }
         Insert: {
+          certificate_provided?: boolean | null
+          contact_info?: string | null
+          cost?: number | null
+          county?: string | null
           created_at?: string
           current_participants?: number | null
           description?: string | null
@@ -3088,17 +3163,27 @@ export type Database = {
           event_type?: string | null
           fee?: number | null
           id?: string
+          is_active?: boolean | null
+          is_online?: boolean | null
           location?: string | null
           materials_provided?: string[] | null
           max_participants?: number | null
+          meeting_link?: string | null
           organizer_id: string
+          registration_deadline?: string | null
           requirements?: string | null
           start_date: string
           status?: string | null
+          target_audience?: string[] | null
           title: string
+          topics?: string[] | null
           updated_at?: string
         }
         Update: {
+          certificate_provided?: boolean | null
+          contact_info?: string | null
+          cost?: number | null
+          county?: string | null
           created_at?: string
           current_participants?: number | null
           description?: string | null
@@ -3106,14 +3191,20 @@ export type Database = {
           event_type?: string | null
           fee?: number | null
           id?: string
+          is_active?: boolean | null
+          is_online?: boolean | null
           location?: string | null
           materials_provided?: string[] | null
           max_participants?: number | null
+          meeting_link?: string | null
           organizer_id?: string
+          registration_deadline?: string | null
           requirements?: string | null
           start_date?: string
           status?: string | null
+          target_audience?: string[] | null
           title?: string
+          topics?: string[] | null
           updated_at?: string
         }
         Relationships: [
@@ -3423,6 +3514,10 @@ export type Database = {
     }
     Functions: {
       cleanup_expired_bluetooth_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      cleanup_old_training_events: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
