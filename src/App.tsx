@@ -48,6 +48,7 @@ import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
 import KilimoAmsData from './pages/KilimoAmsData';
 import ApiDocs from './pages/ApiDocs';
 import SupplyChainAPI from './pages/SupplyChainAPI';
+import PartnersShowcase from './pages/PartnersShowcase';
 import DataManagement from './pages/DataManagement';
 import DataStatus from './pages/DataStatus';
 import DataJobs from './pages/DataJobs';
@@ -172,9 +173,10 @@ function App() {
                    <Route path="/cooperative-groups" element={<CooperativeGroupsPage />} />
                    <Route path="/farm-tourism" element={<FarmTourismPage />} />
                    <Route path="/weather" element={<WeatherPage />} />
-                   <Route path="/contract-farming-page" element={<ContractFarmingPage />} />
-                   <Route path="/equipment-marketplace-page" element={<EquipmentMarketplacePage />} />
-                   <Route path="*" element={<NotFound />} />
+                  <Route path="/contract-farming-page" element={<ContractFarmingPage />} />
+                  <Route path="/equipment-marketplace-page" element={<EquipmentMarketplacePage />} />
+                  <Route path="/partners-showcase" element={<PartnersShowcase />} />
+                  <Route path="*" element={<NotFound />} />
                </Routes>
               </React.Suspense>
               <Toaster />

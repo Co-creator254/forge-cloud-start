@@ -249,17 +249,17 @@ const About: React.FC = () => {
               <Separator className="my-6 bg-white/20" />
               
               <div className="grid md:grid-cols-3 gap-4 text-sm">
-                <div className="flex items-center justify-center gap-2">
-                  <Mail className="h-4 w-4" />
-                  partnerships@agriconnect.co.ke
+                <div className="flex flex-col md:flex-row items-center justify-center gap-2">
+                  <Mail className="h-4 w-4 flex-shrink-0" />
+                  <span className="break-all text-center md:text-left">sokoconnect@tenderzville-portal.co.ke</span>
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <Phone className="h-4 w-4" />
-                  +254 700 123 456
+                  <Phone className="h-4 w-4 flex-shrink-0" />
+                  <span>+254 700 123 456</span>
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  Nairobi, Kenya
+                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                  <span>Nairobi, Kenya</span>
                 </div>
               </div>
             </CardContent>
