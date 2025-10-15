@@ -554,6 +554,50 @@ export type Database = {
         }
         Relationships: []
       }
+      bulk_order_bids: {
+        Row: {
+          bid_price: number
+          bidder_id: string
+          created_at: string | null
+          delivery_terms: string | null
+          id: string
+          order_id: string
+          quantity: number
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bid_price: number
+          bidder_id: string
+          created_at?: string | null
+          delivery_terms?: string | null
+          id?: string
+          order_id: string
+          quantity: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bid_price?: number
+          bidder_id?: string
+          created_at?: string | null
+          delivery_terms?: string | null
+          id?: string
+          order_id?: string
+          quantity?: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bulk_order_bids_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "bulk_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bulk_orders: {
         Row: {
           created_at: string
@@ -2278,6 +2322,75 @@ export type Database = {
         }
         Relationships: []
       }
+      market_linkages: {
+        Row: {
+          application_deadline: string | null
+          benefits: string[] | null
+          contact_info: string
+          counties: string[] | null
+          created_at: string | null
+          created_by: string
+          crops_involved: string[] | null
+          description: string
+          duration_months: number | null
+          id: string
+          linkage_type: string
+          max_participants: number | null
+          minimum_quantity: number | null
+          participants_count: number | null
+          price_range: string | null
+          requirements: string[] | null
+          start_date: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          application_deadline?: string | null
+          benefits?: string[] | null
+          contact_info: string
+          counties?: string[] | null
+          created_at?: string | null
+          created_by: string
+          crops_involved?: string[] | null
+          description: string
+          duration_months?: number | null
+          id?: string
+          linkage_type: string
+          max_participants?: number | null
+          minimum_quantity?: number | null
+          participants_count?: number | null
+          price_range?: string | null
+          requirements?: string[] | null
+          start_date?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          application_deadline?: string | null
+          benefits?: string[] | null
+          contact_info?: string
+          counties?: string[] | null
+          created_at?: string | null
+          created_by?: string
+          crops_involved?: string[] | null
+          description?: string
+          duration_months?: number | null
+          id?: string
+          linkage_type?: string
+          max_participants?: number | null
+          minimum_quantity?: number | null
+          participants_count?: number | null
+          price_range?: string | null
+          requirements?: string[] | null
+          start_date?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       market_prices: {
         Row: {
           commodity_name: string
@@ -2886,6 +2999,50 @@ export type Database = {
         }
         Relationships: []
       }
+      reverse_auction_bids: {
+        Row: {
+          auction_id: string
+          bid_price: number
+          bidder_id: string
+          created_at: string | null
+          delivery_timeframe: string | null
+          id: string
+          quantity_offered: number
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          auction_id: string
+          bid_price: number
+          bidder_id: string
+          created_at?: string | null
+          delivery_timeframe?: string | null
+          id?: string
+          quantity_offered: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          auction_id?: string
+          bid_price?: number
+          bidder_id?: string
+          created_at?: string | null
+          delivery_timeframe?: string | null
+          id?: string
+          quantity_offered?: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reverse_auction_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "reverse_bulk_auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reverse_bulk_auctions: {
         Row: {
           buyer_id: string
@@ -3068,6 +3225,74 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      subscription_box_deliveries: {
+        Row: {
+          box_id: string
+          created_at: string | null
+          delivered: boolean | null
+          delivery_date: string
+          id: string
+        }
+        Insert: {
+          box_id: string
+          created_at?: string | null
+          delivered?: boolean | null
+          delivery_date: string
+          id?: string
+        }
+        Update: {
+          box_id?: string
+          created_at?: string | null
+          delivered?: boolean | null
+          delivery_date?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_box_deliveries_box_id_fkey"
+            columns: ["box_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_boxes: {
+        Row: {
+          box_type: string
+          consumer_id: string
+          created_at: string | null
+          duration_months: number
+          farmer_id: string | null
+          frequency: string
+          id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          box_type: string
+          consumer_id: string
+          created_at?: string | null
+          duration_months: number
+          farmer_id?: string | null
+          frequency: string
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          box_type?: string
+          consumer_id?: string
+          created_at?: string | null
+          duration_months?: number
+          farmer_id?: string | null
+          frequency?: string
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       success_stories: {
         Row: {

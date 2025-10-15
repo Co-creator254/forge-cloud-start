@@ -22,24 +22,24 @@ const QualityControlDiscussions = () => {
   
   const allTags = ["counterfeit", "verification", "export", "regulations", "avocados", "EU", "pesticides"];
 
-  useEffect(() => {
-    const loadDiscussions = async () => {
-      try {
-        setIsLoading(true);
-        const data = await fetchQualityDiscussions();
-        setDiscussions(data);
-      } catch (error) {
-        console.error("Error fetching discussions:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load discussions. Please try again later.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const loadDiscussions = async () => {
+    try {
+      setIsLoading(true);
+      const data = await fetchQualityDiscussions();
+      setDiscussions(data);
+    } catch (error) {
+      console.error("Error fetching discussions:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load discussions. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadDiscussions();
   }, [toast]);
 
@@ -70,9 +70,9 @@ const QualityControlDiscussions = () => {
       </header>
 
       <main className="flex-1 container py-6">
-        <DiscussionHeader />
+        <DiscussionHeader onDiscussionCreated={loadDiscussions} />
 
-        <DiscussionFilters 
+        <DiscussionFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           filterTag={filterTag}

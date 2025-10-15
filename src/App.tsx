@@ -60,6 +60,7 @@ import PartnerWithUs from './pages/PartnerWithUs';
 import PartnerDashboard from './pages/PartnerDashboard';
 import { AuthProvider } from './hooks/useAuth';
 import { Toaster } from 'sonner';
+import { BottomNav } from './components/BottomNav';
 import FarmInputMarketplace from './pages/FarmInputMarketplace';
 import CityMarkets from './pages/CityMarkets';
 import EquipmentMarketplace from './pages/EquipmentMarketplace';
@@ -69,6 +70,7 @@ import BulkOrderDashboard from './pages/BulkOrderDashboard';
 import DonationFormPage from './pages/DonationFormPage';
 import BuyRequestsPage from './pages/BuyRequestsPage';
 import ExportMarketOpportunities from './pages/ExportMarketOpportunities';
+import ExportOpportunities from './pages/ExportOpportunities';
 import ContractFarming from './pages/ContractFarming';
 import RoadMarkets from './pages/RoadMarkets';
 import AdminPanel from './pages/AdminPanel';
@@ -141,6 +143,7 @@ function App() {
                   <Route path="/donation-form" element={<DonationFormPage />} />
                    <Route path="/buy-requests" element={<BuyRequestsPage />} />
                    <Route path="/export-market-opportunities" element={<ExportMarketOpportunities />} />
+                   <Route path="/export-opportunities" element={<ExportOpportunities />} />
                    <Route path="/contract-farming" element={<ContractFarming />} />
                    <Route path="/road-markets" element={<RoadMarketsPage />} />
                   {/* <Route path="/donation-list" element={<DonationListPage />} /> */}
@@ -173,14 +176,15 @@ function App() {
                    <Route path="/equipment-marketplace-page" element={<EquipmentMarketplacePage />} />
                    <Route path="*" element={<NotFound />} />
                </Routes>
-             </React.Suspense>
-             <Toaster />
-             <ScrollToTop />
-          </AuthProvider>
-        </div>
-      </ThemeProvider>
-    </Router>
-  );
-}
-
-export default App;
+              </React.Suspense>
+              <Toaster />
+              <ScrollToTop />
+              <BottomNav />
+           </AuthProvider>
+         </div>
+       </ThemeProvider>
+     </Router>
+   );
+ }
+ 
+ export default App;
