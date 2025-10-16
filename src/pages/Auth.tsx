@@ -156,7 +156,7 @@ const Auth: React.FC = () => {
               </div>
             </div>
             <h1 className="text-4xl font-bold text-white mb-2">
-              AGRI<span className="text-green-400">CONNECT</span>
+              SokoConnect
             </h1>
             <p className="text-gray-200 text-lg">
               MIS FARMRETAIL
