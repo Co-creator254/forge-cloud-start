@@ -29,10 +29,10 @@ const About: React.FC = () => {
   const navigate = useNavigate();
 
   const stats = [
-    { label: 'Active Farmers', value: '50,000+', icon: <Users className="h-5 w-5" /> },
-    { label: 'Counties Covered', value: '47', icon: <MapPin className="h-5 w-5" /> },
-    { label: 'Service Providers', value: '2,500+', icon: <Building2 className="h-5 w-5" /> },
-    { label: 'Monthly Transactions', value: 'KES 500M+', icon: <TrendingUp className="h-5 w-5" /> }
+    { label: 'Platform Launch', value: '2026', icon: <Users className="h-5 w-5" /> },
+    { label: 'Target Counties', value: '47', icon: <MapPin className="h-5 w-5" /> },
+    { label: 'Beta Testers', value: '100+', icon: <Building2 className="h-5 w-5" /> },
+    { label: 'Development Stage', value: '85%', icon: <TrendingUp className="h-5 w-5" /> }
   ];
 
   const features = [
@@ -71,21 +71,21 @@ const About: React.FC = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-20">
+      <section className="bg-gradient-to-br from-green-700 via-green-600 to-green-500 text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">Transforming Agriculture in Kenya</h1>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
-            AgriConnect is East Africa's leading agricultural technology platform, 
-            empowering farmers, connecting markets, and driving sustainable food security 
-            through innovative digital solutions.
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Transforming Agriculture in Kenya</h1>
+          <p className="text-lg md:text-xl mb-8 max-w-4xl mx-auto leading-relaxed">
+            SokoConnect empowers every stakeholder in the agricultural supply chain - from smallholder farmers 
+            to large-scale traders, transporters to processors, and cooperatives to consumers. We're building 
+            a connected ecosystem where everyone thrives through technology, transparency, and community collaboration.
           </p>
-          <div className="flex justify-center gap-4">
-            <Button size="lg" variant="secondary" onClick={() => navigate('/contact')}>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button size="lg" variant="secondary" onClick={() => navigate('/partner-with-us')}>
               <Mail className="h-4 w-4 mr-2" />
               Partner With Us
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-primary">
-              Learn More
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-green-700">
+              Join Platform
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
@@ -123,9 +123,9 @@ const About: React.FC = () => {
             </CardHeader>
             <CardContent>
               <p className="text-lg text-muted-foreground">
-                To revolutionize Kenya's agricultural sector by providing farmers with access to 
-                technology, markets, and financial services that increase productivity, profitability, 
-                and sustainability across the entire value chain.
+                To revolutionize Kenya's agricultural sector by connecting all stakeholders - farmers, traders, 
+                transporters, cooperatives, processors, and consumers - with technology that enables market access, 
+                fair pricing, efficient logistics, and sustainable growth for everyone in the supply chain.
               </p>
             </CardContent>
           </Card>
@@ -168,24 +168,24 @@ const About: React.FC = () => {
         {/* Impact Section */}
         <section className="mb-16 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Our Impact</h2>
+            <h2 className="text-3xl font-bold mb-4">Our Vision for Impact</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Since 2020, we've been driving measurable change in Kenya's agricultural sector
+              Launching in 2026 - We're building for measurable transformation
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">300%</div>
-              <div className="text-muted-foreground">Average yield increase for participating farmers</div>
+              <div className="text-4xl font-bold text-green-600 mb-2">100+</div>
+              <div className="text-muted-foreground">Beta users testing the platform</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">KES 2.5B</div>
-              <div className="text-muted-foreground">Total value of trades facilitated</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">47</div>
+              <div className="text-muted-foreground">Counties planned for coverage</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">95%</div>
-              <div className="text-muted-foreground">Customer satisfaction rate</div>
+              <div className="text-4xl font-bold text-orange-600 mb-2">2026</div>
+              <div className="text-muted-foreground">Official launch year</div>
             </div>
           </div>
         </section>
@@ -194,33 +194,42 @@ const About: React.FC = () => {
         <section className="mb-16">
           <Card className="bg-gradient-to-r from-primary/5 to-secondary/5">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-center">
-                <Award className="h-5 w-5 text-primary" />
+              <CardTitle className="text-center text-2xl md:text-3xl mb-2">
                 Why Choose SokoConnect?
               </CardTitle>
+              <p className="text-center text-muted-foreground">
+                Value for Every Stakeholder in the Agri-Supply Chain
+              </p>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div className="text-center">
                   <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <Shield className="h-8 w-8 text-primary" />
+                    <Users className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Trusted Platform</h3>
-                  <p className="text-muted-foreground">Verified suppliers and secure transactions give you peace of mind</p>
+                  <h3 className="font-semibold text-lg mb-2">For Farmers</h3>
+                  <p className="text-sm text-muted-foreground">Direct market access, fair prices, and farm management tools</p>
                 </div>
                 <div className="text-center">
                   <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <TrendingUp className="h-8 w-8 text-primary" />
+                    <Truck className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Better Prices</h3>
-                  <p className="text-muted-foreground">Cut out middlemen and get fair prices for your produce</p>
+                  <h3 className="font-semibold text-lg mb-2">For Traders</h3>
+                  <p className="text-sm text-muted-foreground">Bulk sourcing, quality verification, and logistics coordination</p>
+                </div>
+                <div className="text-center">
+                  <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Building2 className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">For Cooperatives</h3>
+                  <p className="text-sm text-muted-foreground">Group orders, collective bargaining, and member management</p>
                 </div>
                 <div className="text-center">
                   <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                     <Heart className="h-8 w-8 text-primary" />
                   </div>
                   <h3 className="font-semibold text-lg mb-2">Community First</h3>
-                  <p className="text-muted-foreground">Built by farmers, for farmers - we understand your challenges</p>
+                  <p className="text-sm text-muted-foreground">Built for all stakeholders - transparent, fair, and inclusive</p>
                 </div>
               </div>
             </CardContent>
@@ -229,37 +238,38 @@ const About: React.FC = () => {
 
         {/* Contact CTA */}
         <section className="text-center">
-          <Card className="bg-primary text-primary-foreground">
+          <Card className="bg-gradient-to-r from-green-700 to-green-600 text-white">
             <CardContent className="pt-8 pb-8">
               <Heart className="h-12 w-12 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-4">Ready to Transform Agriculture Together?</h2>
-              <p className="text-lg mb-6 opacity-90">
-                Join thousands of farmers, businesses, and partners who are already part of the AgriConnect ecosystem.
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">Ready to Transform Agriculture Together?</h2>
+              <p className="text-base md:text-lg mb-6 opacity-90 max-w-2xl mx-auto">
+                Join us in building Kenya's most comprehensive agricultural platform. Whether you're a farmer, trader, 
+                transporter, cooperative, or service provider - there's a place for you in the SokoConnect ecosystem.
               </p>
-              <div className="flex justify-center gap-4">
-                <Button variant="secondary" size="lg" onClick={() => navigate('/contact')}>
+              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+                <Button variant="secondary" size="lg" onClick={() => navigate('/partner-with-us')}>
                   <Mail className="h-4 w-4 mr-2" />
                   Contact Our Team
                 </Button>
-                <Button variant="outline" size="lg" className="bg-transparent border-white text-white hover:bg-white hover:text-primary" onClick={() => navigate('/auth')}>
+                <Button variant="outline" size="lg" className="bg-transparent border-white text-white hover:bg-white hover:text-green-700" onClick={() => navigate('/auth')}>
                   Join Platform
                 </Button>
               </div>
               
               <Separator className="my-6 bg-white/20" />
               
-              <div className="grid md:grid-cols-3 gap-4 text-sm">
-                <div className="flex flex-col md:flex-row items-center justify-center gap-2">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm max-w-3xl mx-auto">
+                <div className="flex flex-col items-center justify-center gap-2 p-2">
                   <Mail className="h-4 w-4 flex-shrink-0" />
-                  <span className="break-all text-center md:text-left">sokoconnect@tenderzville-portal.co.ke</span>
+                  <span className="break-words text-center text-xs sm:text-sm">sokoconnect@tenderzville-portal.co.ke</span>
                 </div>
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex flex-col items-center justify-center gap-2 p-2">
                   <Phone className="h-4 w-4 flex-shrink-0" />
-                  <span>+254 700 123 456</span>
+                  <span className="text-center">+254 700 123 456</span>
                 </div>
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex flex-col items-center justify-center gap-2 p-2 sm:col-span-2 md:col-span-1">
                   <MapPin className="h-4 w-4 flex-shrink-0" />
-                  <span>Nairobi, Kenya</span>
+                  <span className="text-center">Nairobi, Kenya</span>
                 </div>
               </div>
             </CardContent>

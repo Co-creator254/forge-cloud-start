@@ -49,6 +49,7 @@ import KilimoAmsData from './pages/KilimoAmsData';
 import ApiDocs from './pages/ApiDocs';
 import SupplyChainAPI from './pages/SupplyChainAPI';
 import PartnersShowcase from './pages/PartnersShowcase';
+import MajorRoutesMarketplace from './pages/MajorRoutesMarketplace';
 import DataManagement from './pages/DataManagement';
 import DataStatus from './pages/DataStatus';
 import DataJobs from './pages/DataJobs';
@@ -175,7 +176,8 @@ function App() {
                    <Route path="/weather" element={<WeatherPage />} />
                   <Route path="/contract-farming-page" element={<ContractFarmingPage />} />
                   <Route path="/equipment-marketplace-page" element={<EquipmentMarketplacePage />} />
-                  <Route path="/partners-showcase" element={<PartnersShowcase />} />
+          <Route path="/partners-showcase" element={<PartnersShowcase />} />
+          <Route path="/major-routes" element={<MajorRoutesMarketplace />} />
                   <Route path="*" element={<NotFound />} />
                </Routes>
               </React.Suspense>

@@ -151,18 +151,21 @@ const Auth: React.FC = () => {
           {/* Logo and Branding */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
-              <div className="bg-gradient-to-r from-green-500 to-blue-600 p-3 rounded-full">
-                <Leaf className="h-8 w-8 text-white" />
-              </div>
+              <img 
+                src="/src/assets/sokoconnect-logo.png" 
+                alt="SokoConnect Logo" 
+                className="h-20 w-20"
+              />
             </div>
-            <h1 className="text-4xl font-bold text-white mb-2">
-              SokoConnect
+            <h1 className="text-4xl font-bold mb-2">
+              <span className="text-white">Soko</span>
+              <span className="text-green-400">Connect</span>
             </h1>
-            <p className="text-gray-200 text-lg">
-              MIS FARMRETAIL
+            <p className="text-gray-200 text-base font-medium">
+              SOKOCONNECT | <span className="text-green-400">Tustawi</span>
             </p>
-            <p className="text-gray-300 text-sm mt-2">
-              eCommerce platform for agri-inputs
+            <p className="text-gray-300 text-sm mt-3 max-w-md mx-auto">
+              Connecting farmers, traders & markets - Empowering the entire agri-supply chain
             </p>
           </div>
 
@@ -311,9 +314,9 @@ const Auth: React.FC = () => {
               {/* Branding Footer */}
               <div className="flex items-center text-white text-sm">
                 <div className="flex items-center">
-                  <span className="font-bold">KOLTIVA</span>
+                  <span className="font-bold">SOKOCONNECT</span>
                   <span className="mx-2">|</span>
-                  <span className="text-xs">BEYOND TRACEABILITY</span>
+                  <span className="text-xs text-green-400">Tustawi</span>
                 </div>
               </div>
               <p className="text-xs text-gray-400">Version 1.6.2.0*</p>
