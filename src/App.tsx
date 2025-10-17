@@ -50,6 +50,11 @@ import ApiDocs from './pages/ApiDocs';
 import SupplyChainAPI from './pages/SupplyChainAPI';
 import PartnersShowcase from './pages/PartnersShowcase';
 import MajorRoutesMarketplace from './pages/MajorRoutesMarketplace';
+import ExportOpportunitiesNew from './pages/ExportOpportunitiesNew';
+import F2CMarketplace from './pages/F2CMarketplace';
+import BatchTracking from './pages/BatchTracking';
+import CarbonFootprint from './pages/CarbonFootprint';
+import CooperativesManagement from './pages/CooperativesManagement';
 import DataManagement from './pages/DataManagement';
 import DataStatus from './pages/DataStatus';
 import DataJobs from './pages/DataJobs';
@@ -177,6 +182,11 @@ function App() {
                   <Route path="/contract-farming-page" element={<ContractFarmingPage />} />
                   <Route path="/equipment-marketplace-page" element={<EquipmentMarketplacePage />} />
           <Route path="/partners-showcase" element={<PartnersShowcase />} />
+          <Route path="/export-opportunities-new" element={<ExportOpportunitiesNew />} />
+          <Route path="/f2c-marketplace" element={<F2CMarketplace />} />
+          <Route path="/batch-tracking" element={<BatchTracking />} />
+          <Route path="/carbon-footprint" element={<CarbonFootprint />} />
+          <Route path="/cooperatives-management" element={<CooperativesManagement />} />
           <Route path="/major-routes" element={<MajorRoutesMarketplace />} />
                   <Route path="*" element={<NotFound />} />
                </Routes>

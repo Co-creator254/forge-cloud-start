@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Package, Calendar, MapPin, TrendingDown, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { PostBulkNeedDialog } from "@/components/dialogs/PostBulkNeedDialog";
 
 interface ReverseBulkAuction {
   id: string;
@@ -103,7 +104,7 @@ const ReverseBulkAuctions = () => {
             </p>
           </div>
           <div className="mt-4 md:mt-0">
-            <Button>Post Bulk Need</Button>
+            <PostBulkNeedDialog />
           </div>
         </div>
 
