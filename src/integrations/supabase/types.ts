@@ -257,6 +257,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "app_settings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       auth_rate_limits: {
@@ -364,6 +371,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "barter_listings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -776,6 +790,13 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
+            foreignKeyName: "community_comments_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "community_comments_parent_comment_id_fkey"
             columns: ["parent_comment_id"]
             isOneToOne: false
@@ -904,6 +925,13 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "community_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -1193,6 +1221,13 @@ export type Database = {
             columns: ["donor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "donations_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
           {
@@ -1823,6 +1858,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "farms_farmer_id_fkey"
+            columns: ["farmer_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       food_rescue_listings: {
@@ -1874,6 +1916,13 @@ export type Database = {
             columns: ["donor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "food_rescue_listings_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
           {
@@ -1991,10 +2040,24 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
+            foreignKeyName: "group_input_orders_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "group_input_orders_supplier_id_fkey"
             columns: ["supplier_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "group_input_orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -2124,6 +2187,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "group_order_participants_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       group_transactions: {
@@ -2228,10 +2298,24 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
+            foreignKeyName: "input_pricing_verification_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "input_pricing_verification_verifier_id_fkey"
             columns: ["verifier_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "input_pricing_verification_verifier_id_fkey"
+            columns: ["verifier_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -2285,6 +2369,13 @@ export type Database = {
             columns: ["reviewer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "input_supplier_reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -2500,6 +2591,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "marketplace_listings_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       my_trades: {
@@ -2563,6 +2661,13 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
+            foreignKeyName: "my_trades_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "my_trades_listing_id_fkey"
             columns: ["listing_id"]
             isOneToOne: false
@@ -2581,6 +2686,13 @@ export type Database = {
             columns: ["seller_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "my_trades_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -2628,6 +2740,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -3094,6 +3213,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "reverse_bulk_auctions_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       reviews: {
@@ -3139,6 +3265,13 @@ export type Database = {
             columns: ["reviewer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -3222,6 +3355,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "service_providers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -3345,6 +3485,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "success_stories_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       training_events: {
@@ -3440,6 +3587,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "training_events_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       transportation_requests: {
@@ -3494,10 +3648,24 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
+            foreignKeyName: "transportation_requests_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "transportation_requests_transporter_id_fkey"
             columns: ["transporter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "transportation_requests_transporter_id_fkey"
+            columns: ["transporter_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
         ]
@@ -3544,6 +3712,30 @@ export type Database = {
           rates?: string | null
           service_type?: string | null
           vehicle_type?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          granted_at: string | null
+          granted_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -3596,6 +3788,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "warehouse_bookings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
           },
           {
@@ -3735,7 +3934,105 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      equipment_listings_public: {
+        Row: {
+          availability_status: string | null
+          brand: string | null
+          condition: string | null
+          county: string | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          equipment_name: string | null
+          equipment_type: string | null
+          id: string | null
+          images: string[] | null
+          is_featured: boolean | null
+          location: string | null
+          model: string | null
+          negotiable: boolean | null
+          price: number | null
+          rental_option: boolean | null
+          rental_price_per_day: number | null
+          seller_id: string | null
+          updated_at: string | null
+          view_count: number | null
+          year_manufactured: number | null
+        }
+        Insert: {
+          availability_status?: string | null
+          brand?: string | null
+          condition?: string | null
+          county?: string | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          equipment_name?: string | null
+          equipment_type?: string | null
+          id?: string | null
+          images?: string[] | null
+          is_featured?: boolean | null
+          location?: string | null
+          model?: string | null
+          negotiable?: boolean | null
+          price?: number | null
+          rental_option?: boolean | null
+          rental_price_per_day?: number | null
+          seller_id?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+          year_manufactured?: number | null
+        }
+        Update: {
+          availability_status?: string | null
+          brand?: string | null
+          condition?: string | null
+          county?: string | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          equipment_name?: string | null
+          equipment_type?: string | null
+          id?: string | null
+          images?: string[] | null
+          is_featured?: boolean | null
+          location?: string | null
+          model?: string | null
+          negotiable?: boolean | null
+          price?: number | null
+          rental_option?: boolean | null
+          rental_price_per_day?: number | null
+          seller_id?: string | null
+          updated_at?: string | null
+          view_count?: number | null
+          year_manufactured?: number | null
+        }
+        Relationships: []
+      }
+      user_directory: {
+        Row: {
+          county: string | null
+          created_at: string | null
+          full_name: string | null
+          user_id: string | null
+          user_type: string | null
+        }
+        Insert: {
+          county?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          user_id?: string | null
+          user_type?: string | null
+        }
+        Update: {
+          county?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          user_id?: string | null
+          user_type?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       cleanup_expired_bluetooth_data: {
@@ -3746,13 +4043,28 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      get_user_roles: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"][]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_group_member: {
+        Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_supplier_for_order: {
         Args: { order_supplier_id: string }
         Returns: boolean
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "agent" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -3879,6 +4191,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "agent", "user"],
+    },
   },
 } as const
