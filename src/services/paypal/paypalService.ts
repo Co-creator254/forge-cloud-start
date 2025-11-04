@@ -19,25 +19,22 @@ export interface PaymentData {
 }
 
 export class PayPalService {
-  private static CLIENT_ID = process.env.PAYPAL_CLIENT_ID || ''; // Secure environment variable
-
-  static async createOrder(paymentData: PaymentData): Promise<string> {
+  static async createOrder(advertisementId: string): Promise<{ orderId: string; amount: number; approvalUrl: string }> {
     try {
-      const response = await fetch('/api/paypal/create-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: paymentData.amount,
-          currency: paymentData.currency,
-          description: paymentData.description,
-          advertisementId: paymentData.advertisementId,
-        }),
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      const { data, error } = await supabase.functions.invoke('paypal-create-order', {
+        body: { advertisementId }
       });
 
-      const data = await response.json();
-      return data.orderId;
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Failed to create order');
+
+      return {
+        orderId: data.orderId,
+        amount: data.amount,
+        approvalUrl: data.approvalUrl
+      };
     } catch (error) {
       console.error('Error creating PayPal order:', error);
       throw new Error('Failed to create payment order');
@@ -46,16 +43,16 @@ export class PayPalService {
 
   static async captureOrder(orderId: string): Promise<PayPalOrderData> {
     try {
-      const response = await fetch('/api/paypal/capture-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orderId }),
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      const { data, error } = await supabase.functions.invoke('paypal-capture-order', {
+        body: { orderId }
       });
 
-      const data = await response.json();
-      return data;
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Failed to capture payment');
+
+      return data as PayPalOrderData;
     } catch (error) {
       console.error('Error capturing PayPal order:', error);
       throw new Error('Failed to capture payment');
@@ -63,17 +60,7 @@ export class PayPalService {
   }
 
   static getPayPalScript(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if ((window as any).paypal) {
-        resolve((window as any).paypal);
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=${this.CLIENT_ID}&currency=USD`;
-      script.onload = () => resolve((window as any).paypal);
-      script.onerror = () => reject(new Error('PayPal SDK failed to load'));
-      document.head.appendChild(script);
-    });
+    console.warn('PayPal SDK script loading is deprecated. Use server-side PayPal integration instead.');
+    return Promise.reject(new Error('Client-side PayPal SDK is not supported. Use Edge Functions.'));
   }
 }

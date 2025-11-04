@@ -382,6 +382,63 @@ export type Database = {
           },
         ]
       }
+      batch_tracking: {
+        Row: {
+          batch_number: string
+          certifications: string[] | null
+          created_at: string
+          current_location: string | null
+          current_status: string | null
+          farmer_id: string
+          harvest_date: string
+          id: string
+          product_name: string
+          quality_checks: Json | null
+          quality_grade: string | null
+          quantity: number
+          storage_conditions: Json | null
+          transport_history: Json | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          batch_number: string
+          certifications?: string[] | null
+          created_at?: string
+          current_location?: string | null
+          current_status?: string | null
+          farmer_id: string
+          harvest_date: string
+          id?: string
+          product_name: string
+          quality_checks?: Json | null
+          quality_grade?: string | null
+          quantity: number
+          storage_conditions?: Json | null
+          transport_history?: Json | null
+          unit: string
+          updated_at?: string
+        }
+        Update: {
+          batch_number?: string
+          certifications?: string[] | null
+          created_at?: string
+          current_location?: string | null
+          current_status?: string | null
+          farmer_id?: string
+          harvest_date?: string
+          id?: string
+          product_name?: string
+          quality_checks?: Json | null
+          quality_grade?: string | null
+          quantity?: number
+          storage_conditions?: Json | null
+          transport_history?: Json | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bluetooth_alerts: {
         Row: {
           alert_by_device: string
@@ -701,6 +758,105 @@ export type Database = {
           quantity?: number
           status?: string
           unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      carbon_emissions: {
+        Row: {
+          calculation_date: string
+          created_at: string
+          crop_type: string | null
+          electricity_usage: number | null
+          emission_unit: string | null
+          farm_size: number | null
+          fertilizer_usage: number | null
+          fuel_consumption: number | null
+          id: string
+          reduction_actions: string[] | null
+          total_emissions: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          calculation_date?: string
+          created_at?: string
+          crop_type?: string | null
+          electricity_usage?: number | null
+          emission_unit?: string | null
+          farm_size?: number | null
+          fertilizer_usage?: number | null
+          fuel_consumption?: number | null
+          id?: string
+          reduction_actions?: string[] | null
+          total_emissions?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          calculation_date?: string
+          created_at?: string
+          crop_type?: string | null
+          electricity_usage?: number | null
+          emission_unit?: string | null
+          farm_size?: number | null
+          fertilizer_usage?: number | null
+          fuel_consumption?: number | null
+          id?: string
+          reduction_actions?: string[] | null
+          total_emissions?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      carbon_offset_projects: {
+        Row: {
+          carbon_offset_potential: number | null
+          cost_per_tonne: number | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          location: string | null
+          organizer_id: string | null
+          participants_count: number | null
+          project_name: string
+          project_type: string
+          start_date: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          carbon_offset_potential?: number | null
+          cost_per_tonne?: number | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          location?: string | null
+          organizer_id?: string | null
+          participants_count?: number | null
+          project_name: string
+          project_type: string
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          carbon_offset_potential?: number | null
+          cost_per_tonne?: number | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          location?: string | null
+          organizer_id?: string | null
+          participants_count?: number | null
+          project_name?: string
+          project_type?: string
+          start_date?: string | null
+          status?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1032,6 +1188,97 @@ export type Database = {
         }
         Relationships: []
       }
+      cooperative_activities: {
+        Row: {
+          activity_date: string
+          activity_type: string
+          created_at: string
+          description: string | null
+          financial_impact: number | null
+          group_id: string
+          id: string
+          outcome: string | null
+          participants: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          activity_date: string
+          activity_type: string
+          created_at?: string
+          description?: string | null
+          financial_impact?: number | null
+          group_id: string
+          id?: string
+          outcome?: string | null
+          participants?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          activity_date?: string
+          activity_type?: string
+          created_at?: string
+          description?: string | null
+          financial_impact?: number | null
+          group_id?: string
+          id?: string
+          outcome?: string | null
+          participants?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cooperative_activities_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cooperative_dividends: {
+        Row: {
+          created_at: string
+          declaration_date: string
+          dividend_per_share: number
+          financial_year: string
+          group_id: string
+          id: string
+          payment_date: string | null
+          status: string | null
+          total_profit: number
+        }
+        Insert: {
+          created_at?: string
+          declaration_date: string
+          dividend_per_share: number
+          financial_year: string
+          group_id: string
+          id?: string
+          payment_date?: string | null
+          status?: string | null
+          total_profit: number
+        }
+        Update: {
+          created_at?: string
+          declaration_date?: string
+          dividend_per_share?: number
+          financial_year?: string
+          group_id?: string
+          id?: string
+          payment_date?: string | null
+          status?: string | null
+          total_profit?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cooperative_dividends_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cooperative_groups: {
         Row: {
           activities: string[] | null
@@ -1124,6 +1371,118 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      cooperative_loans: {
+        Row: {
+          approval_date: string | null
+          borrower_id: string
+          created_at: string
+          disbursement_date: string | null
+          group_id: string
+          id: string
+          interest_rate: number
+          loan_amount: number
+          loan_purpose: string | null
+          outstanding_balance: number | null
+          repayment_period: number | null
+          repayment_schedule: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          approval_date?: string | null
+          borrower_id: string
+          created_at?: string
+          disbursement_date?: string | null
+          group_id: string
+          id?: string
+          interest_rate: number
+          loan_amount: number
+          loan_purpose?: string | null
+          outstanding_balance?: number | null
+          repayment_period?: number | null
+          repayment_schedule?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          approval_date?: string | null
+          borrower_id?: string
+          created_at?: string
+          disbursement_date?: string | null
+          group_id?: string
+          id?: string
+          interest_rate?: number
+          loan_amount?: number
+          loan_purpose?: string | null
+          outstanding_balance?: number | null
+          repayment_period?: number | null
+          repayment_schedule?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cooperative_loans_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cooperative_votes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          end_date: string
+          group_id: string
+          id: string
+          options: Json
+          results: Json | null
+          start_date: string
+          status: string | null
+          title: string
+          vote_type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date: string
+          group_id: string
+          id?: string
+          options: Json
+          results?: Json | null
+          start_date?: string
+          status?: string | null
+          title: string
+          vote_type: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string
+          group_id?: string
+          id?: string
+          options?: Json
+          results?: Json | null
+          start_date?: string
+          status?: string | null
+          title?: string
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cooperative_votes_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       donation_requests: {
         Row: {
@@ -1325,6 +1684,125 @@ export type Database = {
           year_manufactured?: number | null
         }
         Relationships: []
+      }
+      export_opportunities: {
+        Row: {
+          certifications_required: string[] | null
+          commodity: string
+          company_name: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          created_by: string | null
+          currency: string | null
+          deadline: string
+          delivery_terms: string | null
+          description: string | null
+          id: string
+          payment_terms: string | null
+          price_per_unit: number
+          quality_requirements: string | null
+          quantity_required: number
+          status: string | null
+          target_country: string
+          target_region: string | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          certifications_required?: string[] | null
+          commodity: string
+          company_name?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          deadline: string
+          delivery_terms?: string | null
+          description?: string | null
+          id?: string
+          payment_terms?: string | null
+          price_per_unit: number
+          quality_requirements?: string | null
+          quantity_required: number
+          status?: string | null
+          target_country: string
+          target_region?: string | null
+          unit: string
+          updated_at?: string
+        }
+        Update: {
+          certifications_required?: string[] | null
+          commodity?: string
+          company_name?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          deadline?: string
+          delivery_terms?: string | null
+          description?: string | null
+          id?: string
+          payment_terms?: string | null
+          price_per_unit?: number
+          quality_requirements?: string | null
+          quantity_required?: number
+          status?: string | null
+          target_country?: string
+          target_region?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      export_opportunity_applications: {
+        Row: {
+          applicant_id: string
+          certifications: string[] | null
+          created_at: string
+          delivery_timeline: string | null
+          id: string
+          notes: string | null
+          opportunity_id: string
+          price_per_unit: number
+          quantity_offered: number
+          status: string | null
+        }
+        Insert: {
+          applicant_id: string
+          certifications?: string[] | null
+          created_at?: string
+          delivery_timeline?: string | null
+          id?: string
+          notes?: string | null
+          opportunity_id: string
+          price_per_unit: number
+          quantity_offered: number
+          status?: string | null
+        }
+        Update: {
+          applicant_id?: string
+          certifications?: string[] | null
+          created_at?: string
+          delivery_timeline?: string | null
+          id?: string
+          notes?: string | null
+          opportunity_id?: string
+          price_per_unit?: number
+          quantity_offered?: number
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "export_opportunity_applications_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "export_opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       farm_input_ban_recommendations: {
         Row: {
@@ -2380,6 +2858,47 @@ export type Database = {
           },
         ]
       }
+      loan_repayments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          loan_id: string
+          notes: string | null
+          payment_date: string
+          payment_method: string | null
+          payment_reference: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          loan_id: string
+          notes?: string | null
+          payment_date: string
+          payment_method?: string | null
+          payment_reference?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          loan_id?: string
+          notes?: string | null
+          payment_date?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loan_repayments_loan_id_fkey"
+            columns: ["loan_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_loans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       market_forecasts: {
         Row: {
           commodity_name: string
@@ -2597,6 +3116,53 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      member_dividend_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          dividend_id: string
+          id: string
+          member_id: string
+          paid_at: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          shares_held: number
+          status: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          dividend_id: string
+          id?: string
+          member_id: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          shares_held: number
+          status?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          dividend_id?: string
+          id?: string
+          member_id?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          shares_held?: number
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_dividend_payments_dividend_id_fkey"
+            columns: ["dividend_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_dividends"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -3282,7 +3848,7 @@ export type Database = {
           event_details: Json | null
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_agent: string | null
           user_id: string | null
         }
@@ -3291,7 +3857,7 @@ export type Database = {
           event_details?: Json | null
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -3300,7 +3866,7 @@ export type Database = {
           event_details?: Json | null
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -4035,14 +4601,8 @@ export type Database = {
       }
     }
     Functions: {
-      cleanup_expired_bluetooth_data: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_old_training_events: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_expired_bluetooth_data: { Args: never; Returns: undefined }
+      cleanup_old_training_events: { Args: never; Returns: undefined }
       get_user_roles: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"][]
