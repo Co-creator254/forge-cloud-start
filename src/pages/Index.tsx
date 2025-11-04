@@ -249,8 +249,8 @@ const Index: React.FC = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
-                  <Users className="h-6 w-6 text-secondary" />
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <Users className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="text-sm">Veterinary Services</CardTitle>
               </CardHeader>
@@ -263,8 +263,8 @@ const Index: React.FC = () => {
 
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
-                  <Clock className="h-6 w-6 text-secondary" />
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <Clock className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="text-sm">Feed & Nutrition</CardTitle>
               </CardHeader>
@@ -277,8 +277,8 @@ const Index: React.FC = () => {
 
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
-                  <MapPin className="h-6 w-6 text-secondary" />
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="text-sm">Farm Construction</CardTitle>
               </CardHeader>
@@ -291,8 +291,8 @@ const Index: React.FC = () => {
 
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
-                  <Users className="h-6 w-6 text-secondary" />
+                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                  <Users className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="text-sm">Consultancies</CardTitle>
               </CardHeader>

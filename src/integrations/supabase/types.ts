@@ -1484,6 +1484,77 @@ export type Database = {
           },
         ]
       }
+      crops: {
+        Row: {
+          actual_harvest_date: string | null
+          area: number
+          area_unit: string
+          created_at: string
+          current_yield: number | null
+          expected_harvest_date: string | null
+          id: string
+          name: string
+          notes: string | null
+          parcel_id: string | null
+          planting_date: string | null
+          previous_yield: number | null
+          quality: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          variety: string | null
+          yield_unit: string | null
+        }
+        Insert: {
+          actual_harvest_date?: string | null
+          area: number
+          area_unit?: string
+          created_at?: string
+          current_yield?: number | null
+          expected_harvest_date?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          parcel_id?: string | null
+          planting_date?: string | null
+          previous_yield?: number | null
+          quality?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          variety?: string | null
+          yield_unit?: string | null
+        }
+        Update: {
+          actual_harvest_date?: string | null
+          area?: number
+          area_unit?: string
+          created_at?: string
+          current_yield?: number | null
+          expected_harvest_date?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          parcel_id?: string | null
+          planting_date?: string | null
+          previous_yield?: number | null
+          quality?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          variety?: string | null
+          yield_unit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crops_parcel_id_fkey"
+            columns: ["parcel_id"]
+            isOneToOne: false
+            referencedRelation: "land_parcels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       donation_requests: {
         Row: {
           created_at: string
@@ -1803,6 +1874,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      farm_budgets: {
+        Row: {
+          actual_amount: number | null
+          category: string
+          created_at: string
+          id: string
+          notes: string | null
+          planned_amount: number
+          subcategory: string | null
+          updated_at: string
+          user_id: string
+          variance: number | null
+          year: number
+        }
+        Insert: {
+          actual_amount?: number | null
+          category: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          planned_amount: number
+          subcategory?: string | null
+          updated_at?: string
+          user_id: string
+          variance?: number | null
+          year: number
+        }
+        Update: {
+          actual_amount?: number | null
+          category?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          planned_amount?: number
+          subcategory?: string | null
+          updated_at?: string
+          user_id?: string
+          variance?: number | null
+          year?: number
+        }
+        Relationships: []
       }
       farm_input_ban_recommendations: {
         Row: {
@@ -2213,6 +2326,105 @@ export type Database = {
         }
         Relationships: []
       }
+      farm_inventory: {
+        Row: {
+          category: string
+          created_at: string
+          expiry_date: string | null
+          id: string
+          item_name: string
+          location: string | null
+          minimum_quantity: number | null
+          notes: string | null
+          purchase_date: string | null
+          quantity: number
+          supplier: string | null
+          total_value: number | null
+          unit: string
+          unit_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          item_name: string
+          location?: string | null
+          minimum_quantity?: number | null
+          notes?: string | null
+          purchase_date?: string | null
+          quantity: number
+          supplier?: string | null
+          total_value?: number | null
+          unit: string
+          unit_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          item_name?: string
+          location?: string | null
+          minimum_quantity?: number | null
+          notes?: string | null
+          purchase_date?: string | null
+          quantity?: number
+          supplier?: string | null
+          total_value?: number | null
+          unit?: string
+          unit_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      farm_statistics: {
+        Row: {
+          active_parcels: number | null
+          created_at: string
+          id: string
+          last_calculated: string | null
+          total_crops: number | null
+          total_expenses: number | null
+          total_land_area: number | null
+          total_profit: number | null
+          total_revenue: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_parcels?: number | null
+          created_at?: string
+          id?: string
+          last_calculated?: string | null
+          total_crops?: number | null
+          total_expenses?: number | null
+          total_land_area?: number | null
+          total_profit?: number | null
+          total_revenue?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_parcels?: number | null
+          created_at?: string
+          id?: string
+          last_calculated?: string | null
+          total_crops?: number | null
+          total_expenses?: number | null
+          total_land_area?: number | null
+          total_profit?: number | null
+          total_revenue?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       farm_tourism_hosts: {
         Row: {
           amenities: string[] | null
@@ -2290,6 +2502,75 @@ export type Database = {
           website_url?: string | null
         }
         Relationships: []
+      }
+      farm_transactions: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          crop_id: string | null
+          currency: string
+          description: string | null
+          id: string
+          parcel_id: string | null
+          payment_method: string | null
+          reference_number: string | null
+          subcategory: string | null
+          transaction_date: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          crop_id?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          parcel_id?: string | null
+          payment_method?: string | null
+          reference_number?: string | null
+          subcategory?: string | null
+          transaction_date?: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          crop_id?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          parcel_id?: string | null
+          payment_method?: string | null
+          reference_number?: string | null
+          subcategory?: string | null
+          transaction_date?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farm_transactions_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "farm_transactions_parcel_id_fkey"
+            columns: ["parcel_id"]
+            isOneToOne: false
+            referencedRelation: "land_parcels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       farms: {
         Row: {
@@ -2858,6 +3139,63 @@ export type Database = {
           },
         ]
       }
+      land_parcels: {
+        Row: {
+          created_at: string
+          crop: string | null
+          id: string
+          irrigation_type: string | null
+          last_harvest: string | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          next_harvest_date: string | null
+          notes: string | null
+          size: number
+          soil_type: string | null
+          status: string
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          crop?: string | null
+          id?: string
+          irrigation_type?: string | null
+          last_harvest?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          next_harvest_date?: string | null
+          notes?: string | null
+          size: number
+          soil_type?: string | null
+          status?: string
+          unit?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          crop?: string | null
+          id?: string
+          irrigation_type?: string | null
+          last_harvest?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          next_harvest_date?: string | null
+          notes?: string | null
+          size?: number
+          soil_type?: string | null
+          status?: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       loan_repayments: {
         Row: {
           amount: number
@@ -3391,6 +3729,51 @@ export type Database = {
           updated_at?: string
           user_id?: string
           website?: string | null
+        }
+        Relationships: []
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          payment_method: string | null
+          payment_reference: string | null
+          status: string
+          transaction_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          status?: string
+          transaction_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          status?: string
+          transaction_type?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
