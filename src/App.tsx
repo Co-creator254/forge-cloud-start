@@ -93,6 +93,7 @@ import FarmTourismPage from './pages/FarmTourismPage';
 import WeatherPage from './pages/WeatherPage';
 import ContractFarmingPage from './pages/ContractFarmingPage';
 import EquipmentMarketplacePage from './pages/EquipmentMarketplacePage';
+import BusinessMarketing from './pages/BusinessMarketing';
 
 function App() {
   return (
@@ -162,9 +163,10 @@ function App() {
                  <Route path="/community-forum" element={<CommunityForum />} />
                  <Route path="/transporter-signup" element={<TransporterSignUp />} />
                  <Route path="/service-provider-registration" element={<ServiceProviderRegistration />} />
-                 <Route path="/kilimo-ams-data" element={<KilimoAmsData />} />
-                 <Route path="/api-docs" element={<ApiDocs />} />
-                 <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
+                  <Route path="/kilimo-ams-data" element={<KilimoAmsData />} />
+                  <Route path="/business-marketing" element={<BusinessMarketing />} />
+                  <Route path="/api-docs" element={<ApiDocs />} />
+                  <Route path="/supply-chain-api" element={<SupplyChainAPI />} />
                  <Route path="/data-management" element={<DataManagement />} />
                  <Route path="/data-status" element={<DataStatus />} />
                  <Route path="/data-jobs" element={<DataJobs />} />
