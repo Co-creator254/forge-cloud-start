@@ -1,10 +1,10 @@
 import React from 'react';
 import SupplyChainDashboard from '@/components/supply-chain/SupplyChainDashboard';
-import { MobileNavigation } from '@/components/MobileNavigation';
+import { AppLayout } from '@/components/layout/AppLayout';
 
 export default function SupplyChainDashboardPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout title="Supply Chain Dashboard">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-2xl font-bold">Supply Chain Dashboard</h1>
@@ -14,10 +14,6 @@ export default function SupplyChainDashboardPage() {
         </div>
         <SupplyChainDashboard />
       </div>
-      <div className="pb-20 md:pb-0">
-        {/* Content padding for mobile navigation */}
-      </div>
-      <MobileNavigation />
-    </div>
+    </AppLayout>
   );
 }

@@ -1555,6 +1555,48 @@ export type Database = {
           },
         ]
       }
+      demand_hotspots: {
+        Row: {
+          avg_price: number | null
+          buyer_count: number | null
+          commodity: string
+          county: string
+          created_at: string
+          demand_level: string
+          description: string | null
+          id: string
+          last_updated: string
+          location: string
+          price_trend: string | null
+        }
+        Insert: {
+          avg_price?: number | null
+          buyer_count?: number | null
+          commodity: string
+          county: string
+          created_at?: string
+          demand_level: string
+          description?: string | null
+          id?: string
+          last_updated?: string
+          location: string
+          price_trend?: string | null
+        }
+        Update: {
+          avg_price?: number | null
+          buyer_count?: number | null
+          commodity?: string
+          county?: string
+          created_at?: string
+          demand_level?: string
+          description?: string | null
+          id?: string
+          last_updated?: string
+          location?: string
+          price_trend?: string | null
+        }
+        Relationships: []
+      }
       donation_requests: {
         Row: {
           created_at: string
@@ -3375,6 +3417,47 @@ export type Database = {
         }
         Relationships: []
       }
+      market_reports: {
+        Row: {
+          created_at: string
+          details: string
+          id: string
+          market_id: string
+          report_type: string
+          reporter_id: string | null
+          reporter_name: string
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          details: string
+          id?: string
+          market_id: string
+          report_type: string
+          reporter_id?: string | null
+          reporter_name: string
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          details?: string
+          id?: string
+          market_id?: string
+          report_type?: string
+          reporter_id?: string | null
+          reporter_name?: string
+          verified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_reports_market_id_fkey"
+            columns: ["market_id"]
+            isOneToOne: false
+            referencedRelation: "road_markets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       marketplace_listings: {
         Row: {
           available_from: string | null
@@ -4225,6 +4308,102 @@ export type Database = {
           },
         ]
       }
+      road_markets: {
+        Row: {
+          active_vendors: number | null
+          contact_info: string | null
+          coordinates: Json | null
+          county: string
+          created_at: string
+          facilities: string[] | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          location: string
+          market_days: string[] | null
+          name: string
+          road: string
+          updated_at: string
+        }
+        Insert: {
+          active_vendors?: number | null
+          contact_info?: string | null
+          coordinates?: Json | null
+          county: string
+          created_at?: string
+          facilities?: string[] | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          location: string
+          market_days?: string[] | null
+          name: string
+          road: string
+          updated_at?: string
+        }
+        Update: {
+          active_vendors?: number | null
+          contact_info?: string | null
+          coordinates?: Json | null
+          county?: string
+          created_at?: string
+          facilities?: string[] | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          location?: string
+          market_days?: string[] | null
+          name?: string
+          road?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      route_vendors: {
+        Row: {
+          contact: string | null
+          county: string
+          created_at: string
+          id: string
+          image_url: string | null
+          location: string
+          products: string[]
+          rating: number | null
+          route: string
+          updated_at: string
+          vendor_name: string
+          verified: boolean | null
+        }
+        Insert: {
+          contact?: string | null
+          county: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          location: string
+          products: string[]
+          rating?: number | null
+          route: string
+          updated_at?: string
+          vendor_name: string
+          verified?: boolean | null
+        }
+        Update: {
+          contact?: string | null
+          county?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          location?: string
+          products?: string[]
+          rating?: number | null
+          route?: string
+          updated_at?: string
+          vendor_name?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
       security_audit_log: {
         Row: {
           created_at: string
@@ -4440,6 +4619,113 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "user_directory"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      supply_chain_financial_analysis: {
+        Row: {
+          amount: number
+          cost_type: string
+          created_at: string
+          currency: string | null
+          id: string
+          notes: string | null
+          stage_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          cost_type: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          stage_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          cost_type?: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          notes?: string | null
+          stage_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supply_chain_financial_analysis_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "supply_chain_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supply_chain_stages: {
+        Row: {
+          created_at: string
+          crop_id: string | null
+          data: Json | null
+          end_date: string | null
+          farm_id: string | null
+          id: string
+          issues: Json | null
+          progress: number | null
+          stage_name: string
+          start_date: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          crop_id?: string | null
+          data?: Json | null
+          end_date?: string | null
+          farm_id?: string | null
+          id?: string
+          issues?: Json | null
+          progress?: number | null
+          stage_name: string
+          start_date?: string | null
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          crop_id?: string | null
+          data?: Json | null
+          end_date?: string | null
+          farm_id?: string | null
+          id?: string
+          issues?: Json | null
+          progress?: number | null
+          stage_name?: string
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supply_chain_stages_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supply_chain_stages_farm_id_fkey"
+            columns: ["farm_id"]
+            isOneToOne: false
+            referencedRelation: "farms"
+            referencedColumns: ["id"]
           },
         ]
       }
