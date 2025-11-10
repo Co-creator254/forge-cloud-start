@@ -24,6 +24,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import aboutHeroBg from '@/assets/about-hero-bg.png';
 
 const About: React.FC = () => {
   const navigate = useNavigate();
@@ -70,9 +71,16 @@ const About: React.FC = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-700 via-green-600 to-green-500 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
+      {/* Hero Section with Background */}
+      <section 
+        className="relative bg-gradient-to-br from-green-700 via-green-600 to-green-500 text-white py-20"
+        style={{
+          backgroundImage: `linear-gradient(rgba(21, 128, 61, 0.85), rgba(22, 163, 74, 0.85)), url(${aboutHeroBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Transforming Agriculture in Kenya</h1>
           <p className="text-lg md:text-xl mb-8 max-w-4xl mx-auto leading-relaxed">
             SokoConnect empowers every stakeholder in the agricultural supply chain - from smallholder farmers 
@@ -265,7 +273,7 @@ const About: React.FC = () => {
                 </div>
                 <div className="flex flex-col items-center justify-center gap-2 p-2">
                   <Phone className="h-4 w-4 flex-shrink-0" />
-                  <span className="text-center">+254 700 123 456</span>
+                  <span className="text-center">+254 745824354</span>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-2 p-2 sm:col-span-2 md:col-span-1">
                   <MapPin className="h-4 w-4 flex-shrink-0" />

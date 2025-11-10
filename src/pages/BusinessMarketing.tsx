@@ -4,53 +4,51 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Megaphone, TrendingUp, Users, Target, CheckCircle, MessageCircle, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import advertiseBg from '@/assets/advertise-bg.png';
 
 const BusinessMarketing: React.FC = () => {
   const navigate = useNavigate();
 
   const packages = [
     {
-      name: 'Basic',
-      price: 'KES 5,000',
+      name: '1 Month Package',
+      price: 'KES 10',
       period: '/month',
       features: [
         'Business profile listing',
         'Contact information display',
-        'Basic analytics',
-        '5 product listings',
-        'Email support'
+        'Business flyer upload',
+        '30-day visibility',
+        'Basic analytics'
       ],
       color: 'border-green-200'
     },
     {
-      name: 'Professional',
-      price: 'KES 15,000',
-      period: '/month',
+      name: '3 Months Package',
+      price: 'KES 20',
+      period: '/3 months',
       features: [
-        'Featured business profile',
-        'Unlimited product listings',
-        'Priority search placement',
-        'Advanced analytics dashboard',
-        'Social media integration',
-        'Customer reviews & ratings',
+        'Business profile listing',
+        'Contact information display',
+        'Business flyer upload',
+        '90-day visibility',
+        'Advanced analytics',
         'Priority support'
       ],
       color: 'border-green-500',
       popular: true
     },
     {
-      name: 'Enterprise',
-      price: 'KES 35,000',
-      period: '/month',
+      name: '1 Year Package',
+      price: 'KES 30',
+      period: '/year',
       features: [
-        'Premium featured listing',
-        'Unlimited everything',
-        'Top search ranking',
-        'Dedicated account manager',
-        'Custom branding',
-        'API access',
-        'Marketing campaign support',
-        '24/7 priority support'
+        'Business profile listing',
+        'Contact information display',
+        'Business flyer upload',
+        '365-day visibility',
+        'Premium analytics',
+        'Dedicated account manager'
       ],
       color: 'border-green-700'
     }
@@ -83,20 +81,24 @@ const BusinessMarketing: React.FC = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center p-2 bg-green-100 rounded-full mb-4">
-            <Megaphone className="h-8 w-8 text-green-600" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Advertise Your Agricultural Business
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Reach thousands of farmers, suppliers, and buyers across Kenya. Grow your business with targeted marketing on AgriTender Connect.
+      {/* Hero Section with Background */}
+      <section 
+        className="relative py-12"
+        style={{
+          backgroundImage: `linear-gradient(rgba(22, 163, 74, 0.7), rgba(22, 163, 74, 0.7)), url(${advertiseBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="container mx-auto px-4 text-center text-white relative z-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Advertise Your Agricultural Business</h1>
+          <p className="text-xl max-w-3xl mx-auto">
+            Reach thousands of farmers, suppliers, and buyers across Kenya
           </p>
         </div>
-
+      </section>
+      
+      <div className="container mx-auto px-4 py-12">
         {/* Benefits Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {benefits.map((benefit, index) => (

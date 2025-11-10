@@ -40,7 +40,7 @@ import ExporterProfile from './pages/ExporterProfile';
 import FarmerSuccessStories from './pages/FarmerSuccessStories';
 import CommunityForum from './pages/CommunityForum';
 const BatchTrackingPage = React.lazy(() => import('./components/BatchTrackingPage').then(module => ({ default: module.BatchTrackingPage })));
-const CarbonForumPage = React.lazy(() => import('./components/CarbonForumPage').then(module => ({ default: module.CarbonForumPage })));
+import CarbonForumPage from './pages/CarbonForumPage';
 const NetworkingPage = React.lazy(() => import('./components/NetworkingPage').then(module => ({ default: module.NetworkingPage })));
 import { OfflineBanner } from './components/OfflineBanner';
 import TransporterSignUp from './pages/TransporterSignUp';

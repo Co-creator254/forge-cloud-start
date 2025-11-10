@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
 import { BottomNav } from "@/components/BottomNav";
@@ -29,6 +30,7 @@ interface GroupOrder {
 }
 
 const GroupInputOrders = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [orders, setOrders] = useState<GroupOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,11 +102,24 @@ const GroupInputOrders = () => {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Group Purchasing for Inputs</h1>
             <p className="text-muted-foreground mt-2">
-              Save money by buying farm inputs in bulk with other farmers
+              Save money by buying farm inputs in bulk with other farmers. Group purchasing allows farmers to pool their resources 
+              and negotiate better prices by ordering inputs like seeds, fertilizers, and equipment together. When more farmers join 
+              an order, the unit price decreases, making quality inputs more affordable for everyone.
             </p>
+            <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+              <h3 className="font-semibold mb-2">How It Works:</h3>
+              <ol className="list-decimal list-inside space-y-1 text-sm">
+                <li>Browse active group orders or create a new one</li>
+                <li>Join an order that matches your input needs</li>
+                <li>Order closes when target quantity is reached or deadline passes</li>
+                <li>Organizer negotiates bulk pricing with suppliers</li>
+                <li>Inputs are delivered to a central location or distributed to participants</li>
+                <li>Everyone saves money through collective purchasing power</li>
+              </ol>
+            </div>
           </div>
           <div className="mt-4 md:mt-0">
-            <Button>Express Need</Button>
+            <Button onClick={() => navigate('/bulk-orders')}>Express Need</Button>
           </div>
         </div>
 

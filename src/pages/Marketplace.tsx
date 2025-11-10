@@ -14,6 +14,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import marketplaceBg from '@/assets/marketplace-bg.png';
 
 const Marketplace: React.FC = () => {
   const navigate = useNavigate();
@@ -84,13 +85,20 @@ const Marketplace: React.FC = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Agricultural Marketplace</h1>
+      {/* Hero Section with Background */}
+      <section 
+        className="relative bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-16"
+        style={{
+          backgroundImage: `linear-gradient(rgba(22, 163, 74, 0.9), rgba(22, 163, 74, 0.85)), url(${marketplaceBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">GLOBAL AGRICULTURAL MARKETPLACE</h1>
+          <p className="text-lg mb-4">Export Marketplace | Contract Farming | Farm Input | Equipment Marketplace | Commodity Trading</p>
           <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Connect farmers, suppliers, and buyers in Kenya's largest agricultural trading platform. 
-            Find everything you need from farm inputs to fresh produce markets.
+            Your Hub for Global Agri-Commerce - Connect farmers, suppliers, and buyers worldwide
           </p>
           <div className="flex justify-center gap-4">
             <Button size="lg" variant="secondary" onClick={() => navigate('/auth')}>
