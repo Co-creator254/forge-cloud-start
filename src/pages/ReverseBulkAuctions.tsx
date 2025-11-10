@@ -102,6 +102,28 @@ const ReverseBulkAuctions = () => {
             <p className="text-muted-foreground mt-2">
               Buyers post their needs and sellers compete to offer the best price
             </p>
+            
+            <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+              <h3 className="font-semibold mb-2">How Reverse Auctions Work:</h3>
+              <ol className="list-decimal list-inside space-y-1 text-sm">
+                <li>Buyers post their bulk product requirements with maximum price and deadline</li>
+                <li>Multiple sellers view the order and compete by bidding lower prices</li>
+                <li>Sellers offer their best competitive prices to win the contract</li>
+                <li>Buyer reviews all bids and selects the best offer based on price and delivery terms</li>
+                <li>Winner is notified and contract terms are finalized</li>
+                <li>Transaction is completed and both parties can rate each other</li>
+              </ol>
+              
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                <p className="text-xs text-yellow-900">
+                  <strong>Platform Policies & Disclaimer:</strong> By using reverse auctions, you agree to our terms. 
+                  SokoConnect facilitates connections between buyers and sellers but does not guarantee product quality, 
+                  delivery, or pricing. Users are responsible for verifying supplier credentials, negotiating terms, and 
+                  ensuring compliance with applicable laws. We recommend meeting suppliers, inspecting products before 
+                  payment, and using secure payment methods. Report any suspicious activity to our support team.
+                </p>
+              </div>
+            </div>
           </div>
           <div className="mt-4 md:mt-0">
             <PostBulkNeedDialog />

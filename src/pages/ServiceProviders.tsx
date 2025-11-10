@@ -14,7 +14,8 @@ import { ProviderTabs } from "@/components/service-providers/ProviderTabs";
 import { TrainingEventsSection } from "@/components/service-providers/TrainingEventsSection";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tag, Badge } from "lucide-react";
+import { MapPin, Tag } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -234,41 +235,56 @@ const ServiceProviders = () => {
               // Assume recommendations are fetched and averaged
               const recommendations = { rating: 4.5, total: 25 }; // Placeholder
               return (
-                <Card key={provider.id}>
+                <Card key={provider.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
-                    <CardTitle>{provider.business_name || provider.name}</CardTitle>
-                    <Badge>{provider.provider_category || provider.businessType}</Badge>
+                    <CardTitle className="text-lg truncate">{provider.business_name || provider.name}</CardTitle>
+                    <Badge variant="secondary" className="mt-1">{provider.provider_category || provider.businessType}</Badge>
                   </CardHeader>
-                  <CardContent>
-                    <div>{provider.description}</div>
-                    <div>Location: {provider.location.county}, {provider.location.specificLocation}</div>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-muted-foreground line-clamp-3">{provider.description}</p>
+                    <div className="text-sm flex items-start gap-1">
+                      <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                      <span className="truncate">{provider.location.county}, {provider.location.specificLocation}</span>
+                    </div>
                     {(provider.provider_category === 'Export Transporters' || provider.businessType === 'export-transporters') && (
-                      <div>
-                        <div>Licenses: {provider.licenses?.join(', ')}</div>
-                        <div>Insurance: {provider.insurance_details}</div>
-                        <div>Rating: {recommendations.rating} ({recommendations.total} reviews)</div>
-                        <Button onClick={() => fetchBookings(provider.id)}>
+                      <div className="space-y-2 pt-2 border-t">
+                        {provider.licenses && (
+                          <div className="text-xs">
+                            <span className="font-semibold">Licenses:</span> {provider.licenses.join(', ')}
+                          </div>
+                        )}
+                        {provider.insurance_details && (
+                          <div className="text-xs">
+                            <span className="font-semibold">Insurance:</span> {provider.insurance_details}
+                          </div>
+                        )}
+                        <div className="text-xs">
+                          <span className="font-semibold">Rating:</span> {recommendations.rating} ({recommendations.total} reviews)
+                        </div>
+                        <Button size="sm" onClick={() => fetchBookings(provider.id)} className="w-full mt-2">
                           View Bookings
                         </Button>
                         {bookings.length > 0 && (
-                          <div className="mt-4">
-                            <h4 className="font-semibold mb-2">Bookings</h4>
-                            <ul>
+                          <div className="mt-3 p-2 bg-muted/50 rounded">
+                            <h4 className="font-semibold text-xs mb-1">Bookings</h4>
+                            <ul className="space-y-1">
                               {bookings.map(b => (
-                                <li key={b.id} className="mb-1">
-                                  {b.booking_date}: {b.cargo_type} - {b.status} (KES {b.price})
-                                  <Button size="sm" onClick={() => fetchTracking(b.export_order_id)} className="ml-2">Track</Button>
+                                <li key={b.id} className="text-xs">
+                                  <div className="flex justify-between items-start gap-2">
+                                    <span className="truncate">{b.booking_date}: {b.cargo_type} - {b.status} (KES {b.price})</span>
+                                    <Button size="sm" variant="outline" onClick={() => fetchTracking(b.export_order_id)} className="h-6 px-2 text-xs flex-shrink-0">Track</Button>
+                                  </div>
                                 </li>
                               ))}
                             </ul>
                           </div>
                         )}
                         {tracking.length > 0 && (
-                          <div className="mt-4">
-                            <h4 className="font-semibold mb-2">Tracking History</h4>
-                            <ul>
+                          <div className="mt-3 p-2 bg-muted/50 rounded">
+                            <h4 className="font-semibold text-xs mb-1">Tracking History</h4>
+                            <ul className="space-y-1">
                               {tracking.map(t => (
-                                <li key={t.id} className="mb-1">
+                                <li key={t.id} className="text-xs truncate">
                                   {t.event_time}: {t.location} {t.status && `- ${t.status}`}
                                 </li>
                               ))}
