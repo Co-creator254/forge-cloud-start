@@ -1,5 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
-const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+import { supabase } from '@/integrations/supabase/client';
 
 export async function createPost(post: any) {
   return supabase.from('carbon_forum_posts').insert([post]);
