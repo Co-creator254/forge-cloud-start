@@ -13,7 +13,8 @@ import {
   MessageCircle,
   Signal,
   SignalHigh,
-  SignalLow
+  SignalLow,
+  AlertCircle
 } from 'lucide-react';
 import { bluetoothMessaging, BluetoothMessage, BluetoothDevice } from '@/services/bluetoothMessaging';
 import { useToast } from '@/hooks/use-toast';
@@ -139,7 +140,26 @@ const BluetoothMessenger: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <>
+      {/* Beta Warning Banner */}
+      <Card className="w-full max-w-2xl mx-auto mb-4 border-yellow-500/50 bg-yellow-50 dark:bg-yellow-900/20">
+        <CardContent className="pt-6">
+          <div className="flex gap-3">
+            <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-1" />
+            <div>
+              <h3 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-1">
+                ⚠️ Beta Feature - Requires Physical Device
+              </h3>
+              <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                Bluetooth messaging only works on <strong>physical Android or iOS devices</strong>, not in the browser. 
+                This feature is in active development and not yet production-ready.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -261,7 +281,8 @@ const BluetoothMessenger: React.FC = () => {
           </>
         )}
       </CardContent>
-    </Card>
+      </Card>
+    </>
   );
 };
 

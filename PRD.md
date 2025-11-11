@@ -182,40 +182,60 @@ Tables:
 
 ---
 
-### 3.4 Bluetooth Offline Commerce
+### 3.4 Bluetooth Offline Commerce (⚠️ IN DEVELOPMENT)
+
+> **Development Status**: BETA - Not Production-Ready  
+> **Platform Support**: Physical Android/iOS devices only (not browser)  
+> **Estimated Production Release**: Q2 2025
 
 #### 3.4.1 Bluetooth Mesh Messaging
 **Purpose**: Enable peer-to-peer communication without internet
 
 **Features**:
-- ✅ Device-to-device messaging
-- ✅ Message forwarding (mesh networking)
-- ✅ Encrypted communications
-- ✅ Message queue for offline delivery
-- ✅ Group broadcasts
-- ✅ Range: ~100m per hop (extends through network)
+- 🚧 Device-to-device messaging (conceptual implementation)
+- 🚧 Message forwarding (mesh networking) - **needs full implementation**
+- ❌ Encrypted communications - **NOT YET IMPLEMENTED (security risk)**
+- 🚧 Message queue for offline delivery (basic only)
+- 🚧 Group broadcasts (partially implemented)
+- 🚧 Range: ~100m per hop (theory - untested)
 
 **Technical Implementation**:
-- Capacitor Bluetooth LE plugin
-- AES-256 encryption
-- Message timestamp validation (5-min expiry)
-- Device signature verification
+- ✅ Capacitor Bluetooth LE plugin installed
+- ❌ AES-256 encryption - **TODO**
+- ❌ Message timestamp validation - **TODO**
+- ❌ Device signature verification - **TODO**
+- ❌ Runtime permission handling - **TODO**
+- ❌ iOS Info.plist configuration - **TODO**
+
+**Current Limitations**:
+- **Security**: No encryption implemented (all messages sent in plain text)
+- **Permissions**: No runtime permission requests (will fail on Android 12+)
+- **iOS**: Missing Info.plist permissions (will crash on iOS)
+- **Advertising**: Conceptual only - doesn't actually work
+- **Testing**: Zero real-device testing performed
+- **Persistence**: No data persistence (all data lost on app close)
 
 #### 3.4.2 Bluetooth Marketplace
 **Purpose**: Share prices, alerts, and trader information locally
 
 **Features**:
-- ✅ Price discovery and sharing
-- ✅ Market alerts (price changes, demand/supply)
-- ✅ Trader announcements (buyers/sellers nearby)
-- ✅ Product availability broadcasting
-- ✅ 24-hour price cache
-- ✅ Verification through multiple sources
+- 🚧 Price discovery and sharing (UI complete, BLE layer incomplete)
+- 🚧 Market alerts (price changes, demand/supply) - partially working
+- 🚧 Trader announcements (buyers/sellers nearby) - UI only
+- 🚧 Product availability broadcasting - not functional
+- 🚧 24-hour price cache - in-memory only (not persistent)
+- ❌ Verification through multiple sources - **NOT IMPLEMENTED**
 
-**Use Cases**:
-1. **Market Day**: Farmers share real-time prices at physical markets
-2. **Rural Areas**: Price information spreads without internet
-3. **Emergency**: Buyers can find sellers during connectivity outages
+**Use Cases** (Planned):
+1. **Market Day**: Farmers share real-time prices at physical markets (future)
+2. **Rural Areas**: Price information spreads without internet (future)
+3. **Emergency**: Buyers can find sellers during connectivity outages (future)
+
+**Development Roadmap**:
+- **Phase 1** (Current): UI and conceptual framework ✅
+- **Phase 2** (In Progress): Runtime permissions, basic BLE functionality
+- **Phase 3** (Q1 2025): Encryption, data persistence, iOS support
+- **Phase 4** (Q2 2025): Real-device testing, production hardening
 
 ---
 
@@ -597,7 +617,7 @@ All tables have:
 
 AgriConnect MIS FARMRETAIL is positioned to revolutionize agricultural commerce in Kenya by addressing critical gaps: internet connectivity, fair pricing, input access, and community collaboration. The platform's innovative Bluetooth mesh networking and offline-first design make it uniquely suited for rural African markets, while the comprehensive feature set serves the entire agricultural value chain from farm inputs to final produce sales.
 
-**Status**: Production-ready, actively seeking pilot deployment with cooperatives and county governments.
+**Status**: ⚠️ In Active Development - Not production-ready. Bluetooth features require physical Android/iOS devices and are currently in beta testing phase. Expected production release Q2 2025.
 
 **Contact**: [To be added]  
 **Last Updated**: January 2025  

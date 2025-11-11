@@ -109,6 +109,25 @@ export function BluetoothMarketplace() {
 
   return (
     <div className="container mx-auto p-4 space-y-6">
+      {/* Beta Warning Banner */}
+      <Card className="border-yellow-500/50 bg-yellow-50 dark:bg-yellow-900/20">
+        <CardContent className="pt-6">
+          <div className="flex gap-3">
+            <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-1" />
+            <div>
+              <h3 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-1">
+                ⚠️ Beta Feature - Development in Progress
+              </h3>
+              <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                The Bluetooth offline marketplace requires a <strong>physical Android or iOS device</strong> to function. 
+                This feature is currently in active development and <strong>not production-ready</strong>. 
+                Some features may not work as expected. Bluetooth communication is not yet encrypted.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Bluetooth Marketplace</h1>
