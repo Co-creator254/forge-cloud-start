@@ -30,43 +30,7 @@ const Header: React.FC = () => {
   };
 
   const CustomLogo = () => (
-    <div className="w-8 h-8 flex items-center justify-center">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-        <g transform="translate(50, 50)">
-          <path d="M-15 15 L0 -25 L15 15 L8 10 L0 -10 L-8 10 Z" fill="url(#dynamicGradient)" />
-          
-          <path d="M-12 5 Q-20 0 -18 8 Q-12 12 -8 8 Q-6 2 -12 5 Z" fill="#22c55e" opacity="0.9"/>
-          <path d="M12 5 Q20 0 18 8 Q12 12 8 8 Q6 2 12 5 Z" fill="#22c55e" opacity="0.9"/>
-          
-          <g opacity="0.7">
-            <line x1="0" y1="-25" x2="8" y2="-32" stroke="#4ade80" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="0" y1="-25" x2="-8" y2="-32" stroke="#4ade80" strokeWidth="2" strokeLinecap="round"/>
-            <line x1="0" y1="-25" x2="0" y2="-35" stroke="#4ade80" strokeWidth="2" strokeLinecap="round"/>
-            
-            <circle cx="8" cy="-32" r="2" fill="#4ade80"/>
-            <circle cx="-8" cy="-32" r="2" fill="#4ade80"/>
-            <circle cx="0" cy="-35" r="2" fill="#4ade80"/>
-          </g>
-          
-          <g opacity="0.6">
-            <path d="M-5 15 Q-10 20 -15 18 Q-12 22 -8 20 Q-5 18 -5 15" stroke="#16a34a" strokeWidth="2" fill="none"/>
-            <path d="M5 15 Q10 20 15 18 Q12 22 8 20 Q5 18 5 15" stroke="#16a34a" strokeWidth="2" fill="none"/>
-            <path d="M0 15 Q0 22 -3 25 Q3 25 0 15" stroke="#16a34a" strokeWidth="2" fill="none"/>
-          </g>
-          
-          <circle cx="0" cy="0" r="25" fill="none" stroke="#4ade80" strokeWidth="1" opacity="0.3" className="pulse-ring"/>
-          <circle cx="0" cy="0" r="35" fill="none" stroke="#22c55e" strokeWidth="1" opacity="0.2" className="pulse-ring-2"/>
-        </g>
-        
-        <defs>
-          <linearGradient id="dynamicGradient" x1="0%" y1="100%" x2="0%" y2="0%">
-            <stop offset="0%" style={{stopColor:"#16a34a", stopOpacity:1}} />
-            <stop offset="50%" style={{stopColor:"#22c55e", stopOpacity:1}} />
-            <stop offset="100%" style={{stopColor:"#4ade80", stopOpacity:1}} />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <img src="/src/assets/logo.png" alt="SokoConnect Logo" className="w-10 h-10 object-contain" />
   );
 
   return (
