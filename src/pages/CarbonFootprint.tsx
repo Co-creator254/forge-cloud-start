@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Leaf, TrendingDown, Award, BarChart3, Plus, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import carbonCreditBg from '@/assets/carbon-credit-bg.png';
 
 interface CarbonEmission {
   id: string;
@@ -119,8 +120,15 @@ const CarbonFootprint = () => {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-green-600 to-green-500 text-white py-16">
-          <div className="container px-4">
+        <section 
+          className="relative text-white py-16 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${carbonCreditBg})`,
+            backgroundAttachment: 'fixed'
+          }}
+        >
+          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="relative container px-4">
             <div className="max-w-3xl mx-auto text-center">
               <Leaf className="h-16 w-16 mx-auto mb-4" />
               <h1 className="text-4xl md:text-5xl font-bold mb-4">Carbon Footprint Tracking</h1>

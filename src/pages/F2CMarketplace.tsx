@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ShoppingBag, MapPin, Calendar, Package, DollarSign, Plus, Search, Truck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { MarketplaceImage } from "@/components/MarketplaceImage";
+import { MarketplaceDisclaimer } from "@/components/MarketplaceDisclaimer";
 
 interface SubscriptionBox {
   id: string;
@@ -37,6 +39,7 @@ const F2CMarketplace = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterCounty, setFilterCounty] = useState("all");
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
 
   useEffect(() => {
     fetchSubscriptionBoxes();
@@ -98,6 +101,14 @@ const F2CMarketplace = () => {
           </div>
         </div>
       </header>
+
+      {/* Disclaimer Modal */}
+      {showDisclaimer && (
+        <MarketplaceDisclaimer
+          marketplaceType="agricultural"
+          onAccept={() => setShowDisclaimer(false)}
+        />
+      )}
 
       <main className="flex-1">
         {/* Hero Section */}
@@ -216,8 +227,12 @@ const F2CMarketplace = () => {
                 
                 return (
                   <Card key={box.id} className="hover:shadow-lg transition-shadow overflow-hidden">
-                    <div className="h-48 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                      <Package className="h-20 w-20 text-primary/40" />
+                    <div className="h-48 bg-gray-200">
+                      <MarketplaceImage 
+                        src={box.images && box.images.length > 0 ? box.images[0] : undefined}
+                        alt={box.box_name}
+                        className="w-full h-48 object-cover"
+                      />
                     </div>
                     <CardHeader>
                       <div className="flex items-start justify-between mb-2">

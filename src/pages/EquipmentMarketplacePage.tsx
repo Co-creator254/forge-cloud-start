@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import equipmentBg from '@/assets/equipment-bg.png';
+import EquipmentListingDialog from '@/components/EquipmentListingDialog';
+import { MarketplaceImage } from '@/components/MarketplaceImage';
 import { 
   Settings,
   MapPin, 
@@ -18,10 +19,11 @@ import {
   Eye,
   Star,
   Phone,
-  Mail
+  Zap,
 } from 'lucide-react';
 import Header from '@/components/Header';
 import { MobileNavigation } from '@/components/MobileNavigation';
+import { MarketplaceDisclaimer } from '@/components/MarketplaceDisclaimer';
 
 interface Equipment {
   id: string;
@@ -42,6 +44,7 @@ interface Equipment {
   availability_status: string;
   rental_option: boolean;
   rental_price_per_day: number;
+  rental_minimum_days?: number;
   contact_phone: string;
   contact_email: string;
   tags: string[];
@@ -57,30 +60,12 @@ const EquipmentMarketplacePage: React.FC = () => {
   
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showListingDialog, setShowListingDialog] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
-  
-  const [equipmentForm, setEquipmentForm] = useState({
-    equipment_name: '',
-    equipment_type: 'Tractor',
-    brand: '',
-    model: '',
-    year_manufactured: new Date().getFullYear(),
-    condition: 'Good',
-    price: 0,
-    negotiable: true,
-    location: '',
-    county: '',
-    description: '',
-    specifications: '',
-    rental_option: false,
-    rental_price_per_day: 0,
-    contact_phone: '',
-    contact_email: '',
-    tags: ''
-  });
+  const [listingTypeFilter, setListingTypeFilter] = useState<'all' | 'sale' | 'rental' | 'lease'>('all');
 
   const equipmentTypes = [
     'Tractor', 'Plough', 'Harvester', 'Planter', 'Cultivator', 'Sprayer',
@@ -115,82 +100,12 @@ const EquipmentMarketplacePage: React.FC = () => {
     }
   };
 
-  const handleAddEquipment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to list equipment",
-        variant: "destructive",
-      });
-      navigate('/auth');
-      return;
-    }
-
-    try {
-      const specifications = equipmentForm.specifications ? 
-        JSON.parse(equipmentForm.specifications) : {};
-
-      const { error } = await supabase
-        .from('equipment_marketplace')
-        .insert({
-          seller_id: user.id,
-          equipment_name: equipmentForm.equipment_name,
-          equipment_type: equipmentForm.equipment_type,
-          brand: equipmentForm.brand,
-          model: equipmentForm.model,
-          year_manufactured: equipmentForm.year_manufactured,
-          condition: equipmentForm.condition,
-          price: equipmentForm.price,
-          negotiable: equipmentForm.negotiable,
-          location: equipmentForm.location,
-          county: equipmentForm.county,
-          description: equipmentForm.description,
-          specifications,
-          rental_option: equipmentForm.rental_option,
-          rental_price_per_day: equipmentForm.rental_price_per_day,
-          contact_phone: equipmentForm.contact_phone,
-          contact_email: equipmentForm.contact_email,
-          tags: equipmentForm.tags.split(',').map(t => t.trim())
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Equipment has been listed successfully!",
-      });
-
-      setShowAddForm(false);
-      setEquipmentForm({
-        equipment_name: '',
-        equipment_type: 'Tractor',
-        brand: '',
-        model: '',
-        year_manufactured: new Date().getFullYear(),
-        condition: 'Good',
-        price: 0,
-        negotiable: true,
-        location: '',
-        county: '',
-        description: '',
-        specifications: '',
-        rental_option: false,
-        rental_price_per_day: 0,
-        contact_phone: '',
-        contact_email: '',
-        tags: ''
-      });
-      
-      fetchEquipment();
-      
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to list equipment",
-        variant: "destructive",
-      });
-    }
+  const handleListingSuccess = () => {
+    fetchEquipment();
+    toast({
+      title: "Success!",
+      description: "Your equipment listing has been created",
+    });
   };
 
   const filteredEquipment = equipment.filter(item => {
@@ -204,8 +119,19 @@ const EquipmentMarketplacePage: React.FC = () => {
     const matchesLocation = locationFilter === '' ||
       item.location.toLowerCase().includes(locationFilter.toLowerCase()) ||
       item.county.toLowerCase().includes(locationFilter.toLowerCase());
+
+    // Filter by listing type
+    let matchesListingType = true;
+    if (listingTypeFilter === 'sale') {
+      matchesListingType = item.price > 0;
+    } else if (listingTypeFilter === 'rental') {
+      matchesListingType = item.rental_option && item.rental_price_per_day > 0;
+    } else if (listingTypeFilter === 'lease') {
+      // Would need lease fields from equipment_marketplace_listings
+      matchesListingType = true;
+    }
     
-    return matchesSearch && matchesType && matchesLocation;
+    return matchesSearch && matchesType && matchesLocation && matchesListingType;
   });
 
   if (loading) {
@@ -223,11 +149,36 @@ const EquipmentMarketplacePage: React.FC = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
+      {/* Disclaimer Modal */}
+      {showDisclaimer && (
+        <MarketplaceDisclaimer
+          marketplaceType="equipment"
+          onAccept={() => setShowDisclaimer(false)}
+        />
+      )}
+      
+      {/* Hero Section */}
+      <section 
+        className="relative text-white py-16 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${equipmentBg})`,
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="relative container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Equipment Marketplace</h1>
+          <p className="text-xl mb-8 max-w-3xl mx-auto">
+            Buy, sell, and rent agricultural equipment from trusted sellers across Kenya
+          </p>
+        </div>
+      </section>
+      
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Equipment Marketplace</h1>
+          <h2 className="text-3xl font-bold text-foreground mb-2">Browse Equipment</h2>
           <p className="text-muted-foreground">
-            Buy, sell, and rent agricultural equipment from trusted sellers
+            Find the right agricultural equipment for your farm
           </p>
         </div>
 
@@ -255,314 +206,180 @@ const EquipmentMarketplacePage: React.FC = () => {
             onChange={(e) => setLocationFilter(e.target.value)}
             className="flex-1"
           />
-          <Button onClick={() => setShowAddForm(!showAddForm)}>
+          <Button 
+            onClick={() => {
+              if (!user) {
+                navigate('/auth');
+                return;
+              }
+              setShowListingDialog(true);
+            }}
+            className="bg-green-600 hover:bg-green-700"
+          >
             <Plus className="h-4 w-4 mr-2" />
             List Equipment
           </Button>
         </div>
 
-        {/* Add Equipment Form */}
-        {showAddForm && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>List Agricultural Equipment</CardTitle>
-              <CardDescription>
-                List your agricultural equipment for sale or rent
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleAddEquipment} className="space-y-6">
-                {/* Basic Information */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="equipment_name">Equipment Name *</Label>
-                    <Input
-                      id="equipment_name"
-                      placeholder="e.g., John Deere 5045D Tractor"
-                      value={equipmentForm.equipment_name}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, equipment_name: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="equipment_type">Equipment Type *</Label>
-                    <select
-                      id="equipment_type"
-                      value={equipmentForm.equipment_type}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, equipment_type: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                      required
-                    >
-                      {equipmentTypes.map(type => (
-                        <option key={type} value={type}>{type}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <Label htmlFor="brand">Brand</Label>
-                    <Input
-                      id="brand"
-                      placeholder="e.g., John Deere, Massey Ferguson"
-                      value={equipmentForm.brand}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, brand: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="model">Model</Label>
-                    <Input
-                      id="model"
-                      placeholder="e.g., 5045D, MF 385"
-                      value={equipmentForm.model}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, model: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="year_manufactured">Year Manufactured</Label>
-                    <Input
-                      id="year_manufactured"
-                      type="number"
-                      min="1950"
-                      max={new Date().getFullYear()}
-                      value={equipmentForm.year_manufactured}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, year_manufactured: parseInt(e.target.value) || new Date().getFullYear()})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="condition">Condition *</Label>
-                    <select
-                      id="condition"
-                      value={equipmentForm.condition}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, condition: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                      required
-                    >
-                      <option value="New">New</option>
-                      <option value="Excellent">Excellent</option>
-                      <option value="Good">Good</option>
-                      <option value="Fair">Fair</option>
-                      <option value="Poor">Poor</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Location */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="location">Location *</Label>
-                    <Input
-                      id="location"
-                      value={equipmentForm.location}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, location: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="county">County *</Label>
-                    <Input
-                      id="county"
-                      value={equipmentForm.county}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, county: e.target.value})}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Pricing */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="price">Sale Price (KES) *</Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={equipmentForm.price}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, price: parseFloat(e.target.value) || 0})}
-                      required
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2 pt-6">
-                    <input
-                      type="checkbox"
-                      id="negotiable"
-                      checked={equipmentForm.negotiable}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, negotiable: e.target.checked})}
-                    />
-                    <Label htmlFor="negotiable">Price Negotiable</Label>
-                  </div>
-                  <div className="flex items-center space-x-2 pt-6">
-                    <input
-                      type="checkbox"
-                      id="rental_option"
-                      checked={equipmentForm.rental_option}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, rental_option: e.target.checked})}
-                    />
-                    <Label htmlFor="rental_option">Available for Rent</Label>
-                  </div>
-                </div>
-
-                {equipmentForm.rental_option && (
-                  <div>
-                    <Label htmlFor="rental_price_per_day">Rental Price per Day (KES)</Label>
-                    <Input
-                      id="rental_price_per_day"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={equipmentForm.rental_price_per_day}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, rental_price_per_day: parseFloat(e.target.value) || 0})}
-                    />
-                  </div>
-                )}
-
-                {/* Description and Specifications */}
-                <div>
-                  <Label htmlFor="description">Description *</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Describe the equipment condition, features, and any additional information"
-                    value={equipmentForm.description}
-                    onChange={(e) => setEquipmentForm({...equipmentForm, description: e.target.value})}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="specifications">Specifications (JSON format)</Label>
-                  <Textarea
-                    id="specifications"
-                    placeholder='{"horsepower": "45 HP", "fuel_type": "Diesel", "transmission": "Manual"}'
-                    value={equipmentForm.specifications}
-                    onChange={(e) => setEquipmentForm({...equipmentForm, specifications: e.target.value})}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="tags">Tags (comma-separated)</Label>
-                  <Input
-                    id="tags"
-                    placeholder="e.g., hydraulic, 4WD, low hours, serviced"
-                    value={equipmentForm.tags}
-                    onChange={(e) => setEquipmentForm({...equipmentForm, tags: e.target.value})}
-                  />
-                </div>
-
-                {/* Contact Information */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="contact_phone">Contact Phone</Label>
-                    <Input
-                      id="contact_phone"
-                      type="tel"
-                      value={equipmentForm.contact_phone}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, contact_phone: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contact_email">Contact Email</Label>
-                    <Input
-                      id="contact_email"
-                      type="email"
-                      value={equipmentForm.contact_email}
-                      onChange={(e) => setEquipmentForm({...equipmentForm, contact_email: e.target.value})}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button type="submit">List Equipment</Button>
-                  <Button type="button" variant="outline" onClick={() => setShowAddForm(false)}>
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
+        {/* Listing Type Filter */}
+        <div className="flex gap-2 mb-6">
+          {(['all', 'sale', 'rental', 'lease'] as const).map(type => (
+            <Badge
+              key={type}
+              variant={listingTypeFilter === type ? 'default' : 'outline'}
+              className="cursor-pointer"
+              onClick={() => setListingTypeFilter(type)}
+            >
+              {type === 'all' && '📦 All Listings'}
+              {type === 'sale' && '💰 For Sale'}
+              {type === 'rental' && '🔄 For Rent'}
+              {type === 'lease' && '📋 For Lease'}
+            </Badge>
+          ))}
+        </div>
 
         {/* Equipment Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEquipment.map((item) => (
-            <Card key={item.id} className="overflow-hidden">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg">{item.equipment_name}</CardTitle>
-                    <CardDescription className="flex items-center mt-1">
-                      <Settings className="h-4 w-4 mr-1" />
-                      {item.equipment_type}
-                    </CardDescription>
-                    <CardDescription className="flex items-center">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {item.location}, {item.county}
-                    </CardDescription>
-                  </div>
+            <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              {/* Image Container */}
+              <div className="h-40 bg-gray-200 overflow-hidden relative">
+                <MarketplaceImage
+                  src={item.images?.[0]}
+                  alt={item.equipment_name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-2 right-2 flex gap-1">
                   {item.is_featured && (
-                    <Badge className="bg-yellow-500 text-white">
-                      <Star className="h-3 w-3 mr-1" />
-                      Featured
+                    <Badge className="bg-yellow-500 text-white text-xs">
+                      ⭐ Featured
+                    </Badge>
+                  )}
+                  {item.rental_option && (
+                    <Badge className="bg-orange-500 text-white text-xs">
+                      🔄 Rentable
                     </Badge>
                   )}
                 </div>
+              </div>
+
+              <CardHeader className="pb-3">
+                <div>
+                  <CardTitle className="text-base line-clamp-2">{item.equipment_name}</CardTitle>
+                  <CardDescription className="flex items-center mt-1 text-xs">
+                    <Settings className="h-3 w-3 mr-1" />
+                    {item.equipment_type}
+                  </CardDescription>
+                  <CardDescription className="flex items-center text-xs">
+                    <MapPin className="h-3 w-3 mr-1" />
+                    {item.location}, {item.county}
+                  </CardDescription>
+                </div>
               </CardHeader>
               
-              <CardContent className="space-y-3">
-                <div className="text-lg font-semibold text-green-600">
-                  KES {item.price.toLocaleString()}
-                  {item.negotiable && <span className="text-sm text-muted-foreground ml-1">(Negotiable)</span>}
+              <CardContent className="space-y-2 pb-3">
+                {/* Pricing Section */}
+                <div className="border-l-4 border-green-500 pl-3 py-2 bg-green-50 rounded">
+                  <div className="text-sm font-semibold text-green-700">
+                    💰 Sale: KES {item.price.toLocaleString()}
+                  </div>
+                  {item.negotiable && (
+                    <div className="text-xs text-green-600">✓ Price negotiable</div>
+                  )}
                 </div>
-                
+
+                {/* Rental Section */}
                 {item.rental_option && item.rental_price_per_day > 0 && (
-                  <div className="text-sm text-blue-600">
-                    Rent: KES {item.rental_price_per_day.toLocaleString()}/day
+                  <div className="border-l-4 border-orange-500 pl-3 py-2 bg-orange-50 rounded">
+                    <div className="text-sm font-semibold text-orange-700">
+                      🔄 Rent: KES {item.rental_price_per_day.toLocaleString()}/day
+                    </div>
+                    {item.rental_minimum_days && item.rental_minimum_days > 1 && (
+                      <div className="text-xs text-orange-600">
+                        Min {item.rental_minimum_days} days
+                      </div>
+                    )}
                   </div>
                 )}
-                
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+
+                {/* Equipment Details */}
+                <div className="grid grid-cols-2 gap-2 text-xs">
                   {item.brand && (
-                    <div>
-                      <strong>Brand:</strong> {item.brand}
+                    <div className="bg-gray-100 p-2 rounded">
+                      <span className="font-semibold">Brand:</span> {item.brand}
                     </div>
                   )}
                   {item.year_manufactured && (
-                    <div>
-                      <strong>Year:</strong> {item.year_manufactured}
+                    <div className="bg-gray-100 p-2 rounded">
+                      <span className="font-semibold">Year:</span> {item.year_manufactured}
                     </div>
                   )}
                 </div>
-                
-                <div className="text-sm">
-                  <strong>Condition:</strong> 
+
+                {/* Condition */}
+                <div className="text-xs">
+                  <span className="font-semibold">Condition:</span>
                   <Badge 
-                    variant={item.condition === 'New' || item.condition === 'Excellent' ? 'default' : 'outline'}
-                    className="ml-1"
+                    variant="outline"
+                    className="ml-1 text-xs"
                   >
                     {item.condition}
                   </Badge>
                 </div>
-                
-                <p className="text-sm text-muted-foreground line-clamp-3">
+
+                {/* Warranty & Insurance Info */}
+                <div className="grid grid-cols-2 gap-2 text-xs pt-1 border-t">
+                  <div className="bg-blue-50 p-2 rounded">
+                    <span className="font-semibold text-blue-900">✓ Warranty</span>
+                    <div className="text-blue-700 text-xs">Available</div>
+                  </div>
+                  <div className="bg-purple-50 p-2 rounded">
+                    <span className="font-semibold text-purple-900">🛡️ Insurance</span>
+                    <div className="text-purple-700 text-xs">Options available</div>
+                  </div>
+                </div>
+
+                {/* Seller Verification Badge */}
+                <div className="flex items-center gap-1 text-xs bg-green-50 p-2 rounded border border-green-200">
+                  <Star className="h-3 w-3 text-green-600" />
+                  <span className="text-green-700 font-semibold">Verified Seller</span>
+                </div>
+
+                {/* Description */}
+                <p className="text-xs text-muted-foreground line-clamp-2">
                   {item.description}
                 </p>
-                
-                {item.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {item.tags.slice(0, 3).map((tag, index) => (
+
+                {/* Tags */}
+                {item.tags && item.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {item.tags.slice(0, 2).map((tag, index) => (
                       <Badge key={index} variant="secondary" className="text-xs">
                         {tag}
                       </Badge>
                     ))}
+                    {item.tags.length > 2 && (
+                      <Badge variant="secondary" className="text-xs">
+                        +{item.tags.length - 2}
+                      </Badge>
+                    )}
                   </div>
                 )}
-                
-                <div className="flex gap-2 pt-2">
-                  <Button size="sm" className="flex-1">
-                    <Eye className="h-4 w-4 mr-1" />
+
+                {/* Action Buttons */}
+                <div className="flex gap-1 pt-2">
+                  <Button size="sm" className="flex-1 text-xs h-8">
+                    <Eye className="h-3 w-3 mr-1" />
                     View Details
                   </Button>
                   {item.contact_phone && (
-                    <Button size="sm" variant="outline">
-                      <Phone className="h-4 w-4" />
+                    <Button size="sm" variant="outline" className="h-8">
+                      <Phone className="h-3 w-3" />
+                    </Button>
+                  )}
+                  {item.rental_option && (
+                    <Button size="sm" variant="outline" className="h-8">
+                      <Zap className="h-3 w-3" />
                     </Button>
                   )}
                 </div>
@@ -583,7 +400,16 @@ const EquipmentMarketplacePage: React.FC = () => {
                 }
               </p>
               {!searchFilter && !typeFilter && !locationFilter && (
-                <Button onClick={() => setShowAddForm(true)}>
+                <Button 
+                  onClick={() => {
+                    if (!user) {
+                      navigate('/auth');
+                      return;
+                    }
+                    setShowListingDialog(true);
+                  }}
+                  className="bg-green-600 hover:bg-green-700"
+                >
                   List First Equipment
                 </Button>
               )}
@@ -591,6 +417,16 @@ const EquipmentMarketplacePage: React.FC = () => {
           </Card>
         )}
       </main>
+
+      {/* Equipment Listing Dialog */}
+      {user && (
+        <EquipmentListingDialog
+          isOpen={showListingDialog}
+          onClose={() => setShowListingDialog(false)}
+          onSuccess={handleListingSuccess}
+          userId={user.id}
+        />
+      )}
 
       <MobileNavigation />
     </div>

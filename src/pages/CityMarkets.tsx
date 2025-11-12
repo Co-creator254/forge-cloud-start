@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import marikitiBg from '@/assets/marikiti-market-bg.jpg';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   MapPin, 
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { MarketplaceDisclaimer } from '@/components/MarketplaceDisclaimer';
 
 interface CityMarket {
   id: string;
@@ -39,6 +41,7 @@ const CityMarkets: React.FC = () => {
   const [selectedType, setSelectedType] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -97,9 +100,24 @@ const CityMarkets: React.FC = () => {
     <div className="min-h-screen">
       <Header />
       
+      {/* Disclaimer Modal */}
+      {showDisclaimer && (
+        <MarketplaceDisclaimer
+          marketplaceType="city-markets"
+          onAccept={() => setShowDisclaimer(false)}
+        />
+      )}
+      
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-16">
-        <div className="container mx-auto px-4 text-center">
+      <section 
+        className="relative text-white py-16 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${marikitiBg})`,
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="relative container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">City Markets Directory</h1>
           <p className="text-xl mb-8 max-w-3xl mx-auto">
             Discover local markets across Kenya. Find the best places to buy and sell 

@@ -13,6 +13,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import farmInputsBg from '@/assets/farm-inputs-bg.png';
+import { MarketplaceImage } from '@/components/MarketplaceImage';
+import { MarketplaceDisclaimer } from '@/components/MarketplaceDisclaimer';
 
 interface FarmInputProduct {
   id: string;
@@ -45,6 +47,7 @@ const FarmInputsMarketplace: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCounty, setSelectedCounty] = useState('all');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -152,6 +155,14 @@ const FarmInputsMarketplace: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      
+      {/* Disclaimer Modal */}
+      {showDisclaimer && (
+        <MarketplaceDisclaimer
+          marketplaceType="farm-inputs"
+          onAccept={() => setShowDisclaimer(false)}
+        />
+      )}
       
       {/* Hero Section with Background */}
       <section 
@@ -357,7 +368,16 @@ const FarmInputsMarketplace: React.FC = () => {
             <div className="col-span-full text-center py-12">Loading products...</div>
           ) : filteredProducts.length > 0 ? (
             filteredProducts.map(product => (
-              <Card key={product.id} className="hover:shadow-lg transition-shadow">
+              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                {/* Product Image */}
+                <div className="h-40 w-full overflow-hidden bg-gray-200">
+                  <MarketplaceImage
+                    src={product.images?.[0]}
+                    alt={product.product_name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
                 <CardHeader>
                   <div className="flex justify-between items-start mb-2">
                     <CardTitle className="text-lg">{product.product_name}</CardTitle>

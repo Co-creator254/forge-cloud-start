@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { MarketplaceDisclaimer } from '@/components/MarketplaceDisclaimer';
 
 interface BulkOrder {
   id: string;
@@ -38,6 +39,7 @@ const BulkOrders: React.FC = () => {
   const [orders, setOrders] = useState<BulkOrder[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -118,6 +120,14 @@ const BulkOrders: React.FC = () => {
   return (
     <div className="min-h-screen">
       <Header />
+      
+      {/* Disclaimer Modal */}
+      {showDisclaimer && (
+        <MarketplaceDisclaimer
+          marketplaceType="bulk-orders"
+          onAccept={() => setShowDisclaimer(false)}
+        />
+      )}
       
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-16">
