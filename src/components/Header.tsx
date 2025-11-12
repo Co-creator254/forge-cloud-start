@@ -15,6 +15,7 @@ import {
 import { User, LogOut, Settings } from 'lucide-react';
 import { ModeToggle } from './ModeToggle';
 import MainNavigation from './MainNavigation';
+import logo from '@/assets/logo.png';
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -30,7 +31,7 @@ const Header: React.FC = () => {
   };
 
   const CustomLogo = () => (
-    <img src="/src/assets/logo.png" alt="SokoConnect Logo" className="w-10 h-10 object-contain" />
+    <img src={logo} alt="SokoConnect Logo" className="w-10 h-10 object-contain" />
   );
 
   return (

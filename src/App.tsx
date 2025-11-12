@@ -94,6 +94,9 @@ import WeatherPage from './pages/WeatherPage';
 import ContractFarmingPage from './pages/ContractFarmingPage';
 import EquipmentMarketplacePage from './pages/EquipmentMarketplacePage';
 import BusinessMarketing from './pages/BusinessMarketing';
+import Community from './pages/Community';
+import FarmInputsMarketplace from './pages/FarmInputsMarketplace';
+import ExportMarket from './pages/ExportMarket';
 
 function App() {
   return (
@@ -141,8 +144,11 @@ function App() {
                   <Route path="/bulk-orders" element={<BulkOrders />} />
                   <Route path="/price-trends" element={<PriceTrends />} />
                  <Route path="/my-trades" element={<MyTrades />} />
+                 <Route path="/community" element={<Community />} />
                  <Route path="/community-forums" element={<CommunityForums />} />
                  <Route path="/city-markets" element={<CityMarkets />} />
+                 <Route path="/farm-inputs-marketplace" element={<FarmInputsMarketplace />} />
+                 <Route path="/export-market" element={<ExportMarket />} />
                  <Route path="/farmer-portal" element={<FarmerPortal />} />
                  <Route path="/equipment-marketplace" element={<EquipmentMarketplace />} />
                  <Route path="/food-rescue-dashboard" element={<FoodRescueDashboard user={{}} />} />
