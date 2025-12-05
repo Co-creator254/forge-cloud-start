@@ -393,12 +393,12 @@ const LivePricing: React.FC<LivePricingProps> = ({
             <p className="text-sm text-gray-600">Price Change</p>
             <p
               className={`text-2xl font-bold mt-1 ${
-                parseFloat(stats.avgChange) > 0
+                parseFloat(String(stats.avgChange)) > 0
                   ? 'text-red-600'
                   : 'text-green-600'
               }`}
             >
-              {parseFloat(stats.avgChange) > 0 ? '+' : ''}
+              {parseFloat(String(stats.avgChange)) > 0 ? '+' : ''}
               {stats.avgChange}%
             </p>
           </CardContent>

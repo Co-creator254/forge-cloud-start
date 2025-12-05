@@ -50,6 +50,7 @@ import ApiDocs from './pages/ApiDocs';
 import SupplyChainAPI from './pages/SupplyChainAPI';
 import PartnersShowcase from './pages/PartnersShowcase';
 import MajorRoutesMarketplace from './pages/MajorRoutesMarketplace';
+const MajorRoutesMarketplacePage = MajorRoutesMarketplace;
 import ExportOpportunitiesNew from './pages/ExportOpportunitiesNew';
 import F2CMarketplace from './pages/F2CMarketplace';
 import BatchTracking from './pages/BatchTracking';
@@ -196,6 +197,7 @@ function App() {
           <Route path="/carbon-footprint" element={<CarbonFootprint />} />
           <Route path="/cooperatives-management" element={<CooperativesManagement />} />
           <Route path="/major-routes" element={<MajorRoutesMarketplace />} />
+          <Route path="/major-routes-marketplace" element={<MajorRoutesMarketplacePage />} />
                   <Route path="*" element={<NotFound />} />
                </Routes>
               </React.Suspense>

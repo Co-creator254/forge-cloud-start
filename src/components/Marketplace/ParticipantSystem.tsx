@@ -356,7 +356,7 @@ const ParticipantSystem: React.FC<ParticipantSystemProps> = ({
             ? 'partial'
             : 'pending';
 
-      const updatedParticipant = { ...selectedParticipant, payment_status: newStatus };
+      const updatedParticipant = { ...selectedParticipant, payment_status: newStatus as 'completed' | 'partial' | 'pending' | 'refunded' };
       setParticipants(
         participants.map(p =>
           p.id === selectedParticipant.id ? updatedParticipant : p

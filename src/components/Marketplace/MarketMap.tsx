@@ -452,7 +452,7 @@ const MarketMap: React.FC<MarketMapProps> = ({
                   </div>
 
                   {/* Distance */}
-                  {distance !== false && distance && (
+                  {typeof distance === 'number' && distance > 0 && (
                     <div className="flex items-center gap-2 text-sm">
                       <Navigation className="h-4 w-4 text-gray-500" />
                       <span className="text-gray-700">

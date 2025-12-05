@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Gallery,
+  Image,
   Zap,
   Wrench,
   TrendingUp,
@@ -23,11 +23,6 @@ import {
   Shield,
 } from 'lucide-react';
 import { toast } from 'sonner';
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL || '',
-  process.env.REACT_APP_SUPABASE_KEY || ''
-);
 
 export interface Equipment {
   id: string;
@@ -260,8 +255,8 @@ export const EquipmentDetailPage: React.FC<EquipmentDetailPageProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                  <Gallery size={48} className="text-gray-400" />
+              <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Image size={48} className="text-gray-400" />
                 </div>
               )}
             </CardContent>
