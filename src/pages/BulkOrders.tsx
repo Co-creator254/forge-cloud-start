@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   Users, 
   Package, 
@@ -17,6 +20,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { MarketplaceDisclaimer } from '@/components/MarketplaceDisclaimer';
 
 interface BulkOrder {
@@ -40,7 +44,13 @@ const BulkOrders: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [newOrder, setNewOrder] = useState({
+    product_type: '', quantity: '', unit: 'kg', target_price: '', deadline: '', location: '', description: ''
+  });
   const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchBulkOrders();
@@ -86,13 +96,44 @@ const BulkOrders: React.FC = () => {
     }
   };
 
+  const handleCreateOrder = async () => {
+    if (!user) {
+      toast({ title: 'Please login', description: 'You must be logged in to create orders', variant: 'destructive' });
+      return;
+    }
+    setCreating(true);
+    try {
+      const { error } = await supabase.from('bulk_orders').insert({
+        organizer_id: user.id,
+        product_type: newOrder.product_type,
+        quantity: parseFloat(newOrder.quantity),
+        unit: newOrder.unit,
+        target_price: parseFloat(newOrder.target_price),
+        deadline: newOrder.deadline,
+        location: newOrder.location,
+        description: newOrder.description,
+        status: 'active',
+        current_participants: 1
+      });
+      if (error) throw error;
+      toast({ title: 'Success', description: 'Bulk order created!' });
+      setShowCreateDialog(false);
+      setNewOrder({ product_type: '', quantity: '', unit: 'kg', target_price: '', deadline: '', location: '', description: '' });
+      fetchBulkOrders();
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to create order', variant: 'destructive' });
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const filteredOrders = orders.filter(order =>
     order.product_type.toLowerCase().includes(searchTerm.toLowerCase()) ||
     order.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const calculateProgress = (order: BulkOrder) => {
-    const targetParticipants = Math.ceil(order.quantity / 100); // Assume 100 units per participant
+    const targetParticipants = Math.ceil(order.quantity / 100);
     return Math.min((order.current_participants / targetParticipants) * 100, 100);
   };
 
@@ -137,10 +178,31 @@ const BulkOrders: React.FC = () => {
             Join group purchases to get better prices on agricultural inputs and products. 
             Organize with other farmers in your area for maximum savings.
           </p>
-          <Button size="lg" variant="secondary">
-            <Plus className="h-4 w-4 mr-2" />
-            Create Bulk Order
-          </Button>
+          <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+            <DialogTrigger asChild>
+              <Button size="lg" variant="secondary">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Bulk Order
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Create Bulk Order</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div><Label>Product Type</Label><Input value={newOrder.product_type} onChange={e => setNewOrder({...newOrder, product_type: e.target.value})} placeholder="e.g. Maize, Fertilizer" /></div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div><Label>Quantity</Label><Input type="number" value={newOrder.quantity} onChange={e => setNewOrder({...newOrder, quantity: e.target.value})} /></div>
+                  <div><Label>Unit</Label><Input value={newOrder.unit} onChange={e => setNewOrder({...newOrder, unit: e.target.value})} /></div>
+                </div>
+                <div><Label>Target Price (KES)</Label><Input type="number" value={newOrder.target_price} onChange={e => setNewOrder({...newOrder, target_price: e.target.value})} /></div>
+                <div><Label>Deadline</Label><Input type="date" value={newOrder.deadline} onChange={e => setNewOrder({...newOrder, deadline: e.target.value})} /></div>
+                <div><Label>Location</Label><Input value={newOrder.location} onChange={e => setNewOrder({...newOrder, location: e.target.value})} placeholder="County/Town" /></div>
+                <div><Label>Description</Label><Textarea value={newOrder.description} onChange={e => setNewOrder({...newOrder, description: e.target.value})} /></div>
+                <Button onClick={handleCreateOrder} disabled={creating} className="w-full">{creating ? 'Creating...' : 'Create Order'}</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </section>
 

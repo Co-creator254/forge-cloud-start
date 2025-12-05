@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Card,
   CardContent,
@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -24,11 +25,6 @@ import {
   Heart,
 } from 'lucide-react';
 import { toast } from 'sonner';
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL || '',
-  process.env.REACT_APP_SUPABASE_KEY || ''
-);
 
 export interface Certification {
   id: string;
@@ -432,8 +428,7 @@ export const SupplierProfiles: React.FC<SupplierProfilesProps> = ({
                   </div>
                   <div>
                     <label className="text-sm font-medium">Message *</label>
-                    <Input
-                      as="textarea"
+                    <Textarea
                       placeholder="Your message here..."
                       value={contactMessage}
                       onChange={(e) => setContactMessage(e.target.value)}
