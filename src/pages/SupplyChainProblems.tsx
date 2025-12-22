@@ -103,7 +103,7 @@ const SupplyChainProblems: React.FC = () => {
         </div>
 
         <div className="mt-16 bg-muted/30 p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">How AgriTender Connect Addresses Supply Chain Challenges</h2>
+          <h2 className="text-2xl font-bold mb-4">How SokoConnect Addresses Supply Chain Challenges</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Card>
               <CardHeader>
