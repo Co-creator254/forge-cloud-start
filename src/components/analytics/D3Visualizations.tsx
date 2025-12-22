@@ -85,33 +85,50 @@ const D3Visualizations: React.FC<D3VisualizationsProps> = ({ data, title, type }
   };
 
   const renderPieChart = (g: any, data: DataPoint[], width: number, height: number) => {
-    const radius = Math.min(width, height) / 2;
+    // Filter out zero/negative values to prevent pie chart rendering issues
+    const validData = data.filter(d => d.value > 0);
+    if (validData.length === 0) return;
+
+    const radius = Math.min(width, height) / 2 - 10;
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
     const pie = d3.pie<DataPoint>()
-      .value(d => d.value);
+      .value(d => d.value)
+      .sort(null);
 
     const arc = d3.arc<d3.PieArcDatum<DataPoint>>()
       .innerRadius(0)
       .outerRadius(radius);
 
-    const pieData = pie(data);
+    const labelArc = d3.arc<d3.PieArcDatum<DataPoint>>()
+      .innerRadius(radius * 0.6)
+      .outerRadius(radius * 0.6);
 
-    g.attr("transform", `translate(${width / 2},${height / 2})`);
+    const pieData = pie(validData);
 
-    g.selectAll(".arc")
+    // Center the pie chart properly
+    const chartGroup = g.attr("transform", `translate(${width / 2 + 20},${height / 2})`);
+
+    // Add slices
+    const slices = chartGroup.selectAll(".arc")
       .data(pieData)
       .enter().append("g")
-      .attr("class", "arc")
-      .append("path")
-      .attr("d", arc)
-      .attr("fill", (d: any, i: number) => color(i.toString()));
+      .attr("class", "arc");
 
-    g.selectAll(".arc")
+    slices.append("path")
+      .attr("d", arc)
+      .attr("fill", (d: any, i: number) => color(i.toString()))
+      .attr("stroke", "white")
+      .attr("stroke-width", 2);
+
+    // Add labels only for slices with enough space
+    slices.filter((d: any) => (d.endAngle - d.startAngle) > 0.3)
       .append("text")
-      .attr("transform", (d: any) => `translate(${arc.centroid(d)})`)
+      .attr("transform", (d: any) => `translate(${labelArc.centroid(d)})`)
       .attr("text-anchor", "middle")
-      .text((d: any) => d.data.name);
+      .attr("font-size", "10px")
+      .attr("fill", "white")
+      .text((d: any) => d.data.name.substring(0, 8));
   };
 
   const renderScatterPlot = (g: any, data: DataPoint[], width: number, height: number) => {
