@@ -7,11 +7,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ShoppingBag, MapPin, Calendar, Package, DollarSign, Plus, Search, Truck } from "lucide-react";
+import { ShoppingBag, MapPin, Calendar, Package, DollarSign, Plus, Search, Truck, Leaf, CheckCircle2, Star, Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketplaceImage } from "@/components/MarketplaceImage";
 import { MarketplaceDisclaimer } from "@/components/MarketplaceDisclaimer";
+import f2cHeroBg from "@/assets/f2c-hero-bg.png";
 
 interface SubscriptionBox {
   id: string;
@@ -111,19 +112,70 @@ const F2CMarketplace = () => {
       )}
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-16">
+        {/* Enhanced Hero Section with Background Image */}
+        <section 
+          className="relative py-20 md:py-28"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(${f2cHeroBg})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
           <div className="container px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <ShoppingBag className="h-16 w-16 mx-auto mb-4" />
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">Farm-to-Consumer Marketplace</h1>
-              <p className="text-xl mb-8">
-                Subscribe to fresh, organic produce delivered directly from local farms to your doorstep
+            <div className="max-w-4xl mx-auto text-center text-white">
+              <Badge className="mb-4 bg-green-500/20 text-green-300 border-green-500/30">
+                <Leaf className="h-3 w-3 mr-1" />
+                Farm Fresh Direct
+              </Badge>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Farm-to-Consumer<br />Subscription Boxes
+              </h1>
+              <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
+                Fresh, organic produce delivered directly from Kenyan farms to your doorstep. 
+                Support local farmers while enjoying the freshest ingredients.
               </p>
-              <Button size="lg" variant="secondary">
-                <Plus className="h-4 w-4 mr-2" />
-                Create Subscription Box
+              <div className="flex flex-wrap justify-center gap-6 mb-8">
+                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                  <CheckCircle2 className="h-5 w-5 text-green-400" />
+                  <span>100% Organic</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                  <Truck className="h-5 w-5 text-green-400" />
+                  <span>Free Delivery</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                  <Heart className="h-5 w-5 text-green-400" />
+                  <span>Support Farmers</span>
+                </div>
+              </div>
+              <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg">
+                <Plus className="h-5 w-5 mr-2" />
+                Create Your Subscription Box
               </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="bg-primary/5 py-8 border-b">
+          <div className="container px-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div>
+                <div className="text-3xl font-bold text-primary">500+</div>
+                <div className="text-sm text-muted-foreground">Active Farmers</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-primary">47</div>
+                <div className="text-sm text-muted-foreground">Counties Covered</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-primary">2,000+</div>
+                <div className="text-sm text-muted-foreground">Happy Subscribers</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-primary">24hrs</div>
+                <div className="text-sm text-muted-foreground">Farm to Door</div>
+              </div>
             </div>
           </div>
         </section>
@@ -131,31 +183,31 @@ const F2CMarketplace = () => {
         <div className="container px-4 py-12">
           {/* Benefits */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <Card className="text-center">
+            <Card className="text-center border-2 hover:border-primary/50 transition-colors">
               <CardContent className="pt-6">
-                <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Package className="h-8 w-8 text-primary" />
+                <div className="p-4 bg-gradient-to-br from-green-100 to-green-50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                  <Package className="h-10 w-10 text-green-600" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">Fresh Produce</h3>
-                <p className="text-muted-foreground">Harvested and delivered within 24-48 hours</p>
+                <h3 className="font-bold text-xl mb-2">Farm Fresh Produce</h3>
+                <p className="text-muted-foreground">Harvested and delivered within 24-48 hours for maximum freshness</p>
               </CardContent>
             </Card>
-            <Card className="text-center">
+            <Card className="text-center border-2 hover:border-primary/50 transition-colors">
               <CardContent className="pt-6">
-                <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Truck className="h-8 w-8 text-primary" />
+                <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                  <Truck className="h-10 w-10 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">Home Delivery</h3>
-                <p className="text-muted-foreground">Convenient doorstep delivery on schedule</p>
+                <h3 className="font-bold text-xl mb-2">Doorstep Delivery</h3>
+                <p className="text-muted-foreground">Convenient scheduled delivery right to your home or office</p>
               </CardContent>
             </Card>
-            <Card className="text-center">
+            <Card className="text-center border-2 hover:border-primary/50 transition-colors">
               <CardContent className="pt-6">
-                <div className="p-3 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <DollarSign className="h-8 w-8 text-primary" />
+                <div className="p-4 bg-gradient-to-br from-amber-100 to-amber-50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+                  <DollarSign className="h-10 w-10 text-amber-600" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">Fair Prices</h3>
-                <p className="text-muted-foreground">Direct from farm, no middlemen markup</p>
+                <h3 className="font-bold text-xl mb-2">Fair Trade Prices</h3>
+                <p className="text-muted-foreground">No middlemen - farmers get fair pay, you get better prices</p>
               </CardContent>
             </Card>
           </div>
