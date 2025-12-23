@@ -4,11 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Users, MessageSquare, TrendingUp } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Users, MessageSquare, TrendingUp, CheckCircle2, Shield, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import CreatePostForm from '@/components/community/CreatePostForm';
 import PostCard from '@/components/community/PostCard';
 import CommunityFilters from '@/components/community/CommunityFilters';
+import communityHeroBg from '@/assets/community-hero-bg.png';
 
 const CommunityForum: React.FC = () => {
   const { user } = useAuth();
@@ -137,11 +139,66 @@ const CommunityForum: React.FC = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="container mx-auto py-8 px-4">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-4">Community Forum</h1>
-          <p className="text-muted-foreground">Connect with fellow farmers and agricultural experts</p>
+      
+      {/* Hero Section with Background Image */}
+      <section 
+        className="relative py-20 md:py-28"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(${communityHeroBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="container px-4">
+          <div className="max-w-4xl mx-auto text-center text-white">
+            <Badge className="mb-4 bg-green-500/20 text-green-300 border-green-500/30">
+              <Users className="h-3 w-3 mr-1" />
+              SokoConnect Community
+            </Badge>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              Community Forum
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
+              Connect with fellow farmers, share knowledge, and grow together. 
+              Join Kenya's largest agricultural community.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 mb-8">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <CheckCircle2 className="h-5 w-5 text-green-400" />
+                <span>Expert Advice</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Shield className="h-5 w-5 text-green-400" />
+                <span>Verified Members</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <Zap className="h-5 w-5 text-green-400" />
+                <span>Real-time Updates</span>
+              </div>
+            </div>
+            {user ? (
+              <Button 
+                size="lg" 
+                onClick={() => setShowCreateForm(true)}
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Start a Discussion
+              </Button>
+            ) : (
+              <Button 
+                size="lg" 
+                variant="secondary"
+                className="px-8 py-6 text-lg"
+              >
+                Sign In to Participate
+              </Button>
+            )}
+          </div>
         </div>
+      </section>
+
+      <main className="container mx-auto py-8 px-4">
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
