@@ -69,6 +69,43 @@ const F2CMarketplace = () => {
     }
   };
 
+  const handleSubscribe = async (box: SubscriptionBox) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Sign In Required",
+        description: "Please sign in to subscribe to this box.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from('f2c_subscriptions').insert({
+        user_id: user.id,
+        box_id: box.id,
+        subscription_type: box.box_type,
+        delivery_address: 'To be provided',
+        delivery_county: box.county,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Subscribed!",
+        description: `You've subscribed to ${box.box_name}. We'll contact you for delivery details.`,
+      });
+      fetchSubscriptionBoxes();
+    } catch (error) {
+      console.error('Subscription error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to subscribe. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const counties = Array.from(new Set(boxes.map(b => b.county)));
 
   const filteredBoxes = boxes.filter(box => {
@@ -336,6 +373,7 @@ const F2CMarketplace = () => {
                         size="sm" 
                         className="flex-1"
                         disabled={availableSlots !== null && availableSlots <= 0}
+                        onClick={() => handleSubscribe(box)}
                       >
                         Subscribe Now
                       </Button>
