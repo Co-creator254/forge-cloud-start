@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Card,
   CardContent,
@@ -15,11 +15,6 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Star, MessageSquare, ThumbsUp, Flag, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL || '',
-  process.env.REACT_APP_SUPABASE_KEY || ''
-);
 
 export interface Review {
   id: string;

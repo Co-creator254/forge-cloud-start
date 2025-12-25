@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import {
   Card,
   CardContent,
@@ -23,11 +23,6 @@ import {
   Clock,
 } from 'lucide-react';
 import { toast } from 'sonner';
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL || '',
-  process.env.REACT_APP_SUPABASE_KEY || ''
-);
 
 export interface DeliveryOption {
   id: string;
