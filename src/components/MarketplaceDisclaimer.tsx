@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { AlertTriangle, CheckCircle2 } from 'lucide-react';
 
 interface MarketplaceDisclaimerProps {
-  marketplaceType: 'equipment' | 'farm-inputs' | 'city-markets' | 'agricultural' | 'bulk-orders';
+  marketplaceType: 'equipment' | 'farm-inputs' | 'city-markets' | 'agricultural' | 'bulk-orders' | 'export-market' | 'group-input-orders' | 'barter-exchange' | 'food-rescue';
   onAccept?: () => void;
 }
 
@@ -178,6 +178,138 @@ export const MarketplaceDisclaimer: React.FC<MarketplaceDisclaimerProps> = ({
         {
           title: '7. Platform Liability',
           text: 'SokoConnect is NOT responsible for: payment disputes, delivery failures, supplier credibility, or group conflicts.'
+        },
+      ]
+    },
+    'export-market': {
+      title: '⚠️ Export Market - Important Disclaimer',
+      content: [
+        {
+          title: '1. Willing Buyer – Willing Seller',
+          text: 'This is a willing buyer–willing seller marketplace. SokoConnect connects parties but does not guarantee transactions.'
+        },
+        {
+          title: '2. Documentation',
+          text: 'Verify all export documentation, certifications, and permits before proceeding with any transaction.'
+        },
+        {
+          title: '3. Payment Terms',
+          text: 'Agree on payment terms in writing. Use secure international payment methods. Consult with export experts.'
+        },
+        {
+          title: '4. Quality Standards',
+          text: 'Confirm product meets destination country quality standards and phytosanitary requirements.'
+        },
+        {
+          title: '5. Shipping & Logistics',
+          text: 'Agree on shipping terms (FOB, CIF, etc.) in writing. Confirm insurance coverage and delivery timelines.'
+        },
+        {
+          title: '6. Due Diligence',
+          text: 'Conduct thorough due diligence on all parties. Verify company registration and export licenses.'
+        },
+        {
+          title: '7. Platform Liability',
+          text: 'SokoConnect is NOT responsible for: export failures, payment disputes, customs issues, or quality claims.'
+        },
+      ]
+    },
+    'group-input-orders': {
+      title: '⚠️ Group Input Orders - Important Disclaimer',
+      content: [
+        {
+          title: '1. Willing Buyer – Willing Seller',
+          text: 'This is a willing buyer–willing seller marketplace. SokoConnect facilitates connections only.'
+        },
+        {
+          title: '2. Order Commitment',
+          text: 'By joining a group order, you commit to your stated quantity. Withdrawal may affect other participants.'
+        },
+        {
+          title: '3. Payment Coordination',
+          text: 'Organizers coordinate payments. Pay only through agreed secure methods. Keep payment receipts.'
+        },
+        {
+          title: '4. Input Quality',
+          text: 'Verify input quality, certifications, and expiry dates upon delivery. Report issues immediately.'
+        },
+        {
+          title: '5. Delivery',
+          text: 'Agree on delivery location and logistics before joining. Distribution is managed by the organizer.'
+        },
+        {
+          title: '6. Pricing',
+          text: 'Final prices may vary based on supplier negotiations and total quantity achieved.'
+        },
+        {
+          title: '7. Platform Liability',
+          text: 'SokoConnect is NOT responsible for: input quality, delivery disputes, organizer conduct, or payment issues.'
+        },
+      ]
+    },
+    'barter-exchange': {
+      title: '⚠️ Barter Exchange - Important Disclaimer',
+      content: [
+        {
+          title: '1. Willing Buyer – Willing Seller',
+          text: 'This is a willing buyer–willing seller marketplace for product exchange. No cash transactions required.'
+        },
+        {
+          title: '2. Value Assessment',
+          text: 'Both parties must agree on equivalent value. There are no standard exchange rates.'
+        },
+        {
+          title: '3. Product Quality',
+          text: 'Inspect all products BEFORE exchange. Agree on quality standards in advance.'
+        },
+        {
+          title: '4. Exchange Terms',
+          text: 'Document exchange terms in writing. Specify quantities, quality, and delivery arrangements.'
+        },
+        {
+          title: '5. Timing',
+          text: 'Agree on exchange timing and location. Consider product perishability.'
+        },
+        {
+          title: '6. Dispute Resolution',
+          text: 'Resolve disputes directly with your exchange partner. SokoConnect does not mediate.'
+        },
+        {
+          title: '7. Platform Liability',
+          text: 'SokoConnect is NOT responsible for: value disputes, product quality, exchange failures, or disputes.'
+        },
+      ]
+    },
+    'food-rescue': {
+      title: '⚠️ Food Rescue - Important Disclaimer',
+      content: [
+        {
+          title: '1. Food Safety',
+          text: 'Donors must ensure food is safe for consumption. Recipients should inspect before distribution.'
+        },
+        {
+          title: '2. Perishability',
+          text: 'Time-sensitive items require prompt pickup and distribution. Coordinate logistics carefully.'
+        },
+        {
+          title: '3. Documentation',
+          text: 'Keep records of donations for accountability. Document quantities and conditions.'
+        },
+        {
+          title: '4. Transport',
+          text: 'Agree on transport responsibilities before donation. Maintain proper food handling during transport.'
+        },
+        {
+          title: '5. Recipient Verification',
+          text: 'Recipients are verified organizations. Confirm recipient details before donation.'
+        },
+        {
+          title: '6. Tax Considerations',
+          text: 'Consult tax advisors about donation deductions. Keep proper documentation.'
+        },
+        {
+          title: '7. Platform Liability',
+          text: 'SokoConnect is NOT responsible for: food safety, transport issues, or distribution outcomes.'
         },
       ]
     }

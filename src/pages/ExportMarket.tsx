@@ -8,7 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Globe, Building2, Package, DollarSign, Calendar, Plus, Send, MessageSquare } from 'lucide-react';
+import { Globe, Building2, Package, DollarSign, Calendar, Plus, Send, MessageSquare, Ship, AlertCircle } from 'lucide-react';
+import { MarketplaceDisclaimer } from '@/components/MarketplaceDisclaimer';
+import { BottomNav } from '@/components/BottomNav';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -194,18 +196,45 @@ const ExportMarket: React.FC = () => {
     return matchesSearch && matchesType;
   });
 
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Header />
+      
+      {/* Marketplace Disclaimer */}
+      {showDisclaimer && (
+        <MarketplaceDisclaimer
+          marketplaceType="export-market"
+          onAccept={() => setShowDisclaimer(false)}
+        />
+      )}
       
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Export Market Opportunities</h1>
+          <div className="flex items-center gap-4 mb-4">
+            <Ship className="h-12 w-12" />
+            <h1 className="text-4xl md:text-5xl font-bold">Export Market Opportunities</h1>
+          </div>
           <p className="text-xl mb-6 max-w-2xl">
             Connect with international buyers, exporters, and certification bodies. 
             Access global markets and grow your agricultural export business.
           </p>
+          
+          {/* Disclaimer Banner */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 max-w-3xl">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium">Willing Buyer – Willing Seller Marketplace</p>
+                <p className="text-sm opacity-90">
+                  SokoConnect connects buyers and sellers but does not guarantee transactions. 
+                  Always verify export documentation and payment terms before proceeding.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -382,7 +411,24 @@ const ExportMarket: React.FC = () => {
         <div className="grid gap-6">
           {loading ? (
             <div className="text-center py-12">Loading opportunities...</div>
-          ) : filteredOpportunities.length > 0 ? (
+          ) : filteredOpportunities.length === 0 ? (
+            <Card className="text-center py-16">
+              <CardContent>
+                <Ship className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No opportunities available</h3>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  There are currently no export opportunities matching your criteria. 
+                  Be the first to post an opportunity or check back later.
+                </p>
+                {user && (
+                  <Button onClick={() => setIsCreateDialogOpen(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Post First Opportunity
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
             filteredOpportunities.map(opp => (
               <Card key={opp.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
@@ -442,8 +488,6 @@ const ExportMarket: React.FC = () => {
                 </CardContent>
               </Card>
             ))
-          ) : (
-            <div className="text-center py-12">No export opportunities found.</div>
           )}
         </div>
       </main>
