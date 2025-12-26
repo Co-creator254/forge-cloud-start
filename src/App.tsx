@@ -132,7 +132,7 @@ function App() {
                  <Route path="/supply-chain-problems/price-volatility" element={<PriceVolatility />} />
                  <Route path="/supply-chain-problems/quality-control" element={<QualityControl />} />
                  {/* Strategic Features Tabs */}
-                 <Route path="/batch-tracking" element={<BatchTrackingPage farmerId="USER_ID_PLACEHOLDER" />} />
+                 <Route path="/batch-tracking" element={<BatchTracking />} />
                  <Route path="/carbon-forum" element={<CarbonForumPage userId="USER_ID_PLACEHOLDER" />} />
                  <Route path="/networking" element={<NetworkingPage userId="USER_ID_PLACEHOLDER" />} />
                  <Route path="/logistics-solutions-map" element={<LogisticsSolutionsMap />} />
@@ -193,7 +193,6 @@ function App() {
           <Route path="/partners-showcase" element={<PartnersShowcase />} />
           <Route path="/export-opportunities-new" element={<ExportOpportunitiesNew />} />
           <Route path="/f2c-marketplace" element={<F2CMarketplace />} />
-          <Route path="/batch-tracking" element={<BatchTracking />} />
           <Route path="/carbon-footprint" element={<CarbonFootprint />} />
           <Route path="/cooperatives-management" element={<CooperativesManagement />} />
           <Route path="/major-routes" element={<MajorRoutesMarketplace />} />
