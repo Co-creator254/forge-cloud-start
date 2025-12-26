@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
 import { BottomNav } from "@/components/BottomNav";
@@ -8,9 +7,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Calendar, MapPin, TrendingDown, Package } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Users, Calendar, MapPin, TrendingDown, Package, Plus, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { MarketplaceDisclaimer } from "@/components/MarketplaceDisclaimer";
 
 interface GroupOrder {
   id: string;
@@ -30,16 +34,52 @@ interface GroupOrder {
 }
 
 const GroupInputOrders = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [orders, setOrders] = useState<GroupOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"active" | "completed" | "all">("active");
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [newOrder, setNewOrder] = useState({
+    input_name: '', description: '', target_quantity: '', unit_price: '', deadline: '', location: ''
+  });
 
   useEffect(() => {
     fetchOrders();
   }, [activeTab]);
+
+  const handleCreateOrder = async () => {
+    if (!user) {
+      toast({ title: 'Please login', description: 'You must be logged in to create orders', variant: 'destructive' });
+      return;
+    }
+    setCreating(true);
+    try {
+      const { error } = await supabase.from('group_input_orders').insert({
+        organizer_id: user.id,
+        input_name: newOrder.input_name,
+        description: newOrder.description,
+        target_quantity: parseFloat(newOrder.target_quantity),
+        current_quantity: 0,
+        unit_price: parseFloat(newOrder.unit_price),
+        deadline: newOrder.deadline,
+        location: newOrder.location,
+        status: 'active'
+      });
+      if (error) throw error;
+      toast({ title: 'Success', description: 'Group input order created!' });
+      setShowCreateDialog(false);
+      setNewOrder({ input_name: '', description: '', target_quantity: '', unit_price: '', deadline: '', location: '' });
+      fetchOrders();
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to create order', variant: 'destructive' });
+    } finally {
+      setCreating(false);
+    }
+  };
 
   const fetchOrders = async () => {
     try {
@@ -97,15 +137,36 @@ const GroupInputOrders = () => {
         </div>
       </header>
 
+      {/* Marketplace Disclaimer */}
+      {showDisclaimer && (
+        <MarketplaceDisclaimer
+          marketplaceType="group-input-orders"
+          onAccept={() => setShowDisclaimer(false)}
+        />
+      )}
+
       <main className="flex-1 container py-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Group Purchasing for Inputs</h1>
             <p className="text-muted-foreground mt-2">
               Save money by buying farm inputs in bulk with other farmers. Group purchasing allows farmers to pool their resources 
-              and negotiate better prices by ordering inputs like seeds, fertilizers, and equipment together. When more farmers join 
-              an order, the unit price decreases, making quality inputs more affordable for everyone.
+              and negotiate better prices by ordering inputs like seeds, fertilizers, and equipment together.
             </p>
+            
+            {/* Disclaimer Banner */}
+            <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-amber-800 dark:text-amber-200">Willing Buyer – Willing Seller Marketplace</p>
+                  <p className="text-sm text-amber-700 dark:text-amber-300">
+                    SokoConnect facilitates connections but does not guarantee transactions. Verify all details before committing.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
             <div className="mt-4 p-4 bg-muted/50 rounded-lg">
               <h3 className="font-semibold mb-2">How It Works:</h3>
               <ol className="list-decimal list-inside space-y-1 text-sm">
@@ -119,7 +180,74 @@ const GroupInputOrders = () => {
             </div>
           </div>
           <div className="mt-4 md:mt-0">
-            <Button onClick={() => navigate('/bulk-orders')}>Express Need</Button>
+            <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Express Need
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Create Group Input Order</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Input Name *</Label>
+                    <Input 
+                      value={newOrder.input_name} 
+                      onChange={e => setNewOrder({...newOrder, input_name: e.target.value})} 
+                      placeholder="e.g., DAP Fertilizer, Maize Seeds" 
+                    />
+                  </div>
+                  <div>
+                    <Label>Description</Label>
+                    <Textarea 
+                      value={newOrder.description} 
+                      onChange={e => setNewOrder({...newOrder, description: e.target.value})} 
+                      placeholder="Describe the input you need..."
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label>Target Quantity *</Label>
+                      <Input 
+                        type="number" 
+                        value={newOrder.target_quantity} 
+                        onChange={e => setNewOrder({...newOrder, target_quantity: e.target.value})} 
+                      />
+                    </div>
+                    <div>
+                      <Label>Unit Price (KES) *</Label>
+                      <Input 
+                        type="number" 
+                        value={newOrder.unit_price} 
+                        onChange={e => setNewOrder({...newOrder, unit_price: e.target.value})} 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Deadline *</Label>
+                    <Input 
+                      type="date" 
+                      value={newOrder.deadline} 
+                      onChange={e => setNewOrder({...newOrder, deadline: e.target.value})} 
+                    />
+                  </div>
+                  <div>
+                    <Label>Location *</Label>
+                    <Input 
+                      value={newOrder.location} 
+                      onChange={e => setNewOrder({...newOrder, location: e.target.value})} 
+                      placeholder="County/Town" 
+                    />
+                  </div>
+                  <Button onClick={handleCreateOrder} disabled={creating} className="w-full">
+                    {creating ? 'Creating...' : 'Create Order'}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 

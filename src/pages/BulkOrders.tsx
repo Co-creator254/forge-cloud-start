@@ -170,46 +170,21 @@ const BulkOrders: React.FC = () => {
         />
       )}
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-16">
+      {/* Hero Section - Simplified with only essential content */}
+      <section className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-12">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Bulk Orders</h1>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Join group purchases to get better prices on agricultural inputs and products. 
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Bulk Orders</h1>
+          <p className="text-lg mb-6 max-w-2xl mx-auto opacity-90">
+            Join group purchases to get better prices on agricultural products. 
             Organize with other farmers in your area for maximum savings.
           </p>
-          <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-            <DialogTrigger asChild>
-              <Button size="lg" variant="secondary">
-                <Plus className="h-4 w-4 mr-2" />
-                Create Bulk Order
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>Create Bulk Order</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div><Label>Product Type</Label><Input value={newOrder.product_type} onChange={e => setNewOrder({...newOrder, product_type: e.target.value})} placeholder="e.g. Maize, Fertilizer" /></div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div><Label>Quantity</Label><Input type="number" value={newOrder.quantity} onChange={e => setNewOrder({...newOrder, quantity: e.target.value})} /></div>
-                  <div><Label>Unit</Label><Input value={newOrder.unit} onChange={e => setNewOrder({...newOrder, unit: e.target.value})} /></div>
-                </div>
-                <div><Label>Target Price (KES)</Label><Input type="number" value={newOrder.target_price} onChange={e => setNewOrder({...newOrder, target_price: e.target.value})} /></div>
-                <div><Label>Deadline</Label><Input type="date" value={newOrder.deadline} onChange={e => setNewOrder({...newOrder, deadline: e.target.value})} /></div>
-                <div><Label>Location</Label><Input value={newOrder.location} onChange={e => setNewOrder({...newOrder, location: e.target.value})} placeholder="County/Town" /></div>
-                <div><Label>Description</Label><Textarea value={newOrder.description} onChange={e => setNewOrder({...newOrder, description: e.target.value})} /></div>
-                <Button onClick={handleCreateOrder} disabled={creating} className="w-full">{creating ? 'Creating...' : 'Create Order'}</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-16">
-        {/* Search and Stats */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
-          <div className="relative mb-4 md:mb-0">
+      <div className="container mx-auto px-4 py-8">
+        {/* Search, Stats, and Create Button */}
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+          <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search bulk orders..."
@@ -218,8 +193,35 @@ const BulkOrders: React.FC = () => {
               className="pl-10 md:w-64"
             />
           </div>
-          <div className="text-sm text-muted-foreground">
-            {filteredOrders.length} active bulk orders
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">
+              {filteredOrders.length} active bulk orders
+            </span>
+            <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Bulk Order
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Create Bulk Order</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div><Label>Product Type</Label><Input value={newOrder.product_type} onChange={e => setNewOrder({...newOrder, product_type: e.target.value})} placeholder="e.g. Maize, Fertilizer" /></div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div><Label>Quantity</Label><Input type="number" value={newOrder.quantity} onChange={e => setNewOrder({...newOrder, quantity: e.target.value})} /></div>
+                    <div><Label>Unit</Label><Input value={newOrder.unit} onChange={e => setNewOrder({...newOrder, unit: e.target.value})} /></div>
+                  </div>
+                  <div><Label>Target Price (KES)</Label><Input type="number" value={newOrder.target_price} onChange={e => setNewOrder({...newOrder, target_price: e.target.value})} /></div>
+                  <div><Label>Deadline</Label><Input type="date" value={newOrder.deadline} onChange={e => setNewOrder({...newOrder, deadline: e.target.value})} /></div>
+                  <div><Label>Location</Label><Input value={newOrder.location} onChange={e => setNewOrder({...newOrder, location: e.target.value})} placeholder="County/Town" /></div>
+                  <div><Label>Description</Label><Textarea value={newOrder.description} onChange={e => setNewOrder({...newOrder, description: e.target.value})} /></div>
+                  <Button onClick={handleCreateOrder} disabled={creating} className="w-full">{creating ? 'Creating...' : 'Create Order'}</Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
