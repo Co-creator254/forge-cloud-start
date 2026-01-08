@@ -1,18 +1,59 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { MainNav } from "@/components/MainNav";
 import { MobileNav } from "@/components/MobileNav";
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { ServiceProvider, ServiceProviderType } from '@/types';
 import { fetchServiceProviders } from '@/services/serviceProvidersAPI';
+import { Loader2 } from 'lucide-react';
 
-// Import new components
-import ServiceProvidersMap from '@/components/logistics/ServiceProvidersMap';
+// Lazy load the map component to avoid SSR issues with Leaflet
+const ServiceProvidersMap = lazy(() => import('@/components/logistics/ServiceProvidersMap'));
+
+// Import other components normally
 import MapLegend from '@/components/logistics/MapLegend';
 import ProviderFilters from '@/components/logistics/ProviderFilters';
 import ProvidersList from '@/components/logistics/ProvidersList';
 import RegistrationPrompt from '@/components/logistics/RegistrationPrompt';
+
+// Simple error boundary for the map
+class MapErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Map Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="w-full h-[400px] rounded-lg border bg-muted flex items-center justify-center">
+          <div className="text-center p-6">
+            <p className="text-muted-foreground mb-2">Unable to load map</p>
+            <Button 
+              variant="outline" 
+              onClick={() => this.setState({ hasError: false })}
+            >
+              Try Again
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 const LogisticsSolutionsMap: React.FC = () => {
   const { toast } = useToast();
@@ -110,10 +151,18 @@ const LogisticsSolutionsMap: React.FC = () => {
         
         <MapLegend />
         
-        <ServiceProvidersMap 
-          providers={filteredProviders}
-          selectedType={selectedType}
-        />
+        <MapErrorBoundary>
+          <Suspense fallback={
+            <div className="w-full h-[500px] rounded-lg border bg-muted flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          }>
+            <ServiceProvidersMap 
+              providers={filteredProviders}
+              selectedType={selectedType}
+            />
+          </Suspense>
+        </MapErrorBoundary>
         
         <ProvidersList 
           providers={filteredProviders}
