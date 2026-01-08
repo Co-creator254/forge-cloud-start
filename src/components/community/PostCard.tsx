@@ -197,22 +197,24 @@ const PostCard: React.FC<PostCardProps> = ({
                   {post.author.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h4 className="font-medium">{post.author.name}</h4>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h4 className="font-medium truncate">{post.author.name}</h4>
                   {post.author.isVerified && (
                     <Badge variant="secondary" className="text-xs">Verified</Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="h-3 w-3" />
-                  {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+                <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3 flex-shrink-0" />
+                    {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+                  </span>
                   {post.location && (
-                    <>
+                    <span className="flex items-center gap-1">
                       <span>•</span>
-                      <MapPin className="h-3 w-3" />
-                      {post.location}
-                    </>
+                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate">{post.location}</span>
+                    </span>
                   )}
                 </div>
               </div>
