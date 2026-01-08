@@ -16,6 +16,7 @@ import { User, LogOut, Settings } from 'lucide-react';
 import { ModeToggle } from './ModeToggle';
 import MainNavigation from './MainNavigation';
 import logo from '@/assets/logo.png';
+import { GlobalSearch } from './search/GlobalSearch';
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -47,6 +48,7 @@ const Header: React.FC = () => {
           </div>
           
           <div className="flex items-center space-x-4">
+            <GlobalSearch />
             <ModeToggle />
             
             {user ? (

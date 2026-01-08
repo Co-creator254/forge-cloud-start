@@ -549,6 +549,7 @@ const ExportMarket: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
+      <BottomNav />
     </div>
   );
 };

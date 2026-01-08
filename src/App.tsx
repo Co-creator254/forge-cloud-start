@@ -49,8 +49,7 @@ import KilimoAmsData from './pages/KilimoAmsData';
 import ApiDocs from './pages/ApiDocs';
 import SupplyChainAPI from './pages/SupplyChainAPI';
 import PartnersShowcase from './pages/PartnersShowcase';
-import MajorRoutesMarketplace from './pages/MajorRoutesMarketplace';
-const MajorRoutesMarketplacePage = MajorRoutesMarketplace;
+import RoutesMarketplace from './pages/RoutesMarketplace';
 import ExportOpportunitiesNew from './pages/ExportOpportunitiesNew';
 import F2CMarketplace from './pages/F2CMarketplace';
 import BatchTracking from './pages/BatchTracking';
@@ -80,7 +79,6 @@ import BuyRequestsPage from './pages/BuyRequestsPage';
 import ExportMarketOpportunities from './pages/ExportMarketOpportunities';
 import ExportOpportunities from './pages/ExportOpportunities';
 import ContractFarming from './pages/ContractFarming';
-import RoadMarkets from './pages/RoadMarkets';
 import AdminPanel from './pages/AdminPanel';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
@@ -160,10 +158,9 @@ function App() {
                    <Route path="/export-market-opportunities" element={<ExportMarketOpportunities />} />
                    <Route path="/export-opportunities" element={<ExportOpportunities />} />
                    <Route path="/contract-farming" element={<ContractFarming />} />
-                   <Route path="/road-markets" element={<RoadMarketsPage />} />
-                  {/* <Route path="/donation-list" element={<DonationListPage />} /> */}
-                 <Route path="/partner-with-us" element={<PartnerWithUs />} />
-                 <Route path="/partner-dashboard" element={<PartnerDashboard />} />
+                   {/* Road markets now redirects to RoutesMarketplace */}
+                  <Route path="/partner-with-us" element={<PartnerWithUs />} />
+                  <Route path="/partner-dashboard" element={<PartnerDashboard />} />
                  <Route path="/farmer-exporter-collaboration" element={<FarmerExporterCollaboration />} />
                  <Route path="/exporter-profile" element={<ExporterProfile />} />
                  <Route path="/farmer-success-stories" element={<FarmerSuccessStories />} />
@@ -195,8 +192,9 @@ function App() {
           <Route path="/f2c-marketplace" element={<F2CMarketplace />} />
           <Route path="/carbon-footprint" element={<CarbonFootprint />} />
           <Route path="/cooperatives-management" element={<CooperativesManagement />} />
-          <Route path="/major-routes" element={<MajorRoutesMarketplace />} />
-          <Route path="/major-routes-marketplace" element={<MajorRoutesMarketplacePage />} />
+          <Route path="/major-routes" element={<RoutesMarketplace />} />
+          <Route path="/major-routes-marketplace" element={<RoutesMarketplace />} />
+          <Route path="/road-markets" element={<RoutesMarketplace />} />
                   <Route path="*" element={<NotFound />} />
                </Routes>
               </React.Suspense>
