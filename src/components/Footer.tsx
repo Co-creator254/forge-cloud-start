@@ -89,11 +89,12 @@ const Footer: React.FC = () => {
           </div>
           
           <div>
-            <h4 className="font-medium mb-4">Support</h4>
+            <h4 className="font-medium mb-4">Support & Integrations</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/faq" className="text-muted-foreground hover:text-foreground">FAQ</Link></li>
               <li><Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link></li>
               <li><Link to="/community-forum" className="text-muted-foreground hover:text-foreground">Community Forum</Link></li>
+              <li><a href="https://haystack.deepset.ai" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">Haystack AI Integration</a></li>
               <li><Link to="/privacy-policy" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
               <li><Link to="/terms-of-service" className="text-muted-foreground hover:text-foreground">Terms of Service</Link></li>
             </ul>

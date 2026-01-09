@@ -9,10 +9,14 @@ import advertiseBg from '@/assets/advertise-bg.png';
 const BusinessMarketing: React.FC = () => {
   const navigate = useNavigate();
 
+  // USD to KES conversion rate (approximate)
+  const USD_TO_KES = 130;
+  
   const packages = [
     {
       name: '1 Month Package',
-      price: 'KES 10',
+      price: `KES ${(10 * USD_TO_KES).toLocaleString()}`,
+      usdPrice: '$10',
       period: '/month',
       features: [
         'Business profile listing',
@@ -25,7 +29,8 @@ const BusinessMarketing: React.FC = () => {
     },
     {
       name: '3 Months Package',
-      price: 'KES 20',
+      price: `KES ${(20 * USD_TO_KES).toLocaleString()}`,
+      usdPrice: '$20',
       period: '/3 months',
       features: [
         'Business profile listing',
@@ -40,7 +45,8 @@ const BusinessMarketing: React.FC = () => {
     },
     {
       name: '1 Year Package',
-      price: 'KES 30',
+      price: `KES ${(30 * USD_TO_KES).toLocaleString()}`,
+      usdPrice: '$30',
       period: '/year',
       features: [
         'Business profile listing',
@@ -134,6 +140,7 @@ const BusinessMarketing: React.FC = () => {
                   <div className="mt-4">
                     <span className="text-4xl font-bold">{pkg.price}</span>
                     <span className="text-muted-foreground">{pkg.period}</span>
+                    <div className="text-sm text-muted-foreground mt-1">({pkg.usdPrice} USD)</div>
                   </div>
                 </CardHeader>
                 <CardContent>

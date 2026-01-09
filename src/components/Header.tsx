@@ -32,22 +32,24 @@ const Header: React.FC = () => {
   };
 
   const CustomLogo = () => (
-    <img src={logo} alt="SokoConnect Logo" className="w-10 h-10 object-contain" />
+    <img src={logo} alt="SokoConnect Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain flex-shrink-0" />
   );
 
   return (
     <header className="bg-background border-b">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Link to="/" className="flex items-center space-x-2">
+      <div className="container mx-auto px-4 py-2 md:py-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 md:gap-4 min-w-0">
+            <Link to="/" className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
               <CustomLogo />
-              <span className="text-xl font-bold text-primary">SokoConnect</span>
+              <span className="text-lg md:text-xl font-bold text-primary hidden sm:inline">SokoConnect</span>
             </Link>
-            <MainNavigation />
+            <div className="hidden lg:block">
+              <MainNavigation />
+            </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <GlobalSearch />
             <ModeToggle />
             
