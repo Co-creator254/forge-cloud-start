@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { PhoneAuth } from '@/components/auth/PhoneAuth';
 import { Mail, Phone, Leaf } from 'lucide-react';
 import heroImage from '@/assets/hero-farming-team.jpg';
+import sokoconnectLogo from '@/assets/sokoconnect-logo.png';
 
 const Auth: React.FC = () => {
   const { toast } = useToast();
@@ -152,9 +153,9 @@ const Auth: React.FC = () => {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
               <img 
-                src="/src/assets/sokoconnect-logo.png" 
+                src={sokoconnectLogo} 
                 alt="SokoConnect Logo" 
-                className="h-20 w-20"
+                className="h-20 w-20 object-contain"
               />
             </div>
             <h1 className="text-4xl font-bold mb-2">

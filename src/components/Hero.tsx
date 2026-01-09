@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,7 @@ import {
   DollarSign,
   Target
 } from 'lucide-react';
+import heroBackground from '@/assets/hero-farming-team.jpg';
 
 const Hero: React.FC = () => {
   const features = [
@@ -44,17 +44,24 @@ const Hero: React.FC = () => {
   ];
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-green-50 via-blue-50 to-white">
-      <div className="container mx-auto px-4 py-16 lg:py-24">
+    <div className="relative overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroBackground})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-green-900/80 via-green-800/70 to-green-700/60" />
+      
+      <div className="relative container mx-auto px-4 py-16 lg:py-24">
         <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4">
+          <Badge variant="secondary" className="mb-4 bg-white/90 text-green-800">
             🌾 Agricultural Technology Platform
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
             Connect. Trade. Grow.
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Empowering farmers and agribusiness with real-time market data, logistics solutions, 
+          <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
+            Empowering farmers and agribusiness with real-time market data, logistics solutions,
             and community connections across Kenya's agricultural value chain.
           </p>
           
@@ -74,14 +81,14 @@ const Hero: React.FC = () => {
           </div>
 
           {/* Business Marketing Highlight */}
-          <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-6 mb-12 border border-green-200">
+          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-6 mb-12 border border-green-200 shadow-lg">
             <div className="flex items-center justify-center gap-2 mb-3">
               <Megaphone className="h-5 w-5 text-green-600" />
               <h3 className="text-lg font-semibold text-green-800">Business Marketing</h3>
               <Badge className="bg-green-600">Popular</Badge>
             </div>
             <p className="text-green-700 mb-4">
-              Reach thousands of farmers and agricultural professionals. Advertise your business for just $20 for 30 days.
+              Reach thousands of farmers and agricultural professionals. Advertise your business for just $20 (KES 2,600) for 30 days.
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-green-600">
               <div className="flex items-center gap-1">
@@ -90,7 +97,7 @@ const Hero: React.FC = () => {
               </div>
               <div className="flex items-center gap-1">
                 <DollarSign className="h-4 w-4" />
-                <span>$20 for 30 Days</span>
+                <span>From $10/month</span>
               </div>
               <div className="flex items-center gap-1">
                 <TrendingUp className="h-4 w-4" />
@@ -115,7 +122,7 @@ const Hero: React.FC = () => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-gray-500 text-sm">
+          <p className="text-white/80 text-sm">
             Trusted by farmers, cooperatives, and agribusiness across Kenya
           </p>
         </div>
