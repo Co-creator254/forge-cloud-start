@@ -1991,6 +1991,161 @@ export type Database = {
           },
         ]
       }
+      exporter_profiles: {
+        Row: {
+          annual_volume_capacity: string | null
+          business_registration: string | null
+          certifications: string[] | null
+          commodities_exported: string[] | null
+          company_name: string
+          contact_email: string | null
+          contact_person: string
+          contact_phone: string
+          county: string | null
+          created_at: string
+          description: string | null
+          export_license_number: string | null
+          id: string
+          is_verified: boolean | null
+          location: string | null
+          logo_url: string | null
+          payment_terms: string | null
+          rating: number | null
+          status: string | null
+          target_markets: string[] | null
+          total_reviews: number | null
+          updated_at: string
+          user_id: string | null
+          website_url: string | null
+          years_experience: number | null
+        }
+        Insert: {
+          annual_volume_capacity?: string | null
+          business_registration?: string | null
+          certifications?: string[] | null
+          commodities_exported?: string[] | null
+          company_name: string
+          contact_email?: string | null
+          contact_person: string
+          contact_phone: string
+          county?: string | null
+          created_at?: string
+          description?: string | null
+          export_license_number?: string | null
+          id?: string
+          is_verified?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          payment_terms?: string | null
+          rating?: number | null
+          status?: string | null
+          target_markets?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+          years_experience?: number | null
+        }
+        Update: {
+          annual_volume_capacity?: string | null
+          business_registration?: string | null
+          certifications?: string[] | null
+          commodities_exported?: string[] | null
+          company_name?: string
+          contact_email?: string | null
+          contact_person?: string
+          contact_phone?: string
+          county?: string | null
+          created_at?: string
+          description?: string | null
+          export_license_number?: string | null
+          id?: string
+          is_verified?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          payment_terms?: string | null
+          rating?: number | null
+          status?: string | null
+          target_markets?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
+      f2c_subscriptions: {
+        Row: {
+          amount_paid: number | null
+          box_id: string
+          created_at: string
+          delivery_address: string | null
+          delivery_county: string | null
+          delivery_frequency: string | null
+          delivery_phone: string | null
+          id: string
+          is_active: boolean | null
+          next_delivery_date: string | null
+          notes: string | null
+          payment_reference: string | null
+          payment_status: string | null
+          start_date: string | null
+          status: string | null
+          subscription_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          box_id: string
+          created_at?: string
+          delivery_address?: string | null
+          delivery_county?: string | null
+          delivery_frequency?: string | null
+          delivery_phone?: string | null
+          id?: string
+          is_active?: boolean | null
+          next_delivery_date?: string | null
+          notes?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
+          start_date?: string | null
+          status?: string | null
+          subscription_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number | null
+          box_id?: string
+          created_at?: string
+          delivery_address?: string | null
+          delivery_county?: string | null
+          delivery_frequency?: string | null
+          delivery_phone?: string | null
+          id?: string
+          is_active?: boolean | null
+          next_delivery_date?: string | null
+          notes?: string | null
+          payment_reference?: string | null
+          payment_status?: string | null
+          start_date?: string | null
+          status?: string | null
+          subscription_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "f2c_subscriptions_box_id_fkey"
+            columns: ["box_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       farm_budgets: {
         Row: {
           actual_amount: number | null
@@ -2684,6 +2839,113 @@ export type Database = {
             columns: ["parcel_id"]
             isOneToOne: false
             referencedRelation: "land_parcels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farmer_exporter_collaborations: {
+        Row: {
+          availability_period: string | null
+          collaboration_status: string | null
+          collaboration_type: string | null
+          commodity_name: string
+          commodity_variety: string | null
+          created_at: string
+          documentation_needs: string[] | null
+          estimated_quantity: number
+          exporter_id: string | null
+          farm_size_acres: number | null
+          farmer_certifications: string[] | null
+          farmer_county: string | null
+          farmer_email: string | null
+          farmer_experience_years: number | null
+          farmer_id: string | null
+          farmer_location: string | null
+          farmer_name: string
+          farmer_phone: string
+          farmer_profile_description: string | null
+          harvest_date: string | null
+          has_export_documentation: boolean | null
+          id: string
+          is_active: boolean | null
+          matched_at: string | null
+          pricing_expectations: string | null
+          quality_grade: string | null
+          special_requirements: string[] | null
+          target_markets: string[] | null
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          availability_period?: string | null
+          collaboration_status?: string | null
+          collaboration_type?: string | null
+          commodity_name: string
+          commodity_variety?: string | null
+          created_at?: string
+          documentation_needs?: string[] | null
+          estimated_quantity: number
+          exporter_id?: string | null
+          farm_size_acres?: number | null
+          farmer_certifications?: string[] | null
+          farmer_county?: string | null
+          farmer_email?: string | null
+          farmer_experience_years?: number | null
+          farmer_id?: string | null
+          farmer_location?: string | null
+          farmer_name: string
+          farmer_phone: string
+          farmer_profile_description?: string | null
+          harvest_date?: string | null
+          has_export_documentation?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          matched_at?: string | null
+          pricing_expectations?: string | null
+          quality_grade?: string | null
+          special_requirements?: string[] | null
+          target_markets?: string[] | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          availability_period?: string | null
+          collaboration_status?: string | null
+          collaboration_type?: string | null
+          commodity_name?: string
+          commodity_variety?: string | null
+          created_at?: string
+          documentation_needs?: string[] | null
+          estimated_quantity?: number
+          exporter_id?: string | null
+          farm_size_acres?: number | null
+          farmer_certifications?: string[] | null
+          farmer_county?: string | null
+          farmer_email?: string | null
+          farmer_experience_years?: number | null
+          farmer_id?: string | null
+          farmer_location?: string | null
+          farmer_name?: string
+          farmer_phone?: string
+          farmer_profile_description?: string | null
+          harvest_date?: string | null
+          has_export_documentation?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          matched_at?: string | null
+          pricing_expectations?: string | null
+          quality_grade?: string | null
+          special_requirements?: string[] | null
+          target_markets?: string[] | null
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farmer_exporter_collaborations_exporter_id_fkey"
+            columns: ["exporter_id"]
+            isOneToOne: false
+            referencedRelation: "exporter_profiles"
             referencedColumns: ["id"]
           },
         ]
