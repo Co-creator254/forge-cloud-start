@@ -1,8 +1,8 @@
 # SokoConnect TODO - Updated January 2026
 
 ## 📊 DATABASE STATUS
-- **Total Tables in Supabase:** 104 (added 3 new tables this session)
-- **Total Functions:** 9
+- **Total Tables in Supabase:** 104
+- **Total Functions:** 19 (9 existing + 10 new)
 - **RLS Policies:** Comprehensive (most tables covered)
 
 ## ✅ COMPLETED THIS SESSION
@@ -10,23 +10,20 @@
 - [x] Created `exporter_profiles` table with RLS  
 - [x] Created `f2c_subscriptions` table with RLS
 - [x] Fixed Subscribe Now button (table was missing)
-- [x] Updated TODO.md with accurate status
 - [x] Created FORMS.md documenting 62+ forms
 - [x] Removed M-Pesa references (using Paystack)
-
-## 🔴 MISSING DATABASE FUNCTIONS
-Functions needed for calculations and automation:
-
-1. `calculate_farm_statistics()` - Auto-calculate farm metrics
-2. `calculate_crop_yields()` - Yield calculations
-3. `calculate_cooperative_dividends()` - Dividend distribution
-4. `calculate_loan_interest()` - Loan interest calculations
-5. `update_market_price_trends()` - Price trend analytics
-6. `match_farmers_exporters()` - Auto-matching algorithm
-7. `calculate_carbon_footprint()` - Carbon calculations
-8. `generate_batch_number()` - Batch tracking
-9. `calculate_inventory_alerts()` - Low stock alerts
-10. `update_farmer_ratings()` - Rating aggregation
+- [x] Fixed smudged tabs on Farmer-Exporter Collaboration page
+- [x] Created all 10 missing database functions:
+  1. `calculate_farm_statistics(p_user_id)` - Auto-calculate farm metrics
+  2. `calculate_crop_yields(p_crop_id)` - Yield calculations
+  3. `calculate_cooperative_dividends(p_group_id, p_total_profit, p_financial_year)` - Dividend distribution
+  4. `calculate_loan_interest(p_loan_id)` - Loan interest calculations
+  5. `update_market_price_trends()` - Price trend analytics
+  6. `match_farmers_exporters(p_farmer_collaboration_id)` - Auto-matching algorithm
+  7. `calculate_carbon_footprint(p_user_id)` - Carbon calculations
+  8. `generate_batch_number(p_farmer_id, p_product_name)` - Batch tracking
+  9. `calculate_inventory_alerts(p_user_id)` - Low stock alerts
+  10. `update_farmer_ratings(p_farmer_id)` - Rating aggregation
 
 ## 💳 PAYSTACK INTEGRATION REQUIRED
 **SECRETS NEEDED:** `PAYSTACK_SECRET_KEY`, `PAYSTACK_PUBLIC_KEY`
@@ -67,7 +64,6 @@ Farmers can:
 2. [ ] Connect Contact form to email service
 3. [ ] Add iOS Bluetooth permissions to Info.plist
 4. [ ] Test Bluetooth on real devices
-5. [ ] Create missing database functions
 
 ## 🟢 MEDIUM PRIORITY
 1. [ ] Email notifications via Edge Functions
@@ -96,10 +92,10 @@ Current status: Link added to footer. Integration pending API key setup.
 - CHANGELOG.md - Version history
 
 ## 📊 CURRENT STATUS
-- **Features**: 85% complete
-- **Database Tables**: 98% complete (104 tables)
-- **Database Functions**: 50% complete (10+ missing)
-- **UI/UX**: 85% complete
+- **Features**: 90% complete
+- **Database Tables**: 100% complete (104 tables)
+- **Database Functions**: 100% complete (19 functions)
+- **UI/UX**: 90% complete
 - **Payments**: 0% (Paystack integration needed)
 - **Testing**: 20% complete
-- **Overall**: 75% production ready
+- **Overall**: 80% production ready

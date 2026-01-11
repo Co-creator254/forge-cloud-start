@@ -5606,8 +5606,25 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_carbon_footprint: { Args: { p_user_id: string }; Returns: Json }
+      calculate_cooperative_dividends: {
+        Args: {
+          p_financial_year: string
+          p_group_id: string
+          p_total_profit: number
+        }
+        Returns: Json
+      }
+      calculate_crop_yields: { Args: { p_crop_id: string }; Returns: Json }
+      calculate_farm_statistics: { Args: { p_user_id: string }; Returns: Json }
+      calculate_inventory_alerts: { Args: { p_user_id: string }; Returns: Json }
+      calculate_loan_interest: { Args: { p_loan_id: string }; Returns: Json }
       cleanup_expired_bluetooth_data: { Args: never; Returns: undefined }
       cleanup_old_training_events: { Args: never; Returns: undefined }
+      generate_batch_number: {
+        Args: { p_farmer_id: string; p_product_name: string }
+        Returns: string
+      }
       get_user_roles: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"][]
@@ -5627,6 +5644,12 @@ export type Database = {
         Args: { order_supplier_id: string }
         Returns: boolean
       }
+      match_farmers_exporters: {
+        Args: { p_farmer_collaboration_id: string }
+        Returns: Json
+      }
+      update_farmer_ratings: { Args: { p_farmer_id: string }; Returns: Json }
+      update_market_price_trends: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "moderator" | "agent" | "user"

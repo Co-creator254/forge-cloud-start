@@ -161,11 +161,17 @@ const FarmerExporterCollaboration = () => {
         </p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="create">Create Request</TabsTrigger>
-          <TabsTrigger value="browse">Browse Requests</TabsTrigger>
-          <TabsTrigger value="exporters">Find Exporters</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="w-full flex flex-col sm:flex-row h-auto sm:h-10 p-1 gap-1">
+          <TabsTrigger value="create" className="flex-1 text-xs sm:text-sm py-2 px-3 whitespace-nowrap">
+            Create Request
+          </TabsTrigger>
+          <TabsTrigger value="browse" className="flex-1 text-xs sm:text-sm py-2 px-3 whitespace-nowrap">
+            Browse Requests
+          </TabsTrigger>
+          <TabsTrigger value="exporters" className="flex-1 text-xs sm:text-sm py-2 px-3 whitespace-nowrap">
+            Find Exporters
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="create" className="space-y-6">
