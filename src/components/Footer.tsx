@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Home, 
   ShoppingCart, 
   TrendingUp, 
   Users, 
@@ -10,16 +9,21 @@ import {
   BookOpen, 
   HelpCircle, 
   Phone, 
-  FileText, 
-  Shield, 
-  Cookie,
+  Shield,
   Facebook,
   Twitter,
   Instagram,
   Linkedin,
   Youtube,
   Mail,
-  MapPin
+  MapPin,
+  Leaf,
+  Tractor,
+  Package,
+  BarChart3,
+  Store,
+  Stethoscope,
+  Handshake
 } from 'lucide-react';
 
 const Footer: React.FC = () => {
@@ -27,95 +31,159 @@ const Footer: React.FC = () => {
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-12">
       <div className="container mx-auto px-4">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-8">
-          {/* Marketplace */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-8">
+          {/* Platform - Core Trading */}
           <div>
             <h2 className="text-lg font-bold mb-4 text-green-400 flex items-center gap-2">
-              <ShoppingCart className="h-5 w-5" />
-              MARKETPLACE
+              <ShoppingCart className="h-5 w-5 text-green-400" />
+              Platform
             </h2>
-            <ul className="space-y-2">
-              <li><Link to="/marketplace" className="hover:text-green-400 transition-colors flex items-center gap-2"><span className="text-green-500">•</span> Buy Produce</Link></li>
-              <li><Link to="/sell" className="hover:text-green-400 transition-colors flex items-center gap-2"><span className="text-green-500">•</span> Sell Products</Link></li>
-              <li><Link to="/agricultural-marketplace" className="hover:text-green-400 transition-colors flex items-center gap-2"><span className="text-green-500">•</span> Agricultural Marketplace</Link></li>
-              <li><Link to="/farmer-portal" className="hover:text-green-400 transition-colors flex items-center gap-2"><span className="text-green-500">•</span> Farmer Portal</Link></li>
-              <li><Link to="/logistics" className="hover:text-green-400 transition-colors flex items-center gap-2"><span className="text-green-500">•</span> Logistics</Link></li>
-              <li><Link to="/cooperatives" className="hover:text-green-400 transition-colors flex items-center gap-2"><span className="text-green-500">•</span> Cooperatives</Link></li>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/marketplace" className="hover:text-green-400 transition-colors flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-green-500" />
+                  Commodity Trading
+                </Link>
+              </li>
+              <li>
+                <Link to="/logistics" className="hover:text-green-400 transition-colors flex items-center gap-2">
+                  <Truck className="h-4 w-4 text-blue-500" />
+                  Logistics
+                </Link>
+              </li>
+              <li>
+                <Link to="/service-providers" className="hover:text-green-400 transition-colors flex items-center gap-2">
+                  <Handshake className="h-4 w-4 text-purple-500" />
+                  Service Providers
+                </Link>
+              </li>
+              <li>
+                <Link to="/farm-input-marketplace" className="hover:text-green-400 transition-colors flex items-center gap-2">
+                  <Package className="h-4 w-4 text-orange-500" />
+                  Farm Input Marketplace
+                </Link>
+              </li>
+              <li>
+                <Link to="/equipment-marketplace" className="hover:text-green-400 transition-colors flex items-center gap-2">
+                  <Tractor className="h-4 w-4 text-yellow-500" />
+                  Equipment Marketplace
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Learn */}
+          {/* Support */}
           <div>
             <h2 className="text-lg font-bold mb-4 text-blue-400 flex items-center gap-2">
-              <BookOpen className="h-5 w-5" />
-              LEARN
+              <HelpCircle className="h-5 w-5 text-blue-400" />
+              Support
             </h2>
-            <ul className="space-y-2">
-              <li><Link to="/market-prices" className="hover:text-blue-400 transition-colors flex items-center gap-2"><span className="text-blue-500">•</span> Market Prices</Link></li>
-              <li><Link to="/price-trends" className="hover:text-blue-400 transition-colors flex items-center gap-2"><span className="text-blue-500">•</span> Price Trends</Link></li>
-              <li><Link to="/training" className="hover:text-blue-400 transition-colors flex items-center gap-2"><span className="text-blue-500">•</span> Training Courses</Link></li>
-              <li><Link to="/success-stories" className="hover:text-blue-400 transition-colors flex items-center gap-2"><span className="text-blue-500">•</span> Success Stories</Link></li>
-              <li><Link to="/city-markets" className="hover:text-blue-400 transition-colors flex items-center gap-2"><span className="text-blue-500">•</span> City Markets</Link></li>
-              <li><Link to="/supply-chain" className="hover:text-blue-400 transition-colors flex items-center gap-2"><span className="text-blue-500">•</span> Supply Chain</Link></li>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/faq" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                  <HelpCircle className="h-4 w-4 text-blue-500" />
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-green-500" />
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/community" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                  <Users className="h-4 w-4 text-purple-500" />
+                  Community Forum
+                </Link>
+              </li>
+              <li>
+                <Link to="/partners" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                  <Handshake className="h-4 w-4 text-orange-500" />
+                  Partner with us
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Connect */}
+          {/* Features - Prioritized correctly */}
           <div>
             <h2 className="text-lg font-bold mb-4 text-purple-400 flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              CONNECT
+              <BarChart3 className="h-5 w-5 text-purple-400" />
+              Features
             </h2>
-            <ul className="space-y-2">
-              <li><Link to="/help" className="hover:text-purple-400 transition-colors flex items-center gap-2"><span className="text-purple-500">•</span> Help Center</Link></li>
-              <li><Link to="/contact" className="hover:text-purple-400 transition-colors flex items-center gap-2"><span className="text-purple-500">•</span> Contact</Link></li>
-              <li><Link to="/faq" className="hover:text-purple-400 transition-colors flex items-center gap-2"><span className="text-purple-500">•</span> FAQ</Link></li>
-              <li><Link to="/community" className="hover:text-purple-400 transition-colors flex items-center gap-2"><span className="text-purple-500">•</span> Community</Link></li>
-              <li><Link to="/report-bug" className="hover:text-purple-400 transition-colors flex items-center gap-2"><span className="text-purple-500">•</span> Report Bug</Link></li>
-              <li><Link to="/feedback" className="hover:text-purple-400 transition-colors flex items-center gap-2"><span className="text-purple-500">•</span> Feedback</Link></li>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/farmer-portal" className="hover:text-purple-400 transition-colors flex items-center gap-2">
+                  <Leaf className="h-4 w-4 text-green-500" />
+                  Farmer Portal
+                </Link>
+              </li>
+              <li>
+                <Link to="/market-prices" className="hover:text-purple-400 transition-colors flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-blue-500" />
+                  Market Data
+                </Link>
+              </li>
+              <li>
+                <Link to="/analytics" className="hover:text-purple-400 transition-colors flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4 text-purple-500" />
+                  Analytics
+                </Link>
+              </li>
+              <li>
+                <Link to="/city-markets" className="hover:text-purple-400 transition-colors flex items-center gap-2">
+                  <Store className="h-4 w-4 text-orange-500" />
+                  City Markets
+                </Link>
+              </li>
+              <li>
+                <Link to="/veterinary" className="hover:text-purple-400 transition-colors flex items-center gap-2">
+                  <Stethoscope className="h-4 w-4 text-red-500" />
+                  Veterinary Services
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Company */}
-          <div>
+          {/* SokoConnect - Company Info */}
+          <div className="col-span-2 md:col-span-1 lg:col-span-2">
             <h2 className="text-lg font-bold mb-4 text-orange-400 flex items-center gap-2">
-              <Building2 className="h-5 w-5" />
-              COMPANY
+              <Leaf className="h-5 w-5 text-orange-400" />
+              SokoConnect
             </h2>
-            <ul className="space-y-2">
-              <li><Link to="/about" className="hover:text-orange-400 transition-colors flex items-center gap-2"><span className="text-orange-500">•</span> About Us</Link></li>
-              <li><Link to="/blog" className="hover:text-orange-400 transition-colors flex items-center gap-2"><span className="text-orange-500">•</span> Blog</Link></li>
-              <li><Link to="/careers" className="hover:text-orange-400 transition-colors flex items-center gap-2"><span className="text-orange-500">•</span> Careers</Link></li>
-              <li><Link to="/partners" className="hover:text-orange-400 transition-colors flex items-center gap-2"><span className="text-orange-500">•</span> Partner With Us</Link></li>
+            <p className="text-gray-400 text-sm mb-4 max-w-md">
+              Connecting farmers, traders, and service providers for a better agricultural ecosystem across Africa.
+            </p>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/about" className="hover:text-orange-400 transition-colors flex items-center gap-2">
+                  <Building2 className="h-4 w-4 text-orange-500" />
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-orange-400 transition-colors flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-green-500" />
+                  Contact
+                </Link>
+              </li>
             </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h2 className="text-lg font-bold mb-4 text-red-400 flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              LEGAL
-            </h2>
-            <ul className="space-y-2">
-              <li><Link to="/terms" className="hover:text-red-400 transition-colors flex items-center gap-2"><span className="text-red-500">•</span> Terms</Link></li>
-              <li><Link to="/privacy" className="hover:text-red-400 transition-colors flex items-center gap-2"><span className="text-red-500">•</span> Privacy</Link></li>
-              <li><Link to="/accessibility" className="hover:text-red-400 transition-colors flex items-center gap-2"><span className="text-red-500">•</span> Accessibility</Link></li>
-              <li><Link to="/cookies" className="hover:text-red-400 transition-colors flex items-center gap-2"><span className="text-red-500">•</span> Cookies</Link></li>
-            </ul>
-          </div>
-
-          {/* Support & Integrations */}
-          <div>
-            <h2 className="text-lg font-bold mb-4 text-cyan-400 flex items-center gap-2">
-              <HelpCircle className="h-5 w-5" />
-              SUPPORT
-            </h2>
-            <ul className="space-y-2">
-              <li><Link to="/payments" className="hover:text-cyan-400 transition-colors flex items-center gap-2"><span className="text-cyan-500">•</span> Payments</Link></li>
-              <li><Link to="/pricing" className="hover:text-cyan-400 transition-colors flex items-center gap-2"><span className="text-cyan-500">•</span> Pricing</Link></li>
-              <li><a href="https://haystack.deepset.ai" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors flex items-center gap-2"><span className="text-cyan-500">•</span> Haystack AI</a></li>
-              <li><Link to="/api-docs" className="hover:text-cyan-400 transition-colors flex items-center gap-2"><span className="text-cyan-500">•</span> API Docs</Link></li>
-            </ul>
+            
+            {/* Legal Links */}
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                <Link to="/terms" className="hover:text-gray-300 flex items-center gap-1">
+                  <Shield className="h-3 w-3" /> Terms
+                </Link>
+                <Link to="/privacy" className="hover:text-gray-300 flex items-center gap-1">
+                  <Shield className="h-3 w-3" /> Privacy
+                </Link>
+                <Link to="/cookies" className="hover:text-gray-300 flex items-center gap-1">
+                  <Shield className="h-3 w-3" /> Cookies
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
 
