@@ -1,4 +1,4 @@
-# SokoConnect TODO - Updated January 2026
+# SokoConnect TODO - Updated January 27, 2026
 
 ## 📊 DATABASE STATUS
 - **Total Tables in Supabase:** 104
@@ -13,6 +13,8 @@
 - [x] Created FORMS.md documenting 62+ forms
 - [x] Removed M-Pesa references (using Paystack)
 - [x] Fixed smudged tabs on Farmer-Exporter Collaboration page
+- [x] **Fixed Footer.tsx** - now has colored icons and proper styling
+- [x] **Created PAYSTACK_PAYMENTS.md** - Complete payment list with 48 services
 - [x] Created all 10 missing database functions:
   1. `calculate_farm_statistics(p_user_id)` - Auto-calculate farm metrics
   2. `calculate_crop_yields(p_crop_id)` - Yield calculations
@@ -26,31 +28,43 @@
   10. `update_farmer_ratings(p_farmer_id)` - Rating aggregation
 
 ## 💳 PAYSTACK INTEGRATION REQUIRED
-**SECRETS NEEDED:** `PAYSTACK_SECRET_KEY`, `PAYSTACK_PUBLIC_KEY`
+**SECRETS NEEDED:** `PAYSTACK_SECRET_KEY`, `PAYSTACK_PUBLIC_KEY`, `PAYSTACK_WEBHOOK_SECRET`
 
-### Subscription Services (Monthly)
-| Service | Price (KES) | USD Equiv | Paystack Link Needed |
-|---------|-------------|-----------|---------------------|
-| F2C Basic | 1,300 | $10 | ❌ |
-| F2C Premium | 2,600 | $20 | ❌ |
-| F2C Enterprise | 3,900 | $30 | ❌ |
+See **PAYSTACK_PAYMENTS.md** for complete list of 48 payment services with:
+- Prices in KES and USD
+- Redirect URLs for web
+- Deep links for Android app (sokoconnect://payment/*)
 
-### One-time Services
-| Service | Fee (KES) | USD Equiv | Link Needed |
-|---------|-----------|-----------|-------------|
-| Business Marketing Basic | 1,300 | $10 | ❌ |
-| Business Marketing Standard | 2,600 | $20 | ❌ |
-| Business Marketing Premium | 3,900 | $30 | ❌ |
-| Export Documentation | 2,600 | $20 | ❌ |
-| Featured Equipment Listing | 500 | ~$4 | ❌ |
-| Training Event Registration | 500-2,000 | Varies | ❌ |
+### Payment Categories (48 total)
+| Category | Count | Price Range (KES) |
+|----------|-------|-------------------|
+| F2C Subscriptions | 5 | 1,300 - 6,500 |
+| Marketing Packages | 3 | 1,300 - 3,900 |
+| Premium Listings | 5 | 500 - 2,500 |
+| Training Courses | 4 | 1,500 - 8,000 |
+| Cooperative Services | 3 | 2,000 - 5,000 |
+| Logistics & Delivery | 5 | 300 - 5,000 |
+| Storage & Warehousing | 3 | 500 - 3,000 |
+| Export Services | 4 | 2,500 - 10,000 |
+| Equipment Marketplace | 3 | 500 - 2,000 |
+| Carbon Credits | 3 | 3,000 - 8,000 |
+| Auction Services | 3 | 200 - 1,000 |
+| Insurance Services | 3 | 1,500 - 3,000 |
+| Verification Badges | 4 | 500 - 5,000 |
 
-### Transaction Fees
-| Transaction Type | Fee | Description |
-|------------------|-----|-------------|
-| Marketplace Sale | 2.5% | Per transaction |
-| Barter Exchange | 1.5% | Value-based |
-| Group Order | 2% | Bulk order commission |
+## 📱 GOOGLE PLAY STORE DEPLOYMENT
+### Deep Link Configuration
+- **Android Package:** `com.sokoconnect.app`
+- **URL Scheme:** `sokoconnect://`
+- **Web Redirect Base:** `https://sokoconnect.co.ke/payment`
+
+### Required Files for Play Store
+- [ ] App Icon (512x512)
+- [ ] Feature Graphic (1024x500)
+- [ ] Screenshots (phone & tablet)
+- [ ] Privacy Policy URL
+- [ ] Terms of Service URL
+- [ ] assetlinks.json for deep links
 
 ## 🐄 LIVESTOCK MARKETPLACE
 Currently handled through `products` and `marketplace_listings` tables with category filtering.
@@ -60,10 +74,11 @@ Farmers can:
 - Trade via barter system
 
 ## 🟡 HIGH PRIORITY FIXES
-1. [ ] Integrate Paystack for payments
+1. [ ] Integrate Paystack for payments (PAYSTACK_PAYMENTS.md ready)
 2. [ ] Connect Contact form to email service
 3. [ ] Add iOS Bluetooth permissions to Info.plist
 4. [ ] Test Bluetooth on real devices
+5. [ ] Set up payment webhook endpoint
 
 ## 🟢 MEDIUM PRIORITY
 1. [ ] Email notifications via Edge Functions
@@ -84,6 +99,7 @@ Current status: Link added to footer. Integration pending API key setup.
 - MASTER_STATUS.md - Main project status
 - TODO.md - This file
 - FORMS.md - 62+ forms documentation
+- PAYSTACK_PAYMENTS.md - **NEW** Payment integration guide
 - PRD.md - Product requirements
 - README.md - Project readme
 - DATABASE_SCHEMA.md - Schema docs
@@ -96,6 +112,6 @@ Current status: Link added to footer. Integration pending API key setup.
 - **Database Tables**: 100% complete (104 tables)
 - **Database Functions**: 100% complete (19 functions)
 - **UI/UX**: 90% complete
-- **Payments**: 0% (Paystack integration needed)
+- **Payments**: 10% (Paystack links needed from user)
 - **Testing**: 20% complete
-- **Overall**: 80% production ready
+- **Overall**: 82% production ready
