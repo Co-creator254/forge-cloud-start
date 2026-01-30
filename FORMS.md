@@ -1,113 +1,134 @@
 # SokoConnect Forms Documentation
 **Last Updated:** January 2026  
-**Total Forms:** 62+
+**Total Forms:** 62+ | **Connected to Supabase:** 62 ✅
 
 ## 📋 FORMS BY FEATURE AREA
 
-### 🔐 Authentication & Profile (3 forms)
-1. **Login Form** - Email/password authentication
-2. **Registration Form** - New user signup
-3. **Profile Edit Form** - User profile management
+### 🔐 Authentication & Profile (3 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 1 | Login Form | auth.users | ✅ Connected |
+| 2 | Registration Form | auth.users, profiles | ✅ Connected |
+| 3 | Profile Edit Form | profiles | ✅ Connected |
 
-### 🌾 Farmer Portal (8 forms)
-4. **Land Parcel Form** - Add/edit land parcels
-5. **Crop Tracking Form** - Add/edit crops
-6. **Animal Form** - Add/edit livestock
-7. **Inventory Form** - Add/edit farm inventory
-8. **Transaction Form** - Record income/expenses
-9. **Budget Form** - Create farm budgets
-10. **Harvest Form** - Record harvests
-11. **Farm Statistics Form** - Update farm metrics
+### 🌾 Farmer Portal (8 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 4 | Land Parcel Form | land_parcels | ✅ Connected |
+| 5 | Crop Tracking Form | crops | ✅ Connected |
+| 6 | Animal Form | animals | ✅ Connected |
+| 7 | Inventory Form | inventory | ✅ Connected |
+| 8 | Transaction Form | transactions | ✅ Connected |
+| 9 | Budget Form | farm_budgets | ✅ Connected |
+| 10 | Harvest Form | harvests | ✅ Connected |
+| 11 | Farm Statistics Form | farm_statistics | ✅ Connected |
 
-### 🛒 Marketplace (12 forms)
-12. **Product Listing Form** - Create produce listings
-13. **Buy Request Form** - Post buy requests
-14. **Barter Listing Form** - Create barter offers
-15. **Equipment Listing Form** - List equipment for sale/rent
-16. **Bulk Order Form** - Create bulk orders
-17. **Bulk Order Bid Form** - Submit bids
-18. **Reverse Auction Form** - Create reverse auctions
-19. **Reverse Auction Bid Form** - Submit reverse bids
-20. **Price Report Form** - Report market prices
-21. **F2C Subscription Form** - Subscribe to F2C services
-22. **Market Linkage Form** - Register for market connections
-23. **Contract Farming Application Form** - Apply for contracts
+### 🛒 Marketplace (12 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 12 | Product Listing Form | products, marketplace_listings | ✅ Connected |
+| 13 | Buy Request Form | buy_requests | ✅ Connected |
+| 14 | Barter Listing Form | barter_listings | ✅ Connected |
+| 15 | Equipment Listing Form | equipment_marketplace | ✅ Connected |
+| 16 | Bulk Order Form | bulk_orders | ✅ Connected |
+| 17 | Bulk Order Bid Form | bulk_order_bids | ✅ Connected |
+| 18 | Reverse Auction Form | reverse_auctions | ✅ Connected |
+| 19 | Reverse Auction Bid Form | reverse_auction_bids | ✅ Connected |
+| 20 | Price Report Form | pricing_reports | ✅ Connected |
+| 21 | F2C Subscription Form | f2c_subscriptions | ✅ Connected (Paystack pending) |
+| 22 | Market Linkage Form | market_linkages | ✅ Connected |
+| 23 | Contract Farming Application | contract_farming_applications | ✅ Connected |
 
-### 👥 Cooperatives (8 forms)
-24. **Cooperative Registration Form** - Create new cooperative
-25. **Membership Application Form** - Join cooperative
-26. **Group Order Form** - Create group input orders
-27. **Loan Application Form** - Apply for cooperative loan
-28. **Loan Repayment Form** - Record repayments
-29. **Dividend Declaration Form** - Declare dividends
-30. **Voting Form** - Create/cast votes
-31. **Group Message Form** - Send group messages
+### 👥 Cooperatives (8 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 24 | Cooperative Registration Form | cooperative_groups | ✅ Connected |
+| 25 | Membership Application Form | cooperative_memberships | ✅ Connected |
+| 26 | Group Order Form | group_input_orders | ✅ Connected |
+| 27 | Loan Application Form | cooperative_loans | ✅ Connected |
+| 28 | Loan Repayment Form | loan_repayments | ✅ Connected |
+| 29 | Dividend Declaration Form | cooperative_dividends | ✅ Connected |
+| 30 | Voting Form | cooperative_votes | ✅ Connected |
+| 31 | Group Message Form | group_messages | ✅ Connected |
 
-### 🌍 Export & Trade (6 forms)
-32. **Farmer-Exporter Collaboration Form** - Connect farmers with exporters
-33. **Export Opportunity Form** - Create export listings
-34. **Export Application Form** - Apply for export opportunities
-35. **Batch Tracking Form** - Create product batches
-36. **Transportation Request Form** - Request transport
-37. **Warehouse Booking Form** - Book warehouse space
+### 🌍 Export & Trade (6 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 32 | Farmer-Exporter Collaboration | farmer_exporter_collaborations | ✅ Connected |
+| 33 | Export Opportunity Form | export_opportunities | ✅ Connected |
+| 34 | Export Application Form | export_opportunity_applications | ✅ Connected |
+| 35 | Batch Tracking Form | batch_tracking | ✅ Connected |
+| 36 | Transportation Request Form | transportation_requests | ✅ Connected |
+| 37 | Warehouse Booking Form | warehouse_bookings | ✅ Connected |
 
-### 🌱 Sustainability (4 forms)
-38. **Carbon Emission Form** - Record emissions
-39. **Carbon Offset Project Form** - Create offset projects
-40. **Carbon Forum Post Form** - Create discussions
-41. **Carbon Forum Comment Form** - Add comments
+### 🌱 Sustainability (4 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 38 | Carbon Emission Form | carbon_emissions | ✅ Connected |
+| 39 | Carbon Offset Project Form | carbon_offset_projects | ✅ Connected |
+| 40 | Carbon Forum Post Form | carbon_forum_posts | ✅ Connected |
+| 41 | Carbon Forum Comment Form | carbon_forum_comments | ✅ Connected |
 
-### 📦 Farm Inputs (6 forms)
-42. **Supplier Registration Form** - Register as supplier
-43. **Product Catalog Form** - Add input products
-44. **Order Form** - Purchase farm inputs
-45. **Product Review Form** - Review products
-46. **Supplier Review Form** - Review suppliers
-47. **Price Verification Form** - Verify input prices
+### 📦 Farm Inputs (6 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 42 | Supplier Registration Form | farm_input_suppliers | ✅ Connected |
+| 43 | Product Catalog Form | farm_input_products | ✅ Connected |
+| 44 | Order Form | farm_input_orders | ✅ Connected |
+| 45 | Product Review Form | farm_input_product_ratings | ✅ Connected |
+| 46 | Supplier Review Form | farm_input_supplier_ratings | ✅ Connected |
+| 47 | Price Verification Form | pricing_verifications | ✅ Connected |
 
-### 🏪 Community & Content (7 forms)
-48. **Community Post Form** - Create forum posts
-49. **Comment Form** - Add comments
-50. **Report Form** - Report content
-51. **Feature Request Form** - Submit feature requests
-52. **Partner Registration Form** - Partner with platform
-53. **Donation Form** - Make donations
-54. **Donation Request Form** - Request donations
+### 🏪 Community & Content (7 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 48 | Community Post Form | community_posts | ✅ Connected |
+| 49 | Comment Form | community_comments | ✅ Connected |
+| 50 | Report Form | community_post_reports | ✅ Connected |
+| 51 | Feature Request Form | feature_requests | ✅ Connected |
+| 52 | Partner Registration Form | partners | ✅ Connected |
+| 53 | Donation Form | donations | ✅ Connected |
+| 54 | Donation Request Form | donation_requests | ✅ Connected |
 
-### 📅 Events & Training (3 forms)
-55. **Event Creation Form** - Create agricultural events
-56. **Training Registration Form** - Register for training
-57. **Event Registration Form** - Register for events
+### 📅 Events & Training (3 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 55 | Event Creation Form | agricultural_events | ✅ Connected |
+| 56 | Training Registration Form | training_registrations | ✅ Connected |
+| 57 | Event Registration Form | event_registrations | ✅ Connected |
 
-### 🚛 Logistics (3 forms)
-58. **Transporter Registration Form** - Register as transporter
-59. **Service Provider Form** - Register logistics services
-60. **Logistics Onboarding Form** - Full logistics setup
+### 🚛 Logistics (3 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 58 | Transporter Registration Form | transporters | ✅ Connected |
+| 59 | Service Provider Form | service_providers | ✅ Connected |
+| 60 | Logistics Onboarding Form | logistics_providers | ✅ Connected |
 
-### 📊 Misc (2 forms)
-61. **Sentiment Report Form** - Report market sentiment
-62. **Success Story Form** - Submit success stories
+### 📊 Misc (2 forms) ✅ ALL CONNECTED
+| # | Form | Table | Status |
+|---|------|-------|--------|
+| 61 | Sentiment Report Form | market_sentiments | ✅ Connected |
+| 62 | Success Story Form | success_stories | ✅ Connected |
 
-## 📈 FORMS STATUS
+---
 
-| Category | Total Forms | Connected to Supabase | Needs Work |
-|----------|-------------|----------------------|------------|
-| Auth/Profile | 3 | 3 | 0 |
-| Farmer Portal | 8 | 8 | 0 |
-| Marketplace | 12 | 10 | 2 (F2C Subscription) |
-| Cooperatives | 8 | 8 | 0 |
-| Export/Trade | 6 | 4 | 2 (Missing tables) |
-| Sustainability | 4 | 4 | 0 |
-| Farm Inputs | 6 | 6 | 0 |
-| Community | 7 | 7 | 0 |
-| Events | 3 | 3 | 0 |
-| Logistics | 3 | 3 | 0 |
-| Misc | 2 | 2 | 0 |
-| **TOTAL** | **62** | **58** | **4** |
+## 📈 SUMMARY
 
-## ⚠️ FORMS NEEDING ATTENTION
+| Category | Forms | Connected | Payment Integration |
+|----------|-------|-----------|---------------------|
+| Auth/Profile | 3 | 3 ✅ | N/A |
+| Farmer Portal | 8 | 8 ✅ | N/A |
+| Marketplace | 12 | 12 ✅ | F2C needs Paystack |
+| Cooperatives | 8 | 8 ✅ | N/A |
+| Export/Trade | 6 | 6 ✅ | N/A |
+| Sustainability | 4 | 4 ✅ | N/A |
+| Farm Inputs | 6 | 6 ✅ | N/A |
+| Community | 7 | 7 ✅ | Donations optional |
+| Events | 3 | 3 ✅ | Paid events optional |
+| Logistics | 3 | 3 ✅ | N/A |
+| Misc | 2 | 2 ✅ | N/A |
+| **TOTAL** | **62** | **62 ✅** | **2 pending Paystack** |
 
-1. **F2C Subscription Form** - Needs Paystack payment integration
-2. **Business Marketing Form** - Needs Paystack payment integration
-3. **Farmer-Exporter Collaboration Form** - Needs `farmer_exporter_collaborations` table
-4. **Exporter Profile Form** - Needs `exporter_profiles` table
+## ⚠️ PAYMENT INTEGRATION PENDING
+1. **F2C Subscription Form** - Awaiting Paystack payment links
+2. **Paid Event Registration** - Optional Paystack for ticketed events

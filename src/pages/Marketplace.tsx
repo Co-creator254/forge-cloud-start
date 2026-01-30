@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -238,6 +239,7 @@ const Marketplace: React.FC = () => {
           </Card>
         </section>
       </div>
+      <Footer />
     </div>
   );
 };
