@@ -19,7 +19,14 @@ import {
   Warehouse,
   Clock,
   Bluetooth,
-  Package
+  Package,
+  Stethoscope,
+  Wheat,
+  Building,
+  Briefcase,
+  Heart,
+  Apple,
+  Gavel
 } from 'lucide-react';
 import { MobileNavigation } from '@/components/MobileNavigation';
 import { PWAInstallPrompt } from '@/components/pwa/PWAInstallPrompt';
@@ -249,8 +256,8 @@ const Index: React.FC = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-                  <Users className="h-6 w-6 text-primary" />
+                <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-2">
+                  <Stethoscope className="h-6 w-6 text-red-500" />
                 </div>
                 <CardTitle className="text-sm">Veterinary Services</CardTitle>
               </CardHeader>
@@ -263,8 +270,8 @@ const Index: React.FC = () => {
 
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-                  <Clock className="h-6 w-6 text-primary" />
+                <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                  <Wheat className="h-6 w-6 text-green-600" />
                 </div>
                 <CardTitle className="text-sm">Feed & Nutrition</CardTitle>
               </CardHeader>
@@ -277,8 +284,8 @@ const Index: React.FC = () => {
 
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-                  <MapPin className="h-6 w-6 text-primary" />
+                <div className="mx-auto w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-2">
+                  <Building className="h-6 w-6 text-orange-600" />
                 </div>
                 <CardTitle className="text-sm">Farm Construction</CardTitle>
               </CardHeader>
@@ -291,8 +298,8 @@ const Index: React.FC = () => {
 
             <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-                  <Users className="h-6 w-6 text-primary" />
+                <div className="mx-auto w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                  <Briefcase className="h-6 w-6 text-purple-600" />
                 </div>
                 <CardTitle className="text-sm">Consultancies</CardTitle>
               </CardHeader>
@@ -315,9 +322,11 @@ const Index: React.FC = () => {
       <section className="py-8 bg-muted/20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <Clock className="h-6 w-6 text-accent mx-auto mb-2" />
+                <div className="mx-auto w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-2">
+                  <Heart className="h-6 w-6 text-pink-500" />
+                </div>
                 <CardTitle className="text-sm">Donations</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -327,9 +336,11 @@ const Index: React.FC = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <Warehouse className="h-6 w-6 text-accent mx-auto mb-2" />
+                <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                  <Apple className="h-6 w-6 text-green-500" />
+                </div>
                 <CardTitle className="text-sm">Food Rescue</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -339,9 +350,11 @@ const Index: React.FC = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <TrendingUp className="h-6 w-6 text-accent mx-auto mb-2" />
+                <div className="mx-auto w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-2">
+                  <Gavel className="h-6 w-6 text-yellow-600" />
+                </div>
                 <CardTitle className="text-sm">Auctions</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -351,9 +364,11 @@ const Index: React.FC = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <BarChart3 className="h-6 w-6 text-accent mx-auto mb-2" />
+                <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+                  <BarChart3 className="h-6 w-6 text-blue-500" />
+                </div>
                 <CardTitle className="text-sm">Analytics</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -363,9 +378,11 @@ const Index: React.FC = () => {
               </CardContent>
             </Card>
             
-            <Card className="text-center">
+            <Card className="text-center hover:shadow-md transition-shadow">
               <CardHeader className="pb-3">
-                <DollarSign className="h-6 w-6 text-accent mx-auto mb-2" />
+                <div className="mx-auto w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mb-2">
+                  <DollarSign className="h-6 w-6 text-emerald-600" />
+                </div>
                 <CardTitle className="text-sm">Buy Requests</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -384,65 +401,8 @@ const Index: React.FC = () => {
       {/* PWA Install Prompt */}
       <PWAInstallPrompt />
       
-      {/* Professional Footer */}
-      <footer className="bg-background border-t">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Platform */}
-            <div>
-              <h3 className="font-semibold mb-3 text-sm">Platform</h3>
-              <div className="space-y-2 text-xs">
-                <Link to="/commodity-trading" className="block text-muted-foreground hover:text-foreground">Commodity Trading</Link>
-                <Link to="/logistics" className="block text-muted-foreground hover:text-foreground">Logistics</Link>
-                <Link to="/service-providers" className="block text-muted-foreground hover:text-foreground">Service Providers</Link>
-                <Link to="/farm-input-marketplace" className="block text-muted-foreground hover:text-foreground">Farm Input Marketplace</Link>
-                <Link to="/equipment-marketplace" className="block text-muted-foreground hover:text-foreground">Equipment Marketplace</Link>
-                <Link to="/agricultural-marketplace" className="block text-muted-foreground hover:text-foreground">Agricultural Marketplace</Link>
-              </div>
-            </div>
-            
-            {/* Support */}
-            <div>
-              <h3 className="font-semibold mb-3 text-sm">Support</h3>
-              <div className="space-y-2 text-xs">
-                <Link to="/about" className="block text-muted-foreground hover:text-foreground">FAQ</Link>
-                <Link to="/contact" className="block text-muted-foreground hover:text-foreground">Contact</Link>
-                <Link to="/community-forum" className="block text-muted-foreground hover:text-foreground">Community Forum</Link>
-                <Link to="/partner-with-us" className="block text-muted-foreground hover:text-foreground">Partner with us</Link>
-              </div>
-            </div>
-            
-            {/* Features */}
-            <div>
-              <h3 className="font-semibold mb-3 text-sm">Features</h3>
-              <div className="space-y-2 text-xs">
-                <Link to="/kilimo-ams-data" className="block text-muted-foreground hover:text-foreground">Market Data</Link>
-                <Link to="/sentiment-analysis" className="block text-muted-foreground hover:text-foreground">Analytics</Link>
-                <Link to="/city-markets" className="block text-muted-foreground hover:text-foreground">City Markets</Link>
-                <Link to="/veterinary-services" className="block text-muted-foreground hover:text-foreground">Veterinary Services</Link>
-              </div>
-            </div>
-            
-            {/* Company */}
-            <div>
-              <h3 className="font-semibold mb-3 text-sm">SokoConnect</h3>
-              <p className="text-xs text-muted-foreground mb-3">
-                Connecting farmers, traders, and service providers for a better agricultural ecosystem.
-              </p>
-              <div className="space-y-2 text-xs">
-                <Link to="/about" className="block text-muted-foreground hover:text-foreground">About Us</Link>
-                <Link to="/contact" className="block text-muted-foreground hover:text-foreground">Contact</Link>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t mt-6 pt-4 text-center">
-            <p className="text-xs text-muted-foreground">
-              © 2024 SokoConnect. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Professional Footer with colored icons */}
+      <Footer />
       
       {/* Mobile Navigation */}
       <MobileNavigation />
