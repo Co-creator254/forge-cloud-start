@@ -79,8 +79,8 @@ const mockDemandHotspots: DemandHotspot[] = [
 ];
 
 const MarketDemandHotspot = () => {
-  const [selectedCrop, setSelectedCrop] = useState<string>("");
-  const [selectedCounty, setSelectedCounty] = useState<string>("");
+  const [selectedCrop, setSelectedCrop] = useState<string>("all");
+  const [selectedCounty, setSelectedCounty] = useState<string>("all");
   const [filteredHotspots, setFilteredHotspots] = useState<DemandHotspot[]>(mockDemandHotspots);
   
   useEffect(() => {
@@ -89,13 +89,13 @@ const MarketDemandHotspot = () => {
     // Filter the hotspots based on selections
     let filtered = [...mockDemandHotspots];
     
-    if (selectedCrop) {
+    if (selectedCrop && selectedCrop !== 'all') {
       filtered = filtered.filter(hotspot => 
         hotspot.crop.toLowerCase().includes(selectedCrop.toLowerCase())
       );
     }
     
-    if (selectedCounty) {
+    if (selectedCounty && selectedCounty !== 'all') {
       filtered = filtered.filter(hotspot => 
         hotspot.county.toLowerCase().includes(selectedCounty.toLowerCase())
       );
@@ -127,7 +127,7 @@ const MarketDemandHotspot = () => {
                 <SelectValue placeholder="All Crops" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Crops</SelectItem>
+                <SelectItem value="all">All Crops</SelectItem>
                 <SelectItem value="tomatoes">Tomatoes</SelectItem>
                 <SelectItem value="potatoes">Potatoes</SelectItem>
                 <SelectItem value="maize">Maize</SelectItem>
@@ -144,7 +144,7 @@ const MarketDemandHotspot = () => {
                 <SelectValue placeholder="All Counties" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Counties</SelectItem>
+                <SelectItem value="all">All Counties</SelectItem>
                 <SelectItem value="nairobi">Nairobi</SelectItem>
                 <SelectItem value="nakuru">Nakuru</SelectItem>
                 <SelectItem value="uasin gishu">Uasin Gishu</SelectItem>
@@ -156,8 +156,8 @@ const MarketDemandHotspot = () => {
           
           <div className="flex items-end">
             <Button variant="outline" className="w-full" onClick={() => {
-              setSelectedCrop("");
-              setSelectedCounty("");
+              setSelectedCrop("all");
+              setSelectedCounty("all");
             }}>
               Clear Filters
             </Button>

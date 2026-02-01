@@ -82,6 +82,7 @@ import ContractFarming from './pages/ContractFarming';
 import AdminPanel from './pages/AdminPanel';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
+import ScrollToTopButton from './components/common/ScrollToTop';
 import BluetoothMarketplacePage from './pages/BluetoothMarketplacePage';
 import MorePage from './pages/MorePage';
 import SupplyChainDashboardPage from './pages/SupplyChainDashboardPage';
@@ -96,6 +97,9 @@ import BusinessMarketing from './pages/BusinessMarketing';
 import Community from './pages/Community';
 import FarmInputsMarketplace from './pages/FarmInputsMarketplace';
 import ExportMarket from './pages/ExportMarket';
+import MarketPrices from './pages/MarketPrices';
+import Partners from './pages/Partners';
+import Networking from './pages/Networking';
 
 function App() {
   return (
@@ -195,11 +199,15 @@ function App() {
           <Route path="/major-routes" element={<RoutesMarketplace />} />
           <Route path="/major-routes-marketplace" element={<RoutesMarketplace />} />
           <Route path="/road-markets" element={<RoutesMarketplace />} />
+          <Route path="/market-prices" element={<MarketPrices />} />
+          <Route path="/partners" element={<Partners />} />
+          <Route path="/networking-page" element={<Networking />} />
                   <Route path="*" element={<NotFound />} />
                </Routes>
               </React.Suspense>
               <Toaster />
               <ScrollToTop />
+              <ScrollToTopButton />
               <BottomNav />
            </AuthProvider>
          </div>
