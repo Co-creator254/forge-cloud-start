@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import { ExternalLink, Mail, Phone, Globe, Users, Award, TrendingUp } from 'luci
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import PartnerCarousel from '@/components/partners/PartnerCarousel';
+import partnersHeroBg from '@/assets/partners-hero-bg.jpg';
 
 interface Partner {
   id: string;
@@ -55,11 +57,15 @@ const PartnersShowcase: React.FC = () => {
     <div className="min-h-screen">
       <Header />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Partners</h1>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
+      {/* Hero Section with Background Image */}
+      <section 
+        className="relative py-20 md:py-28 bg-cover bg-center"
+        style={{ backgroundImage: `url(${partnersHeroBg})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-green-900/80 via-green-800/60 to-transparent" />
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">Our Partners</h1>
+          <p className="text-xl mb-8 max-w-3xl mx-auto text-white/90 drop-shadow">
             Together with our partners, we're transforming agriculture and empowering farmers across Kenya
           </p>
           <Button size="lg" variant="secondary" onClick={() => navigate('/partner-with-us')}>
@@ -209,6 +215,8 @@ const PartnersShowcase: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };
