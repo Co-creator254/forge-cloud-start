@@ -1872,6 +1872,62 @@ export type Database = {
         }
         Relationships: []
       }
+      event_registrations: {
+        Row: {
+          created_at: string
+          dietary_requirements: string | null
+          email: string | null
+          event_id: string | null
+          full_name: string
+          id: string
+          organization: string | null
+          payment_status: string | null
+          phone: string
+          special_needs: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dietary_requirements?: string | null
+          email?: string | null
+          event_id?: string | null
+          full_name: string
+          id?: string
+          organization?: string | null
+          payment_status?: string | null
+          phone: string
+          special_needs?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dietary_requirements?: string | null
+          email?: string | null
+          event_id?: string | null
+          full_name?: string
+          id?: string
+          organization?: string | null
+          payment_status?: string | null
+          phone?: string
+          special_needs?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "agricultural_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       export_opportunities: {
         Row: {
           certifications_required: string[] | null
@@ -3004,6 +3060,45 @@ export type Database = {
           },
         ]
       }
+      feature_requests: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string
+          id: string
+          priority: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          user_id: string | null
+          votes: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          priority?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+          votes?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          priority?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+          votes?: number | null
+        }
+        Relationships: []
+      }
       food_rescue_listings: {
         Row: {
           available_from: string | null
@@ -3382,6 +3477,56 @@ export type Database = {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "cooperative_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      harvests: {
+        Row: {
+          created_at: string
+          crop_id: string | null
+          harvest_date: string
+          id: string
+          notes: string | null
+          quality_grade: string | null
+          quantity: number
+          storage_location: string | null
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          crop_id?: string | null
+          harvest_date: string
+          id?: string
+          notes?: string | null
+          quality_grade?: string | null
+          quantity: number
+          storage_location?: string | null
+          unit?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          crop_id?: string | null
+          harvest_date?: string
+          id?: string
+          notes?: string | null
+          quality_grade?: string | null
+          quantity?: number
+          storage_location?: string | null
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "harvests_crop_id_fkey"
+            columns: ["crop_id"]
+            isOneToOne: false
+            referencedRelation: "crops"
             referencedColumns: ["id"]
           },
         ]
@@ -3793,6 +3938,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      market_sentiments: {
+        Row: {
+          commodity: string
+          confidence_level: number | null
+          county: string
+          created_at: string
+          id: string
+          price_expectation: string | null
+          reasoning: string | null
+          sentiment: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          commodity: string
+          confidence_level?: number | null
+          county: string
+          created_at?: string
+          id?: string
+          price_expectation?: string | null
+          reasoning?: string | null
+          sentiment: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          commodity?: string
+          confidence_level?: number | null
+          county?: string
+          created_at?: string
+          id?: string
+          price_expectation?: string | null
+          reasoning?: string | null
+          sentiment?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       marketplace_listings: {
         Row: {
@@ -4236,6 +4420,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pricing_reports: {
+        Row: {
+          commodity: string
+          county: string
+          created_at: string
+          id: string
+          location: string | null
+          market_name: string
+          notes: string | null
+          price: number
+          quality_grade: string | null
+          unit: string
+          updated_at: string
+          user_id: string
+          verified: boolean | null
+        }
+        Insert: {
+          commodity: string
+          county: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          market_name: string
+          notes?: string | null
+          price: number
+          quality_grade?: string | null
+          unit: string
+          updated_at?: string
+          user_id: string
+          verified?: boolean | null
+        }
+        Update: {
+          commodity?: string
+          county?: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          market_name?: string
+          notes?: string | null
+          price?: number
+          quality_grade?: string | null
+          unit?: string
+          updated_at?: string
+          user_id?: string
+          verified?: boolean | null
+        }
+        Relationships: []
       }
       processing_matches: {
         Row: {
