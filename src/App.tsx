@@ -41,7 +41,7 @@ import FarmerSuccessStories from './pages/FarmerSuccessStories';
 import CommunityForum from './pages/CommunityForum';
 const BatchTrackingPage = React.lazy(() => import('./components/BatchTrackingPage').then(module => ({ default: module.BatchTrackingPage })));
 import CarbonForumPage from './pages/CarbonForumPage';
-const NetworkingPage = React.lazy(() => import('./components/NetworkingPage').then(module => ({ default: module.NetworkingPage })));
+// NetworkingPage component from pages
 import { OfflineBanner } from './components/OfflineBanner';
 import TransporterSignUp from './pages/TransporterSignUp';
 import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
@@ -99,7 +99,7 @@ import FarmInputsMarketplace from './pages/FarmInputsMarketplace';
 import ExportMarket from './pages/ExportMarket';
 import MarketPrices from './pages/MarketPrices';
 import Partners from './pages/Partners';
-import Networking from './pages/Networking';
+import NetworkingPage from './pages/Networking';
 
 function App() {
   return (
@@ -136,7 +136,7 @@ function App() {
                  {/* Strategic Features Tabs */}
                  <Route path="/batch-tracking" element={<BatchTracking />} />
                  <Route path="/carbon-forum" element={<CarbonForumPage userId="USER_ID_PLACEHOLDER" />} />
-                 <Route path="/networking" element={<NetworkingPage userId="USER_ID_PLACEHOLDER" />} />
+                 <Route path="/networking" element={<NetworkingPage />} />
                  <Route path="/logistics-solutions-map" element={<LogisticsSolutionsMap />} />
                  <Route path="/market-demand-hotspot" element={<MarketDemandHotspot />} />
                  <Route path="/commodity-trading" element={<CommodityTrading />} />
@@ -201,7 +201,7 @@ function App() {
           <Route path="/road-markets" element={<RoutesMarketplace />} />
           <Route path="/market-prices" element={<MarketPrices />} />
           <Route path="/partners" element={<Partners />} />
-          <Route path="/networking-page" element={<Networking />} />
+          <Route path="/networking-page" element={<NetworkingPage />} />
                   <Route path="*" element={<NotFound />} />
                </Routes>
               </React.Suspense>
