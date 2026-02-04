@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- SokoConnect Brand Green -->
     <color name="ic_launcher_background">#43A047</color>
+    <color name="colorPrimary">#43A047</color>
+    <color name="colorPrimaryDark">#2E7D32</color>
+    <color name="colorAccent">#66BB6A</color>
 </resources>
-
