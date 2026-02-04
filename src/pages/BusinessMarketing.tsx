@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Megaphone, TrendingUp, Users, Target, CheckCircle, MessageCircle, Star } from 'lucide-react';
+import { Megaphone, TrendingUp, Users, Target, CheckCircle, MessageCircle, Star, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import advertiseBg from '@/assets/advertise-bg.png';
+import { initializePaystackPayment, redirectToPaystack, ADVERTISING_PLANS } from '@/services/paystackService';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 const BusinessMarketing: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   // USD to KES conversion rate (approximate)
   const USD_TO_KES = 130;
@@ -18,6 +24,8 @@ const BusinessMarketing: React.FC = () => {
       price: `KES ${(10 * USD_TO_KES).toLocaleString()}`,
       usdPrice: '$10',
       period: '/month',
+      planId: 'ad-1month',
+      amount: ADVERTISING_PLANS['ad-1month'].amount,
       features: [
         'Business profile listing',
         'Contact information display',
@@ -32,6 +40,8 @@ const BusinessMarketing: React.FC = () => {
       price: `KES ${(20 * USD_TO_KES).toLocaleString()}`,
       usdPrice: '$20',
       period: '/3 months',
+      planId: 'ad-3months',
+      amount: ADVERTISING_PLANS['ad-3months'].amount,
       features: [
         'Business profile listing',
         'Contact information display',
@@ -48,6 +58,8 @@ const BusinessMarketing: React.FC = () => {
       price: `KES ${(30 * USD_TO_KES).toLocaleString()}`,
       usdPrice: '$30',
       period: '/year',
+      planId: 'ad-1year',
+      amount: ADVERTISING_PLANS['ad-1year'].amount,
       features: [
         'Business profile listing',
         'Contact information display',
@@ -59,6 +71,56 @@ const BusinessMarketing: React.FC = () => {
       color: 'border-green-700'
     }
   ];
+
+  const handlePayment = async (planId: string, amount: number, planName: string) => {
+    if (!user?.email) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to purchase an advertising package.",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+
+    setLoadingPlan(planId);
+    
+    try {
+      const response = await initializePaystackPayment({
+        email: user.email,
+        amount: amount,
+        plan_id: planId,
+        plan_type: 'advertising',
+        metadata: {
+          user_id: user.id,
+          plan_name: planName
+        }
+      });
+
+      if (response.success && response.authorization_url) {
+        toast({
+          title: "Redirecting to Payment",
+          description: "You'll be redirected to Paystack to complete payment.",
+        });
+        redirectToPaystack(response.authorization_url);
+      } else {
+        toast({
+          title: "Payment Error",
+          description: response.error || "Failed to initialize payment. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast({
+        title: "Error",
+        description: "An error occurred. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
 
   const benefits = [
     {
@@ -155,9 +217,17 @@ const BusinessMarketing: React.FC = () => {
                   <Button 
                     className={`w-full ${pkg.popular ? 'bg-green-600 hover:bg-green-700' : ''}`}
                     variant={pkg.popular ? 'default' : 'outline'}
-                    onClick={() => navigate('/contact')}
+                    onClick={() => handlePayment(pkg.planId, pkg.amount, pkg.name)}
+                    disabled={loadingPlan === pkg.planId}
                   >
-                    Get Started
+                    {loadingPlan === pkg.planId ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      'Get Started'
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -171,7 +241,7 @@ const BusinessMarketing: React.FC = () => {
             <div className="text-center">
               <h2 className="text-3xl font-bold mb-4">Ready to Grow Your Business?</h2>
               <p className="text-lg mb-6 opacity-90">
-                Join hundreds of successful agribusinesses already advertising on AgriTender Connect
+                Join hundreds of successful agribusinesses already advertising on SokoConnect
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 

@@ -7,11 +7,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ShoppingBag, MapPin, Calendar, Package, DollarSign, Plus, Search, Truck, Leaf, CheckCircle2, Star, Heart } from "lucide-react";
+import { ShoppingBag, MapPin, Calendar, Package, DollarSign, Plus, Search, Truck, Leaf, CheckCircle2, Star, Heart, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketplaceImage } from "@/components/MarketplaceImage";
 import { MarketplaceDisclaimer } from "@/components/MarketplaceDisclaimer";
+import { initializePaystackPayment, redirectToPaystack } from "@/services/paystackService";
+import { useNavigate } from "react-router-dom";
 import f2cHeroBg from "@/assets/f2c-hero-bg.png";
 
 interface SubscriptionBox {
@@ -35,12 +37,14 @@ interface SubscriptionBox {
 
 const F2CMarketplace = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [boxes, setBoxes] = useState<SubscriptionBox[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterCounty, setFilterCounty] = useState("all");
   const [showDisclaimer, setShowDisclaimer] = useState(true);
+  const [subscribingBoxId, setSubscribingBoxId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSubscriptionBoxes();
@@ -77,32 +81,50 @@ const F2CMarketplace = () => {
         description: "Please sign in to subscribe to this box.",
         variant: "destructive",
       });
+      navigate('/auth');
       return;
     }
 
+    setSubscribingBoxId(box.id);
+
     try {
-      const { error } = await supabase.from('f2c_subscriptions').insert({
-        user_id: user.id,
-        box_id: box.id,
-        subscription_type: box.box_type,
-        delivery_address: 'To be provided',
-        delivery_county: box.county,
+      // Initialize Paystack payment
+      const response = await initializePaystackPayment({
+        email: user.email || '',
+        amount: box.price,
+        plan_id: `f2c-${box.box_type}`,
+        plan_type: 'f2c',
+        metadata: {
+          user_id: user.id,
+          box_id: box.id,
+          box_name: box.box_name,
+          subscription_type: box.box_type,
+          delivery_county: box.county
+        }
       });
 
-      if (error) throw error;
-
-      toast({
-        title: "Subscribed!",
-        description: `You've subscribed to ${box.box_name}. We'll contact you for delivery details.`,
-      });
-      fetchSubscriptionBoxes();
+      if (response.success && response.authorization_url) {
+        toast({
+          title: "Redirecting to Payment",
+          description: "You'll be redirected to Paystack to complete payment.",
+        });
+        redirectToPaystack(response.authorization_url);
+      } else {
+        toast({
+          title: "Payment Error",
+          description: response.error || "Failed to initialize payment. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error('Subscription error:', error);
       toast({
         title: "Error",
-        description: "Failed to subscribe. Please try again.",
+        description: "Failed to process subscription. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setSubscribingBoxId(null);
     }
   };
 
@@ -313,6 +335,7 @@ const F2CMarketplace = () => {
                 const availableSlots = box.max_subscriptions 
                   ? box.max_subscriptions - box.current_subscriptions 
                   : null;
+                const isSubscribing = subscribingBoxId === box.id;
                 
                 return (
                   <Card key={box.id} className="hover:shadow-lg transition-shadow overflow-hidden">
@@ -372,10 +395,17 @@ const F2CMarketplace = () => {
                       <Button 
                         size="sm" 
                         className="flex-1"
-                        disabled={availableSlots !== null && availableSlots <= 0}
+                        disabled={(availableSlots !== null && availableSlots <= 0) || isSubscribing}
                         onClick={() => handleSubscribe(box)}
                       >
-                        Subscribe Now
+                        {isSubscribing ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          'Subscribe Now'
+                        )}
                       </Button>
                     </CardFooter>
                   </Card>
