@@ -4,23 +4,39 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    
+    <!-- SokoConnect App Icon -->
+    <!-- Green background -->
     <path
         android:fillColor="#43A047"
         android:pathData="M0,0h108v108h-108z" />
-    <!-- Center circle -->
-    <path android:fillColor="#FFFFFF" android:pathData="M54,54m-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0" />
-    <!-- Top circle -->
-    <path android:fillColor="#FFFFFF" android:pathData="M54,20m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
-    <!-- Bottom circle -->
-    <path android:fillColor="#FFFFFF" android:pathData="M54,88m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
-    <!-- Left circle -->
-    <path android:fillColor="#FFFFFF" android:pathData="M20,54m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
-    <!-- Right circle -->
-    <path android:fillColor="#FFFFFF" android:pathData="M88,54m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
-    <!-- Vertical rectangles -->
-    <path android:fillColor="#FFFFFF" android:pathData="M52,28h4v16h-4z" />
-    <path android:fillColor="#FFFFFF" android:pathData="M52,64h4v16h-4z" />
-    <!-- Horizontal rectangles -->
-    <path android:fillColor="#FFFFFF" android:pathData="M28,52h16v4h-16z" />
-    <path android:fillColor="#FFFFFF" android:pathData="M64,52h16v4h-16z" />
+    
+    <!-- White circle base -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,54m-32,0a32,32 0,1,1 64,0a32,32 0,1,1 -64,0"/>
+    
+    <!-- Stylized S connection path -->
+    <path
+        android:strokeColor="#43A047"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M38,35 Q52,35 56,42 Q60,49 54,54 Q48,59 52,66 Q56,73 70,73"/>
+    
+    <!-- Connection nodes representing farmers, traders, markets -->
+    <path
+        android:fillColor="#43A047"
+        android:pathData="M38,35m-5,0a5,5 0,1,1 10,0a5,5 0,1,1 -10,0"/>
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M54,54m-4,0a4,4 0,1,1 8,0a4,4 0,1,1 -8,0"/>
+    <path
+        android:fillColor="#43A047"
+        android:pathData="M70,73m-5,0a5,5 0,1,1 10,0a5,5 0,1,1 -10,0"/>
+    
+    <!-- Leaf accent for agriculture -->
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M74,30 Q80,24 84,30 Q80,36 74,30"/>
 </vector>

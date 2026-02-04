@@ -4,27 +4,44 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    
+    <!-- SokoConnect Logo - Stylized S with connection nodes -->
     <group
-        android:scaleX="0.9"
-        android:scaleY="0.9"
-        android:translateX="5.4"
-        android:translateY="5.4">
-        <!-- Center circle -->
-        <path android:fillColor="#FFFFFF" android:pathData="M54,54m-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0" />
-        <!-- Top circle -->
-        <path android:fillColor="#FFFFFF" android:pathData="M54,20m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
-        <!-- Bottom circle -->
-        <path android:fillColor="#FFFFFF" android:pathData="M54,88m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
-        <!-- Left circle -->
-        <path android:fillColor="#FFFFFF" android:pathData="M20,54m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
-        <!-- Right circle -->
-        <path android:fillColor="#FFFFFF" android:pathData="M88,54m-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0" />
-        <!-- Vertical rectangles -->
-        <path android:fillColor="#FFFFFF" android:pathData="M52,28h4v16h-4z" />
-        <path android:fillColor="#FFFFFF" android:pathData="M52,64h4v16h-4z" />
-        <!-- Horizontal rectangles -->
-        <path android:fillColor="#FFFFFF" android:pathData="M28,52h16v4h-16z" />
-        <path android:fillColor="#FFFFFF" android:pathData="M64,52h16v4h-16z" />
+        android:scaleX="0.75"
+        android:scaleY="0.75"
+        android:translateX="13.5"
+        android:translateY="13.5">
+        
+        <!-- Background circle -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M54,54m-40,0a40,40 0,1,1 80,0a40,40 0,1,1 -80,0"/>
+        
+        <!-- Stylized S shape representing connection -->
+        <path
+            android:fillColor="#43A047"
+            android:pathData="M38,30 Q54,30 58,38 Q62,46 54,52 Q46,58 50,66 Q54,74 70,74"/>
+        <path
+            android:strokeColor="#43A047"
+            android:strokeWidth="6"
+            android:strokeLineCap="round"
+            android:fillColor="#00000000"
+            android:pathData="M38,30 Q54,30 58,38 Q62,46 54,52 Q46,58 50,66 Q54,74 70,74"/>
+        
+        <!-- Connection nodes -->
+        <path
+            android:fillColor="#43A047"
+            android:pathData="M38,30m-6,0a6,6 0,1,1 12,0a6,6 0,1,1 -12,0"/>
+        <path
+            android:fillColor="#43A047"
+            android:pathData="M70,74m-6,0a6,6 0,1,1 12,0a6,6 0,1,1 -12,0"/>
+        <path
+            android:fillColor="#2E7D32"
+            android:pathData="M54,52m-5,0a5,5 0,1,1 10,0a5,5 0,1,1 -10,0"/>
+        
+        <!-- Leaf accent -->
+        <path
+            android:fillColor="#66BB6A"
+            android:pathData="M72,28 Q78,22 82,28 Q78,34 72,28"/>
     </group>
 </vector>
-
