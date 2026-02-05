@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -244,13 +244,18 @@ const Auth: React.FC = () => {
                           required
                         />
                       </div>
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold py-3" 
-                        disabled={loading}
-                      >
-                        {loading ? "Signing In..." : "Sign In"}
-                      </Button>
+                        <Button 
+                          type="submit" 
+                          className="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold py-3" 
+                          disabled={loading}
+                        >
+                          {loading ? "Signing In..." : "Sign In"}
+                        </Button>
+                        <div className="text-center">
+                          <Link to="/reset-password" className="text-sm text-green-400 hover:text-green-300 transition-colors">
+                            Forgot your password?
+                          </Link>
+                        </div>
                     </form>
                   </TabsContent>
                   

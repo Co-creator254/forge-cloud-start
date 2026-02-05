@@ -75,6 +75,7 @@ import FoodRescueDashboard from './pages/FoodRescueDashboard';
 import ImperfectSurplusDashboard from './pages/ImperfectSurplusDashboard';
 import BulkOrderDashboard from './pages/BulkOrderDashboard';
 import DonationFormPage from './pages/DonationFormPage';
+import EnhancedDonationForm from './pages/EnhancedDonationForm';
 import BuyRequestsPage from './pages/BuyRequestsPage';
 import ExportMarketOpportunities from './pages/ExportMarketOpportunities';
 import ExportOpportunities from './pages/ExportOpportunities';
@@ -100,6 +101,8 @@ import ExportMarket from './pages/ExportMarket';
 import MarketPrices from './pages/MarketPrices';
 import Partners from './pages/Partners';
 import NetworkingPage from './pages/Networking';
+import ResetPassword from './pages/ResetPassword';
+import UpdatePassword from './pages/UpdatePassword';
 
 function App() {
   return (
@@ -111,8 +114,10 @@ function App() {
              <React.Suspense fallback={<div>Loading...</div>}>
                <Routes>
                  <Route path="/" element={<Index />} />
-                 <Route path="/auth" element={<Auth />} />
-                 <Route path="/about" element={<About />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/update-password" element={<UpdatePassword />} />
+                  <Route path="/about" element={<About />} />
                  <Route path="/contact" element={<Contact />} />
                  <Route path="/profile" element={<Profile />} />
                  <Route path="/search" element={<SearchResultsPage />} />
@@ -157,8 +162,9 @@ function App() {
                  <Route path="/food-rescue-dashboard" element={<FoodRescueDashboard user={{}} />} />
                  <Route path="/imperfect-surplus-dashboard" element={<ImperfectSurplusDashboard />} />
                  <Route path="/bulk-order-dashboard" element={<BulkOrderDashboard user={{}} />} />
-                  <Route path="/donation-form" element={<DonationFormPage />} />
-                   <Route path="/buy-requests" element={<BuyRequestsPage />} />
+                   <Route path="/donation-form" element={<EnhancedDonationForm />} />
+                   <Route path="/donation-form-simple" element={<DonationFormPage />} />
+                    <Route path="/buy-requests" element={<BuyRequestsPage />} />
                    <Route path="/export-market-opportunities" element={<ExportMarketOpportunities />} />
                    <Route path="/export-opportunities" element={<ExportOpportunities />} />
                    <Route path="/contract-farming" element={<ContractFarming />} />

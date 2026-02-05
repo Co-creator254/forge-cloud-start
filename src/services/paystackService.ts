@@ -45,11 +45,26 @@ export async function initializePaystackPayment(params: PaystackInitializeParams
       return { success: false, error: error.message };
     }
 
-    return {
-      success: true,
-      authorization_url: data.authorization_url,
-      reference: data.reference
-    };
+    // Paystack returns data in nested structure: { status: true, data: { authorization_url, reference } }
+    if (data?.status === true && data?.data?.authorization_url) {
+      return {
+        success: true,
+        authorization_url: data.data.authorization_url,
+        reference: data.data.reference
+      };
+    }
+
+    // Fallback for direct response structure
+    if (data?.authorization_url) {
+      return {
+        success: true,
+        authorization_url: data.authorization_url,
+        reference: data.reference
+      };
+    }
+
+    console.error('Unexpected Paystack response:', data);
+    return { success: false, error: 'Unexpected response from payment gateway' };
   } catch (err) {
     console.error('Paystack initialization failed:', err);
     return { success: false, error: 'Failed to initialize payment' };
