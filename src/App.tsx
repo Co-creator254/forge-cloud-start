@@ -156,7 +156,8 @@ function App() {
                  <Route path="/community" element={<Community />} />
                  <Route path="/community-forums" element={<CommunityForums />} />
                  <Route path="/city-markets" element={<CityMarkets />} />
-                 <Route path="/farm-inputs-marketplace" element={<FarmInputsMarketplace />} />
+                  <Route path="/farm-inputs-marketplace" element={<FarmInputsMarketplace />} />
+                  <Route path="/farm-inputs" element={<FarmInputsMarketplace />} />
                  <Route path="/export-market" element={<ExportMarket />} />
                  <Route path="/farmer-portal" element={<FarmerPortal />} />
                  <Route path="/equipment-marketplace" element={<EquipmentMarketplace />} />

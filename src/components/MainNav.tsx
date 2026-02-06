@@ -63,9 +63,9 @@ const navigationItems = [
     icon: BarChart3,
   },
   {
-    name: 'Export Opportunities',
-    href: '/ExportMarketOpportunities',
-    icon: Globe, // Use an existing icon for consistency
+    name: 'Export Market',
+    href: '/export-market',
+    icon: Globe,
   },
 ];
 
