@@ -204,14 +204,13 @@ const EquipmentMarketplace: React.FC = () => {
               </div>
             </div>
             
-            {user && (
-              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg">
-                    <Plus className="h-5 w-5 mr-2" />
-                    List Your Equipment
-                  </Button>
-                </DialogTrigger>
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="lg" className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg">
+                  <Plus className="h-5 w-5 mr-2" />
+                  List Your Equipment
+                </Button>
+              </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>List Equipment for Sale or Rent</DialogTitle>
