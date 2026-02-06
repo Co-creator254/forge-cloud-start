@@ -95,6 +95,65 @@ const RoutesMarketplace: React.FC = () => {
     fetchData();
   }, []);
 
+  // Initialize Leaflet map
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const map = L.map(mapRef.current).setView([-1.2921, 36.8219], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Draw major routes on the map
+    const routeCoords: Record<string, [number, number][]> = {
+      'A1': [[-1.2921, 36.8219], [-2.5, 37.5], [-4.0435, 39.6682]],
+      'A2': [[-1.2921, 36.8219], [-0.3031, 36.0800], [0.5143, 35.2698]],
+      'A3': [[-1.2921, 36.8219], [-0.7179, 36.4314], [-0.0917, 34.7680]],
+      'A104': [[-1.2921, 36.8219], [-1.0396, 37.0693]],
+      'B3': [[-4.0435, 39.6682], [-3.2138, 40.1169]],
+      'C77': [[-1.2921, 36.8219], [-2.7333, 36.7833]],
+    };
+
+    const routeColors: Record<string, string> = {
+      'A1': '#e53935', 'A2': '#1e88e5', 'A3': '#43a047',
+      'A104': '#fb8c00', 'B3': '#8e24aa', 'C77': '#00897b'
+    };
+
+    Object.entries(routeCoords).forEach(([id, coords]) => {
+      const routeInfo = MAJOR_ROUTES.find(r => r.id === id);
+      L.polyline(coords, { color: routeColors[id] || '#333', weight: 4, opacity: 0.8 })
+        .bindPopup(`<strong>${routeInfo?.name || id}</strong><br/>${routeInfo?.description || ''}`)
+        .addTo(map);
+    });
+
+    // Add vendor markers
+    const vendorLocations: { lat: number; lng: number; name: string; route: string }[] = [
+      { lat: -1.5177, lng: 37.2634, name: 'Machakos Fresh Produce', route: 'A1' },
+      { lat: -1.4504, lng: 36.9570, name: 'Athi River Grain Store', route: 'A1' },
+      { lat: -0.3031, lng: 36.0800, name: 'Nakuru Dairy Hub', route: 'A2' },
+      { lat: -1.0396, lng: 37.0693, name: 'Thika Pineapple Vendors', route: 'A104' },
+    ];
+
+    vendorLocations.forEach(v => {
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="background:#43a047;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);">🏪</div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+      L.marker([v.lat, v.lng], { icon })
+        .bindPopup(`<strong>${v.name}</strong><br/>Route: ${v.route}`)
+        .addTo(map);
+    });
+
+    mapInstanceRef.current = map;
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
+  }, []);
+
   const fetchData = async () => {
     setLoading(true);
     try {
