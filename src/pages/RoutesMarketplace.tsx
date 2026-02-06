@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -25,12 +25,15 @@ import {
   AlertTriangle,
   Flag,
   Plus,
-  AlertCircle
+  AlertCircle,
+  Map
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { MarketplaceDisclaimer } from '@/components/MarketplaceDisclaimer';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 // Major routes in Kenya
 const MAJOR_ROUTES = [
@@ -79,6 +82,9 @@ const RoutesMarketplace: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showMap, setShowMap] = useState(true);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
   
   // Form state for adding new market
   const [newMarket, setNewMarket] = useState({
@@ -87,6 +93,65 @@ const RoutesMarketplace: React.FC = () => {
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  // Initialize Leaflet map
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const map = L.map(mapRef.current).setView([-1.2921, 36.8219], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Draw major routes on the map
+    const routeCoords: Record<string, [number, number][]> = {
+      'A1': [[-1.2921, 36.8219], [-2.5, 37.5], [-4.0435, 39.6682]],
+      'A2': [[-1.2921, 36.8219], [-0.3031, 36.0800], [0.5143, 35.2698]],
+      'A3': [[-1.2921, 36.8219], [-0.7179, 36.4314], [-0.0917, 34.7680]],
+      'A104': [[-1.2921, 36.8219], [-1.0396, 37.0693]],
+      'B3': [[-4.0435, 39.6682], [-3.2138, 40.1169]],
+      'C77': [[-1.2921, 36.8219], [-2.7333, 36.7833]],
+    };
+
+    const routeColors: Record<string, string> = {
+      'A1': '#e53935', 'A2': '#1e88e5', 'A3': '#43a047',
+      'A104': '#fb8c00', 'B3': '#8e24aa', 'C77': '#00897b'
+    };
+
+    Object.entries(routeCoords).forEach(([id, coords]) => {
+      const routeInfo = MAJOR_ROUTES.find(r => r.id === id);
+      L.polyline(coords, { color: routeColors[id] || '#333', weight: 4, opacity: 0.8 })
+        .bindPopup(`<strong>${routeInfo?.name || id}</strong><br/>${routeInfo?.description || ''}`)
+        .addTo(map);
+    });
+
+    // Add vendor markers
+    const vendorLocations: { lat: number; lng: number; name: string; route: string }[] = [
+      { lat: -1.5177, lng: 37.2634, name: 'Machakos Fresh Produce', route: 'A1' },
+      { lat: -1.4504, lng: 36.9570, name: 'Athi River Grain Store', route: 'A1' },
+      { lat: -0.3031, lng: 36.0800, name: 'Nakuru Dairy Hub', route: 'A2' },
+      { lat: -1.0396, lng: 37.0693, name: 'Thika Pineapple Vendors', route: 'A104' },
+    ];
+
+    vendorLocations.forEach(v => {
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="background:#43a047;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);">🏪</div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+      L.marker([v.lat, v.lng], { icon })
+        .bindPopup(`<strong>${v.name}</strong><br/>Route: ${v.route}`)
+        .addTo(map);
+    });
+
+    mapInstanceRef.current = map;
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
   }, []);
 
   const fetchData = async () => {
@@ -240,6 +305,34 @@ const RoutesMarketplace: React.FC = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Interactive Map Section */}
+      <section className="container mx-auto px-4 py-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Map className="h-5 w-5 text-primary" />
+              Route Map - Kenya's Major Highways
+            </CardTitle>
+            <Button variant="outline" size="sm" onClick={() => setShowMap(!showMap)}>
+              {showMap ? 'Hide Map' : 'Show Map'}
+            </Button>
+          </CardHeader>
+          {showMap && (
+            <CardContent>
+              <div ref={mapRef} className="w-full h-[400px] rounded-lg border" style={{ zIndex: 1 }} />
+              <div className="flex flex-wrap gap-3 mt-3 text-xs">
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-red-600 inline-block rounded" /> A1 Nairobi-Mombasa</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-blue-600 inline-block rounded" /> A2 Nairobi-Eldoret</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-green-600 inline-block rounded" /> A3 Nairobi-Kisumu</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-orange-500 inline-block rounded" /> A104 Thika Superhighway</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-purple-600 inline-block rounded" /> B3 Coastal Highway</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-teal-600 inline-block rounded" /> C77 Namanga</span>
+              </div>
+            </CardContent>
+          )}
+        </Card>
       </section>
 
       <div className="container mx-auto px-4 py-8">

@@ -146,7 +146,8 @@ function App() {
                  <Route path="/market-demand-hotspot" element={<MarketDemandHotspot />} />
                  <Route path="/commodity-trading" element={<CommodityTrading />} />
                   <Route path="/barter-exchange" element={<BarterExchange />} />
-                   <Route path="/marketplace" element={<MarketplacePage />} />
+                  <Route path="/commodity-trading/barter" element={<BarterExchange />} />
+                    <Route path="/marketplace" element={<MarketplacePage />} />
                    <Route path="/marketplace-old" element={<Marketplace />} />
                     <Route path="/agricultural-marketplace" element={<MarketplaceView />} />
                   <Route path="/bulk-orders" element={<BulkOrders />} />
@@ -155,7 +156,8 @@ function App() {
                  <Route path="/community" element={<Community />} />
                  <Route path="/community-forums" element={<CommunityForums />} />
                  <Route path="/city-markets" element={<CityMarkets />} />
-                 <Route path="/farm-inputs-marketplace" element={<FarmInputsMarketplace />} />
+                  <Route path="/farm-inputs-marketplace" element={<FarmInputsMarketplace />} />
+                  <Route path="/farm-inputs" element={<FarmInputsMarketplace />} />
                  <Route path="/export-market" element={<ExportMarket />} />
                  <Route path="/farmer-portal" element={<FarmerPortal />} />
                  <Route path="/equipment-marketplace" element={<EquipmentMarketplace />} />
@@ -173,7 +175,8 @@ function App() {
                   <Route path="/partner-dashboard" element={<PartnerDashboard />} />
                  <Route path="/farmer-exporter-collaboration" element={<FarmerExporterCollaboration />} />
                  <Route path="/exporter-profile" element={<ExporterProfile />} />
-                 <Route path="/farmer-success-stories" element={<FarmerSuccessStories />} />
+                  <Route path="/farmer-success-stories" element={<FarmerSuccessStories />} />
+                  <Route path="/success-stories" element={<FarmerSuccessStories />} />
                  <Route path="/community-forum" element={<CommunityForum />} />
                  <Route path="/transporter-signup" element={<TransporterSignUp />} />
                  <Route path="/service-provider-registration" element={<ServiceProviderRegistration />} />

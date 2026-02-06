@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -47,6 +48,7 @@ const EquipmentMarketplace: React.FC = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [newEquipment, setNewEquipment] = useState({
     equipment_name: '',
@@ -99,6 +101,8 @@ const EquipmentMarketplace: React.FC = () => {
         description: 'Please sign in to add equipment',
         variant: 'destructive'
       });
+      setIsAddDialogOpen(false);
+      navigate('/auth');
       return;
     }
 
@@ -204,14 +208,13 @@ const EquipmentMarketplace: React.FC = () => {
               </div>
             </div>
             
-            {user && (
-              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg">
-                    <Plus className="h-5 w-5 mr-2" />
-                    List Your Equipment
-                  </Button>
-                </DialogTrigger>
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="lg" className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-6 text-lg">
+                  <Plus className="h-5 w-5 mr-2" />
+                  List Your Equipment
+                </Button>
+              </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>List Equipment for Sale or Rent</DialogTitle>
@@ -349,7 +352,6 @@ const EquipmentMarketplace: React.FC = () => {
                   </div>
                 </DialogContent>
               </Dialog>
-            )}
           </div>
         </div>
       </section>

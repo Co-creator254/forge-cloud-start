@@ -34,9 +34,9 @@ const SEARCHABLE_ITEMS: SearchResult[] = [
   // Marketplaces
   { id: 'commodity', title: 'Commodity Trading', description: 'Buy and sell agricultural commodities', type: 'marketplace', route: '/commodity-trading', icon: <Package className="h-5 w-5" />, tags: ['trading', 'crops', 'grains'] },
   { id: 'equipment', title: 'Equipment Marketplace', description: 'Farm equipment for sale and rent', type: 'marketplace', route: '/equipment-marketplace', icon: <Truck className="h-5 w-5" />, tags: ['tractors', 'machinery', 'tools'] },
-  { id: 'farm-inputs', title: 'Farm Inputs', description: 'Seeds, fertilizers, and farming supplies', type: 'marketplace', route: '/farm-inputs', icon: <Leaf className="h-5 w-5" />, tags: ['seeds', 'fertilizer', 'pesticides'] },
+  { id: 'farm-inputs', title: 'Farm Inputs', description: 'Seeds, fertilizers, and farming supplies', type: 'marketplace', route: '/farm-inputs-marketplace', icon: <Leaf className="h-5 w-5" />, tags: ['seeds', 'fertilizer', 'pesticides'] },
   { id: 'bulk-orders', title: 'Bulk Orders', description: 'Group purchasing for better prices', type: 'marketplace', route: '/bulk-orders', icon: <ShoppingCart className="h-5 w-5" />, tags: ['wholesale', 'group buying'] },
-  { id: 'barter', title: 'Barter Exchange', description: 'Exchange products without cash', type: 'marketplace', route: '/commodity-trading/barter', icon: <Package className="h-5 w-5" />, tags: ['exchange', 'trade'] },
+  { id: 'barter', title: 'Barter Exchange', description: 'Exchange products without cash', type: 'marketplace', route: '/barter-exchange', icon: <Package className="h-5 w-5" />, tags: ['exchange', 'trade'] },
   { id: 'export', title: 'Export Market', description: 'International export opportunities', type: 'marketplace', route: '/export-market', icon: <Building2 className="h-5 w-5" />, tags: ['international', 'export'] },
   
   // Services
@@ -47,7 +47,7 @@ const SEARCHABLE_ITEMS: SearchResult[] = [
   // Community
   { id: 'forum', title: 'Community Forum', description: 'Discuss with fellow farmers', type: 'community', route: '/community-forum', icon: <MessageSquare className="h-5 w-5" />, tags: ['discussions', 'questions'] },
   { id: 'cooperatives', title: 'Cooperatives Management', description: 'Manage farmer cooperatives', type: 'community', route: '/cooperatives-management', icon: <Users className="h-5 w-5" />, tags: ['groups', 'sacco'] },
-  { id: 'success-stories', title: 'Success Stories', description: 'Farmer success stories', type: 'community', route: '/success-stories', icon: <Users className="h-5 w-5" />, tags: ['stories', 'testimonials'] },
+  { id: 'success-stories', title: 'Success Stories', description: 'Farmer success stories', type: 'community', route: '/farmer-success-stories', icon: <Users className="h-5 w-5" />, tags: ['stories', 'testimonials'] },
   
   // Events & Training
   { id: 'training', title: 'Training Events', description: 'Agricultural training and workshops', type: 'event', route: '/training-events', icon: <Calendar className="h-5 w-5" />, tags: ['workshops', 'learning'] },
