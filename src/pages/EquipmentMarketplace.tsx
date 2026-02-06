@@ -350,7 +350,6 @@ const EquipmentMarketplace: React.FC = () => {
                   </div>
                 </DialogContent>
               </Dialog>
-            )}
           </div>
         </div>
       </section>
