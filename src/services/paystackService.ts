@@ -107,7 +107,21 @@ export const ADVERTISING_PLANS = {
 };
 
 /**
- * F2C Subscription Box pricing (in KES)
+ * F2C Supplier Lead Fee (in KES)
+ * Charged per supplier/farmer who wants to be listed on the platform.
+ * Farmers do NOT charge their end customers through SokoConnect.
+ * SokoConnect earns from supplier listing fees, not consumer transactions.
+ */
+export const F2C_SUPPLIER_FEE = {
+  id: 'f2c-supplier-listing',
+  name: 'F2C Supplier Listing Fee',
+  amount: 1000,
+  description: 'One-time fee per supplier to list subscription boxes on SokoConnect'
+};
+
+/**
+ * F2C Subscription Box pricing (set by individual farmers, platform does not set prices)
+ * These are reference tiers only - actual prices are farmer-determined.
  */
 export const F2C_PLANS = {
   'f2c-basic': { id: 'f2c-basic', name: 'Basic Box (10kg)', amount: 1500, weight: '10kg' },
@@ -122,3 +136,11 @@ export const F2C_PLANS = {
 export function redirectToPaystack(authorizationUrl: string) {
   window.location.href = authorizationUrl;
 }
+
+/**
+ * SokoConnect Platform Liability Disclaimer
+ */
+export const PLATFORM_DISCLAIMER = {
+  title: 'SokoConnect Platform Disclaimer',
+  message: 'SokoConnect is a marketplace facilitator only. We connect buyers and sellers but are NOT liable for the quality, delivery, or fulfillment of any transaction. All transactions are between willing buyers and willing sellers. Always verify products and sellers before proceeding.',
+};
