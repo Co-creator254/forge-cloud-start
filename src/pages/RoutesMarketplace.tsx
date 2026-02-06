@@ -307,6 +307,34 @@ const RoutesMarketplace: React.FC = () => {
         </div>
       </section>
 
+      {/* Interactive Map Section */}
+      <section className="container mx-auto px-4 py-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Map className="h-5 w-5 text-primary" />
+              Route Map - Kenya's Major Highways
+            </CardTitle>
+            <Button variant="outline" size="sm" onClick={() => setShowMap(!showMap)}>
+              {showMap ? 'Hide Map' : 'Show Map'}
+            </Button>
+          </CardHeader>
+          {showMap && (
+            <CardContent>
+              <div ref={mapRef} className="w-full h-[400px] rounded-lg border" style={{ zIndex: 1 }} />
+              <div className="flex flex-wrap gap-3 mt-3 text-xs">
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-red-600 inline-block rounded" /> A1 Nairobi-Mombasa</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-blue-600 inline-block rounded" /> A2 Nairobi-Eldoret</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-green-600 inline-block rounded" /> A3 Nairobi-Kisumu</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-orange-500 inline-block rounded" /> A104 Thika Superhighway</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-purple-600 inline-block rounded" /> B3 Coastal Highway</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-1 bg-teal-600 inline-block rounded" /> C77 Namanga</span>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      </section>
+
       <div className="container mx-auto px-4 py-8">
         {/* Search & Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
