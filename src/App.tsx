@@ -174,7 +174,8 @@ function App() {
                   <Route path="/partner-dashboard" element={<PartnerDashboard />} />
                  <Route path="/farmer-exporter-collaboration" element={<FarmerExporterCollaboration />} />
                  <Route path="/exporter-profile" element={<ExporterProfile />} />
-                 <Route path="/farmer-success-stories" element={<FarmerSuccessStories />} />
+                  <Route path="/farmer-success-stories" element={<FarmerSuccessStories />} />
+                  <Route path="/success-stories" element={<FarmerSuccessStories />} />
                  <Route path="/community-forum" element={<CommunityForum />} />
                  <Route path="/transporter-signup" element={<TransporterSignUp />} />
                  <Route path="/service-provider-registration" element={<ServiceProviderRegistration />} />
