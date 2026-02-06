@@ -47,7 +47,7 @@ const SEARCHABLE_ITEMS: SearchResult[] = [
   // Community
   { id: 'forum', title: 'Community Forum', description: 'Discuss with fellow farmers', type: 'community', route: '/community-forum', icon: <MessageSquare className="h-5 w-5" />, tags: ['discussions', 'questions'] },
   { id: 'cooperatives', title: 'Cooperatives Management', description: 'Manage farmer cooperatives', type: 'community', route: '/cooperatives-management', icon: <Users className="h-5 w-5" />, tags: ['groups', 'sacco'] },
-  { id: 'success-stories', title: 'Success Stories', description: 'Farmer success stories', type: 'community', route: '/success-stories', icon: <Users className="h-5 w-5" />, tags: ['stories', 'testimonials'] },
+  { id: 'success-stories', title: 'Success Stories', description: 'Farmer success stories', type: 'community', route: '/farmer-success-stories', icon: <Users className="h-5 w-5" />, tags: ['stories', 'testimonials'] },
   
   // Events & Training
   { id: 'training', title: 'Training Events', description: 'Agricultural training and workshops', type: 'event', route: '/training-events', icon: <Calendar className="h-5 w-5" />, tags: ['workshops', 'learning'] },
