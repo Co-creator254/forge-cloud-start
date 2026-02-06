@@ -208,10 +208,47 @@ const F2CMarketplace = () => {
                   <span>Support Farmers</span>
                 </div>
               </div>
-              <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg">
+              <Button 
+                size="lg" 
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg"
+                onClick={async () => {
+                  const { data: { user } } = await supabase.auth.getUser();
+                  if (!user) {
+                    toast({ title: 'Sign In Required', description: 'Please sign in to list your subscription box.', variant: 'destructive' });
+                    navigate('/auth');
+                    return;
+                  }
+                  const response = await initializePaystackPayment({
+                    email: user.email || '',
+                    amount: F2C_SUPPLIER_FEE.amount,
+                    plan_id: F2C_SUPPLIER_FEE.id,
+                    plan_type: 'f2c',
+                    metadata: { user_id: user.id, fee_type: 'supplier_listing' }
+                  });
+                  if (response.success && response.authorization_url) {
+                    redirectToPaystack(response.authorization_url);
+                  } else {
+                    toast({ title: 'Error', description: response.error || 'Failed to process payment', variant: 'destructive' });
+                  }
+                }}
+              >
                 <Plus className="h-5 w-5 mr-2" />
-                Create Your Subscription Box
+                List Your Box (KES {F2C_SUPPLIER_FEE.amount.toLocaleString()} listing fee)
               </Button>
+              <p className="text-sm text-gray-300 mt-3">
+                Farmers pay a one-time KES {F2C_SUPPLIER_FEE.amount.toLocaleString()} listing fee. Customers are <strong>never</strong> charged by SokoConnect.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Platform Disclaimer */}
+        <section className="container px-4 pt-4">
+          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="font-semibold text-sm text-amber-800 dark:text-amber-300">{PLATFORM_DISCLAIMER.title}</p>
+              <p className="text-sm text-amber-700 dark:text-amber-400">{PLATFORM_DISCLAIMER.message}</p>
             </div>
           </div>
         </section>
