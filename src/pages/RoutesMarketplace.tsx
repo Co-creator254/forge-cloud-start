@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -25,12 +25,15 @@ import {
   AlertTriangle,
   Flag,
   Plus,
-  AlertCircle
+  AlertCircle,
+  Map
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { MarketplaceDisclaimer } from '@/components/MarketplaceDisclaimer';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 // Major routes in Kenya
 const MAJOR_ROUTES = [
