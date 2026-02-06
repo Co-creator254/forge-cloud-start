@@ -99,6 +99,8 @@ const EquipmentMarketplace: React.FC = () => {
         description: 'Please sign in to add equipment',
         variant: 'destructive'
       });
+      setIsAddDialogOpen(false);
+      navigate('/auth');
       return;
     }
 
