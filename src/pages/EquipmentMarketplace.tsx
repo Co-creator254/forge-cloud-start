@@ -48,6 +48,7 @@ const EquipmentMarketplace: React.FC = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [newEquipment, setNewEquipment] = useState({
     equipment_name: '',
