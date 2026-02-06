@@ -32,9 +32,9 @@ const navigationItems = [
     icon: Truck,
   },
   {
-    name: 'Equipment Marketplace',
-    href: '/EquipmentMarketplace',
-    icon: Truck, // Use an existing icon for consistency
+    name: 'Equipment',
+    href: '/equipment-marketplace',
+    icon: Truck,
   },
   {
     name: 'Service Providers',
