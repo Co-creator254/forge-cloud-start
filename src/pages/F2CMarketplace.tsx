@@ -12,7 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketplaceImage } from "@/components/MarketplaceImage";
 import { MarketplaceDisclaimer } from "@/components/MarketplaceDisclaimer";
-import { initializePaystackPayment, redirectToPaystack } from "@/services/paystackService";
+import { initializePaystackPayment, redirectToPaystack, F2C_SUPPLIER_FEE, PLATFORM_DISCLAIMER } from "@/services/paystackService";
+import { AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import f2cHeroBg from "@/assets/f2c-hero-bg.png";
 
