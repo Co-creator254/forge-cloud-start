@@ -82,6 +82,9 @@ const RoutesMarketplace: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showMap, setShowMap] = useState(true);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
   
   // Form state for adding new market
   const [newMarket, setNewMarket] = useState({
