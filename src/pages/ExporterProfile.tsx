@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,12 +9,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { createExporterProfile, getExporterProfiles, ExporterProfile } from '@/services/farmerExporterService';
-import { Building2, Globe, Package, CheckCircle } from 'lucide-react';
+import { QRCodeGenerator } from '@/components/qr/QRCodeGenerator';
+import { Building2, Globe, Package, CheckCircle, QrCode } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const ExporterProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [existingProfile, setExistingProfile] = useState<ExporterProfile | null>(null);
+  const [showQR, setShowQR] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     company_name: '',
@@ -131,12 +134,36 @@ const ExporterProfilePage = () => {
   if (existingProfile) {
     return (
       <div className="container py-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Exporter Profile</h1>
-          <p className="text-muted-foreground mt-2">
-            Your exporter profile is active and visible to farmers
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Exporter Profile</h1>
+            <p className="text-muted-foreground mt-2">
+              Your exporter profile is active and visible to farmers
+            </p>
+          </div>
+          <Button 
+            onClick={() => setShowQR(!showQR)}
+            variant={showQR ? "default" : "outline"}
+          >
+            <QrCode className="h-4 w-4 mr-2" />
+            {showQR ? 'Hide QR Code' : 'Trust Passport QR'}
+          </Button>
         </div>
+
+        {/* QR Code Generator */}
+        {showQR && user && (
+          <div className="mb-6">
+            <QRCodeGenerator 
+              userId={user.id}
+              userType="service_provider"
+              profileData={{
+                full_name: existingProfile.company_name,
+                verification_status: 'verified',
+                phone: existingProfile.contact_phone
+              }}
+            />
+          </div>
+        )}
 
         <Card>
           <CardHeader>

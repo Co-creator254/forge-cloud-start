@@ -7,35 +7,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-// Process base64 in chunks to prevent memory issues
-function processBase64Chunks(base64String: string, chunkSize = 32768) {
-  const chunks: Uint8Array[] = [];
-  let position = 0;
-  
-  while (position < base64String.length) {
-    const chunk = base64String.slice(position, position + chunkSize);
-    const binaryChunk = atob(chunk);
-    const bytes = new Uint8Array(binaryChunk.length);
-    
-    for (let i = 0; i < binaryChunk.length; i++) {
-      bytes[i] = binaryChunk.charCodeAt(i);
-    }
-    
-    chunks.push(bytes);
-    position += chunkSize;
-  }
-
-  const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-  const result = new Uint8Array(totalLength);
-  let offset = 0;
-
-  for (const chunk of chunks) {
-    result.set(chunk, offset);
-    offset += chunk.length;
-  }
-
-  return result;
-}
+// Hugging Face API URLs
+const HF_API_URL_ASR = "https://api-inference.huggingface.co/models/facebook/mms-1b-all"; // Massive Multilingual Speech
+const HF_API_URL_TRANSLATION = "https://api-inference.huggingface.co/models/facebook/nllb-200-distilled-600M"; // No Language Left Behind
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -44,43 +18,84 @@ serve(async (req) => {
   }
 
   try {
-    const { audio } = await req.json()
+    const { audio, language, purpose } = await req.json()
     
     if (!audio) {
       throw new Error('No audio data provided')
     }
 
-    console.log("Received audio data for transcription, processing...")
-    
-    // Process audio in chunks
-    const binaryAudio = processBase64Chunks(audio)
-    
-    // Prepare form data
-    const formData = new FormData()
-    const blob = new Blob([binaryAudio], { type: 'audio/webm' })
-    formData.append('file', blob, 'audio.webm')
-    formData.append('model', 'whisper-1')
-    formData.append('language', 'sw') // Default to Swahili but can be made dynamic
-
-    // Send to OpenAI
-    const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-      },
-      body: formData,
-    })
-
-    if (!response.ok) {
-      console.error(`OpenAI API error: ${await response.text()}`)
-      throw new Error(`OpenAI API error: ${response.status}`)
+    const hfToken = Deno.env.get('HUGGING_FACE_API_KEY')
+    if (!hfToken) {
+      throw new Error('Hugging Face API key not configured')
     }
 
-    const result = await response.json()
-    console.log("Transcription successful:", result.text)
+    console.log(`Processing audio request. Language: ${language}, Purpose: ${purpose || 'transcribe'}`)
+
+    // Convert base64 to binary
+    const binaryAudio = Uint8Array.from(atob(audio), c => c.charCodeAt(0))
+
+    // Step 1: Transcribe using MMS-1b-all (supports 1000+ languages including Swahili, Luo, Kikuyu)
+    console.log("Sending to Hugging Face ASR model...")
+    const asrResponse = await fetch(HF_API_URL_ASR, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${hfToken}`,
+        "Content-Type": "audio/flac", // MMS expects raw audio or flac usually, checking docs
+      },
+      body: binaryAudio,
+    });
+
+    if (!asrResponse.ok) {
+        const errorText = await asrResponse.text();
+        console.error(`HF ASR Error: ${errorText}`);
+        throw new Error(`ASR API error: ${asrResponse.status} - ${errorText}`);
+    }
+
+    const asrResult = await asrResponse.json();
+    let transcribedText = asrResult.text || "";
+
+    console.log("Transcription result:", transcribedText);
+
+    let finalText = transcribedText;
+    let translatedText = null;
+
+    // Step 2: Translate if needed (e.g., local dialect to English)
+    // If language is not English/Swahili, or if explicit translation requested
+    if (purpose === 'translate_to_english' && transcribedText) {
+        console.log("Translating to English using NLLB...")
+        const translationResponse = await fetch(HF_API_URL_TRANSLATION, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${hfToken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                inputs: transcribedText,
+                parameters: {
+                    src_lang: "sw_latn", // Defaulting to Swahili as source for now, ideally detected
+                    tgt_lang: "eng_Latn"
+                }
+            }),
+        });
+        
+        if (translationResponse.ok) {
+            const translationResult = await translationResponse.json();
+            // HF Translation API returns array of objects with translation_text
+            if (Array.isArray(translationResult) && translationResult.length > 0) {
+                translatedText = translationResult[0].translation_text;
+                console.log("Translation result:", translatedText);
+            }
+        } else {
+             console.warn(`Translation failed: ${await translationResponse.text()}`);
+        }
+    }
 
     return new Response(
-      JSON.stringify({ text: result.text }),
+      JSON.stringify({ 
+          text: finalText,
+          translated_text: translatedText,
+          detected_language: language || 'unknown' 
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
 

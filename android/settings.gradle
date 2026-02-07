@@ -16,6 +16,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "AgriConnect"
 include ':app'
+apply from: 'capacitor.settings.gradle'
 // Add other modules here if you have them, e.g.:
 // include ':feature-auth'
 // include ':core-network'

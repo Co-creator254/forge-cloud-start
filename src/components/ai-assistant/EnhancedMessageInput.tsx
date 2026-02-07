@@ -20,72 +20,23 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
   const { toast } = useToast();
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+
   const [isTranscribing, setIsTranscribing] = useState(false);
+  const [useEnhancedModel, setUseEnhancedModel] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Focus on input when component mounts
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-    
-    onSendMessage(input);
-    setInput('');
-    
-    // Re-focus on input after sending
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e as unknown as React.FormEvent);
-    }
-  };
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 16000 // Optimal for Whisper
-        }
-      });
-      
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
-      });
-      
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          audioChunksRef.current.push(e.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        setIsTranscribing(true);
-        
-        try {
-          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-          
+  // ... (inside startRecording's onstop) ...
           // Transcribe using Hugging Face Whisper
-          const result = await transcribeAudio(audioBlob);
+          const result = await transcribeAudio(audioBlob, useEnhancedModel);
           
           if (result.text) {
+  // ...
+  
+  // ... (inside handleFileUpload) ...
+    try {
+      const result = await processAudioFile(file, useEnhancedModel);
+      
+      if (result.text) {
             setInput(result.text);
             toast({
               title: "Voice Transcribed",
@@ -245,16 +196,34 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
       />
       
       {/* Status indicators */}
-      {isRecording && (
-        <div className="text-xs text-red-600 animate-pulse">
-          🔴 Recording... Click microphone to stop
+      <div className="flex items-center justify-between text-xs px-1">
+        <div className="flex items-center gap-2">
+            {isRecording && (
+                <span className="text-red-600 animate-pulse font-medium">
+                🔴 Recording...
+                </span>
+            )}
+            {isTranscribing && (
+                <span className="text-blue-600 font-medium">
+                🔄 Transcribing...
+                </span>
+            )}
         </div>
-      )}
-      {isTranscribing && (
-        <div className="text-xs text-blue-600">
-          🔄 Transcribing audio... Please wait
+
+        <div className="flex items-center gap-2">
+            <label htmlFor="enhanced-mode" className="text-muted-foreground cursor-pointer select-none">
+                Enhanced Mode (Dialects)
+            </label>
+            <input
+                id="enhanced-mode"
+                type="checkbox"
+                checked={useEnhancedModel}
+                onChange={(e) => setUseEnhancedModel(e.target.checked)}
+                disabled={isLoading || isRecording || isTranscribing}
+                className="h-3 w-3 rounded border-gray-300 text-primary focus:ring-primary"
+            />
         </div>
-      )}
+      </div>
     </form>
   );
 };

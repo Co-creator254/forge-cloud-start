@@ -103,6 +103,13 @@ import Partners from './pages/Partners';
 import NetworkingPage from './pages/Networking';
 import ResetPassword from './pages/ResetPassword';
 import UpdatePassword from './pages/UpdatePassword';
+import { PublicVerificationProfile } from './pages/PublicVerificationProfile';
+import { FloatingQRScanner } from './components/FloatingQRScanner';
+import { AdminLayout } from './components/admin/AdminLayout';
+import { AdminDashboard } from './components/AdminDashboard';
+import { TableManager } from './components/admin/TableManager';
+import { UserManagement } from './components/admin/UserManagement';
+import { VerificationDashboard } from './components/admin/VerificationDashboard';
 
 function App() {
   return (
@@ -120,6 +127,16 @@ function App() {
                   <Route path="/about" element={<About />} />
                  <Route path="/contact" element={<Contact />} />
                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/verify/:userId" element={<PublicVerificationProfile />} />
+                  
+                  {/* Admin Routes */}
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="users" element={<UserManagement />} />
+                    <Route path="verifications" element={<VerificationDashboard />} />
+                    <Route path="tables/:tableName" element={<TableManager />} />
+                  </Route>
+                  
                  <Route path="/search" element={<SearchResultsPage />} />
                  <Route path="/logistics" element={<Logistics />} />
                  <Route path="/farm-input-marketplace" element={<FarmInputMarketplace />} />
@@ -217,6 +234,7 @@ function App() {
               <Toaster />
               <ScrollToTop />
               <ScrollToTopButton />
+              <FloatingQRScanner />
               <BottomNav />
            </AuthProvider>
          </div>
