@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AgriConnect"
+rootProject.name = "SokoConnect"
 include ':app'
 apply from: 'capacitor.settings.gradle'
 // Add other modules here if you have them, e.g.:

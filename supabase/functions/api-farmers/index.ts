@@ -17,14 +17,12 @@ serve(async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Authenticate the request
     const auth = await authenticateRequest(req)
     if (!auth.valid) {
       await logApiUsage('', '', '/api/v1/farmers', req.method, 401, Date.now() - startTime, req)
       return createErrorResponse(auth.error || 'Unauthorized', 401)
     }
 
-    // Check rate limits
     const rateLimit = await checkRateLimit(auth.user_id!, auth.subscription_type!)
     if (!rateLimit.allowed) {
       await logApiUsage(auth.user_id!, auth.api_key_id!, '/api/v1/farmers', req.method, 429, Date.now() - startTime, req)
@@ -40,7 +38,7 @@ serve(async (req: Request): Promise<Response> => {
     const limit = parseInt(url.searchParams.get('limit') || '50')
     const offset = parseInt(url.searchParams.get('offset') || '0')
 
-    // Build query based on subscription level
+    // Always select the full set of columns
     let query = supabase.from('profiles').select(`
       id,
       full_name,
@@ -51,27 +49,12 @@ serve(async (req: Request): Promise<Response> => {
       created_at
     `).eq('role', 'farmer')
 
-    // Apply subscription-based filters
+    // Apply subscription-based limits only
     if (auth.subscription_type === 'free') {
-      // Free tier: Limited data, no contact info
-      query = supabase.from('profiles').select(`
-        id,
-        full_name,
-        county,
-        created_at
-      `).eq('role', 'farmer').limit(10)
+      query = query.limit(10)
     } else if (auth.subscription_type === 'developer') {
-      // Developer tier: More data, limited contact info
-      query = supabase.from('profiles').select(`
-        id,
-        full_name,
-        county,
-        email,
-        role,
-        created_at
-      `).eq('role', 'farmer').limit(100)
+      query = query.limit(100)
     }
-    // Enterprise gets full access
 
     if (county) {
       query = query.ilike('county', `%${county}%`)
@@ -88,7 +71,7 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     // Transform data based on subscription
-    const transformedData = farmers?.map(farmer => {
+    const transformedData = farmers?.map((farmer: any) => {
       const baseData = {
         id: farmer.id,
         name: farmer.full_name,
@@ -111,7 +94,6 @@ serve(async (req: Request): Promise<Response> => {
         }
       }
 
-      // Enterprise tier gets everything
       return {
         ...baseData,
         email: farmer.email,
@@ -138,7 +120,7 @@ serve(async (req: Request): Promise<Response> => {
       }
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('API error:', error)
     return createErrorResponse('Internal server error', 500)
   }

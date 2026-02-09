@@ -1,6 +1,6 @@
 import React from 'react';
 import RoleBasedLayout from '@/components/RoleBasedLayout';
-import AdminDashboard from '@/components/AdminDashboard';
+import { AdminDashboard } from '@/components/AdminDashboard';
 import ValidatedForm from '@/components/ValidatedForm';
 import { addCityMarketProduct } from '@/services/cityMarketService';
 
@@ -24,7 +24,7 @@ const MainApp: React.FC = () => {
     <RoleBasedLayout
       role={role as 'admin' | 'agent' | 'user'}
       user={user as any}
-      admin={<AdminDashboard isAdmin={role === 'admin'} />}
+      admin={<AdminDashboard />}
       agent={
         <ValidatedForm
           fields={productFields}

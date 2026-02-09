@@ -1,5 +1,4 @@
-
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { SendIcon, Loader2, Mic, MicOff, Upload } from 'lucide-react';
@@ -20,23 +19,43 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
   const { toast } = useToast();
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
-
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [useEnhancedModel, setUseEnhancedModel] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // ... (inside startRecording's onstop) ...
-          // Transcribe using Hugging Face Whisper
-          const result = await transcribeAudio(audioBlob, useEnhancedModel);
-          
-          if (result.text) {
-  // ...
-  
-  // ... (inside handleFileUpload) ...
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    onSendMessage(input.trim());
+    setInput('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  const startRecording = async () => {
     try {
-      const result = await processAudioFile(file, useEnhancedModel);
-      
-      if (result.text) {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      const chunks: BlobPart[] = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        chunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        setIsTranscribing(true);
+        try {
+          const result = await transcribeAudio(audioBlob, useEnhancedModel);
+          if (result.text) {
             setInput(result.text);
             toast({
               title: "Voice Transcribed",
@@ -54,7 +73,6 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
           });
         } finally {
           setIsTranscribing(false);
-          // Stop all tracks
           stream.getTracks().forEach(track => track.stop());
         }
       };
@@ -103,7 +121,7 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
     setIsTranscribing(true);
     
     try {
-      const result = await processAudioFile(file);
+      const result = await processAudioFile(file, useEnhancedModel);
       
       if (result.text) {
         setInput(result.text);
@@ -120,7 +138,6 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
       });
     } finally {
       setIsTranscribing(false);
-      // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -146,7 +163,6 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
           disabled={isLoading || isRecording || isTranscribing}
         />
         <div className="flex flex-col gap-2">
-          {/* Voice Recording Button */}
           <Button 
             type="button" 
             size="icon" 
@@ -158,7 +174,6 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
             {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
           </Button>
           
-          {/* File Upload Button */}
           <Button 
             type="button" 
             size="icon" 
@@ -170,7 +185,6 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
             {isTranscribing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
           </Button>
           
-          {/* Send Button */}
           <Button 
             type="submit" 
             size="icon" 
@@ -186,7 +200,6 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
         </div>
       </div>
       
-      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
@@ -195,7 +208,6 @@ export const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
         className="hidden"
       />
       
-      {/* Status indicators */}
       <div className="flex items-center justify-between text-xs px-1">
         <div className="flex items-center gap-2">
             {isRecording && (

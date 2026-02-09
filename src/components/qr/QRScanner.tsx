@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import CryptoJS from 'crypto-js';
+import React, { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ScanLine, X } from 'lucide-react';
+import { ScanLine, X, Camera } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
 
 interface QRScannerProps {
   onScanComplete?: (userId: string, points: number) => void;
@@ -15,6 +13,10 @@ interface QRScannerProps {
 
 export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
   const [scanning, setScanning] = useState(false);
+  const [manualInput, setManualInput] = useState('');
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -25,49 +27,56 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
     return signature === expectedSignature;
   };
 
-  const startScan = async () => {
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
+  const startWebScan = async () => {
     try {
-      // Request camera permission
-      const status = await BarcodeScanner.checkPermission({ force: true });
-
-      if (!status.granted) {
-        toast({
-          title: 'Camera Permission Required',
-          description: 'Please grant camera access to scan QR codes',
-          variant: 'destructive'
-        });
-        return;
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      streamRef.current = stream;
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
       }
-
-      // Hide background
-      document.querySelector('body')?.classList.add('scanner-active');
+      
       setScanning(true);
-
-      // Start scanning
-      const result = await BarcodeScanner.startScan();
-
-      if (result.hasContent) {
-        await processQRCode(result.content);
-        
-        // Haptic feedback on successful scan
-        await Haptics.impact({ style: ImpactStyle.Medium });
-      }
-    } catch (error) {
-      console.error('Error scanning QR code:', error);
+      
       toast({
-        title: 'Scan Failed',
-        description: 'Could not scan QR code. Please try again.',
+        title: 'Camera Active',
+        description: 'Point at a QR code or paste QR data below',
+      });
+    } catch (error) {
+      console.error('Camera error:', error);
+      toast({
+        title: 'Camera Unavailable',
+        description: 'You can paste QR code data manually instead.',
         variant: 'destructive'
       });
-    } finally {
-      stopScan();
+      setScanning(true); // Still show manual input
     }
   };
 
   const stopScan = () => {
-    BarcodeScanner.stopScan();
-    document.querySelector('body')?.classList.remove('scanner-active');
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
     setScanning(false);
+  };
+
+  const handleManualSubmit = () => {
+    if (manualInput.trim()) {
+      processQRCode(manualInput.trim());
+      setManualInput('');
+    }
   };
 
   const processQRCode = async (content: string) => {
@@ -78,7 +87,6 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
         throw new Error('Invalid QR code format');
       }
 
-      // Verify signature
       const dataString = JSON.stringify(scannedData.data);
       const isValid = verifySignature(dataString, scannedData.signature);
 
@@ -93,7 +101,6 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
 
       const { userId, userType, name, verified } = scannedData.data;
       
-      // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -105,7 +112,6 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
         return;
       }
 
-      // Prevent self-scanning
       if (userId === user.id) {
         toast({
           title: 'Cannot Scan Own QR',
@@ -115,10 +121,8 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
         return;
       }
 
-      // Create scan nonce (unique ID)
       const scanNonce = `${user.id}-${userId}-${Date.now()}-${Math.random()}`;
 
-      // Get QR code ID
       const { data: qrCode } = await supabase
         .from('qr_codes')
         .select('id')
@@ -130,7 +134,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
         throw new Error('QR code not found in database');
       }
 
-      // Check rate limiting (max 1 scan per QR per day per user)
+      // Rate limit: 1 scan per QR per day
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
       const { data: recentScans } = await supabase
         .from('qr_scans')
@@ -145,24 +149,24 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
           description: 'You can only scan each QR code once per day',
           variant: 'destructive'
         });
+        // Still navigate to profile
+        navigate(`/verify/${userId}`);
         return;
       }
 
-      // Record scan
       const { error: scanError } = await supabase
         .from('qr_scans')
         .insert({
           qr_code_id: qrCode.id,
           scanned_by_user_id: user.id,
           scan_nonce: scanNonce,
-signature_valid: isValid,
+          signature_valid: isValid,
           points_awarded: 1,
           device_fingerprint: navigator.userAgent
         });
 
       if (scanError) throw scanError;
 
-      // Award trust points using the database function
       const { error: pointsError } = await supabase.rpc('award_trust_points', {
         p_user_id: userId,
         p_points: 1,
@@ -175,15 +179,14 @@ signature_valid: isValid,
         console.error('Error awarding points:', pointsError);
       }
 
-      // Success
       toast({
         title: 'QR Code Scanned! ✅',
-        description: `${name} earned 1 trust point. View their ${verified ? 'verified' : 'unverified'} profile?`,
-        action: {
-          label: 'View Profile',
-          onClick: () => navigate(`/verify/${userId}`)
-        }
+        description: `${name} earned 1 trust point!`,
       });
+
+      // Navigate to verification profile
+      stopScan();
+      navigate(`/verify/${userId}`);
 
       if (onScanComplete) {
         onScanComplete(userId, 1);
@@ -193,7 +196,7 @@ signature_valid: isValid,
       console.error('Error processing QR code:', error);
       toast({
         title: 'Processing Failed',
-        description: 'Could not process QR code data',
+        description: 'Could not process QR code data. Make sure it\'s a valid SokoConnect QR.',
         variant: 'destructive'
       });
     }
@@ -208,11 +211,11 @@ signature_valid: isValid,
             <div>
               <h3 className="text-lg font-semibold">Scan Trust Passport</h3>
               <p className="text-sm text-muted-foreground">
-                Scan a farmer's QR code to verify their profile and award trust points
+                Scan a farmer's or provider's QR code to verify their profile and award trust points
               </p>
             </div>
-            <Button onClick={startScan} size="lg" className="w-full">
-              <ScanLine className="h-5 w-5 mr-2" />
+            <Button onClick={startWebScan} size="lg" className="w-full">
+              <Camera className="h-5 w-5 mr-2" />
               Start Scanning
             </Button>
             <p className="text-xs text-muted-foreground">
@@ -221,18 +224,42 @@ signature_valid: isValid,
           </div>
         </Card>
       ) : (
-        <div className="fixed inset-0 z-50 bg-black flex flex-col">
-          <div className="flex-1 relative">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-64 h-64 border-4 border-white rounded-lg"></div>
+        <div className="fixed inset-0 z-50 bg-background flex flex-col">
+          <div className="flex-1 relative overflow-hidden">
+            <video 
+              ref={videoRef} 
+              className="w-full h-full object-cover"
+              playsInline
+              muted
+            />
+            <canvas ref={canvasRef} className="hidden" />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-64 h-64 border-4 border-primary rounded-lg opacity-70" />
             </div>
             <div className="absolute top-4 left-0 right-0 text-center">
-              <p className="text-white text-lg font-semibold">
+              <p className="text-foreground text-lg font-semibold bg-background/80 inline-block px-4 py-2 rounded-full">
                 Point camera at QR code
               </p>
             </div>
           </div>
-          <div className="p-6">
+          
+          {/* Manual paste input */}
+          <div className="p-4 bg-background border-t space-y-3">
+            <p className="text-sm text-muted-foreground text-center">
+              Or paste QR data manually:
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={manualInput}
+                onChange={(e) => setManualInput(e.target.value)}
+                placeholder='Paste QR code JSON data...'
+                className="flex-1 px-3 py-2 border rounded-md text-sm bg-background"
+              />
+              <Button onClick={handleManualSubmit} disabled={!manualInput.trim()}>
+                Submit
+              </Button>
+            </div>
             <Button 
               onClick={stopScan} 
               variant="destructive" 
@@ -245,13 +272,6 @@ signature_valid: isValid,
           </div>
         </div>
       )}
-
-      <style>{`
-        .scanner-active {
-          --background: 0 0% 0% !important;
-          --foreground: 0 0% 100% !important;
-        }
-      `}</style>
     </>
   );
 };
