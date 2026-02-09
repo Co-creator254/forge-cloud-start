@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.52.0";
-import * as crypto from "https://deno.land/std@0.168.0/crypto/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -37,7 +36,7 @@ interface PaystackEvent {
 
 async function verifyWebhookSignature(payload: string, signature: string, secret: string): Promise<boolean> {
   const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
+  const key = await globalThis.crypto.subtle.importKey(
     "raw",
     encoder.encode(secret),
     { name: "HMAC", hash: "SHA-512" },
@@ -45,7 +44,7 @@ async function verifyWebhookSignature(payload: string, signature: string, secret
     ["sign"]
   );
   
-  const signatureBytes = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
+  const signatureBytes = await globalThis.crypto.subtle.sign("HMAC", key, encoder.encode(payload));
   const computedSignature = Array.from(new Uint8Array(signatureBytes))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
@@ -54,7 +53,6 @@ async function verifyWebhookSignature(payload: string, signature: string, secret
 }
 
 serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -73,11 +71,9 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // Get raw body and signature
     const payload = await req.text();
     const signature = req.headers.get("x-paystack-signature") || "";
 
-    // Verify webhook signature
     const isValid = await verifyWebhookSignature(payload, signature, PAYSTACK_WEBHOOK_SECRET);
     if (!isValid) {
       console.error("Invalid webhook signature");
@@ -92,17 +88,15 @@ serve(async (req) => {
 
     switch (event.event) {
       case "charge.success": {
-        // Payment was successful
         const { reference, amount, customer, metadata } = event.data;
         
         if (metadata?.subscription_type && metadata?.user_id) {
-          // Update F2C subscription
           const { error } = await supabase
             .from("f2c_subscriptions")
             .update({
               payment_status: "paid",
               payment_reference: reference,
-              amount_paid: amount / 100, // Paystack sends amount in kobo
+              amount_paid: amount / 100,
               status: "active",
               is_active: true,
               start_date: new Date().toISOString(),
@@ -117,13 +111,11 @@ serve(async (req) => {
           }
         }
 
-        // Log the payment
         console.log(`Payment successful: ${reference}, Amount: ${amount / 100} ${event.data.currency}`);
         break;
       }
 
       case "subscription.create": {
-        // New subscription created
         const { subscription_code, customer, plan, metadata } = event.data;
         
         console.log(`New subscription created: ${subscription_code} for ${customer.email}`);
@@ -146,12 +138,10 @@ serve(async (req) => {
       }
 
       case "subscription.disable": {
-        // Subscription was cancelled
         const { subscription_code, customer } = event.data;
         
         console.log(`Subscription cancelled: ${subscription_code} for ${customer.email}`);
         
-        // Deactivate the subscription
         const { error } = await supabase
           .from("f2c_subscriptions")
           .update({
@@ -167,7 +157,6 @@ serve(async (req) => {
       }
 
       case "subscription.not_renew": {
-        // Subscription renewal failed
         const { subscription_code } = event.data;
         
         console.log(`Subscription renewal failed: ${subscription_code}`);
@@ -195,9 +184,9 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Webhook error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

@@ -14,6 +14,122 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_placements: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          max_ads: number
+          page_route: string
+          position: string
+          slot_label: string
+          slot_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_ads?: number
+          page_route: string
+          position?: string
+          slot_label: string
+          slot_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_ads?: number
+          page_route?: string
+          position?: string
+          slot_label?: string
+          slot_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ad_slot_assignments: {
+        Row: {
+          advertisement_id: string
+          created_at: string
+          display_order: number
+          end_date: string | null
+          id: string
+          is_active: boolean
+          slot_id: string
+          start_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          advertisement_id: string
+          created_at?: string
+          display_order?: number
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          slot_id: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          advertisement_id?: string
+          created_at?: string
+          display_order?: number
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          slot_id?: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_slot_assignments_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "ad_placements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_user_id: string
+          changes: Json | null
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          record_id: string | null
+          table_name: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          admin_user_id: string
+          changes?: Json | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          record_id?: string | null
+          table_name: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string
+          changes?: Json | null
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          record_id?: string | null
+          table_name?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       agricultural_events: {
         Row: {
           contact_info: Json
@@ -4673,6 +4789,95 @@ export type Database = {
         }
         Relationships: []
       }
+      qr_codes: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          qr_data: string
+          qr_image_url: string | null
+          signature: string
+          updated_at: string | null
+          user_id: string
+          version: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          qr_data: string
+          qr_image_url?: string | null
+          signature: string
+          updated_at?: string | null
+          user_id: string
+          version?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          qr_data?: string
+          qr_image_url?: string | null
+          signature?: string
+          updated_at?: string | null
+          user_id?: string
+          version?: number | null
+        }
+        Relationships: []
+      }
+      qr_scans: {
+        Row: {
+          created_at: string | null
+          device_fingerprint: string | null
+          id: string
+          points_awarded: number | null
+          qr_code_id: string
+          scan_lat: number | null
+          scan_lng: number | null
+          scan_location: string | null
+          scan_nonce: string
+          scanned_at: string | null
+          scanned_by_user_id: string | null
+          signature_valid: boolean
+        }
+        Insert: {
+          created_at?: string | null
+          device_fingerprint?: string | null
+          id?: string
+          points_awarded?: number | null
+          qr_code_id: string
+          scan_lat?: number | null
+          scan_lng?: number | null
+          scan_location?: string | null
+          scan_nonce: string
+          scanned_at?: string | null
+          scanned_by_user_id?: string | null
+          signature_valid: boolean
+        }
+        Update: {
+          created_at?: string | null
+          device_fingerprint?: string | null
+          id?: string
+          points_awarded?: number | null
+          qr_code_id?: string
+          scan_lat?: number | null
+          scan_lng?: number | null
+          scan_location?: string | null
+          scan_nonce?: string
+          scanned_at?: string | null
+          scanned_by_user_id?: string | null
+          signature_valid?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qr_scans_qr_code_id_fkey"
+            columns: ["qr_code_id"]
+            isOneToOne: false
+            referencedRelation: "qr_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipients: {
         Row: {
           capacity_description: string | null
@@ -5518,6 +5723,75 @@ export type Database = {
         }
         Relationships: []
       }
+      trust_point_transactions: {
+        Row: {
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          points_change: number
+          previous_hash: string | null
+          reference_id: string | null
+          transaction_hash: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          points_change: number
+          previous_hash?: string | null
+          reference_id?: string | null
+          transaction_hash: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          points_change?: number
+          previous_hash?: string | null
+          reference_id?: string | null
+          transaction_hash?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trust_points: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_earned_at: string | null
+          level: string | null
+          previous_transaction_hash: string | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_earned_at?: string | null
+          level?: string | null
+          previous_transaction_hash?: string | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_earned_at?: string | null
+          level?: string | null
+          previous_transaction_hash?: string | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           granted_at: string | null
@@ -5838,6 +6112,16 @@ export type Database = {
       }
     }
     Functions: {
+      award_trust_points: {
+        Args: {
+          p_metadata?: Json
+          p_points: number
+          p_reference_id?: string
+          p_transaction_type: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       calculate_carbon_footprint: { Args: { p_user_id: string }; Returns: Json }
       calculate_cooperative_dividends: {
         Args: {
@@ -5851,6 +6135,7 @@ export type Database = {
       calculate_farm_statistics: { Args: { p_user_id: string }; Returns: Json }
       calculate_inventory_alerts: { Args: { p_user_id: string }; Returns: Json }
       calculate_loan_interest: { Args: { p_loan_id: string }; Returns: Json }
+      calculate_trust_level: { Args: { points: number }; Returns: string }
       cleanup_expired_bluetooth_data: { Args: never; Returns: undefined }
       cleanup_old_training_events: { Args: never; Returns: undefined }
       generate_batch_number: {

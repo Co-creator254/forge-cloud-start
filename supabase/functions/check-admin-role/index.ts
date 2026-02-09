@@ -57,10 +57,10 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Check admin role error:', error);
     return new Response(
-      JSON.stringify({ isAdmin: false, error: error.message }),
+      JSON.stringify({ isAdmin: false, error: (error as Error).message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

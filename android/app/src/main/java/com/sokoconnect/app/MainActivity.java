@@ -1,4 +1,4 @@
-package com.agriconnect.app;
+package com.sokoconnect.app;
 
 import com.getcapacitor.BridgeActivity;
 

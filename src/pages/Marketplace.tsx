@@ -15,7 +15,8 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import marketplaceBg from '@/assets/marketplace-bg.png';
+import { AdCarousel } from '@/components/ads/AdCarousel';
+import marketplaceHeroBg from '@/assets/marketplace-hero-bg.jpg';
 
 const Marketplace: React.FC = () => {
   const navigate = useNavigate();
@@ -86,20 +87,19 @@ const Marketplace: React.FC = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section with Background */}
+      {/* Hero Section with Real Background Image */}
       <section 
-        className="relative bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-16"
+        className="relative text-white py-20"
         style={{
-          backgroundImage: `linear-gradient(rgba(22, 163, 74, 0.9), rgba(22, 163, 74, 0.85)), url(${marketplaceBg})`,
+          backgroundImage: `linear-gradient(rgba(22, 101, 52, 0.85), rgba(22, 101, 52, 0.75)), url(${marketplaceHeroBg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">GLOBAL AGRICULTURAL MARKETPLACE</h1>
-          <p className="text-lg mb-4">Export Marketplace | Contract Farming | Farm Input | Equipment Marketplace | Commodity Trading</p>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Your Hub for Global Agri-Commerce - Connect farmers, suppliers, and buyers worldwide
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">Agricultural Marketplace</h1>
+          <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90">
+            Your one-stop platform for buying, selling, and trading agricultural products, equipment, and services across Kenya and beyond.
           </p>
           <div className="flex justify-center gap-4">
             <Button size="lg" variant="secondary" onClick={() => navigate('/auth')}>
@@ -109,6 +109,16 @@ const Marketplace: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Sponsored Ad Carousel - Between hero and Core Marketplaces */}
+      <div className="container mx-auto px-4 py-4">
+        <AdCarousel slotName="marketplace_between_sections" className="mb-2" />
+      </div>
+
+      {/* Yellow divider line */}
+      <div className="container mx-auto px-4">
+        <div className="h-1.5 bg-yellow-400 rounded-full" />
+      </div>
 
       <div className="container mx-auto px-4 py-16">
         {/* Quick Actions */}
@@ -131,9 +141,9 @@ const Marketplace: React.FC = () => {
           </div>
         </section>
 
-        {/* Marketplace Sections */}
+        {/* Core Marketplaces */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12">Explore Our Marketplaces</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Core Marketplaces</h2>
           <div className="grid lg:grid-cols-2 gap-8">
             {marketplaces.map((marketplace, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
@@ -202,11 +212,11 @@ const Marketplace: React.FC = () => {
               <div className="text-muted-foreground">Total Trade Value</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">150K+</div>
+              <div className="text-4xl font-bold text-primary mb-2">150K+</div>
               <div className="text-muted-foreground">Active Listings</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">95%</div>
+              <div className="text-4xl font-bold text-primary mb-2">95%</div>
               <div className="text-muted-foreground">Successful Transactions</div>
             </div>
           </div>
@@ -229,7 +239,7 @@ const Marketplace: React.FC = () => {
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="bg-transparent border-white text-white hover:bg-white hover:text-primary"
+                  className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
                   onClick={() => navigate('/market-insights')}
                 >
                   View Market Data
