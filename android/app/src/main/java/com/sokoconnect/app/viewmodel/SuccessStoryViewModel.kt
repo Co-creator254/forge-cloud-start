@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sokoconnect.app.data.model.SuccessStory
 import com.sokoconnect.app.data.repository.SuccessStoryRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -46,3 +46,4 @@ class SuccessStoryViewModel(
         }
     }
 } 
+

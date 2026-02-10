@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sokoconnect.app.data.model.Donation
 import com.sokoconnect.app.data.model.DonationRequest
 import com.sokoconnect.app.data.repository.DonationRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -59,3 +59,4 @@ class DonationViewModel(
         }
     }
 } 
+

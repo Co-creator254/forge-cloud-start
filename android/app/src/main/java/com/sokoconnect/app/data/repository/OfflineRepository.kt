@@ -9,41 +9,45 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
+import com.sokoconnect.app.data.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
+class OfflineRepository(private val context: Context? = null) {
+    fun fetch(): kotlinx.coroutines.flow.Flow<Result<List<Any>>> = kotlinx.coroutines.flow.flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(emptyList()))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
+
+    fun saveData(data: OfflineData): Flow<Result<OfflineData>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(data))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
+
+    fun loadData(): Flow<Result<List<OfflineData>>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(emptyList()))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
+
+    fun clearCache(): Flow<Result<Unit>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(Unit))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
 }
 
-class OfflineRepository(private val context: Context) {
-    private val cacheFile = File(context.cacheDir, "offline_data.json")
-
-    suspend fun saveData(data: OfflineData): Result<Unit> = try {
-        withContext(Dispatchers.IO) {
-            cacheFile.writeText(Json.encodeToString(data))
-        }
-        Result.Success(Unit)
-    } catch (e: Exception) {
-        Result.Error(e)
-    }
-
-    suspend fun loadData(): Result<OfflineData?> = try {
-        val data = withContext(Dispatchers.IO) {
-            if (cacheFile.exists()) {
-                Json.decodeFromString<OfflineData>(cacheFile.readText())
-            } else null
-        }
-        Result.Success(data)
-    } catch (e: Exception) {
-        Result.Error(e)
-    }
-
-    suspend fun clearCache(): Result<Unit> = try {
-        withContext(Dispatchers.IO) {
-            if (cacheFile.exists()) cacheFile.delete()
-        }
-        Result.Success(Unit)
-    } catch (e: Exception) {
-        Result.Error(e)
-    }
-} 

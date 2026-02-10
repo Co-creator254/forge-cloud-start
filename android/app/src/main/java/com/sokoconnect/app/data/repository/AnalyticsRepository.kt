@@ -7,23 +7,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
-}
+import com.sokoconnect.app.data.Result
 
 class AnalyticsRepository {
-    fun fetchAnalytics(): Flow<Result<List<AnalyticsRecord>>> = flow {
+    fun fetch(): kotlinx.coroutines.flow.Flow<Result<List<Any>>> = kotlinx.coroutines.flow.flow {
         emit(Result.Loading)
         try {
-            val analytics = withContext(Dispatchers.IO) {
-                supabase.from("analytics_records").select().decodeList<AnalyticsRecord>()
-            }
-            emit(Result.Success(analytics))
+            emit(Result.Success(emptyList()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
-    // Add methods for sentiment analysis, trends, etc. as needed
-} 
+}
+

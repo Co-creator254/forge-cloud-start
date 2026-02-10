@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sokoconnect.app.data.model.*
 import com.sokoconnect.app.data.repository.FarmerPortalRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -41,3 +41,4 @@ class FarmerPortalViewModel(
     }
     // Repeat for crops, animals, inventory, finances, products, buy requests...
 } 
+

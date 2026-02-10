@@ -45,10 +45,7 @@ fun ProductsScreen(
                     ) {
                         items(uiState.products) { product ->
                             ProductCard(
-                                title = product.name,
-                                price = product.price,
-                                imageUrl = product.imageUrl,
-                                category = product.category,
+                                product = product,
                                 onClick = { /* Handle product click */ }
                             )
                         }

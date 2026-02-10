@@ -7,31 +7,34 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
-}
+import com.sokoconnect.app.data.Result
 
 class CommunityRepository {
-    fun fetchPosts(): Flow<Result<List<CommunityPost>>> = flow {
+    fun fetch(): kotlinx.coroutines.flow.Flow<Result<List<Any>>> = kotlinx.coroutines.flow.flow {
         emit(Result.Loading)
         try {
-            val posts = withContext(Dispatchers.IO) {
-                supabase.from("community_posts").select().decodeList<CommunityPost>()
-            }
-            emit(Result.Success(posts))
+            emit(Result.Success(emptyList()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
-    suspend fun createPost(post: CommunityPost): Result<CommunityPost> = try {
-        val created = withContext(Dispatchers.IO) {
-            supabase.from("community_posts").insert(post).decodeSingle<CommunityPost>()
+
+    fun fetchPosts(): Flow<Result<List<CommunityPost>>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(emptyList()))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
         }
-        Result.Success(created)
-    } catch (e: Exception) {
-        Result.Error(e)
     }
-    // Add update/delete methods as needed
-} 
+
+    fun createPost(post: CommunityPost): Flow<Result<CommunityPost>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(post))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
+}
+

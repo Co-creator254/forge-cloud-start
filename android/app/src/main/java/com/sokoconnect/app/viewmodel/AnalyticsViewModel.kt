@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sokoconnect.app.data.model.AnalyticsRecord
 import com.sokoconnect.app.data.repository.AnalyticsRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -32,3 +32,4 @@ class AnalyticsViewModel(
         }
     }
 } 
+

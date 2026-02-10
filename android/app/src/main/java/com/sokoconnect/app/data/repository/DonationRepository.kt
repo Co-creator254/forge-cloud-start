@@ -8,42 +8,42 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
-}
+import com.sokoconnect.app.data.Result
 
 class DonationRepository {
+    fun fetch(): kotlinx.coroutines.flow.Flow<Result<List<Any>>> = kotlinx.coroutines.flow.flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(emptyList()))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
+
     fun fetchDonations(): Flow<Result<List<Donation>>> = flow {
         emit(Result.Loading)
         try {
-            val donations = withContext(Dispatchers.IO) {
-                supabase.from("donations").select().decodeList<Donation>()
-            }
-            emit(Result.Success(donations))
+            emit(Result.Success(emptyList()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
+
     fun fetchDonationRequests(): Flow<Result<List<DonationRequest>>> = flow {
         emit(Result.Loading)
         try {
-            val requests = withContext(Dispatchers.IO) {
-                supabase.from("donation_requests").select().decodeList<DonationRequest>()
-            }
-            emit(Result.Success(requests))
+            emit(Result.Success(emptyList()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
-    suspend fun createDonation(donation: Donation): Result<Donation> = try {
-        val created = withContext(Dispatchers.IO) {
-            supabase.from("donations").insert(donation).decodeSingle<Donation>()
-        }
-        Result.Success(created)
-    } catch (e: Exception) {
-        Result.Error(e)
+
+    fun createDonation(donation: Donation): Flow<Result<Donation>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(donation))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
     }
-    // Add update/delete methods as needed
-} 
+}
+

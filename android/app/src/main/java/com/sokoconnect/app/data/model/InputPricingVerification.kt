@@ -1,5 +1,8 @@
 package com.sokoconnect.app.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class InputPricingVerification(
     val id: String = "",
     val productName: String = "",

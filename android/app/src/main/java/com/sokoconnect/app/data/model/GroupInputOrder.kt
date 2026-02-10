@@ -1,5 +1,8 @@
 package com.sokoconnect.app.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class GroupInputOrder(
     val id: String = "",
     val groupName: String = "",
@@ -9,6 +12,7 @@ data class GroupInputOrder(
     val updatedAt: String = ""
 )
 
+@Serializable
 data class GroupInputOrderItem(
     val id: String = "",
     val productName: String = "",

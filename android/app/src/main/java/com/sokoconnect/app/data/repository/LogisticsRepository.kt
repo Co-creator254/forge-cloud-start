@@ -9,45 +9,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
-}
+import com.sokoconnect.app.data.Result
 
 class LogisticsRepository {
-    fun fetchLogisticsProviders(): Flow<Result<List<LogisticsProvider>>> = flow {
+    fun fetch(): kotlinx.coroutines.flow.Flow<Result<List<Any>>> = kotlinx.coroutines.flow.flow {
         emit(Result.Loading)
         try {
-            val providers = withContext(Dispatchers.IO) {
-                supabase.from("logistics_providers").select().decodeList<LogisticsProvider>()
-            }
-            emit(Result.Success(providers))
+            emit(Result.Success(emptyList()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
-    fun fetchAggregators(): Flow<Result<List<Aggregator>>> = flow {
-        emit(Result.Loading)
-        try {
-            val aggregators = withContext(Dispatchers.IO) {
-                supabase.from("aggregators").select().decodeList<Aggregator>()
-            }
-            emit(Result.Success(aggregators))
-        } catch (e: Exception) {
-            emit(Result.Error(e))
-        }
-    }
-    fun fetchProcessors(): Flow<Result<List<Processor>>> = flow {
-        emit(Result.Loading)
-        try {
-            val processors = withContext(Dispatchers.IO) {
-                supabase.from("processors").select().decodeList<Processor>()
-            }
-            emit(Result.Success(processors))
-        } catch (e: Exception) {
-            emit(Result.Error(e))
-        }
-    }
-    // Add create/update/delete methods as needed for each entity
-} 
+}
+

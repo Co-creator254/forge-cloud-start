@@ -57,10 +57,7 @@ fun NewsScreen(
                             key = { it.id }
                         ) { newsItem ->
                             NewsCard(
-                                title = newsItem.title,
-                                content = newsItem.content,
-                                imageUrl = newsItem.imageUrl,
-                                date = newsItem.createdAt,
+                                news = newsItem,
                                 onClick = { /* Handle news click */ }
                             )
                         }

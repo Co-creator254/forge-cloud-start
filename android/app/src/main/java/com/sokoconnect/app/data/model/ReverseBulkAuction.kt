@@ -1,5 +1,8 @@
 package com.sokoconnect.app.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ReverseBulkAuction(
     val id: String = "",
     val auctionName: String = "",
@@ -9,6 +12,7 @@ data class ReverseBulkAuction(
     val updatedAt: String = ""
 )
 
+@Serializable
 data class ReverseBulkAuctionItem(
     val id: String = "",
     val productName: String = "",

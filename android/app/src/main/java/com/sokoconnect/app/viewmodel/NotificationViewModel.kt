@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sokoconnect.app.data.model.Notification
 import com.sokoconnect.app.data.model.NotificationPreference
 import com.sokoconnect.app.data.repository.NotificationRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -78,3 +78,4 @@ class NotificationViewModel(
         }
     }
 } 
+

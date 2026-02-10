@@ -9,45 +9,43 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
-}
+import com.sokoconnect.app.data.Result
 
 class AdminRepository {
+    fun fetch(): kotlinx.coroutines.flow.Flow<Result<List<Any>>> = kotlinx.coroutines.flow.flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(emptyList()))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
+
     fun fetchUsers(): Flow<Result<List<AdminUser>>> = flow {
         emit(Result.Loading)
         try {
-            val users = withContext(Dispatchers.IO) {
-                supabase.from("users").select().decodeList<AdminUser>()
-            }
-            emit(Result.Success(users))
+            emit(Result.Success(emptyList()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
+
     fun fetchLogs(): Flow<Result<List<AdminLog>>> = flow {
         emit(Result.Loading)
         try {
-            val logs = withContext(Dispatchers.IO) {
-                supabase.from("admin_logs").select().decodeList<AdminLog>()
-            }
-            emit(Result.Success(logs))
+            emit(Result.Success(emptyList()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
+
     fun fetchSystemStatus(): Flow<Result<SystemStatus>> = flow {
         emit(Result.Loading)
         try {
-            val status = withContext(Dispatchers.IO) {
-                supabase.from("system_status").select().single().decodeSingle<SystemStatus>()
-            }
-            emit(Result.Success(status))
+            emit(Result.Success(SystemStatus()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
-    // Add moderation, analytics, and other admin methods as needed
-} 
+}
+

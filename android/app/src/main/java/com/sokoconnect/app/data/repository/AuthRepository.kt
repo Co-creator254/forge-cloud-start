@@ -1,15 +1,10 @@
 package com.sokoconnect.app.data.repository
 
+import com.sokoconnect.app.data.Result
 import com.sokoconnect.app.data.model.UserProfile
 import com.sokoconnect.app.supabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
-}
 
 class AuthRepository {
     suspend fun register(email: String, password: String, fullName: String, role: String = "user"): Result<UserProfile> = try {

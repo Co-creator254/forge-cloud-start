@@ -194,3 +194,67 @@ data class DonationRequest(
     val quantity: Double = 0.0,
     val status: String = "pending"
 )
+@Serializable
+data class Auction(
+    val id: String = "",
+    val itemName: String = "",
+    val startingBid: Double = 0.0,
+    val currentBid: Double = 0.0,
+    val endDate: String = "",
+    val status: String = "active"
+)
+
+@Serializable
+data class AuctionBid(
+    val id: String = "",
+    val auctionId: String = "",
+    val userId: String = "",
+    val bidAmount: Double = 0.0,
+    val timestamp: String = ""
+)
+
+@Serializable
+data class UserProfile(
+    val id: String = "",
+    val fullName: String = "",
+    val email: String = "",
+    val role: String = "user",
+    val imageUrl: String? = null,
+    val bio: String? = null,
+    val createdAt: String = ""
+)
+
+@Serializable
+data class AdminUser(
+    val id: String = "",
+    val username: String = "",
+    val role: String = "",
+    val lastLogin: String = ""
+)
+
+@Serializable
+data class AdminLog(
+    val id: String = "",
+    val action: String = "",
+    val userId: String = "",
+    val timestamp: String = "",
+    val details: String = ""
+)
+
+@Serializable
+data class SystemStatus(
+    val id: String = "",
+    val status: String = "online",
+    val lastChecked: String = "",
+    val uptime: Double = 0.0,
+    val message: String = ""
+)
+
+@Serializable
+data class AnalyticsRecord(
+    val id: String = "",
+    val event: String = "",
+    val userId: String = "",
+    val timestamp: String = "",
+    val data: String = ""
+)

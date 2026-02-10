@@ -18,9 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 @Composable
 fun ReverseBulkAuctionsScreen() {
     val viewModel: ReverseBulkAuctionsViewModel = viewModel()
-    val auctions by viewModel.auctions.collectAsState()
-    val loading by viewModel.loading.collectAsState()
-    val error by viewModel.error.collectAsState()
+    val auctions = viewModel.auctions.collectAsState()
+    val loading = viewModel.loading.collectAsState()
+    val error = viewModel.error.collectAsState()
 
     Scaffold(
         topBar = {
@@ -35,13 +35,13 @@ fun ReverseBulkAuctionsScreen() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (loading) {
+            if (loading.value) {
                 CircularProgressIndicator()
-            } else if (error != null) {
-                Text("Error: $error", color = MaterialTheme.colorScheme.error)
+            } else if (error.value != null) {
+                Text("Error: ${error.value}", color = MaterialTheme.colorScheme.error)
             } else {
                 Text("Bulk Auctions:", style = MaterialTheme.typography.headlineSmall)
-                auctions.forEach { auction ->
+                auctions.value.forEach { auction ->
                     Card(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                         Column(Modifier.padding(8.dp)) {
                             Text("Auction: ${auction.auctionName}")
@@ -53,7 +53,7 @@ fun ReverseBulkAuctionsScreen() {
             }
             Spacer(Modifier.height(16.dp))
             var auctionName by remember { mutableStateOf("") }
-            Button(onClick = { viewModel.createAuction(com.agriconnect.app.data.model.ReverseBulkAuction(auctionName = auctionName)) }, enabled = auctionName.isNotBlank()) {
+            Button(onClick = { viewModel.createAuction(com.sokoconnect.app.data.model.ReverseBulkAuction(auctionName = auctionName)) }, enabled = auctionName.isNotBlank()) {
                 Text("Create New Auction")
             }
             OutlinedTextField(

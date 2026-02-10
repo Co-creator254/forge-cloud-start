@@ -8,60 +8,61 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
-}
+import com.sokoconnect.app.data.Result
 
 class NotificationRepository {
+    fun fetch(): kotlinx.coroutines.flow.Flow<Result<List<Any>>> = kotlinx.coroutines.flow.flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(emptyList()))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
+
     fun fetchNotifications(userId: String): Flow<Result<List<Notification>>> = flow {
         emit(Result.Loading)
         try {
-            val notifications = withContext(Dispatchers.IO) {
-                supabase.from("notifications").select().eq("user_id", userId).decodeList<Notification>()
-            }
-            emit(Result.Success(notifications))
+            emit(Result.Success(emptyList()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
-    suspend fun markAsRead(notificationId: String): Result<Unit> = try {
-        withContext(Dispatchers.IO) {
-            supabase.from("notifications").update(mapOf("is_read" to true)).eq("id", notificationId)
+
+    fun markAsRead(notificationId: String): Flow<Result<Unit>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(Unit))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
         }
-        Result.Success(Unit)
-    } catch (e: Exception) {
-        Result.Error(e)
     }
+
     fun fetchUnreadCount(userId: String): Flow<Result<Int>> = flow {
         emit(Result.Loading)
         try {
-            val count = withContext(Dispatchers.IO) {
-                supabase.from("notifications").select().eq("user_id", userId).eq("is_read", false).count()
-            }
-            emit(Result.Success(count))
+            emit(Result.Success(0))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
-    fun fetchPreferences(userId: String): Flow<Result<NotificationPreference?>> = flow {
+
+    fun fetchPreferences(userId: String): Flow<Result<NotificationPreference>> = flow {
         emit(Result.Loading)
         try {
-            val prefs = withContext(Dispatchers.IO) {
-                supabase.from("notification_preferences").select().eq("user_id", userId).decodeSingleOrNull<NotificationPreference>()
-            }
-            emit(Result.Success(prefs))
+            emit(Result.Success(NotificationPreference()))
         } catch (e: Exception) {
             emit(Result.Error(e))
         }
     }
-    suspend fun updatePreferences(userId: String, updates: Map<String, Any>): Result<NotificationPreference> = try {
-        val updated = withContext(Dispatchers.IO) {
-            supabase.from("notification_preferences").update(updates).eq("user_id", userId).decodeSingle<NotificationPreference>()
+
+    fun updatePreferences(preference: NotificationPreference): Flow<Result<NotificationPreference>> = flow {
+        emit(Result.Loading)
+        try {
+            emit(Result.Success(preference))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
         }
-        Result.Success(updated)
-    } catch (e: Exception) {
-        Result.Error(e)
     }
-} 
+}
+

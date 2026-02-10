@@ -6,6 +6,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.realtime.Realtime
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.sokoconnect.app.BuildConfig
 
 @Singleton
 class SupabaseClient @Inject constructor() {
@@ -16,11 +17,5 @@ class SupabaseClient @Inject constructor() {
         install(Postgrest)
         install(Realtime)
     }
-}
-
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
-    object Loading : Result<Nothing>()
 }
 

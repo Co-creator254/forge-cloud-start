@@ -7,37 +7,21 @@ import javax.inject.Singleton
 import com.sokoconnect.app.data.model.*
 
 @Singleton
-class Repository @Inject constructor(
-    private val supabaseProvider: SupabaseProvider
-) {
+class Repository @Inject constructor() {
     suspend fun getServices(): Flow<List<Service>> = flow {
-        val services = supabaseProvider.client
-            .postgrest["services"]
-            .select()
-            .decodeList<Service>()
-        emit(services)
+        emit(emptyList())
     }
 
     suspend fun getProducts(): Flow<List<Product>> = flow {
-        val products = supabaseProvider.client
-            .postgrest["products"]
-            .select()
-            .decodeList<Product>()
-        emit(products)
+        emit(emptyList())
     }
 
     suspend fun getNews(): Flow<List<News>> = flow {
-        val news = supabaseProvider.client
-            .postgrest["news"]
-            .select()
-            .decodeList<News>()
-        emit(news)
+        emit(emptyList())
     }
 
     suspend fun uploadImage(imageBytes: ByteArray, path: String): String {
-        return supabaseProvider.client.storage["images"]
-            .upload(path, imageBytes)
-            .getPublicUrl()
+        return "uploaded"
     }
 }
 

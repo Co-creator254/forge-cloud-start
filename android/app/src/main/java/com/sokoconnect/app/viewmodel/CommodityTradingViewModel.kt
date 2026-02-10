@@ -6,7 +6,7 @@ import com.sokoconnect.app.data.model.MarketplaceListing
 import com.sokoconnect.app.data.model.BarterTrade
 import com.sokoconnect.app.data.model.MyTrade
 import com.sokoconnect.app.data.repository.CommodityTradingRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -65,3 +65,4 @@ class CommodityTradingViewModel(
 
     // Add create/update/delete methods for each entity as needed, similar to BulkOrderViewModel
 } 
+

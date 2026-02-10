@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sokoconnect.app.data.model.Review
 import com.sokoconnect.app.data.repository.ReviewRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -34,15 +34,17 @@ class ReviewViewModel(
     }
     fun createReview(review: Review) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null, successMessage = null) }
-            when (val result = repository.createReview(review)) {
-                is Result.Success -> {
-                    loadReviews()
-                    _uiState.update { it.copy(successMessage = "Review created successfully", isLoading = false) }
+            repository.createReview(review).collect { result ->
+                when (result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true, error = null, successMessage = null) }
+                    is Result.Success -> {
+                        loadReviews()
+                        _uiState.update { it.copy(successMessage = "Review created successfully", isLoading = false) }
+                    }
+                    is Result.Error -> _uiState.update { it.copy(error = result.exception.message, isLoading = false) }
                 }
-                is Result.Error -> _uiState.update { it.copy(error = result.exception.message, isLoading = false) }
-                else -> {}
             }
         }
     }
 } 
+

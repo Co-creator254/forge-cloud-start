@@ -1,5 +1,8 @@
 package com.sokoconnect.app.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Service(
     val id: String = "",
     val name: String = "",
@@ -8,6 +11,7 @@ data class Service(
     val status: String = ""
 )
 
+@Serializable
 data class Product(
     val id: String = "",
     val name: String = "",
@@ -17,6 +21,7 @@ data class Product(
     val category: String = ""
 )
 
+@Serializable
 data class News(
     val id: String = "",
     val title: String = "",
@@ -25,6 +30,7 @@ data class News(
     val createdAt: String = ""
 )
 
+@Serializable
 data class UiState(
     val isLoading: Boolean = false,
     val error: String? = null,

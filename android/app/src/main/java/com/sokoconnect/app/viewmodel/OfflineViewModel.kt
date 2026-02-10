@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sokoconnect.app.data.model.OfflineData
 import com.sokoconnect.app.data.repository.OfflineRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -23,33 +23,37 @@ class OfflineViewModel(context: Context) : ViewModel() {
 
     fun saveData(data: OfflineData) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null, successMessage = null) }
-            when (val result = repository.saveData(data)) {
-                is Result.Success -> _uiState.update { it.copy(isLoading = false, successMessage = "Data saved for offline use!") }
-                is Result.Error -> _uiState.update { it.copy(error = result.exception.message, isLoading = false) }
-                else -> {}
+            repository.saveData(data).collect { result ->
+                when (result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true, error = null, successMessage = null) }
+                    is Result.Success -> _uiState.update { it.copy(isLoading = false, successMessage = "Data saved for offline use!") }
+                    is Result.Error -> _uiState.update { it.copy(error = result.exception.message, isLoading = false) }
+                }
             }
         }
     }
     fun loadData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
-            when (val result = repository.loadData()) {
-                is Result.Success -> _uiState.update { it.copy(offlineData = result.data, isLoading = false) }
-                is Result.Error -> _uiState.update { it.copy(error = result.exception.message, isLoading = false) }
-                else -> {}
+            repository.loadData().collect { result ->
+                when (result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true, error = null) }
+                    is Result.Success -> _uiState.update { it.copy(isLoading = false) }
+                    is Result.Error -> _uiState.update { it.copy(error = result.exception.message, isLoading = false) }
+                }
             }
         }
     }
     fun clearCache() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null, successMessage = null) }
-            when (val result = repository.clearCache()) {
-                is Result.Success -> _uiState.update { it.copy(isLoading = false, successMessage = "Offline cache cleared!") }
-                is Result.Error -> _uiState.update { it.copy(error = result.exception.message, isLoading = false) }
-                else -> {}
+            repository.clearCache().collect { result ->
+                when (result) {
+                    is Result.Loading -> _uiState.update { it.copy(isLoading = true, error = null, successMessage = null) }
+                    is Result.Success -> _uiState.update { it.copy(isLoading = false, successMessage = "Offline cache cleared!") }
+                    is Result.Error -> _uiState.update { it.copy(error = result.exception.message, isLoading = false) }
+                }
             }
         }
     }
     // Add sync logic as needed
 } 
+

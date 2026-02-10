@@ -15,9 +15,9 @@ import androidx.compose.material3.CircularProgressIndicator
 @Composable
 fun PriceTrendsScreen() {
     val viewModel: PriceTrendsViewModel = viewModel()
-    val trends by viewModel.trends.collectAsState()
-    val loading by viewModel.loading.collectAsState()
-    val error by viewModel.error.collectAsState()
+    val trends = viewModel.trends.collectAsState()
+    val loading = viewModel.loading.collectAsState()
+    val error = viewModel.error.collectAsState()
 
     Scaffold(
         topBar = {
@@ -32,13 +32,13 @@ fun PriceTrendsScreen() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (loading) {
+            if (loading.value) {
                 CircularProgressIndicator()
-            } else if (error != null) {
-                Text("Error: $error", color = MaterialTheme.colorScheme.error)
+            } else if (error.value != null) {
+                Text("Error: ${error.value}", color = MaterialTheme.colorScheme.error)
             } else {
                 Text("Price Trends:", style = MaterialTheme.typography.headlineSmall)
-                trends.forEach { trend ->
+                trends.value.forEach { trend ->
                     Card(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                         Column(Modifier.padding(8.dp)) {
                             Text("Product: ${trend.product}")

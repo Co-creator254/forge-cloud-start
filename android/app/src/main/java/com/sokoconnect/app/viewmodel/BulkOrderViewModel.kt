@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sokoconnect.app.data.model.BulkOrder
 import com.sokoconnect.app.data.model.BulkOrderBid
 import com.sokoconnect.app.data.repository.BulkOrderRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -98,3 +98,4 @@ class BulkOrderViewModel(
 
     // Similar methods for bids (createBid, updateBid, deleteBid) can be added here
 } 
+

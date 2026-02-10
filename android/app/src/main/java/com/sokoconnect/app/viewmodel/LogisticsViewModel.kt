@@ -6,7 +6,7 @@ import com.sokoconnect.app.data.model.LogisticsProvider
 import com.sokoconnect.app.data.model.Aggregator
 import com.sokoconnect.app.data.model.Processor
 import com.sokoconnect.app.data.repository.LogisticsRepository
-import com.sokoconnect.app.data.repository.Result
+import com.sokoconnect.app.data.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -58,3 +58,4 @@ class LogisticsViewModel(
         }
     }
 } 
+

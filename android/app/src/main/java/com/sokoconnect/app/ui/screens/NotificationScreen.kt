@@ -46,7 +46,7 @@ fun NotificationScreen(viewModel: NotificationViewModel, userId: String) {
 }
 
 @Composable
-fun NotificationList(notifications: List<com.agriconnect.app.data.model.Notification>, unreadCount: Int, markAsRead: (String) -> Unit) {
+fun NotificationList(notifications: List<com.sokoconnect.app.data.model.Notification>, unreadCount: Int, markAsRead: (String) -> Unit) {
     Column {
         Text("Unread: $unreadCount", style = MaterialTheme.typography.titleMedium)
         LazyColumn {
@@ -74,7 +74,7 @@ fun NotificationList(notifications: List<com.agriconnect.app.data.model.Notifica
 }
 
 @Composable
-fun NotificationPreferences(preferences: com.agriconnect.app.data.model.NotificationPreference?, userId: String, viewModel: com.agriconnect.app.viewmodel.NotificationViewModel) {
+fun NotificationPreferences(preferences: com.sokoconnect.app.data.model.NotificationPreference?, userId: String, viewModel: com.sokoconnect.app.viewmodel.NotificationViewModel) {
     var emailEnabled by remember { mutableStateOf(preferences?.emailEnabled ?: true) }
     var pushEnabled by remember { mutableStateOf(preferences?.pushEnabled ?: true) }
     Column {
