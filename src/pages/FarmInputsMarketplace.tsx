@@ -201,6 +201,23 @@ const FarmInputsMarketplace: React.FC = () => {
       </section>
 
       <main className="py-12 px-4 md:px-6 max-w-7xl mx-auto">
+        {/* Supplier CTA */}
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold">Are you a farm input supplier?</h2>
+            <p className="text-muted-foreground">List your products here — fertilizers, seeds, pesticides, equipment & more. Reach thousands of farmers across Kenya.</p>
+          </div>
+          {user ? (
+            <Button size="lg" onClick={() => setIsAddDialogOpen(true)}>
+              <Plus className="h-5 w-5 mr-2" /> List Your Product
+            </Button>
+          ) : (
+            <Button size="lg" onClick={() => window.location.href = '/auth'}>
+              Sign In to List Products
+            </Button>
+          )}
+        </div>
+
         {/* Search and Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="flex-1 relative">
