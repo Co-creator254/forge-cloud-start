@@ -4,10 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.sokoconnect.app',
   appName: 'SokoConnect',
   webDir: 'dist',
-  server: {
-    url: 'https://e0faff55-0c76-43f2-ad79-6981b1cd15a5.lovableproject.com?forceHideBadge=true',
-    cleartext: true
-  },
   plugins: {
     BluetoothLe: {
       displayStrings: {
@@ -25,25 +21,9 @@ const config: CapacitorConfig = {
     }
   },
   android: {
-    allowMixedContent: true,
-    permissions: [
-      "android.permission.BLUETOOTH",
-      "android.permission.BLUETOOTH_ADMIN", 
-      "android.permission.ACCESS_COARSE_LOCATION",
-      "android.permission.ACCESS_FINE_LOCATION",
-      "android.permission.CAMERA",
-      "android.permission.READ_EXTERNAL_STORAGE",
-      "android.permission.WRITE_EXTERNAL_STORAGE"
-    ]
+    allowMixedContent: true
   },
   ios: {
-    permissions: [
-      "NSBluetoothAlwaysUsageDescription",
-      "NSBluetoothPeripheralUsageDescription", 
-      "NSLocationWhenInUseUsageDescription",
-      "NSCameraUsageDescription",
-      "NSPhotoLibraryUsageDescription"
-    ]
   }
 };
 
