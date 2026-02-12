@@ -6027,12 +6027,10 @@ export type Database = {
           is_featured: boolean | null
           location: string | null
           model: string | null
-          negotiable: boolean | null
           price: number | null
           rental_option: boolean | null
           rental_price_per_day: number | null
-          seller_id: string | null
-          updated_at: string | null
+          tags: string[] | null
           view_count: number | null
           year_manufactured: number | null
         }
@@ -6051,12 +6049,10 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           model?: string | null
-          negotiable?: boolean | null
           price?: number | null
           rental_option?: boolean | null
           rental_price_per_day?: number | null
-          seller_id?: string | null
-          updated_at?: string | null
+          tags?: string[] | null
           view_count?: number | null
           year_manufactured?: number | null
         }
@@ -6075,12 +6071,10 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           model?: string | null
-          negotiable?: boolean | null
           price?: number | null
           rental_option?: boolean | null
           rental_price_per_day?: number | null
-          seller_id?: string | null
-          updated_at?: string | null
+          tags?: string[] | null
           view_count?: number | null
           year_manufactured?: number | null
         }
@@ -6090,23 +6084,32 @@ export type Database = {
         Row: {
           county: string | null
           created_at: string | null
+          farm_type: string | null
           full_name: string | null
+          location: string | null
+          profile_image_url: string | null
+          specialization: string[] | null
           user_id: string | null
-          user_type: string | null
         }
         Insert: {
           county?: string | null
           created_at?: string | null
+          farm_type?: string | null
           full_name?: string | null
+          location?: string | null
+          profile_image_url?: string | null
+          specialization?: string[] | null
           user_id?: string | null
-          user_type?: string | null
         }
         Update: {
           county?: string | null
           created_at?: string | null
+          farm_type?: string | null
           full_name?: string | null
+          location?: string | null
+          profile_image_url?: string | null
+          specialization?: string[] | null
           user_id?: string | null
-          user_type?: string | null
         }
         Relationships: []
       }

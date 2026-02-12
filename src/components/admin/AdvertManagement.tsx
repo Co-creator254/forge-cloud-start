@@ -52,8 +52,8 @@ const AdvertManagement: React.FC = () => {
     discount: '',
     image_url: '',
     link_url: '',
-    placement: 'marketplace' as const,
-    status: 'active' as const,
+    placement: 'marketplace' as Advertisement['placement'],
+    status: 'active' as Advertisement['status'],
     expires_at: ''
   });
 
