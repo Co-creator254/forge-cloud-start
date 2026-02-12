@@ -26,7 +26,8 @@ import {
   Award,
   MessageSquare,
   Calendar,
-  DollarSign
+  DollarSign,
+  Image as ImageIcon
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -190,6 +191,16 @@ export const AdminLayout: React.FC = () => {
             >
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
+            </Button>
+
+            {/* Advertisements */}
+            <Button
+              variant={location.pathname === '/admin/advertisements' ? 'default' : 'ghost'}
+              className="w-full justify-start"
+              onClick={() => navigate('/admin/advertisements')}
+            >
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Advertisements
             </Button>
 
             <div className="my-4 border-t border-gray-200" />

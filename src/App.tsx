@@ -110,6 +110,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { TableManager } from './components/admin/TableManager';
 import { UserManagement } from './components/admin/UserManagement';
 import { VerificationDashboard } from './components/admin/VerificationDashboard';
+import AdvertManagement from './components/admin/AdvertManagement';
 
 function App() {
   return (
@@ -134,6 +135,7 @@ function App() {
                     <Route index element={<AdminDashboard />} />
                     <Route path="users" element={<UserManagement />} />
                     <Route path="verifications" element={<VerificationDashboard />} />
+                    <Route path="advertisements" element={<AdvertManagement />} />
                     <Route path="tables/:tableName" element={<TableManager />} />
                   </Route>
                   
@@ -182,7 +184,8 @@ function App() {
                  <Route path="/imperfect-surplus-dashboard" element={<ImperfectSurplusDashboard />} />
                  <Route path="/bulk-order-dashboard" element={<BulkOrderDashboard user={{}} />} />
                    <Route path="/donation-form" element={<EnhancedDonationForm />} />
-                   <Route path="/donation-form-simple" element={<DonationFormPage />} />
+                  <Route path="/donation-form-simple" element={<DonationFormPage />} />
+                  <Route path="/donation-list" element={<DonationListPage />} />
                     <Route path="/buy-requests" element={<BuyRequestsPage />} />
                    <Route path="/export-market-opportunities" element={<ExportMarketOpportunities />} />
                    <Route path="/export-opportunities" element={<ExportOpportunities />} />

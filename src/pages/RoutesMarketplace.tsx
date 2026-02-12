@@ -104,7 +104,7 @@ const RoutesMarketplace: React.FC = () => {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Draw major routes on the map
+    // Draw major routes on the map with labels
     const routeCoords: Record<string, [number, number][]> = {
       'A1': [[-1.2921, 36.8219], [-2.5, 37.5], [-4.0435, 39.6682]],
       'A2': [[-1.2921, 36.8219], [-0.3031, 36.0800], [0.5143, 35.2698]],
@@ -121,9 +121,37 @@ const RoutesMarketplace: React.FC = () => {
 
     Object.entries(routeCoords).forEach(([id, coords]) => {
       const routeInfo = MAJOR_ROUTES.find(r => r.id === id);
-      L.polyline(coords, { color: routeColors[id] || '#333', weight: 4, opacity: 0.8 })
-        .bindPopup(`<strong>${routeInfo?.name || id}</strong><br/>${routeInfo?.description || ''}`)
-        .addTo(map);
+      
+      // Create stable polyline with no animation
+      const polyline = L.polyline(coords, { 
+        color: routeColors[id] || '#333', 
+        weight: 6, 
+        opacity: 0.9,
+        smoothFactor: 1,
+        className: 'stable-route'
+      }).addTo(map);
+      
+      // Add route label at midpoint
+      const midIndex = Math.floor(coords.length / 2);
+      const midPoint = coords[midIndex];
+      
+      const routeLabel = L.divIcon({
+        className: 'route-label',
+        html: `<div style="background:${routeColors[id] || '#333'};color:white;border-radius:4px;padding:4px 8px;font-size:12px;font-weight:bold;border:1px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);white-space:nowrap;z-index:1000;position:relative;">${routeInfo?.name || id}</div>`,
+        iconSize: [120, 20],
+        iconAnchor: [60, 10]
+      });
+      
+      L.marker(midPoint, { icon: routeLabel }).addTo(map);
+      
+      // Add popup for route details
+      polyline.bindPopup(`
+        <div style="min-width:200px;">
+          <strong style="color:${routeColors[id] || '#333'}">${routeInfo?.name || id}</strong><br/>
+          <small>${routeInfo?.description || ''}</small><br/>
+          <small>Length: ${coords.length} waypoints</small>
+        </div>
+      `);
     });
 
     // Add vendor markers

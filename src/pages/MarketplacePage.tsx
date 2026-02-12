@@ -142,6 +142,74 @@ const MarketplacePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Advert Carousel Section */}
+      <section className="container mx-auto px-4 py-8">
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-800">Featured Advertisements</h2>
+            <Button variant="outline" size="sm">
+              Advertise Here
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Advert 1 */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="h-32 bg-gradient-to-r from-green-400 to-emerald-500 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <div className="text-2xl font-bold">Premium Seeds</div>
+                  <div className="text-sm">20% OFF</div>
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-800 mb-2">High-Quality Hybrid Seeds</h3>
+                <p className="text-sm text-gray-600 mb-3">Certified drought-resistant maize and vegetable seeds</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-bold text-green-600">KSh 450/kg</span>
+                  <Button size="sm" variant="outline">View Deal</Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Advert 2 */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="h-32 bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <div className="text-2xl font-bold">Farm Equipment</div>
+                  <div className="text-sm">Leasing Available</div>
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-800 mb-2">Tractors & Implements</h3>
+                <p className="text-sm text-gray-600 mb-3">Modern farming equipment for lease and purchase</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-bold text-blue-600">From KSh 5,000/day</span>
+                  <Button size="sm" variant="outline">View Deal</Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Advert 3 */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="h-32 bg-gradient-to-r from-orange-400 to-red-500 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <div className="text-2xl font-bold">Storage Solutions</div>
+                  <div className="text-sm">Cold Chain</div>
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-800 mb-2">Cold Storage & Warehouses</h3>
+                <p className="text-sm text-gray-600 mb-3">Temperature-controlled storage for perishables</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-bold text-orange-600">KSh 15/kg/month</span>
+                  <Button size="sm" variant="outline">View Deal</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="container mx-auto px-4 py-16">
         <div className="space-y-12">
           {marketplaceCategories.map((category) => (
