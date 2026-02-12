@@ -7,8 +7,9 @@ import { Camera } from '@capacitor/camera';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Download, Share2, Printer, RefreshCw, QrCode as QrCodeIcon } from 'lucide-react';
+import { Download, Share2, Printer, RefreshCw, QrCode as QrCodeIcon, HelpCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 interface QRCodeGeneratorProps {
   userId: string;
@@ -29,6 +30,7 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   const [qrCodeId, setQrCodeId] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Secret key for HMAC (in production, store in environment variables)
   const HMAC_SECRET = import.meta.env.VITE_QR_SECRET || 'your-secret-key-change-in-production';
@@ -316,9 +318,21 @@ export const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
             </Button>
           </div>
 
-          <div className="text-xs text-center text-muted-foreground">
+          <div className="text-xs text-center text-muted-foreground mb-4">
             <p>Print and display this QR code at your farm/store.</p>
             <p>Earn 1 trust point every time it's scanned by a buyer!</p>
+          </div>
+
+          <div className="text-center">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/how-trust-passport-works')}
+              className="text-blue-600 hover:text-blue-700"
+            >
+              <HelpCircle className="h-4 w-4 mr-2" />
+              How It Works
+            </Button>
           </div>
         </>
       )}

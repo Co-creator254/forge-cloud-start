@@ -98,6 +98,7 @@ import BusinessMarketing from './pages/BusinessMarketing';
 import Community from './pages/Community';
 import FarmInputsMarketplace from './pages/FarmInputsMarketplace';
 import ExportMarket from './pages/ExportMarket';
+import HowTrustPassportWorks from './pages/HowTrustPassportWorks';
 import MarketPrices from './pages/MarketPrices';
 import Partners from './pages/Partners';
 import NetworkingPage from './pages/Networking';
@@ -231,6 +232,7 @@ function App() {
           <Route path="/market-prices" element={<MarketPrices />} />
           <Route path="/partners" element={<Partners />} />
           <Route path="/networking-page" element={<NetworkingPage />} />
+          <Route path="/how-trust-passport-works" element={<HowTrustPassportWorks />} />
                   <Route path="*" element={<NotFound />} />
                </Routes>
               </React.Suspense>
