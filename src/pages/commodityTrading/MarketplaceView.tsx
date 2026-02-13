@@ -69,12 +69,52 @@ const MarketplaceView: React.FC = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="py-12 px-6 max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Agricultural Marketplace</h1>
-          <p className="text-lg text-muted-foreground mb-6">
-            Buy fresh agricultural produce directly from verified farmers
-          </p>
+      <main className="min-h-screen bg-gray-50">
+        {/* Hero Section */}
+        <div className="relative h-[400px] flex items-center justify-center text-white mb-12">
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+              alt="Agricultural Marketplace" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+          </div>
+          
+          <div className="relative z-10 container mx-auto px-6">
+            <div className="max-w-3xl">
+              <Badge className="mb-4 bg-orange-500 hover:bg-orange-600 border-none text-white px-4 py-1 text-base">
+                Fresh Produce
+              </Badge>
+              <h1 className="text-5xl font-bold mb-6 leading-tight">
+                Agricultural <br/>
+                <span className="text-orange-400">Marketplace</span>
+              </h1>
+              <p className="text-xl text-gray-200 mb-8 max-w-2xl">
+                Buy fresh agricultural produce directly from verified farmers. Fair prices, quality guaranteed.
+              </p>
+              
+              <div className="flex gap-4">
+                 <div className="flex items-center gap-2 text-sm text-gray-300">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    Verified Farmers
+                 </div>
+                 <div className="flex items-center gap-2 text-sm text-gray-300">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    Quality Checks
+                 </div>
+                 <div className="flex items-center gap-2 text-sm text-gray-300">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    Secure Payment
+                 </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+        <div className="px-6 max-w-7xl mx-auto">
+          <div className="mb-8">
+            {/* Search Filters area starts here, removing old header title/desc */}
           
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
@@ -172,6 +212,7 @@ const MarketplaceView: React.FC = () => {
             </CardContent>
           </Card>
         )}
+        </div>
       </main>
     </div>
   );

@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Filter, ShoppingCart, PlusCircle, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import farmInputsBg from '@/assets/farm-inputs-bg.png';
 
 interface CartItem {
   id: string;
@@ -203,7 +204,58 @@ const FarmInputMarketplace: React.FC = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="py-12 px-6 max-w-7xl mx-auto">
+      
+      {/* Hero Section */}
+      <section className="relative h-[500px] flex items-center justify-center text-white overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1625246333195-58197bd47d72?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+            alt="Farm Inputs" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+        </div>
+        
+        <div className="relative z-10 container mx-auto px-4">
+          <div className="max-w-3xl">
+            <Badge className="mb-4 bg-green-500 hover:bg-green-600 border-none text-white px-4 py-1 text-base">
+              Verified Suppliers Only
+            </Badge>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              Premium Farm <br/>
+              <span className="text-green-400">Inputs Marketplace</span>
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl">
+              Access certified seeds, fertilizers, and crop protection products directly from verified manufacturers and distributors.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button size="lg" className="bg-green-600 hover:bg-green-700 text-lg px-8 h-14">
+                Shop Now
+              </Button>
+              <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/20 text-lg px-8 h-14">
+                List Your Inputs
+              </Button>
+            </div>
+            
+            <div className="mt-12 grid grid-cols-3 gap-8 max-w-lg">
+              <div>
+                <p className="text-3xl font-bold text-green-400">100%</p>
+                <p className="text-sm text-gray-300">Certified Products</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-green-400">24h</p>
+                <p className="text-sm text-gray-300">Delivery Guarantee</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-green-400">50+</p>
+                <p className="text-sm text-gray-300">Trusted Brands</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main className="py-12 px-6 max-w-7xl mx-auto -mt-16">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Farm Input Marketplace</h1>
           <p className="text-lg text-muted-foreground mb-6">

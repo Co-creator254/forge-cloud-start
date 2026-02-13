@@ -262,7 +262,7 @@ const Index: React.FC = () => {
                 <CardTitle className="text-sm">Veterinary Services</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <Link to="/veterinary-services">
+                <Link to="/service-providers?category=Veterinary">
                   <Button variant="outline" size="sm" className="w-full text-xs">Find Vets</Button>
                 </Link>
               </CardContent>
@@ -276,7 +276,7 @@ const Index: React.FC = () => {
                 <CardTitle className="text-sm">Feed & Nutrition</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <Link to="/feed-nutrition">
+                <Link to="/service-providers?category=Feed">
                   <Button variant="outline" size="sm" className="w-full text-xs">Get Advice</Button>
                 </Link>
               </CardContent>
@@ -290,7 +290,7 @@ const Index: React.FC = () => {
                 <CardTitle className="text-sm">Farm Construction</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <Link to="/farm-construction">
+                <Link to="/service-providers?category=Construction">
                   <Button variant="outline" size="sm" className="w-full text-xs">Build</Button>
                 </Link>
               </CardContent>
@@ -304,7 +304,7 @@ const Index: React.FC = () => {
                 <CardTitle className="text-sm">Consultancies</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <Link to="/consultancies">
+                <Link to="/service-providers?category=Consultancies">
                   <Button variant="outline" size="sm" className="w-full text-xs">Consult</Button>
                 </Link>
               </CardContent>
@@ -358,7 +358,7 @@ const Index: React.FC = () => {
                 <CardTitle className="text-sm">Auctions</CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <Link to="/agent-product-auction-dashboard">
+                <Link to="/bulk-auctions">
                   <Button variant="outline" size="sm" className="w-full text-xs">Bid</Button>
                 </Link>
               </CardContent>

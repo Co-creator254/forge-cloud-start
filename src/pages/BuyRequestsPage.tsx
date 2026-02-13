@@ -89,16 +89,17 @@ const BuyRequestsPage: React.FC = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary-foreground text-primary-foreground py-16">
+      <section className="bg-green-700 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">Buy Requests</h1>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
+          <p className="text-xl mb-8 max-w-3xl mx-auto text-green-50">
             Connect with buyers looking for agricultural products. Post what you're selling or find buyers for your produce.
           </p>
           <Button 
             size="lg" 
             variant="secondary"
             onClick={() => setShowCreateForm(true)}
+            className="bg-white text-green-800 hover:bg-green-50"
           >
             <Plus className="h-4 w-4 mr-2" />
             Create Buy Request

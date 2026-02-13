@@ -34,6 +34,7 @@ const ServiceProviders = () => {
   const [tracking, setTracking] = useState([]);
   
   const typeFilter = searchParams.get("type") as ServiceProviderType | null;
+  const categoryFilter = searchParams.get("category");
   const activeTab = (typeFilter || "all") as ServiceProviderType | "all";
 
   const providerTypes: Array<{ value: ServiceProviderType | "all"; label: string }> = [
@@ -70,6 +71,10 @@ const ServiceProviders = () => {
 
   const providerCategories = [
     'All Providers',
+    'Veterinary',
+    'Feed',
+    'Construction',
+    'Consultancies',
     'Storage Facilities',
     'Transport Services',
     'Quality Control',
@@ -84,6 +89,13 @@ const ServiceProviders = () => {
     'Export Transporters',
     'Shippers',
   ];
+
+  useEffect(() => {
+    // Set initial category from query param if present
+    if (categoryFilter) {
+      setSelectedCategory(categoryFilter);
+    }
+  }, [categoryFilter]);
 
   useEffect(() => {
     const loadProviders = async () => {
@@ -119,7 +131,12 @@ const ServiceProviders = () => {
     }
 
     if (selectedCategory !== 'All Providers') {
-      filtered = filtered.filter(provider => (provider.provider_category || provider.businessType) === selectedCategory);
+      filtered = filtered.filter(provider => 
+        (provider.provider_category || provider.businessType) === selectedCategory ||
+        // Fallback or mapping logic if needed
+        (selectedCategory === 'Veterinary' && provider.businessType?.toLowerCase().includes('vet')) ||
+        (selectedCategory === 'Feed' && provider.businessType?.toLowerCase().includes('feed'))
+      );
     }
     
     if (searchTerm) {

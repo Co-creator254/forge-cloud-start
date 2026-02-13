@@ -131,6 +131,36 @@ const Auth: React.FC = () => {
     navigate('/');
   };
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Success",
+        description: "Successfully signed in with Google!",
+      });
+      navigate('/');
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to sign in with Google. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Background Image with Blur */}
@@ -304,6 +334,26 @@ const Auth: React.FC = () => {
                         disabled={loading}
                       >
                         {loading ? "Creating Account..." : "Register Now"}
+                      </Button>
+                      
+                      {/* Google OAuth Button */}
+                      <div className="relative mt-4">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div className="relative flex justify-center text-xs">
+                          <span className="px-2 bg-transparent text-gray-300">Or register with</span>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        type="button" 
+                        onClick={handleGoogleSignIn}
+                        className="w-full bg-white border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 flex items-center justify-center gap-2" 
+                        disabled={loading}
+                      >
+                        <span className="text-lg">G</span>
+                        {loading ? "Signing in with Google..." : "Continue with Google"}
                       </Button>
                     </form>
                   </TabsContent>

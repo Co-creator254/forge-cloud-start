@@ -37,6 +37,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
 
   const startWebScan = async () => {
     try {
+      setScanning(true);
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' } 
       });
@@ -47,20 +48,18 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
         videoRef.current.play();
       }
       
-      setScanning(true);
-      
       toast({
         title: 'Camera Active',
-        description: 'Point at a QR code or paste QR data below',
+        description: 'Point at a QR code to scan',
       });
     } catch (error) {
       console.error('Camera error:', error);
       toast({
         title: 'Camera Unavailable',
-        description: 'You can paste QR code data manually instead.',
+        description: 'Please ensure you have granted camera permissions. You can also paste the QR code data below.',
         variant: 'destructive'
       });
-      setScanning(true); // Still show manual input
+      // Keep scanning state true to show manual input, but maybe show a placeholder instead of video
     }
   };
 
@@ -93,7 +92,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
       if (!isValid) {
         toast({
           title: 'Invalid QR Code',
-          description: 'This QR code appears to be tampered with',
+          description: 'This QR code appears to be tampered with or invalid.',
           variant: 'destructive'
         });
         return;
@@ -106,7 +105,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
       if (!user) {
         toast({
           title: 'Login Required',
-          description: 'Please login to scan QR codes',
+          description: 'Please login to scan QR codes and verify trust.',
           variant: 'destructive'
         });
         return;
@@ -114,8 +113,8 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
 
       if (userId === user.id) {
         toast({
-          title: 'Cannot Scan Own QR',
-          description: 'You cannot scan your own QR code',
+          title: 'Self-Scan Detected',
+          description: 'You cannot scan your own Trust Passport.',
           variant: 'destructive'
         });
         return;
@@ -145,12 +144,11 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
 
       if (recentScans && recentScans.length > 0) {
         toast({
-          title: 'Already Scanned Today',
-          description: 'You can only scan each QR code once per day',
-          variant: 'destructive'
+          title: 'Already Verified',
+          description: 'You have already verified this user today. Redirecting to profile...',
         });
-        // Still navigate to profile
         navigate(`/verify/${userId}`);
+        stopScan();
         return;
       }
 
@@ -180,11 +178,11 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
       }
 
       toast({
-        title: 'QR Code Scanned! ✅',
-        description: `${name} earned 1 trust point!`,
+        title: 'Verification Successful! ✅',
+        description: `You verified ${name} and they earned 1 Trust Point!`,
+        className: 'bg-green-50 border-green-200'
       });
 
-      // Navigate to verification profile
       stopScan();
       navigate(`/verify/${userId}`);
 
@@ -195,8 +193,8 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
     } catch (error) {
       console.error('Error processing QR code:', error);
       toast({
-        title: 'Processing Failed',
-        description: 'Could not process QR code data. Make sure it\'s a valid SokoConnect QR.',
+        title: 'Scan Failed',
+        description: 'Could not process QR code. Ensure it is a valid SokoConnect Trust Passport.',
         variant: 'destructive'
       });
     }
@@ -205,70 +203,73 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanComplete }) => {
   return (
     <>
       {!scanning ? (
-        <Card className="p-6">
-          <div className="text-center space-y-4">
-            <ScanLine className="h-16 w-16 mx-auto text-primary" />
+        <Card className="p-6 border-2 border-dashed border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors">
+          <div className="text-center space-y-4 py-4">
+            <div className="relative">
+              <ScanLine className="h-16 w-16 mx-auto text-primary animate-pulse" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Camera className="h-8 w-8 text-primary/50" />
+              </div>
+            </div>
             <div>
-              <h3 className="text-lg font-semibold">Scan Trust Passport</h3>
-              <p className="text-sm text-muted-foreground">
-                Scan a farmer's or provider's QR code to verify their profile and award trust points
+              <h3 className="text-lg font-semibold text-primary">Scan Trust Passport</h3>
+              <p className="text-sm text-muted-foreground max-w-xs mx-auto mt-2">
+                Verify farmers and service providers instantly. Award Trust Points and correct bad actors.
               </p>
             </div>
-            <Button onClick={startWebScan} size="lg" className="w-full">
+            <Button onClick={startWebScan} size="lg" className="w-full max-w-sm font-semibold shadow-lg">
               <Camera className="h-5 w-5 mr-2" />
-              Start Scanning
+              Open Scanner
             </Button>
             <p className="text-xs text-muted-foreground">
-              Camera access required • One scan per QR per day
+              Requires camera access • Secure Verification
             </p>
           </div>
         </Card>
       ) : (
-        <div className="fixed inset-0 z-50 bg-background flex flex-col">
-          <div className="flex-1 relative overflow-hidden">
-            <video 
+        <div className="fixed inset-0 z-50 bg-black flex flex-col">
+          <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-black">
+             <video 
               ref={videoRef} 
-              className="w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover"
               playsInline
               muted
             />
-            <canvas ref={canvasRef} className="hidden" />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-64 h-64 border-4 border-primary rounded-lg opacity-70" />
+            {/* Overlay UI */}
+             <div className="absolute inset-0 border-[40px] border-black/50 pointer-events-none z-10"></div>
+            <div className="relative z-20 w-64 h-64 border-4 border-primary rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
+               <div className="absolute top-0 left-0 w-full h-1 bg-primary animate-[scan_2s_ease-in-out_infinite]" />
             </div>
-            <div className="absolute top-4 left-0 right-0 text-center">
-              <p className="text-foreground text-lg font-semibold bg-background/80 inline-block px-4 py-2 rounded-full">
-                Point camera at QR code
+
+             <div className="absolute top-10 left-0 right-0 z-30 text-center">
+              <p className="bg-black/60 text-white px-4 py-2 rounded-full inline-block text-sm font-medium backdrop-blur-sm">
+                Align QR Code within the frame
               </p>
             </div>
           </div>
           
-          {/* Manual paste input */}
-          <div className="p-4 bg-background border-t space-y-3">
-            <p className="text-sm text-muted-foreground text-center">
-              Or paste QR data manually:
-            </p>
+          {/* Manual Input Area */}
+          <div className="p-6 bg-background border-t space-y-4 pb-10">
+            <div className="flex justify-between items-center">
+               <p className="text-sm font-medium">Camera not working?</p>
+               <Button variant="ghost" size="sm" onClick={stopScan} className="text-destructive hover:text-destructive/90">
+                 <X className="h-4 w-4 mr-2" />
+                 Close
+               </Button>
+            </div>
+             
             <div className="flex gap-2">
               <input
                 type="text"
                 value={manualInput}
                 onChange={(e) => setManualInput(e.target.value)}
-                placeholder='Paste QR code JSON data...'
+                placeholder='Paste QR JSON data here...'
                 className="flex-1 px-3 py-2 border rounded-md text-sm bg-background"
               />
               <Button onClick={handleManualSubmit} disabled={!manualInput.trim()}>
-                Submit
+                Verify
               </Button>
             </div>
-            <Button 
-              onClick={stopScan} 
-              variant="destructive" 
-              size="lg" 
-              className="w-full"
-            >
-              <X className="h-5 w-5 mr-2" />
-              Cancel Scan
-            </Button>
           </div>
         </div>
       )}
